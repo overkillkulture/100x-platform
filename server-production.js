@@ -196,13 +196,20 @@ let sessionStore;
 
 (async () => {
     try {
-        redisClient = createClient({
-            url: process.env.REDIS_URL || 'redis://localhost:6379',
-            socket: {
+        const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+        const redisConfig = {
+            url: redisUrl
+        };
+
+        // Only add TLS config if using rediss:// (SSL)
+        if (redisUrl.startsWith('rediss://')) {
+            redisConfig.socket = {
                 tls: true,
-                rejectUnauthorized: false // Accept self-signed certificates
-            }
-        });
+                rejectUnauthorized: false
+            };
+        }
+
+        redisClient = createClient(redisConfig);
 
         redisClient.on('error', (err) => {
             console.error('❌ Redis error:', err);
