@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X PLATFORM - Blueprint Tool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #000, #0a0a2e);
+            color: #00ffff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 3px solid #00ffff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-small {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00ffff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: rgba(0,255,255,0.2);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #00ffff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .blueprint-wizard {
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00ffff;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 32px;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .step-description {
+            color: #888;
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .option-card {
+            background: rgba(0,255,255,0.05);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .option-card:hover {
+            background: rgba(0,255,255,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,255,255,0.3);
+        }
+
+        .option-card.selected {
+            background: rgba(255,215,0,0.2);
+            border-color: #ffd700;
+        }
+
+        .option-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .option-title {
+            font-size: 20px;
+            color: #00ffff;
+            margin-bottom: 10px;
+        }
+
+        .option-desc {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ffff, #0099ff);
+            color: #000;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,255,255,0.5);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0,255,255,0.1);
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #ffd700);
+            transition: width 0.5s;
+        }
+
+        .blueprint-result {
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .result-title {
+            font-size: 36px;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(0,255,255,0.05);
+            border-left: 4px solid #00ffff;
+            border-radius: 10px;
+        }
+
+        .result-section h3 {
+            color: #00ffff;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .result-section p, .result-section li {
+            color: #888;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .result-section ul {
+            margin-left: 20px;
+        }
+
+        .action-button {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin-top: 30px;
+            background: linear-gradient(135deg, #ffd700, #ff9900);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-small">100X</div>
+        <a href="/dashboard" class="back-btn">← DASHBOARD</a>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title">📋 BLUEPRINT TOOL</h1>
+        <p class="subtitle">Answer a few questions and we'll create your personalized build plan</p>
+
+        <div class="blueprint-wizard">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+
+            <!-- Step 1: What do you want to build? -->
+            <div class="step active" id="step-1">
+                <div class="step-title">What do you want to build?</div>
+                <div class="step-description">Choose the category that best matches your goal</div>
+
+                <div class="option-grid">
+                    <div class="option-card" onclick="selectOption('category', 'product')">
+                        <div class="option-icon">📦</div>
+                        <div class="option-title">Physical Product</div>
+                        <div class="option-desc">T-shirts, gadgets, hardware</div>
+                    </div>
+
+                    <div class="option-card" onclick="selectOption('category', 'software')">
+                        <div class="option-icon">💻</div>
+                        <div class="option-title">Software/App</div>
+                        <div class="option-desc">Website, mobile app, SaaS</div>
+                    </div>
+
+                    <div class="option-card" onclick="selectOption('category', 'content')">
+                        <div class="option-icon">🎨</div>
+                        <div class="option-title">Content/Media</div>
+                        <div class="option-desc">YouTube, podcast, blog, music</div>
+                    </div>
+
+                    <div class="option-card" onclick="selectOption('category', 'service')">
+                        <div class="option-icon">🛠️</div>
+                        <div class="option-title">Service Business</div>
+                        <div class="option-desc">Consulting, coaching, freelance</div>
+                    </div>
+
+                    <div class="option-card" onclick="selectOption('category', 'community')">
+                        <div class="option-icon">👥</div>
+                        <div class="option-title">Community/Network</div>
+                        <div class="option-desc">Membership, course, mastermind</div>
+                    </div>
+
+                    <div class="option-card" onclick="selectOption('category', 'other')">
+                        <div class="option-icon">💡</div>
+                        <div class="option-title">Other/Not Sure</div>
+                        <div class="option-desc">I have an idea but it doesn't fit</div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-primary" onclick="nextStep()">NEXT →</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Experience level -->
+            <div class="step" id="step-2">
+                <div class="step-title">What's your experience level?</div>
+                <div class="step-description">Be honest - we'll tailor the plan to your skills</div>
+
+                <div class="option-grid">
+                    <div class="option-card" onclick="selectOption('experience', 'beginner')">
+                        <div class="option-icon">🌱</div>
+                        <div class="option-title">Total Beginner</div>
+                        <div class="option-desc">Never built anything before</div>
+                    </div>
+
+                    <div class="option-card" onclick="selectOption('experience', 'some')">
+                        <div class="option-icon">🔧</div>
+                        <div class="option-title">Some Experience</div>
+                        <div class="option-desc">Tried a few things, learned basics</div>
+                    </div>
+
+                    <div class="option-card" onclick="selectOption('experience', 'intermediate')">
+                        <div class="option-icon">⚙️</div>
+                        <div class="option-title">Intermediate</div>
+                        <div class="option-desc">Built and shipped before</div>
+                    </div>
+
+                    <div class="option-card" onclick="selectOption('experience', 'advanced')">
+                        <div class="option-icon">🚀</div>
+                        <div class="option-title">Advanced</div>
+                        <div class="option-desc">I'm a pro, just need direction</div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prevStep()">← BACK</button>
+                    <button class="btn btn-primary" onclick="nextStep()">NEXT →</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Timeline -->
+            <div class="step" id="step-3">
+                <div class="step-title">How fast do you want to ship?</div>
+                <div class="step-description">When do you want your first version live?</div>
+
+                <div class="option-grid">
+                    <div class="option-card" onclick="selectOption('timeline', 'week')">
+                        <div class="option-icon">⚡</div>
+                        <div class="option-title">This Week</div>
+                        <div class="option-desc">I want to move FAST</div>
+                    </div>
+
+                    <div class="option-card" onclick="selectOption('timeline', 'month')">
+                        <div class="option-icon">📅</div>
+                        <div class="option-title">This Month</div>
+                        <div class="option-desc">Balanced pace</div>
+                    </div>
+
+                    <div class="option-card" onclick="selectOption('timeline', 'quarter')">
+                        <div class="option-icon">🗓️</div>
+                        <div class="option-title">This Quarter</div>
+                        <div class="option-desc">Taking my time, doing it right</div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prevStep()">← BACK</button>
+                    <button class="btn btn-primary" onclick="generateBlueprint()">GENERATE BLUEPRINT →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blueprint Result (hidden initially) -->
+        <div class="blueprint-result" id="blueprint-result" style="display: none;">
+            <div class="result-title">🎯 YOUR PERSONALIZED BLUEPRINT</div>
+
+            <div class="result-section">
+                <h3>📋 Project Overview</h3>
+                <p id="project-overview"></p>
+            </div>
+
+            <div class="result-section">
+                <h3>🛠️ Tools & Resources You'll Need</h3>
+                <ul id="tools-list"></ul>
+            </div>
+
+            <div class="result-section">
+                <h3>📆 Week-by-Week Action Plan</h3>
+                <div id="action-plan"></div>
+            </div>
+
+            <div class="result-section">
+                <h3>💰 Revenue Strategy</h3>
+                <p id="revenue-strategy"></p>
+            </div>
+
+            <div class="result-section">
+                <h3>⚠️ Common Pitfalls to Avoid</h3>
+                <ul id="pitfalls-list"></ul>
+            </div>
+
+            <button class="action-button" onclick="saveBlueprint()">💾 SAVE TO MY DASHBOARD</button>
+            <button class="action-button" style="background: rgba(0,255,255,0.2); border: 2px solid #00ffff; color: #00ffff; margin-top: 15px;" onclick="startOver()">🔄 START OVER</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let answers = {};
+
+        function selectOption(question, value) {
+            answers[question] = value;
+
+            // Visual feedback
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.option-card').classList.add('selected');
+        }
+
+        function nextStep() {
+            // Hide current step
+            document.getElementById(`step-${currentStep}`).classList.remove('active');
+
+            // Show next step
+            currentStep++;
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+
+            // Update progress bar
+            const progress = (currentStep / 3) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+
+        function prevStep() {
+            document.getElementById(`step-${currentStep}`).classList.remove('active');
+            currentStep--;
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+
+            const progress = (currentStep / 3) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+
+        function generateBlueprint() {
+            // Hide wizard
+            document.querySelector('.blueprint-wizard').style.display = 'none';
+
+            // Show result
+            document.getElementById('blueprint-result').style.display = 'block';
+
+            // Generate personalized blueprint based on answers
+            const blueprints = {
+                product: {
+                    overview: `You're building a physical product business. This is a great choice for beginners - tangible, visual, and you can start small with print-on-demand.`,
+                    tools: [
+                        'Shopify or Printful (online store + production)',
+                        'Canva (design your products)',
+                        'Instagram/TikTok (free marketing)',
+                        'Stripe (accept payments)'
+                    ],
+                    revenue: 'Start with print-on-demand (zero inventory cost). Price products at 3x cost. Aim for $500 in first month, scale to $5k/month by month 6.',
+                    pitfalls: [
+                        'Don\'t buy inventory upfront - use print-on-demand first',
+                        'Don\'t overthink design - ship fast, iterate based on sales',
+                        'Don\'t ignore marketing - 80% of effort should be promotion',
+                        'Don\'t try to be perfect - done is better than perfect'
+                    ]
+                },
+                software: {
+                    overview: `You're building software/app. High potential but more technical. We'll help you ship an MVP fast.`,
+                    tools: [
+                        'Railway.app or Vercel (hosting)',
+                        'Claude AI (coding assistant)',
+                        'MongoDB Atlas (database)',
+                        'Stripe (payments if needed)'
+                    ],
+                    revenue: 'Freemium model: Free tier for users, $20-50/month for pro features. Target 100 free users, convert 10% to paid = $200-500/month.',
+                    pitfalls: [
+                        'Don\'t overbuild - MVP should be embarrassingly simple',
+                        'Don\'t code everything yourself - use no-code tools where possible',
+                        'Don\'t skip user testing - get 5 people using it before launch',
+                        'Don\'t ignore marketing - build in public, share progress'
+                    ]
+                },
+                content: {
+                    overview: `You're building content/media. Lowest startup cost, but requires consistency and patience.`,
+                    tools: [
+                        'YouTube or TikTok (free platform)',
+                        'CapCut or DaVinci Resolve (free editing)',
+                        'Canva (thumbnails)',
+                        'Discord (build community)'
+                    ],
+                    revenue: 'Start with ads + affiliate links. Later add sponsorships, digital products, memberships. First $100 in 1-3 months, $1k/month by month 6-12.',
+                    pitfalls: [
+                        'Don\'t wait for perfect equipment - phone camera is fine',
+                        'Don\'t be inconsistent - post 3x/week minimum',
+                        'Don\'t ignore analytics - double down on what works',
+                        'Don\'t try to please everyone - niche down hard'
+                    ]
+                },
+                service: {
+                    overview: `You're starting a service business. Fastest path to revenue - you can get paid this week.`,
+                    tools: [
+                        'Upwork or Fiverr (find clients)',
+                        'Stripe or PayPal (get paid)',
+                        'Calendly (schedule calls)',
+                        'Google Workspace (professional email)'
+                    ],
+                    revenue: 'Charge hourly or project-based. Start at $50-100/hour. Target: First client this week, $2k/month by month 2, $10k/month by month 6.',
+                    pitfalls: [
+                        'Don\'t underprice - you\'re worth more than you think',
+                        'Don\'t wait for website - start selling today on Upwork',
+                        'Don\'t do free work - even friends should pay (discount okay)',
+                        'Don\'t trade time for money forever - productize your service'
+                    ]
+                },
+                community: {
+                    overview: `You're building a community/network. Hardest to monetize but highest long-term value.`,
+                    tools: [
+                        'Discord or Circle (community platform)',
+                        'Gumroad or Teachable (sell courses/memberships)',
+                        'ConvertKit (email list)',
+                        'Zoom (host events)'
+                    ],
+                    revenue: 'Membership model: $10-50/month. Start free, build to 100 members, launch paid tier. Target: $500/month by month 3, $5k/month by month 12.',
+                    pitfalls: [
+                        'Don\'t charge too early - build value first (100+ free members)',
+                        'Don\'t be passive - engage daily, lead conversations',
+                        'Don\'t ignore quality - 10 engaged members > 1000 lurkers',
+                        'Don\'t forget exclusivity - make it feel special to be part of it'
+                    ]
+                }
+            };
+
+            const category = answers.category || 'product';
+            const blueprint = blueprints[category];
+
+            // Fill in the blueprint
+            document.getElementById('project-overview').textContent = blueprint.overview;
+
+            const toolsList = document.getElementById('tools-list');
+            toolsList.innerHTML = blueprint.tools.map(tool => `<li>${tool}</li>`).join('');
+
+            document.getElementById('revenue-strategy').textContent = blueprint.revenue;
+
+            const pitfallsList = document.getElementById('pitfalls-list');
+            pitfallsList.innerHTML = blueprint.pitfalls.map(pitfall => `<li>${pitfall}</li>`).join('');
+
+            // Generate timeline based on experience + timeline
+            const actionPlan = document.getElementById('action-plan');
+            const timeline = answers.timeline || 'month';
+
+            if (timeline === 'week') {
+                actionPlan.innerHTML = `
+                    <p><strong>Day 1-2:</strong> Set up accounts and tools</p>
+                    <p><strong>Day 3-4:</strong> Create first version (MVP)</p>
+                    <p><strong>Day 5-6:</strong> Test with 5 people, get feedback</p>
+                    <p><strong>Day 7:</strong> Launch publicly, start marketing</p>
+                `;
+            } else if (timeline === 'month') {
+                actionPlan.innerHTML = `
+                    <p><strong>Week 1:</strong> Research + setup tools</p>
+                    <p><strong>Week 2:</strong> Build MVP</p>
+                    <p><strong>Week 3:</strong> Test with users, iterate</p>
+                    <p><strong>Week 4:</strong> Launch + marketing blitz</p>
+                `;
+            } else {
+                actionPlan.innerHTML = `
+                    <p><strong>Month 1:</strong> Research, planning, setup</p>
+                    <p><strong>Month 2:</strong> Build MVP slowly</p>
+                    <p><strong>Month 3:</strong> Test, refine, launch</p>
+                `;
+            }
+
+            // Scroll to result
+            document.getElementById('blueprint-result').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function saveBlueprint() {
+            alert('Blueprint saved to your dashboard! (Feature coming soon)');
+            window.location.href = '/dashboard';
+        }
+
+        function startOver() {
+            answers = {};
+            currentStep = 1;
+            document.querySelector('.blueprint-wizard').style.display = 'block';
+            document.getElementById('blueprint-result').style.display = 'none';
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById('step-1').classList.add('active');
+            document.getElementById('progress-fill').style.width = '0%';
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

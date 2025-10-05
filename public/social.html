@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X PLATFORM - Social Feed</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #000, #0a0a2e);
+            color: #00ffff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 3px solid #00ffff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-small {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00ffff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: rgba(0,255,255,0.2);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.9);
+            border-right: 2px solid #00ffff;
+            padding: 30px 20px;
+        }
+
+        .nav-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(0,255,255,0.1);
+            border-left: 4px solid #00ffff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #00ffff;
+            display: block;
+        }
+
+        .nav-item:hover {
+            background: rgba(0,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .create-post {
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00ffff;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .post-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0,255,255,0.05);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            color: #00ffff;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            resize: none;
+            min-height: 100px;
+        }
+
+        .post-input:focus {
+            outline: none;
+            background: rgba(0,255,255,0.1);
+            border-color: #ffd700;
+        }
+
+        .post-btn {
+            margin-top: 15px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #00ffff, #0099ff);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .post-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,255,255,0.5);
+        }
+
+        .feed {
+            margin-top: 30px;
+        }
+
+        .post-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,255,255,0.3);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-author {
+            font-weight: bold;
+            color: #ffd700;
+            font-size: 18px;
+        }
+
+        .post-time {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .post-content {
+            color: #00ffff;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            color: #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-small">100X</div>
+        <div class="user-info">
+            <a href="/dashboard" class="back-btn">← DASHBOARD</a>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <a href="/dashboard" class="nav-item">📊 DASHBOARD</a>
+            <a href="/bridge" class="nav-item">🌍 THE BRIDGE</a>
+            <a href="/social" class="nav-item" style="background: linear-gradient(135deg, rgba(0,255,255,0.3), rgba(255,215,0,0.2)); border-left-color: #ffd700;">💬 SOCIAL FEED</a>
+            <a href="/projects" class="nav-item">🚀 PROJECTS</a>
+            <a href="/library" class="nav-item">📚 KNOWLEDGE</a>
+            <a href="/profile" class="nav-item">👤 PROFILE</a>
+        </div>
+
+        <div class="content">
+            <div class="create-post">
+                <h2 style="color: #ffd700; margin-bottom: 20px;">✨ SHARE YOUR BUILD</h2>
+                <textarea class="post-input" id="post-content" placeholder="What are you building today?"></textarea>
+                <button class="post-btn" onclick="createPost()">POST UPDATE</button>
+            </div>
+
+            <div class="feed" id="feed">
+                <!-- Posts populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let session = null;
+
+        async function checkAuth() {
+            const response = await fetch('/api/session');
+            const data = await response.json();
+
+            if (!data.authenticated) {
+                window.location.href = '/';
+                return;
+            }
+
+            session = data.user;
+            loadFeed();
+        }
+
+        async function loadFeed() {
+            try {
+                const response = await fetch('/api/posts/feed');
+                const posts = await response.json();
+
+                const feedEl = document.getElementById('feed');
+
+                if (posts.length === 0) {
+                    feedEl.innerHTML = '<p style="color: #888; text-align: center;">No posts yet. Be the first to share!</p>';
+                    return;
+                }
+
+                feedEl.innerHTML = posts.map(post => `
+                    <div class="post-card">
+                        <div class="post-header">
+                            <span class="post-author">${post.username}</span>
+                            <span class="post-time">${timeAgo(post.created)}</span>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        <div class="post-actions">
+                            <button class="action-btn">👍 ${post.likes} likes</button>
+                            <button class="action-btn">💬 ${post.comments.length} comments</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load feed:', error);
+            }
+        }
+
+        async function createPost() {
+            const content = document.getElementById('post-content').value.trim();
+
+            if (!content) {
+                alert('Please write something first!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/posts/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, type: 'update' })
+                });
+
+                if (response.ok) {
+                    document.getElementById('post-content').value = '';
+                    loadFeed();
+                } else {
+                    alert('Failed to create post');
+                }
+            } catch (error) {
+                alert('Connection error');
+            }
+        }
+
+        function timeAgo(timestamp) {
+            const now = new Date();
+            const posted = new Date(timestamp);
+            const seconds = Math.floor((now - posted) / 1000);
+
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+            return `${Math.floor(seconds / 86400)}d ago`;
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>

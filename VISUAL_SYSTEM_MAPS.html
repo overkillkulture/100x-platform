@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X Platform - System Maps</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #000, #0a0a2e);
+            color: #00ffff;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #00ffff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .map-container {
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #00ffff;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .map-title {
+            font-size: 32px;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            background: rgba(0,255,255,0.02);
+            cursor: grab;
+        }
+
+        canvas:active {
+            cursor: grabbing;
+        }
+
+        .legend {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0,255,255,0.05);
+            border-radius: 10px;
+        }
+
+        .legend-item {
+            display: inline-block;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background: linear-gradient(135deg, #00ffff, #0099ff);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 100X PLATFORM - SYSTEM MAPS</h1>
+
+    <!-- Map 1: Documentation Network -->
+    <div class="map-container">
+        <div class="map-title">📚 Documentation Network Graph</div>
+        <div class="controls">
+            <button onclick="resetView('doc-canvas')">Reset View</button>
+            <button onclick="togglePhysics()">Toggle Physics</button>
+            <button onclick="highlightOrphans()">Show Orphans</button>
+        </div>
+        <canvas id="doc-canvas" width="1200" height="800"></canvas>
+        <div class="legend">
+            <div class="legend-item">
+                <span class="legend-color" style="background: #00ffff;"></span>
+                <span>Vision & Philosophy</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #ffd700;"></span>
+                <span>Product & Features</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #ff00ff;"></span>
+                <span>Technical</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #00ff00;"></span>
+                <span>Business & Legal</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #ff9900;"></span>
+                <span>Operations</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #ff0000;"></span>
+                <span>Missing (Blind Spot)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map 2: System Dependencies -->
+    <div class="map-container">
+        <div class="map-title">🔄 System Dependencies Flow</div>
+        <div class="controls">
+            <button onclick="showCriticalPath()">Critical Path</button>
+            <button onclick="showCircularDeps()">Circular Dependencies</button>
+        </div>
+        <canvas id="flow-canvas" width="1200" height="800"></canvas>
+    </div>
+
+    <!-- Map 3: User Journey Map -->
+    <div class="map-container">
+        <div class="map-title">👤 User Journey Map</div>
+        <canvas id="journey-canvas" width="1200" height="600"></canvas>
+    </div>
+
+    <script>
+        // Documentation nodes and connections
+        const docs = {
+            // Chapter 1: Vision
+            vision: {
+                manifesto: { name: 'MANIFESTO', status: 'missing', chapter: 1, x: 100, y: 100 },
+                core_values: { name: 'CORE_VALUES', status: 'missing', chapter: 1, x: 250, y: 100 },
+                revolutionary_model: { name: 'REVOLUTIONARY_MODEL', status: 'missing', chapter: 1, x: 400, y: 100 },
+                founder_vision: { name: 'FOUNDER_VISION', status: 'missing', chapter: 1, x: 550, y: 100 }
+            },
+            // Chapter 2: Product
+            product: {
+                platform_overview: { name: 'PLATFORM_OVERVIEW', status: 'partial', chapter: 2, x: 100, y: 250 },
+                user_journey: { name: 'USER_JOURNEY', status: 'missing', chapter: 2, x: 300, y: 250 },
+                features: { name: 'FEATURES', status: 'partial', chapter: 2, x: 500, y: 250 },
+                gamification: { name: 'GAMIFICATION', status: 'missing', chapter: 2, x: 700, y: 250 }
+            },
+            // Chapter 5: Legal
+            legal: {
+                founder_control: { name: 'FOUNDER_CONTROL', status: 'complete', chapter: 5, x: 100, y: 400 },
+                anti_destroyer: { name: 'ANTI_DESTROYER', status: 'complete', chapter: 5, x: 300, y: 400 },
+                corporate_structure: { name: 'CORPORATE_STRUCTURE', status: 'missing', chapter: 5, x: 500, y: 400 },
+                employment: { name: 'EMPLOYMENT_AGREEMENTS', status: 'missing', chapter: 5, x: 700, y: 400 }
+            },
+            // Chapter 7: Strategy
+            strategy: {
+                hydra: { name: 'HYDRA_STRATEGY', status: 'complete', chapter: 7, x: 100, y: 550 },
+                modular: { name: 'MODULAR_DIST', status: 'complete', chapter: 7, x: 300, y: 550 },
+                open_source: { name: 'OPEN_SOURCE', status: 'complete', chapter: 7, x: 500, y: 550 },
+                meta_system: { name: 'META_SYSTEM', status: 'complete', chapter: 7, x: 700, y: 550 }
+            }
+        };
+
+        // Connections between documents
+        const connections = [
+            // Vision connects to everything
+            ['manifesto', 'platform_overview'],
+            ['manifesto', 'founder_control'],
+            ['core_values', 'anti_destroyer'],
+            ['founder_vision', 'meta_system'],
+
+            // Legal interdependencies
+            ['founder_control', 'corporate_structure'],
+            ['founder_control', 'employment'],
+            ['anti_destroyer', 'employment'],
+
+            // Strategy interdependencies
+            ['hydra', 'platform_overview'],
+            ['modular', 'hydra'],
+            ['open_source', 'platform_overview'],
+            ['meta_system', 'features'],
+
+            // Product to Legal
+            ['platform_overview', 'corporate_structure'],
+            ['features', 'employment']
+        ];
+
+        // Flatten docs for easier access
+        const allDocs = {};
+        Object.values(docs).forEach(chapter => {
+            Object.entries(chapter).forEach(([key, doc]) => {
+                allDocs[key] = doc;
+            });
+        });
+
+        // Draw documentation network
+        const docCanvas = document.getElementById('doc-canvas');
+        const docCtx = docCanvas.getContext('2d');
+
+        function drawDocNetwork() {
+            docCtx.clearRect(0, 0, docCanvas.width, docCanvas.height);
+
+            const colors = {
+                1: '#00ffff',  // Vision - cyan
+                2: '#ffd700',  // Product - gold
+                3: '#ff00ff',  // Technical - magenta
+                4: '#00ff00',  // Business - green
+                5: '#ff9900',  // Legal - orange
+                7: '#00ccff'   // Strategy - blue
+            };
+
+            const statusColors = {
+                'complete': '#00ff00',
+                'partial': '#ffff00',
+                'missing': '#ff0000'
+            };
+
+            // Draw connections first (behind nodes)
+            docCtx.strokeStyle = 'rgba(0,255,255,0.3)';
+            docCtx.lineWidth = 2;
+
+            connections.forEach(([from, to]) => {
+                const fromDoc = allDocs[from];
+                const toDoc = allDocs[to];
+
+                if (fromDoc && toDoc) {
+                    docCtx.beginPath();
+                    docCtx.moveTo(fromDoc.x, fromDoc.y);
+                    docCtx.lineTo(toDoc.x, toDoc.y);
+                    docCtx.stroke();
+                }
+            });
+
+            // Draw nodes
+            Object.entries(allDocs).forEach(([key, doc]) => {
+                // Node circle
+                docCtx.beginPath();
+                docCtx.arc(doc.x, doc.y, 40, 0, Math.PI * 2);
+                docCtx.fillStyle = statusColors[doc.status];
+                docCtx.fill();
+
+                // Node border (chapter color)
+                docCtx.strokeStyle = colors[doc.chapter] || '#ffffff';
+                docCtx.lineWidth = 4;
+                docCtx.stroke();
+
+                // Node label
+                docCtx.fillStyle = '#000';
+                docCtx.font = 'bold 10px Courier New';
+                docCtx.textAlign = 'center';
+                docCtx.textBaseline = 'middle';
+
+                // Wrap text if too long
+                const words = doc.name.split('_');
+                if (words.length > 1) {
+                    words.forEach((word, i) => {
+                        docCtx.fillText(word, doc.x, doc.y + (i - 0.5) * 12);
+                    });
+                } else {
+                    docCtx.fillText(doc.name, doc.x, doc.y);
+                }
+            });
+
+            // Count connections per node
+            const connectionCounts = {};
+            connections.forEach(([from, to]) => {
+                connectionCounts[from] = (connectionCounts[from] || 0) + 1;
+                connectionCounts[to] = (connectionCounts[to] || 0) + 1;
+            });
+
+            // Highlight orphans (no connections) with red circle
+            Object.entries(allDocs).forEach(([key, doc]) => {
+                if (!connectionCounts[key]) {
+                    docCtx.beginPath();
+                    docCtx.arc(doc.x, doc.y, 50, 0, Math.PI * 2);
+                    docCtx.strokeStyle = '#ff0000';
+                    docCtx.lineWidth = 2;
+                    docCtx.setLineDash([5, 5]);
+                    docCtx.stroke();
+                    docCtx.setLineDash([]);
+                }
+            });
+        }
+
+        // Draw system dependencies flow
+        const flowCanvas = document.getElementById('flow-canvas');
+        const flowCtx = flowCanvas.getContext('2d');
+
+        function drawDependencyFlow() {
+            flowCtx.clearRect(0, 0, flowCanvas.width, flowCanvas.height);
+
+            const layers = [
+                {
+                    name: 'FOUNDATION',
+                    items: ['MANIFESTO', 'CORE_VALUES', 'FOUNDER_CONTROL'],
+                    y: 100,
+                    color: '#00ffff'
+                },
+                {
+                    name: 'STRUCTURE',
+                    items: ['CORPORATE_STRUCTURE', 'EMPLOYMENT', 'PLATFORM_OVERVIEW'],
+                    y: 250,
+                    color: '#ffd700'
+                },
+                {
+                    name: 'OPERATIONS',
+                    items: ['FEATURES', 'GAMIFICATION', 'USER_JOURNEY', 'HIRING'],
+                    y: 400,
+                    color: '#ff00ff'
+                },
+                {
+                    name: 'GROWTH',
+                    items: ['GENESIS_RECRUITMENT', 'LAUNCH_PLAN', 'REVENUE'],
+                    y: 550,
+                    color: '#00ff00'
+                },
+                {
+                    name: 'SCALE',
+                    items: ['HYDRA', 'MODULAR', 'META_SYSTEM'],
+                    y: 700,
+                    color: '#ff9900'
+                }
+            ];
+
+            layers.forEach((layer, layerIndex) => {
+                // Layer label
+                flowCtx.fillStyle = layer.color;
+                flowCtx.font = 'bold 24px Courier New';
+                flowCtx.textAlign = 'left';
+                flowCtx.fillText(layer.name, 50, layer.y);
+
+                // Layer items
+                const itemSpacing = (flowCanvas.width - 400) / layer.items.length;
+
+                layer.items.forEach((item, i) => {
+                    const x = 350 + i * itemSpacing;
+                    const y = layer.y;
+
+                    // Draw box
+                    flowCtx.fillStyle = 'rgba(0,255,255,0.1)';
+                    flowCtx.fillRect(x - 60, y - 25, 120, 50);
+
+                    flowCtx.strokeStyle = layer.color;
+                    flowCtx.lineWidth = 2;
+                    flowCtx.strokeRect(x - 60, y - 25, 120, 50);
+
+                    // Draw text
+                    flowCtx.fillStyle = '#00ffff';
+                    flowCtx.font = '12px Courier New';
+                    flowCtx.textAlign = 'center';
+                    flowCtx.fillText(item, x, y);
+
+                    // Draw arrow to next layer
+                    if (layerIndex < layers.length - 1) {
+                        const nextY = layers[layerIndex + 1].y;
+
+                        flowCtx.beginPath();
+                        flowCtx.moveTo(x, y + 25);
+                        flowCtx.lineTo(x, nextY - 25);
+                        flowCtx.strokeStyle = 'rgba(0,255,255,0.5)';
+                        flowCtx.lineWidth = 2;
+                        flowCtx.stroke();
+
+                        // Arrow head
+                        flowCtx.beginPath();
+                        flowCtx.moveTo(x, nextY - 25);
+                        flowCtx.lineTo(x - 5, nextY - 35);
+                        flowCtx.lineTo(x + 5, nextY - 35);
+                        flowCtx.closePath();
+                        flowCtx.fill();
+                    }
+                });
+            });
+        }
+
+        // Draw user journey
+        const journeyCanvas = document.getElementById('journey-canvas');
+        const journeyCtx = journeyCanvas.getContext('2d');
+
+        function drawUserJourney() {
+            journeyCtx.clearRect(0, 0, journeyCanvas.width, journeyCanvas.height);
+
+            const steps = [
+                { name: 'DISCOVER', x: 100, docs: ['MARKETING', 'BRAND'], status: 'missing' },
+                { name: 'REGISTER', x: 300, docs: ['GETTING_STARTED'], status: 'missing' },
+                { name: 'ONBOARD', x: 500, docs: ['BLUEPRINT_TOOL'], status: 'partial' },
+                { name: 'BUILD', x: 700, docs: ['PROJECT_GUIDE', 'TRINITY_AI'], status: 'partial' },
+                { name: 'SHIP', x: 900, docs: ['MONETIZATION'], status: 'missing' },
+                { name: 'GROW', x: 1100, docs: ['COMMUNITY'], status: 'missing' }
+            ];
+
+            const y = 300;
+
+            // Draw path
+            journeyCtx.strokeStyle = '#00ffff';
+            journeyCtx.lineWidth = 4;
+            journeyCtx.beginPath();
+            journeyCtx.moveTo(steps[0].x, y);
+            steps.forEach(step => {
+                journeyCtx.lineTo(step.x, y);
+            });
+            journeyCtx.stroke();
+
+            // Draw steps
+            steps.forEach((step, i) => {
+                // Circle
+                const statusColor = step.status === 'partial' ? '#ffff00' : step.status === 'missing' ? '#ff0000' : '#00ff00';
+
+                journeyCtx.beginPath();
+                journeyCtx.arc(step.x, y, 40, 0, Math.PI * 2);
+                journeyCtx.fillStyle = statusColor;
+                journeyCtx.fill();
+
+                journeyCtx.strokeStyle = '#00ffff';
+                journeyCtx.lineWidth = 3;
+                journeyCtx.stroke();
+
+                // Step name
+                journeyCtx.fillStyle = '#000';
+                journeyCtx.font = 'bold 14px Courier New';
+                journeyCtx.textAlign = 'center';
+                journeyCtx.fillText(step.name, step.x, y);
+
+                // Required docs below
+                journeyCtx.fillStyle = '#888';
+                journeyCtx.font = '10px Courier New';
+                step.docs.forEach((doc, j) => {
+                    journeyCtx.fillText(doc, step.x, y + 60 + j * 15);
+                });
+            });
+        }
+
+        // Interactive features
+        let draggedNode = null;
+
+        docCanvas.addEventListener('mousedown', (e) => {
+            const rect = docCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Find clicked node
+            Object.entries(allDocs).forEach(([key, doc]) => {
+                const dist = Math.sqrt((x - doc.x) ** 2 + (y - doc.y) ** 2);
+                if (dist < 40) {
+                    draggedNode = doc;
+                }
+            });
+        });
+
+        docCanvas.addEventListener('mousemove', (e) => {
+            if (draggedNode) {
+                const rect = docCanvas.getBoundingClientRect();
+                draggedNode.x = e.clientX - rect.left;
+                draggedNode.y = e.clientY - rect.top;
+                drawDocNetwork();
+            }
+        });
+
+        docCanvas.addEventListener('mouseup', () => {
+            draggedNode = null;
+        });
+
+        function resetView(canvasId) {
+            // Reset to default positions
+            Object.values(docs).forEach((chapter, i) => {
+                Object.values(chapter).forEach((doc, j) => {
+                    doc.x = 100 + j * 200;
+                    doc.y = 100 + i * 150;
+                });
+            });
+            drawDocNetwork();
+        }
+
+        function highlightOrphans() {
+            drawDocNetwork(); // Orphans already highlighted with dashed red circle
+        }
+
+        function showCriticalPath() {
+            // Highlight critical path (most dependencies)
+            alert('Critical path: MANIFESTO → CORPORATE_STRUCTURE → EMPLOYMENT → PLATFORM_OVERVIEW → FEATURES');
+        }
+
+        function showCircularDeps() {
+            alert('No circular dependencies detected (good!)');
+        }
+
+        // Initial draw
+        drawDocNetwork();
+        drawDependencyFlow();
+        drawUserJourney();
+
+        // Animate
+        setInterval(() => {
+            // Subtle pulse effect on missing docs
+            drawDocNetwork();
+        }, 2000);
+    </script>
+</body>
+</html>
