@@ -58,24 +58,59 @@ app.use(express.static('public'));
 
 // ===== DATABASE CONNECTION (PostgreSQL) =====
 
-const sequelize = new Sequelize(
-    process.env.DATABASE_URL || 'postgres://localhost:5432/100x_platform',
-    {
-        dialect: 'postgres',
-        logging: false, // Set to console.log for debugging
-        dialectOptions: {
+const fs = require('fs');
+
+// Build PostgreSQL config with proper SSL
+const dbConfig = {
+    dialect: 'postgres',
+    logging: false, // Set to console.log for debugging
+    pool: {
+        max: 10,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    }
+};
+
+// Add SSL configuration if DATABASE_URL uses SSL (production)
+if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('digitalocean.com')) {
+    // Try environment variable first (best for deployment)
+    if (process.env.POSTGRES_CA_CERT) {
+        dbConfig.dialectOptions = {
             ssl: {
                 require: true,
-                rejectUnauthorized: false // Accept self-signed certificates
+                ca: process.env.POSTGRES_CA_CERT
             }
-        },
-        pool: {
-            max: 10,
-            min: 0,
-            acquire: 30000,
-            idle: 10000
+        };
+        console.log('🔒 Using PostgreSQL CA certificate from environment variable');
+    }
+    // Try file path second
+    else {
+        const caPath = path.join(__dirname, 'postgres-ca-certificate.crt');
+        if (fs.existsSync(caPath)) {
+            dbConfig.dialectOptions = {
+                ssl: {
+                    require: true,
+                    ca: fs.readFileSync(caPath).toString()
+                }
+            };
+            console.log('🔒 Using PostgreSQL CA certificate from file');
+        } else {
+            // Fallback to accepting self-signed if CA cert not available
+            dbConfig.dialectOptions = {
+                ssl: {
+                    require: true,
+                    rejectUnauthorized: false
+                }
+            };
+            console.log('⚠️ CA certificate not found, using fallback SSL mode');
         }
     }
+}
+
+const sequelize = new Sequelize(
+    process.env.DATABASE_URL || 'postgres://localhost:5432/100x_platform',
+    dbConfig
 );
 
 // Test database connection
