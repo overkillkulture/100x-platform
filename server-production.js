@@ -4,7 +4,7 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-const RedisStore = require('connect-redis').default;
+const RedisStore = require('connect-redis');
 const { createClient } = require('redis');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -16,6 +16,9 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 const app = express();
 const PORT = process.env.PORT || 3100;
+
+// Trust proxy for DigitalOcean App Platform (needed for rate limiting)
+app.set('trust proxy', 1);
 
 // ===== SECURITY MIDDLEWARE =====
 
@@ -72,40 +75,16 @@ const dbConfig = {
     }
 };
 
-// Add SSL configuration if DATABASE_URL uses SSL (production)
+// Add SSL configuration for DigitalOcean managed databases
 if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('digitalocean.com')) {
-    // Try environment variable first (best for deployment)
-    if (process.env.POSTGRES_CA_CERT) {
-        dbConfig.dialectOptions = {
-            ssl: {
-                require: true,
-                ca: process.env.POSTGRES_CA_CERT
-            }
-        };
-        console.log('🔒 Using PostgreSQL CA certificate from environment variable');
-    }
-    // Try file path second
-    else {
-        const caPath = path.join(__dirname, 'postgres-ca-certificate.crt');
-        if (fs.existsSync(caPath)) {
-            dbConfig.dialectOptions = {
-                ssl: {
-                    require: true,
-                    ca: fs.readFileSync(caPath).toString()
-                }
-            };
-            console.log('🔒 Using PostgreSQL CA certificate from file');
-        } else {
-            // Fallback to accepting self-signed if CA cert not available
-            dbConfig.dialectOptions = {
-                ssl: {
-                    require: true,
-                    rejectUnauthorized: false
-                }
-            };
-            console.log('⚠️ CA certificate not found, using fallback SSL mode');
+    // DigitalOcean managed databases use self-signed certs - this is their recommended approach
+    dbConfig.dialectOptions = {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false
         }
-    }
+    };
+    console.log('🔒 Using SSL with DigitalOcean managed database');
 }
 
 const sequelize = new Sequelize(
