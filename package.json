@@ -2,10 +2,11 @@
   "name": "100x-platform-alpha",
   "version": "0.1.0",
   "description": "100X Platform - Consciousness Revolution Builder Platform",
-  "main": "server.js",
+  "main": "server-production.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node server-production.js",
+    "dev": "node server.js",
+    "dev:watch": "nodemon server.js"
   },
   "keywords": [
     "consciousness",
@@ -16,10 +17,20 @@
   "author": "OVERKORE",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "body-parser": "^1.20.2",
+    "connect-redis": "^9.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^4.18.2",
+    "express-rate-limit": "^8.1.0",
     "express-session": "^1.17.3",
-    "rss-parser": "^3.13.0"
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3",
+    "playwright": "^1.55.1",
+    "redis": "^5.8.3",
+    "rss-parser": "^3.13.0",
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
