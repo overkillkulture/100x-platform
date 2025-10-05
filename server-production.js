@@ -63,6 +63,12 @@ const sequelize = new Sequelize(
     {
         dialect: 'postgres',
         logging: false, // Set to console.log for debugging
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false // Accept self-signed certificates
+            }
+        },
         pool: {
             max: 10,
             min: 0,
@@ -191,7 +197,11 @@ let sessionStore;
 (async () => {
     try {
         redisClient = createClient({
-            url: process.env.REDIS_URL || 'redis://localhost:6379'
+            url: process.env.REDIS_URL || 'redis://localhost:6379',
+            socket: {
+                tls: true,
+                rejectUnauthorized: false // Accept self-signed certificates
+            }
         });
 
         redisClient.on('error', (err) => {
