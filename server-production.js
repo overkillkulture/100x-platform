@@ -75,16 +75,15 @@ const dbConfig = {
     }
 };
 
-// Add SSL configuration for DigitalOcean managed databases
-if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('digitalocean.com')) {
-    // DigitalOcean managed databases use self-signed certs - this is their recommended approach
+// Add SSL configuration - always use rejectUnauthorized: false in production
+if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
     dbConfig.dialectOptions = {
         ssl: {
             require: true,
             rejectUnauthorized: false
         }
     };
-    console.log('🔒 Using SSL with DigitalOcean managed database');
+    console.log('🔒 Production SSL enabled (rejectUnauthorized: false)');
 }
 
 const sequelize = new Sequelize(
