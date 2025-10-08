@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>100X - Open House</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            color: #fff;
+        }
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #00ddff 50%, #00ff00 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,221,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .logo {
+            font-size: 120px;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 40px #00ddff);
+            position: relative;
+            z-index: 1;
+        }
+        h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px #00ff00;
+            position: relative;
+            z-index: 1;
+        }
+        .tagline {
+            font-size: 24px;
+            margin-bottom: 50px;
+            color: #00ddff;
+            text-shadow: 0 0 20px #00ddff;
+            position: relative;
+            z-index: 1;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        .btn {
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00ddff 0%, #00ff00 100%);
+            color: #0a0a0a;
+            box-shadow: 0 0 30px rgba(0, 221, 255, 0.5);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.8);
+        }
+        .btn-secondary {
+            background: rgba(0, 221, 255, 0.1);
+            color: #00ddff;
+            border: 2px solid #00ddff;
+        }
+        .btn-secondary:hover {
+            background: rgba(0, 221, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 221, 255, 0.5);
+        }
+        .section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section h2 {
+            font-size: 48px;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #00ddff 0%, #00ff00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+        }
+        .section p {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #00ddff;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            text-align: center;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+        .feature {
+            background: rgba(0, 40, 80, 0.3);
+            border: 2px solid #00ddff;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .feature:hover {
+            border-color: #00ff00;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+            transform: translateY(-5px);
+        }
+        .feature-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px #00ddff);
+        }
+        .feature h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        .feature p {
+            color: #00ddff;
+            font-size: 16px;
+        }
+        footer {
+            padding: 40px 20px;
+            text-align: center;
+            background: #0a0a0a;
+            color: #00ddff;
+            border-top: 2px solid #00ddff;
+        }
+        footer p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="logo">🌀</div>
+        <h1>100X</h1>
+        <p class="tagline">Consciousness Revolution<br>Building the Future with Aware Builders</p>
+        <div class="cta-buttons">
+            <a href="index.html" class="btn btn-primary">Apply to Build</a>
+            <a href="#about" class="btn btn-secondary">Learn More</a>
+        </div>
+    </div>
+
+    <div class="section" id="about">
+        <h2>What is 100X?</h2>
+        <p>
+            100X is a consciousness-first builder community. We screen for authentic builders who create
+            rather than destroy, collaborate rather than manipulate, and elevate consciousness rather than
+            exploit it.
+        </p>
+        <p>
+            Using Pattern Theory and consciousness mathematics, we identify builders who align with
+            universal principles of creation, collaboration, and consciousness elevation.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>How It Works</h2>
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📝</div>
+                <h3>1. Apply</h3>
+                <p>Share your mission, values, and what you're building. Be authentic.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🧠</div>
+                <h3>2. Consciousness Screening</h3>
+                <p>Our Pattern Theory algorithm analyzes your builder vs destroyer signals.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">✅</div>
+                <h3>3. Instant Feedback</h3>
+                <p>Get your consciousness score (0-100) and approval status immediately.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🚀</div>
+                <h3>4. Start Building</h3>
+                <p>Join the community, access resources, and connect with other high-consciousness builders.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Who We're Looking For</h2>
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🛠️</div>
+                <h3>Creators</h3>
+                <p>Build solutions that help people, not exploit them</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🤝</div>
+                <h3>Collaborators</h3>
+                <p>Work together authentically, not manipulate for personal gain</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💡</div>
+                <h3>Consciousness Elevators</h3>
+                <p>Help others grow and discover truth, not deceive or control</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Ready to Join?</h2>
+        <p>
+            If you're building something real and want to connect with other conscious builders,
+            apply now. The screening takes 2 minutes and you'll get instant feedback.
+        </p>
+        <div class="cta-buttons">
+            <a href="index.html" class="btn btn-primary">Apply Now</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>🌀 100X Consciousness Revolution</p>
+        <p>Built with Pattern Theory | Screening powered by AI</p>
+    </footer>
+</body>
+</html>

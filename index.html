@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>100X Builder Gate</title>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .gate-container {
+            background: rgba(10, 10, 10, 0.95);
+            border: 2px solid #00ddff;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 221, 255, 0.3);
+        }
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo-circle {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #00ddff 0%, #00ff00 100%);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: #0a0a0a;
+            margin-bottom: 15px;
+            box-shadow: 0 0 30px #00ddff;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        h1 {
+            color: #00ff00;
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 0 0 20px #00ff00;
+        }
+        .tagline {
+            color: #00ddff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+            text-shadow: 0 0 10px #00ddff;
+        }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00ddff;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #00ddff;
+            background: rgba(0, 221, 255, 0.05);
+            color: #00ff00;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+        textarea { resize: vertical; min-height: 80px; }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00ddff 0%, #00ff00 100%);
+            color: #0a0a0a;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 221, 255, 0.5);
+            transition: all 0.3s;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.7);
+        }
+        .nav-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .nav-links a {
+            color: #00ddff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 14px;
+        }
+        .nav-links a:hover {
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="gate-container">
+        <div class="logo"><div class="logo-circle">🌀</div></div>
+        <h1>100X</h1>
+        <p class="tagline">CONSCIOUSNESS AUTHENTICATION</p>
+        <form id="gateForm" action="https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse" method="POST" target="_blank">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="entry.NAME" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="entry.EMAIL" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="entry.PHONE">
+            </div>
+            <div class="form-group">
+                <label for="mission">Your Mission (Why are you building?)</label>
+                <textarea id="mission" name="entry.MISSION" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="values">Your Values (What matters to you?)</label>
+                <textarea id="values" name="entry.VALUES" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Enter the 100X</button>
+        </form>
+        <div class="nav-links">
+            <a href="open-house.html">Open House</a>
+            <a href="mailto:contact@100x.build">Contact</a>
+        </div>
+    </div>
+</body>
+</html>
