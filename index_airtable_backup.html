@@ -101,6 +101,28 @@
             transform: translateY(-2px);
             box-shadow: 0 0 30px rgba(0, 255, 0, 0.7);
         }
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        .status-message.success {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+        }
+        .status-message.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff0000;
+            color: #ff0000;
+        }
         .nav-links {
             text-align: center;
             margin-top: 20px;
@@ -115,49 +137,15 @@
             color: #00ff00;
             text-shadow: 0 0 10px #00ff00;
         }
-        .debug-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #ff6600 0%, #ff0066 100%);
-            color: #ffffff;
-            padding: 10px 20px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 14px;
-            z-index: 9999;
-            box-shadow: 0 2px 10px rgba(255, 102, 0, 0.5);
-            animation: pulse-banner 3s infinite;
-        }
-        @keyframes pulse-banner {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.85; }
-        }
-        .debug-banner .version {
-            color: #ffff00;
-            font-family: 'Courier New', monospace;
-            margin-left: 10px;
-        }
-        body.with-banner {
-            padding-top: 50px;
-        }
     </style>
 </head>
-<body class="with-banner">
-    <div class="debug-banner">
-        🚧 DEBUG MODE ACTIVE <span class="version">[V-1.0]</span> - Platform Under Active Development 🚧
-        <a href="bug-report.html" style="color: #ffff00; margin-left: 15px; text-decoration: underline;">Report Bug</a>
-    </div>
+<body>
     <div class="gate-container">
         <div class="logo"><div class="logo-circle">🌀</div></div>
         <h1>100X</h1>
         <p class="tagline">CONSCIOUSNESS AUTHENTICATION</p>
 
-        <!-- NETLIFY FORMS - Just works! No API needed! -->
-        <form name="100x-gate" method="POST" data-netlify="true">
-            <input type="hidden" name="form-name" value="100x-gate">
-
+        <form id="gateForm">
             <div class="form-group">
                 <label for="name">Full Name *</label>
                 <input type="text" id="name" name="name" placeholder="Your name" required>
@@ -183,15 +171,84 @@
                 <textarea id="values" name="values" placeholder="What principles guide your work and life?" required></textarea>
             </div>
 
-            <button type="submit" class="submit-btn">Enter the 100X</button>
+            <button type="submit" class="submit-btn" id="submitBtn">Enter the 100X</button>
+
+            <div id="statusMessage" class="status-message"></div>
         </form>
 
         <div class="nav-links">
-            <a href="dashboard.html" style="font-weight: 600; color: #00ff00;">🎯 Enter Platform</a>
-            <a href="cockpit.html">Command Center</a>
-            <a href="roadmap.html">Roadmap</a>
             <a href="mailto:contact@consciousnessrevolution.io">Contact</a>
         </div>
     </div>
+
+    <script>
+        // Airtable configuration - REAL CREDENTIALS
+        const AIRTABLE_CONFIG = {
+            baseId: 'app7F75X1unyGjPfd',
+            tableName: 'tblnf4KNaOfbU5FgK',
+            apiKey: 'patAbUog4LkER4Fbc.e2942db8dca37f951ad341e47796c5d23b268607341bb0603726e5ac006dee1a'
+        };
+
+        document.getElementById('gateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const statusMessage = document.getElementById('statusMessage');
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            statusMessage.style.display = 'none';
+
+            // Get form data
+            const formData = {
+                fields: {
+                    'Name': document.getElementById('name').value,
+                    'Email': document.getElementById('email').value,
+                    'Phone': document.getElementById('phone').value || '',
+                    'Mission': document.getElementById('mission').value,
+                    'Values': document.getElementById('values').value,
+                    'Submitted': new Date().toISOString()
+                }
+            };
+
+            try {
+                // Submit to Airtable
+                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    // Success
+                    statusMessage.className = 'status-message success';
+                    statusMessage.textContent = '✓ Welcome to the 100X! Check your email for next steps.';
+                    statusMessage.style.display = 'block';
+
+                    // Reset form
+                    document.getElementById('gateForm').reset();
+                    submitBtn.textContent = 'Enter the 100X';
+                    submitBtn.disabled = false;
+                } else {
+                    throw new Error('Submission failed');
+                }
+
+            } catch (error) {
+                // Error
+                statusMessage.className = 'status-message error';
+                statusMessage.innerHTML = '✗ Submission failed. Please email us directly: <a href="mailto:overkillkulture@gmail.com" style="color: #00ff00; text-decoration: underline;">overkillkulture@gmail.com</a>';
+                statusMessage.style.display = 'block';
+
+                submitBtn.textContent = 'Try Again';
+                submitBtn.disabled = false;
+
+                console.error('Submission error:', error);
+            }
+        });
+    </script>
 </body>
 </html>

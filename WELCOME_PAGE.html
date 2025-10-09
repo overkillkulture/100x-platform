@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to 100X</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .welcome-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 60px 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .score-number {
+            font-size: 72px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .score-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .message {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            padding: 8px 0;
+            color: #666;
+        }
+
+        .info-box li::before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="success-icon">🎉</div>
+
+        <h1>Welcome to the 100X!</h1>
+
+        <div class="score-display">
+            <div class="score-number" id="score">--</div>
+            <div class="score-label">Consciousness Score</div>
+        </div>
+
+        <div class="message" id="message">
+            You've been approved to join the builder community!
+        </div>
+
+        <div class="info-box">
+            <h3>What's Next?</h3>
+            <ul>
+                <li>Access builder tools and resources</li>
+                <li>Connect with other high-consciousness builders</li>
+                <li>Start creating revolutionary projects</li>
+                <li>Join our community discussions</li>
+            </ul>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="window.location.href='https://discord.gg/your-discord'">
+                Join Discord
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='/'">
+                Apply Another Builder
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Get data from URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const score = params.get('score') || '100';
+        const status = params.get('status') || 'Approved';
+        const name = params.get('name') || 'Builder';
+
+        document.getElementById('score').textContent = score;
+
+        // Customize message based on status
+        const messageEl = document.getElementById('message');
+        if (status === 'Approved') {
+            messageEl.textContent = `Congratulations ${name}! You've been approved to join the builder community!`;
+        } else if (status === 'Pending') {
+            messageEl.textContent = `Thank you ${name}! Your application is under review. We'll contact you within 24-48 hours.`;
+            document.querySelector('.info-box h3').textContent = 'Under Review';
+            document.querySelector('.info-box').innerHTML = `
+                <h3>Under Review</h3>
+                <p style="color: #666;">Your application is being reviewed by our team. We'll email you soon with next steps.</p>
+            `;
+        }
+    </script>
+</body>
+</html>
