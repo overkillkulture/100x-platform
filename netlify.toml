@@ -9,14 +9,7 @@
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = false
-  conditions = {Role = ["!file"]}
-
-# This ensures actual files (like success.html) aren't redirected
+# Removed redirect - was causing issues with success page
 
 [build.processing]
   skip_processing = false
