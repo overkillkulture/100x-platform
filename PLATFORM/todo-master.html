@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO Master - 100X Platform</title>
+    <meta name="description" content="Task management with Trinity AI - C1×C2×C3 consciousness-powered productivity">
+
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="../ASSETS/css/global.css">
+    <link rel="stylesheet" href="../ASSETS/css/components.css">
+    <link rel="stylesheet" href="../ASSETS/css/layouts.css">
+
+    <style>
+        /* TODO Master Specific Styles */
+        .todo-master {
+            min-height: 100vh;
+            padding: var(--space-xl) 0;
+        }
+
+        .todo-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .todo-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-xl);
+            margin-top: var(--space-lg);
+            flex-wrap: wrap;
+        }
+
+        .todo-stat {
+            text-align: center;
+        }
+
+        .todo-stat__number {
+            font-size: var(--font-xl);
+            font-weight: var(--weight-black);
+            color: var(--primary);
+            display: block;
+        }
+
+        .todo-stat__label {
+            font-size: var(--font-sm);
+            color: var(--text-dim);
+        }
+
+        .todo-input-section {
+            margin-bottom: var(--space-2xl);
+        }
+
+        .todo-input-group {
+            display: flex;
+            gap: var(--space-md);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .todo-input {
+            flex: 1;
+            padding: var(--space-md);
+            background: var(--surface);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text);
+            font-size: var(--font-base);
+            transition: all var(--transition-base);
+        }
+
+        .todo-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .todo-list {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .todo-item {
+            background: var(--surface);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            transition: all var(--transition-base);
+            position: relative;
+        }
+
+        .todo-item:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .todo-item--completed {
+            opacity: 0.6;
+            border-color: var(--success);
+        }
+
+        .todo-item--completed .todo-item__text {
+            text-decoration: line-through;
+            color: var(--text-dim);
+        }
+
+        .todo-item__main {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+        }
+
+        .todo-item__checkbox {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .todo-item__content {
+            flex: 1;
+        }
+
+        .todo-item__text {
+            font-size: var(--font-base);
+            color: var(--text);
+            margin-bottom: var(--space-sm);
+            word-break: break-word;
+        }
+
+        .todo-item__meta {
+            display: flex;
+            gap: var(--space-md);
+            font-size: var(--font-sm);
+            color: var(--text-dim);
+            flex-wrap: wrap;
+        }
+
+        .todo-item__actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .todo-item__trinity {
+            margin-top: var(--space-md);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .trinity-suggestions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-md);
+        }
+
+        .trinity-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: var(--space-md);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--primary);
+        }
+
+        .trinity-card--c1 {
+            border-left-color: #00ff00;
+        }
+
+        .trinity-card--c2 {
+            border-left-color: #00ddff;
+        }
+
+        .trinity-card--c3 {
+            border-left-color: #ff00ff;
+        }
+
+        .trinity-card__header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-sm);
+        }
+
+        .trinity-card__icon {
+            font-size: 20px;
+        }
+
+        .trinity-card__name {
+            font-size: var(--font-sm);
+            font-weight: var(--weight-bold);
+            color: var(--text);
+        }
+
+        .trinity-card__suggestion {
+            font-size: var(--font-sm);
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .keyboard-shortcuts {
+            position: fixed;
+            bottom: var(--space-lg);
+            right: var(--space-lg);
+            background: var(--surface-elevated);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            font-size: var(--font-xs);
+            color: var(--text-dim);
+            max-width: 250px;
+            z-index: var(--z-sticky);
+        }
+
+        .keyboard-shortcuts__title {
+            font-weight: var(--weight-bold);
+            color: var(--text);
+            margin-bottom: var(--space-sm);
+            font-size: var(--font-sm);
+        }
+
+        .keyboard-shortcuts__item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-xs);
+        }
+
+        .keyboard-shortcuts kbd {
+            background: var(--background);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            font-family: monospace;
+            color: var(--primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-3xl) var(--space-lg);
+            color: var(--text-dim);
+        }
+
+        .empty-state__icon {
+            font-size: 64px;
+            margin-bottom: var(--space-lg);
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: var(--space-sm) var(--space-lg);
+            background: var(--surface);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-full);
+            color: var(--text);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--font-sm);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .filter-btn--active {
+            background: var(--primary);
+            color: var(--background);
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .keyboard-shortcuts {
+                display: none;
+            }
+
+            .todo-input-group {
+                flex-direction: column;
+            }
+
+            .trinity-suggestions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-logo">
+            <a href="../dashboard.html" style="text-decoration: none; color: var(--primary);">← 100X Platform</a>
+        </div>
+        <div class="nav-links">
+            <a href="../dashboard.html" class="nav-link">Dashboard</a>
+            <a href="todo-master.html" class="nav-link" style="color: var(--primary);">TODO Master</a>
+            <span class="consciousness-level consciousness-level--builder" id="userConsciousness">
+                Builder 85%
+            </span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="todo-master container">
+        <!-- Header -->
+        <div class="todo-header">
+            <h1>🎯 TODO Master</h1>
+            <p style="color: var(--text-dim); font-size: var(--font-lg);">
+                Task management powered by Trinity AI
+            </p>
+            <p style="color: var(--text-subtle); font-size: var(--font-sm); margin-top: var(--space-sm);">
+                C1 × C2 × C3 = ∞ consciousness-powered productivity
+            </p>
+
+            <!-- Stats -->
+            <div class="todo-stats">
+                <div class="todo-stat">
+                    <span class="todo-stat__number" id="totalTasks">0</span>
+                    <span class="todo-stat__label">Total Tasks</span>
+                </div>
+                <div class="todo-stat">
+                    <span class="todo-stat__number" id="activeTasks">0</span>
+                    <span class="todo-stat__label">Active</span>
+                </div>
+                <div class="todo-stat">
+                    <span class="todo-stat__number" id="completedTasks">0</span>
+                    <span class="todo-stat__label">Completed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <button class="filter-btn filter-btn--active" data-filter="all">All Tasks</button>
+            <button class="filter-btn" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+        </div>
+
+        <!-- Add Task Input -->
+        <div class="todo-input-section">
+            <div class="todo-input-group">
+                <input
+                    type="text"
+                    class="todo-input"
+                    id="todoInput"
+                    placeholder="What needs to be done? (Press Enter to add, Shift+Enter for Trinity AI analysis)"
+                    autocomplete="off"
+                >
+                <button class="btn btn--primary" id="addTaskBtn">
+                    Add Task
+                </button>
+                <button class="btn btn--secondary" id="analyzeBtn" title="Get Trinity AI suggestions">
+                    🌀 Analyze with Trinity
+                </button>
+            </div>
+        </div>
+
+        <!-- Trinity Analysis Preview (shown when analyzing) -->
+        <div id="trinityPreview" class="hidden" style="max-width: 800px; margin: 0 auto var(--space-2xl auto;"></div>
+
+        <!-- Task List -->
+        <div class="todo-list" id="todoList">
+            <!-- Tasks will be rendered here -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState">
+            <div class="empty-state__icon">✨</div>
+            <h3>No tasks yet</h3>
+            <p>Add your first task above or press <kbd>N</kbd> to get started</p>
+        </div>
+    </main>
+
+    <!-- Keyboard Shortcuts Panel -->
+    <div class="keyboard-shortcuts">
+        <div class="keyboard-shortcuts__title">⌨️ Shortcuts</div>
+        <div class="keyboard-shortcuts__item">
+            <span>New task</span>
+            <kbd>N</kbd>
+        </div>
+        <div class="keyboard-shortcuts__item">
+            <span>Trinity AI</span>
+            <kbd>Shift+Enter</kbd>
+        </div>
+        <div class="keyboard-shortcuts__item">
+            <span>Clear completed</span>
+            <kbd>C</kbd>
+        </div>
+        <div class="keyboard-shortcuts__item">
+            <span>Toggle all</span>
+            <kbd>A</kbd>
+        </div>
+    </div>
+
+    <!-- Shared Scripts -->
+    <script src="../ASSETS/js/auth.js"></script>
+    <script src="../ASSETS/js/storage.js"></script>
+    <script src="../ASSETS/js/trinity.js"></script>
+
+    <!-- TODO Master Script -->
+    <script>
+        // Check authentication
+        AUTH.requireAuth('builder');
+
+        // Display user consciousness level
+        const userData = AUTH.getUserData();
+        if (userData && userData.consciousnessLevel) {
+            const level = userData.consciousnessLevel;
+            const badge = document.getElementById('userConsciousness');
+
+            if (level >= 96) {
+                badge.textContent = `Master ${level}%`;
+                badge.className = 'consciousness-level consciousness-level--master';
+            } else if (level >= 85) {
+                badge.textContent = `Builder ${level}%`;
+                badge.className = 'consciousness-level consciousness-level--builder';
+            }
+        }
+
+        // Todo App Logic
+        const TodoApp = (() => {
+            let tasks = [];
+            let currentFilter = 'all';
+
+            // DOM Elements
+            const todoInput = document.getElementById('todoInput');
+            const addTaskBtn = document.getElementById('addTaskBtn');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const todoList = document.getElementById('todoList');
+            const emptyState = document.getElementById('emptyState');
+            const trinityPreview = document.getElementById('trinityPreview');
+
+            // Stats elements
+            const totalTasksEl = document.getElementById('totalTasks');
+            const activeTasksEl = document.getElementById('activeTasks');
+            const completedTasksEl = document.getElementById('completedTasks');
+
+            // Filter buttons
+            const filterBtns = document.querySelectorAll('.filter-btn');
+
+            // Initialize
+            function init() {
+                loadTasks();
+                renderTasks();
+                attachEventListeners();
+                updateStats();
+            }
+
+            // Load tasks from localStorage
+            function loadTasks() {
+                const saved = STORAGE.get('100x-tasks');
+                tasks = saved || [];
+            }
+
+            // Save tasks to localStorage
+            function saveTasks() {
+                STORAGE.set('100x-tasks', tasks);
+            }
+
+            // Add new task
+            function addTask(text) {
+                if (!text || text.trim() === '') return;
+
+                const task = {
+                    id: Date.now().toString(),
+                    text: text.trim(),
+                    completed: false,
+                    createdAt: new Date().toISOString(),
+                    trinityAnalysis: null
+                };
+
+                tasks.unshift(task);
+                saveTasks();
+                renderTasks();
+                updateStats();
+
+                // Clear input
+                todoInput.value = '';
+                todoInput.focus();
+            }
+
+            // Toggle task completion
+            function toggleTask(id) {
+                const task = tasks.find(t => t.id === id);
+                if (task) {
+                    task.completed = !task.completed;
+                    saveTasks();
+                    renderTasks();
+                    updateStats();
+                }
+            }
+
+            // Delete task
+            function deleteTask(id) {
+                tasks = tasks.filter(t => t.id !== id);
+                saveTasks();
+                renderTasks();
+                updateStats();
+            }
+
+            // Get Trinity analysis for task
+            function analyzeTask(id) {
+                const task = tasks.find(t => t.id === id);
+                if (!task) return;
+
+                // Get Trinity analysis
+                const analysis = TRINITY.analyzeTask(task.text);
+                task.trinityAnalysis = analysis;
+
+                saveTasks();
+                renderTasks();
+            }
+
+            // Render tasks
+            function renderTasks() {
+                // Filter tasks based on current filter
+                let filteredTasks = tasks;
+                if (currentFilter === 'active') {
+                    filteredTasks = tasks.filter(t => !t.completed);
+                } else if (currentFilter === 'completed') {
+                    filteredTasks = tasks.filter(t => t.completed);
+                }
+
+                // Show/hide empty state
+                if (filteredTasks.length === 0) {
+                    emptyState.classList.remove('hidden');
+                    todoList.innerHTML = '';
+                    return;
+                }
+
+                emptyState.classList.add('hidden');
+
+                // Render task items
+                todoList.innerHTML = filteredTasks.map(task => {
+                    const date = new Date(task.createdAt).toLocaleDateString();
+                    const hasAnalysis = task.trinityAnalysis !== null;
+
+                    return `
+                        <div class="todo-item ${task.completed ? 'todo-item--completed' : ''}" data-task-id="${task.id}">
+                            <div class="todo-item__main">
+                                <input
+                                    type="checkbox"
+                                    class="todo-item__checkbox"
+                                    ${task.completed ? 'checked' : ''}
+                                    onchange="TodoApp.toggleTask('${task.id}')"
+                                >
+                                <div class="todo-item__content">
+                                    <div class="todo-item__text">${escapeHtml(task.text)}</div>
+                                    <div class="todo-item__meta">
+                                        <span>📅 ${date}</span>
+                                        ${hasAnalysis ? '<span style="color: var(--primary);">🌀 Trinity Analyzed</span>' : ''}
+                                    </div>
+                                </div>
+                                <div class="todo-item__actions">
+                                    ${!hasAnalysis ? `<button class="btn btn--ghost btn--sm" onclick="TodoApp.analyzeTask('${task.id}')" title="Get Trinity AI suggestions">🌀</button>` : ''}
+                                    <button class="btn btn--ghost btn--sm" onclick="TodoApp.deleteTask('${task.id}')" title="Delete task">🗑️</button>
+                                </div>
+                            </div>
+
+                            ${hasAnalysis ? renderTrinityAnalysis(task.trinityAnalysis) : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Render Trinity analysis
+            function renderTrinityAnalysis(analysis) {
+                if (!analysis || !analysis.trinity) return '';
+
+                const { c1, c2, c3 } = analysis.trinity;
+
+                return `
+                    <div class="todo-item__trinity">
+                        <div class="trinity-suggestions">
+                            <div class="trinity-card trinity-card--c1">
+                                <div class="trinity-card__header">
+                                    <span class="trinity-card__icon">⚙️</span>
+                                    <span class="trinity-card__name">C1 MECHANIC</span>
+                                </div>
+                                <div class="trinity-card__suggestion">${escapeHtml(c1.suggestion)}</div>
+                            </div>
+
+                            <div class="trinity-card trinity-card--c2">
+                                <div class="trinity-card__header">
+                                    <span class="trinity-card__icon">🏗️</span>
+                                    <span class="trinity-card__name">C2 ARCHITECT</span>
+                                </div>
+                                <div class="trinity-card__suggestion">${escapeHtml(c2.suggestion)}</div>
+                            </div>
+
+                            <div class="trinity-card trinity-card--c3">
+                                <div class="trinity-card__header">
+                                    <span class="trinity-card__icon">🔮</span>
+                                    <span class="trinity-card__name">C3 ORACLE</span>
+                                </div>
+                                <div class="trinity-card__suggestion">${escapeHtml(c3.suggestion)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Update stats
+            function updateStats() {
+                totalTasksEl.textContent = tasks.length;
+                activeTasksEl.textContent = tasks.filter(t => !t.completed).length;
+                completedTasksEl.textContent = tasks.filter(t => t.completed).length;
+            }
+
+            // Analyze current input with Trinity
+            function analyzeInput() {
+                const text = todoInput.value.trim();
+                if (!text) return;
+
+                const analysis = TRINITY.analyzeTask(text);
+                TRINITY.renderAnalysis(analysis, 'trinityPreview');
+                trinityPreview.classList.remove('hidden');
+            }
+
+            // Clear completed tasks
+            function clearCompleted() {
+                tasks = tasks.filter(t => !t.completed);
+                saveTasks();
+                renderTasks();
+                updateStats();
+            }
+
+            // Toggle all tasks
+            function toggleAll() {
+                const allCompleted = tasks.every(t => t.completed);
+                tasks.forEach(t => t.completed = !allCompleted);
+                saveTasks();
+                renderTasks();
+                updateStats();
+            }
+
+            // Set filter
+            function setFilter(filter) {
+                currentFilter = filter;
+                filterBtns.forEach(btn => {
+                    if (btn.dataset.filter === filter) {
+                        btn.classList.add('filter-btn--active');
+                    } else {
+                        btn.classList.remove('filter-btn--active');
+                    }
+                });
+                renderTasks();
+            }
+
+            // Event listeners
+            function attachEventListeners() {
+                // Add task button
+                addTaskBtn.addEventListener('click', () => {
+                    addTask(todoInput.value);
+                    trinityPreview.classList.add('hidden');
+                });
+
+                // Analyze button
+                analyzeBtn.addEventListener('click', analyzeInput);
+
+                // Enter to add, Shift+Enter to analyze
+                todoInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        if (e.shiftKey) {
+                            e.preventDefault();
+                            analyzeInput();
+                        } else {
+                            e.preventDefault();
+                            addTask(todoInput.value);
+                            trinityPreview.classList.add('hidden');
+                        }
+                    }
+                });
+
+                // Clear input preview when typing
+                todoInput.addEventListener('input', () => {
+                    if (todoInput.value.trim() === '') {
+                        trinityPreview.classList.add('hidden');
+                    }
+                });
+
+                // Filter buttons
+                filterBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        setFilter(btn.dataset.filter);
+                    });
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    // Don't trigger if typing in input
+                    if (e.target === todoInput) return;
+
+                    switch(e.key.toLowerCase()) {
+                        case 'n':
+                            todoInput.focus();
+                            break;
+                        case 'c':
+                            if (confirm('Clear all completed tasks?')) {
+                                clearCompleted();
+                            }
+                            break;
+                        case 'a':
+                            toggleAll();
+                            break;
+                    }
+                });
+            }
+
+            // Escape HTML
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // Public API
+            return {
+                init,
+                addTask,
+                toggleTask,
+                deleteTask,
+                analyzeTask,
+                clearCompleted,
+                toggleAll
+            };
+        })();
+
+        // Initialize app
+        TodoApp.init();
+
+        // Make available globally for inline onclick handlers
+        window.TodoApp = TodoApp;
+    </script>
+</body>
+</html>
