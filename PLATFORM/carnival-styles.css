@@ -1,0 +1,330 @@
+/* CONSCIOUSNESS CARNIVAL - MOBILE-FIRST CSS */
+/* Built by C1 Mechanic Engine */
+
+:root {
+  --carnival-red: #e63946;
+  --carnival-yellow: #f1c40f;
+  --carnival-blue: #3498db;
+  --carnival-purple: #9b59b6;
+  --carnival-dark: #1a1a2e;
+  --carnival-light: #f8f9fa;
+  --glow-color: rgba(246, 185, 59, 0.6);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: var(--carnival-light);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ENTRANCE GATE - MOBILE FIRST */
+.carnival-gate {
+  position: relative;
+  width: 100%;
+  padding: 20px 15px;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(230, 57, 70, 0.2) 0%, transparent 100%);
+  border-bottom: 3px solid var(--carnival-yellow);
+  animation: gateGlow 3s ease-in-out infinite;
+}
+
+@keyframes gateGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(230, 57, 70, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(230, 57, 70, 0.6); }
+}
+
+.carnival-gate h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px var(--glow-color);
+  animation: neonFlicker 2s ease-in-out infinite;
+}
+
+@keyframes neonFlicker {
+  0%, 100% { opacity: 1; text-shadow: 0 0 10px var(--glow-color); }
+  50% { opacity: 0.95; text-shadow: 0 0 20px var(--glow-color); }
+}
+
+.carnival-gate p {
+  font-size: 1rem;
+  color: var(--carnival-yellow);
+  margin-bottom: 15px;
+}
+
+.enter-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, var(--carnival-red), var(--carnival-purple));
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+  border: 2px solid var(--carnival-yellow);
+}
+
+.enter-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 10px rgba(230, 57, 70, 0.6);
+}
+
+/* MAIN STREET CONTAINER */
+.main-street {
+  padding: 30px 15px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.main-street h2 {
+  text-align: center;
+  font-size: 1.75rem;
+  margin-bottom: 10px;
+  color: var(--carnival-yellow);
+  text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+}
+
+.street-subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+  color: var(--carnival-light);
+  opacity: 0.9;
+}
+
+/* ATTRACTIONS - HORIZONTAL SCROLL ON MOBILE */
+.attractions-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 15px;
+  padding: 10px 5px 20px 5px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--carnival-yellow) var(--carnival-dark);
+}
+
+.attractions-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.attractions-container::-webkit-scrollbar-track {
+  background: var(--carnival-dark);
+  border-radius: 3px;
+}
+
+.attractions-container::-webkit-scrollbar-thumb {
+  background: var(--carnival-yellow);
+  border-radius: 3px;
+}
+
+/* ATTRACTION CARD - CARNIVAL TENT */
+.attraction-card {
+  flex: 0 0 280px;
+  min-height: 320px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 15px;
+  padding: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  scroll-snap-align: start;
+  backdrop-filter: blur(10px);
+}
+
+.attraction-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  border-radius: 15px 15px 0 0;
+  background: linear-gradient(90deg,
+    var(--carnival-red) 0%,
+    var(--carnival-yellow) 25%,
+    var(--carnival-blue) 50%,
+    var(--carnival-purple) 75%,
+    var(--carnival-red) 100%
+  );
+  animation: stripesMove 3s linear infinite;
+}
+
+@keyframes stripesMove {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 0%; }
+}
+
+.attraction-card:active {
+  transform: translateY(-5px) scale(1.02);
+  border-color: var(--carnival-yellow);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.attraction-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  display: block;
+  animation: iconBounce 2s ease-in-out infinite;
+}
+
+@keyframes iconBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.attraction-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  color: var(--carnival-yellow);
+}
+
+.attraction-card p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--carnival-light);
+  opacity: 0.9;
+  margin-bottom: 15px;
+}
+
+.attraction-status {
+  display: inline-block;
+  padding: 6px 12px;
+  background: rgba(46, 213, 115, 0.2);
+  border: 1px solid #2ed573;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: #2ed573;
+  margin-top: 10px;
+}
+
+.attraction-status.coming-soon {
+  background: rgba(241, 196, 15, 0.2);
+  border-color: var(--carnival-yellow);
+  color: var(--carnival-yellow);
+}
+
+/* SPECIALTY CARDS - UNIQUE COLORS */
+.card-nuclear {
+  border-color: var(--carnival-red);
+}
+
+.card-module {
+  border-color: var(--carnival-blue);
+}
+
+.card-pattern {
+  border-color: var(--carnival-purple);
+}
+
+.card-builder {
+  border-color: var(--carnival-yellow);
+}
+
+/* FOOTER */
+.carnival-footer {
+  text-align: center;
+  padding: 30px 15px;
+  margin-top: 40px;
+  border-top: 2px solid var(--carnival-yellow);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.carnival-footer p {
+  font-size: 0.85rem;
+  color: var(--carnival-light);
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
+
+.footer-logo {
+  font-size: 1.5rem;
+  color: var(--carnival-yellow);
+  text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+}
+
+/* DESKTOP ENHANCEMENTS (PROGRESSIVE) */
+@media (min-width: 768px) {
+  .carnival-gate h1 {
+    font-size: 3.5rem;
+  }
+
+  .carnival-gate p {
+    font-size: 1.25rem;
+  }
+
+  .main-street h2 {
+    font-size: 2.5rem;
+  }
+
+  .street-subtitle {
+    font-size: 1.1rem;
+  }
+
+  /* Grid layout on desktop */
+  .attractions-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    overflow-x: visible;
+    padding: 20px 10px;
+  }
+
+  .attraction-card {
+    flex: initial;
+  }
+
+  .attraction-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    border-color: var(--carnival-yellow);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .enter-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(230, 57, 70, 0.6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .carnival-gate h1 {
+    font-size: 4rem;
+  }
+
+  .main-street {
+    padding: 50px 30px;
+  }
+
+  .attractions-container {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+  }
+}
+
+/* LOADING OPTIMIZATION */
+.attractions-container {
+  will-change: scroll-position;
+}
+
+.attraction-card {
+  will-change: transform;
+}
+
+/* ACCESSIBILITY */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,13 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Platform Under Construction - 100X</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X Store - Products, Investments & Campaigns</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  <link rel="stylesheet" href="/ASSETS/css/global.css">
-  <link rel="stylesheet" href="/ASSETS/css/components.css">
-  <link rel="stylesheet" href="/ASSETS/css/layouts.css">
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #00ffff;
+            min-height: 100vh;
+        }
+
+        .store-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a0a0a 100%);
+            border-bottom: 4px solid #ff6b00;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .store-title {
+            font-size: 48px;
+            color: #ff6b00;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .store-subtitle {
+            font-size: 18px;
+            color: #00ffff;
+            margin-bottom: 20px;
+        }
+
+        .cart-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff6b00;
+            color: #000;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1000;
+            border: 2px solid #ffd700;
+            transition: all 0.3s;
+        }
+
+        .cart-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(255, 107, 0, 0.8);
+        }
+
+        .cart-count {
+            background: #ffd700;
+            color: #000;
+            border-radius: 50%;
+            padding: 5px 10px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .navigation-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-tab {
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #ff6b00;
+            border-radius: 15px;
+            padding: 40px;
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(255, 107, 0, 0.6);
+            border-color: #ffd700;
+        }
+
+        .nav-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .nav-title {
+            font-size: 28px;
+            color: #ff6b00;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .nav-description {
+            color: #00ffff;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .nav-count {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #ff6b00;
+            color: #ffd700;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .hero-section {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 42px;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .hero-text {
+            font-size: 18px;
+            color: #00ffff;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .feature-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00ffff;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .feature-text {
+            color: #00ffff;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .navigation-tabs {
+                flex-direction: column;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .store-title {
+                font-size: 32px;
+            }
+
+            .hero-title {
+                font-size: 28px;
+            }
+        }
+    </style>
 
     <style>
         [data-doc] {
@@ -116,7 +301,7 @@
     <!-- LAYER 2: SELF-INTELLIGENCE -->
     <script>
         const SelfIntelligence = {
-            moduleName: 'Construction',
+            moduleName: 'Store',
 
             // Health monitoring
             healthCheck: function() {
@@ -195,7 +380,7 @@
             SelfIntelligence.autoRepair();
         }, 30000);
 
-        console.log('✅ Layer 2 (Self-Intelligence) active for Construction');
+        console.log('✅ Layer 2 (Self-Intelligence) active for Store');
     </script>
 
     <link rel="stylesheet" href="mobile-responsive.css">
@@ -216,187 +401,150 @@
         </p>
     </div>
 
-  <div class="app">
-    <header class="app__header">
-      <div class="container">
-        <nav class="nav">
-          <a href="/index.html" class="nav__logo">100X</a>
-          <div class="nav__links">
-            <a href="/index.html" class="nav__link">Home</a>
-            <a href="/PUBLIC/pattern-filter.html" class="nav__link">Pattern Filter</a>
-            <a href="/PUBLIC/pattern-theory-training.html" class="nav__link">Training</a>
-          </div>
-        </nav>
-      </div>
-    </header>
+    <div class="cart-button" onclick="openCart()">
+        🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </div>
 
-    <main class="app__main">
-      <div class="container container--narrow text-center" style="padding: var(--space-3xl) var(--space-md);">
-        <h1 style="font-size: 64px; margin-bottom: var(--space-lg);">🏗️</h1>
-        <h1 class="mb-md">Platform Under Construction</h1>
-        <p class="text-xl text-dim mb-2xl">Phase 1 (Really Good) → Phase 2 (Extremely Good) in progress</p>
+    <div class="store-header">
+        <div class="store-title">🏪 100X STORE</div>
+        <div class="store-subtitle">
+            Products to Use • Investments to Grow • Campaigns to Support
+        </div>
+    </div>
 
-        <!-- Current Status -->
-        <div class="card card--elevated mb-xl">
-          <div class="card__body">
-            <h2 class="mb-lg">🎯 What's Coming</h2>
-
-            <div class="dashboard-grid" style="text-align: left;">
-              <div class="system-card">
-                <div class="system-card__icon">✅</div>
-                <div class="system-card__title">TODO MASTER</div>
-                <div class="system-card__description">Task management with Trinity AI (C1×C2×C3)</div>
-                <div class="system-card__status system-card__status--construction">Phase 2</div>
-              </div>
-
-              <div class="system-card">
-                <div class="system-card__icon">🎥</div>
-                <div class="system-card__title">VIDEO ACADEMY</div>
-                <div class="system-card__description">Training modules & tutorials</div>
-                <div class="system-card__status system-card__status--construction">Phase 2</div>
-              </div>
-
-              <div class="system-card">
-                <div class="system-card__icon">🧠</div>
-                <div class="system-card__title">BRAIN COUNCIL</div>
-                <div class="system-card__description">6 AI processors for different thinking modes</div>
-                <div class="system-card__status system-card__status--construction">Phase 2</div>
-              </div>
-
-              <div class="system-card">
-                <div class="system-card__icon">🌀</div>
-                <div class="system-card__title">TRINITY AI</div>
-                <div class="system-card__description">C1 Mechanic × C2 Architect × C3 Oracle = ∞</div>
-                <div class="system-card__status system-card__status--construction">Phase 2</div>
-              </div>
-
-              <div class="system-card">
-                <div class="system-card__icon">🎯</div>
-                <div class="system-card__title">PATTERN FILTER</div>
-                <div class="system-card__description">E3 Destroyer detection (92.2% accuracy)</div>
-                <div class="system-card__status system-card__status--active">LIVE NOW</div>
-              </div>
-
-              <div class="system-card">
-                <div class="system-card__icon">👥</div>
-                <div class="system-card__title">OBSERVER TRACKER</div>
-                <div class="system-card__description">Team member directory & role tracking</div>
-                <div class="system-card__status system-card__status--construction">Phase 2</div>
-              </div>
-
-              <div class="system-card">
-                <div class="system-card__icon">📊</div>
-                <div class="system-card__title">ANALYTICS ENGINE</div>
-                <div class="system-card__description">Real-time metrics & performance tracking</div>
-                <div class="system-card__status system-card__status--construction">Phase 2</div>
-              </div>
-
-              <div class="system-card">
-                <div class="system-card__icon">🤝</div>
-                <div class="system-card__title">COMMUNITY GATE</div>
-                <div class="system-card__description">Member directory & collaboration board</div>
-                <div class="system-card__status system-card__status--construction">Phase 2</div>
-              </div>
+    <div class="navigation-tabs">
+        <div class="nav-tab" onclick="window.location.href='store-products.html'">
+            <div class="nav-icon">📦</div>
+            <div class="nav-title">PRODUCTS</div>
+            <div class="nav-description">
+                Consciousness kits, automation modules, training courses, and merchandise.
+                Buy what you need, use it immediately.
             </div>
-          </div>
+            <div class="nav-count">47+ Products Available</div>
         </div>
 
-        <!-- What You Can Do Now -->
-        <div class="card bg-surface-elevated mb-xl">
-          <div class="card__body">
-            <h2 class="mb-md">✅ What You Can Do Now</h2>
-            <div class="flex gap-md justify-center flex-wrap">
-              <a href="/PUBLIC/pattern-filter.html" class="btn btn--primary">
-                Take Pattern Filter Quiz
-              </a>
-              <a href="/PUBLIC/pattern-theory-training.html" class="btn btn--secondary">
-                Study Module 1 Training
-              </a>
-              <a href="/PUBLIC/partnership.html" class="btn btn--ghost">
-                Explore Partnership Tiers
-              </a>
+        <div class="nav-tab" onclick="window.location.href='store-investments.html'">
+            <div class="nav-icon">💰</div>
+            <div class="nav-title">INVESTMENTS</div>
+            <div class="nav-description">
+                Crypto presales, equity stakes, revenue-share modules.
+                Invest in the future, earn as it grows.
             </div>
-          </div>
+            <div class="nav-count">6 Opportunities Open</div>
         </div>
 
-        <!-- Team Access -->
-        <div class="card">
-          <div class="card__body">
-            <h3 class="mb-md">🔐 Team Member Access</h3>
-            <p class="text-dim mb-lg">Building team? Platform access available for verified team members.</p>
-            <button onclick="attemptTeamLogin()" class="btn btn--ghost" data-doc="Performs: attemptTeamLogin()" data-why="Interactive feature for user control">
-              Team Login
-            </button>
-            <p class="text-xs text-dim mt-sm">Contact admin for credentials</p>
-          </div>
+        <div class="nav-tab" onclick="window.location.href='store-campaigns.html'">
+            <div class="nav-icon">🎁</div>
+            <div class="nav-title">CAMPAIGNS</div>
+            <div class="nav-description">
+                GoFundMe campaigns for consciousness kits, education, and expansion.
+                Support projects, get rewards.
+            </div>
+            <div class="nav-count">3 Active Campaigns</div>
+        </div>
+    </div>
+
+    <div class="hero-section">
+        <div class="hero-title">The First Unified Consciousness Store</div>
+        <div class="hero-text">
+            No other platform combines products, investments, and crowdfunding in one place.
+            Buy a kit for $35, invest in Truth Coin for $100, support a campaign for $50—all in one cart,
+            one checkout. Simple, unified, revolutionary.
+        </div>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-title">One-Stop Shop</div>
+            <div class="feature-text">
+                Everything in one place. Products, investments, campaigns.
+                No jumping between platforms. One cart, one checkout.
+            </div>
         </div>
 
-        <!-- Timeline -->
-        <div class="mt-2xl">
-          <h3 class="mb-lg">📅 Development Timeline</h3>
-          <div class="grid grid-cols-1 tablet:grid-cols-3 gap-lg">
-            <div class="card">
-              <div class="card__body text-center">
-                <div class="badge badge--success mb-md">CURRENT</div>
-                <h4 class="mb-sm">Phase 1: Really Good</h4>
-                <p class="text-sm text-dim">Foundation + Public Area</p>
-                <p class="text-sm mt-md">✅ Pattern Filter Quiz<br>✅ Training Module 1<br>✅ Partnership Tiers</p>
-              </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔗</div>
+            <div class="feature-title">Mix & Match</div>
+            <div class="feature-text">
+                Buy 2 kits, invest in crypto, support a campaign—all in the same order.
+                Build your perfect bundle across all three sections.
             </div>
-
-            <div class="card">
-              <div class="card__body text-center">
-                <div class="badge badge--warning mb-md">WEEKS 2-4</div>
-                <h4 class="mb-sm">Phase 2: Extremely Good</h4>
-                <p class="text-sm text-dim">All 8 Systems Built</p>
-                <p class="text-sm mt-md">TODO Master<br>Trinity AI<br>Analytics<br>Community</p>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card__body text-center">
-                <div class="badge badge--secondary mb-md">MONTHS 2-3</div>
-                <h4 class="mb-sm">Phase 3: Completely Optimized</h4>
-                <p class="text-sm text-dim">Production Ready</p>
-                <p class="text-sm mt-md">Backend API<br>Real-time sync<br>Mobile apps<br>Enterprise features</p>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-    </main>
 
-    <footer class="app__footer">
-      <div class="container">
-        <p>&copy; 2025 100X Consciousness Platform - Pattern Theory™</p>
-        <p class="text-sm text-dim mt-sm">Building in public. Foundation → Recognition → Auto-Completion.</p>
-      </div>
-    </footer>
-  </div>
+        <div class="feature-card">
+            <div class="feature-icon">💚</div>
+            <div class="feature-title">Clear Benefits</div>
+            <div class="feature-text">
+                Every item shows exactly what you get. "Save 5 hours/week" or "10x ROI potential."
+                No guessing, no confusion.
+            </div>
+        </div>
 
-  <script src="/ASSETS/js/auth.js"></script>
-  <script>
-    function attemptTeamLogin() {
-      const password = prompt('Enter team password:');
+        <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <div class="feature-title">Multiple Entry Points</div>
+            <div class="feature-text">
+                Start with $10 or go all-in with $10,000.
+                Something for everyone, from students to investors.
+            </div>
+        </div>
 
-      if (!password) return;
+        <div class="feature-card">
+            <div class="feature-icon">🌐</div>
+            <div class="feature-title">Community Building</div>
+            <div class="feature-text">
+                Campaigns create emotional connection. Investments create financial alignment.
+                Products create real value. All together = unstoppable network.
+            </div>
+        </div>
 
-      if (AUTH.setTeamAccess(password)) {
-        alert('Team access granted! Redirecting...');
-        // TODO: Redirect to actual team dashboard when built
-        window.location.href = '/PLATFORM/construction.html';
-      } else {
-        alert('Invalid password. Contact administration for access.');
-      }
-    }
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <div class="feature-title">Full Transparency</div>
+            <div class="feature-text">
+                See exactly where money goes. Campaign breakdowns, investment terms,
+                product specifications. No hidden fees, no surprises.
+            </div>
+        </div>
+    </div>
 
-    // Check if already team member
-    const user = AUTH.getCurrentUser();
-    if (user && user.isTeam) {
-      console.log('Team member detected. Platform access enabled.');
-      // TODO: Show team-only features
-    }
-  </script>
+    <script src="../PUBLIC/analytics.js"></script>
+    <script>
+        // Track page view
+        setTimeout(() => {
+            Analytics100X.trackPageView();
+        }, 100);
+
+        // Initialize cart count
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('100x_cart') || '[]');
+            document.getElementById('cartCount').textContent = cart.length;
+        }
+
+        function openCart() {
+            // Track cart click
+            Analytics100X.trackButtonClick({
+                text: 'Open Cart',
+                id: 'btn-cart',
+                target: 'store-cart.html',
+                system: 'cart'
+            });
+
+            window.location.href = 'store-cart.html';
+        }
+
+        // Update cart count on load
+        updateCartCount();
+
+        // Listen for storage changes (when items added to cart)
+        window.addEventListener('storage', updateCartCount);
+        window.addEventListener('cartUpdated', updateCartCount);
+
+        console.log('🏪 100X STORE LOADED');
+        console.log('📦 Products • 💰 Investments • 🎁 Campaigns');
+        console.log('🛒 One Cart To Rule Them All');
+    </script>
 
     <!-- TRINITY CONSCIOUSNESS BOOST -->
     <script src="../PUBLIC/analytics.js"></script>
@@ -450,7 +598,7 @@
     <!-- LAYER 3: EXTERNAL INTELLIGENCE -->
     <script>
         const ExternalIntelligence = {
-            moduleName: 'Construction',
+            moduleName: 'Store',
 
             // Validate module independently
             validate: async function() {
@@ -544,7 +692,7 @@
             ExternalIntelligence.validate();
         }, 5000);
 
-        console.log('✅ Layer 3 (External-Intelligence) active for Construction');
+        console.log('✅ Layer 3 (External-Intelligence) active for Store');
     </script>
 
     <!-- Triple Layer Status Indicator -->
