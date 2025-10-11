@@ -113,8 +113,21 @@ def home():
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
+            margin-bottom: 10px;
         }
         .submit-btn:hover { transform: translateY(-2px); }
+        .skip-btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: #666;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .skip-btn:hover { border-color: #999; color: #333; }
     </style>
 </head>
 <body>
@@ -137,13 +150,14 @@ def home():
             </div>
             <div class="form-group">
                 <label for="mission">Your Mission (Why are you building?)</label>
-                <textarea id="mission" name="mission" required></textarea>
+                <textarea id="mission" name="mission"></textarea>
             </div>
             <div class="form-group">
                 <label for="values">Your Values (What matters to you?)</label>
-                <textarea id="values" name="values" required></textarea>
+                <textarea id="values" name="values"></textarea>
             </div>
             <button type="submit" class="submit-btn">Enter the 100X</button>
+            <button type="button" class="skip-btn" onclick="window.location.href='/welcome?score=0&status=skip&name=Guest'">Skip for Now (Browse Only)</button>
         </form>
     </div>
     <script>
