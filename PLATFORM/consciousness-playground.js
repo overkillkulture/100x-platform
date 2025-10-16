@@ -9,6 +9,9 @@ class ConsciousnessPlayground {
         this.easterEggs = [];
         this.musicPlayer = null;
         this.mushroomSongUrl = 'https://www.youtube.com/watch?v=HK0l2tqFDvM'; // Badger Badger Mushroom
+        this.cascadeActive = false;
+        this.cascadeIntensity = 0;
+        this.allButtons = [];
         this.init();
     }
 
@@ -29,10 +32,10 @@ class ConsciousnessPlayground {
     }
 
     addEasterEggsToButtons() {
-        // Find all buttons on the page
-        const allButtons = document.querySelectorAll('button, .room-card, .nav-button, .action-button');
+        // Find all buttons on the page and store them
+        this.allButtons = Array.from(document.querySelectorAll('button, .room-card, .nav-button, .action-button'));
 
-        allButtons.forEach((button, index) => {
+        this.allButtons.forEach((button, index) => {
             // 30% chance each button does something weird
             if (Math.random() < 0.3) {
                 const originalClick = button.onclick;
@@ -40,6 +43,11 @@ class ConsciousnessPlayground {
                 button.onclick = (e) => {
                     // Do the weird thing THEN the original action
                     this.triggerRandomEffect(button);
+
+                    // 20% chance to trigger CASCADE MODE! 💥
+                    if (Math.random() < 0.2) {
+                        setTimeout(() => this.triggerCascade(button), 800);
+                    }
 
                     // Call original handler after delay
                     if (originalClick) {
@@ -57,6 +65,115 @@ class ConsciousnessPlayground {
                 });
             }
         });
+    }
+
+    // 🌊 CASCADE SYSTEM - Things trigger other things! 🌊
+    triggerCascade(sourceButton) {
+        if (this.cascadeActive) return; // Prevent cascade loops
+
+        this.cascadeActive = true;
+        this.cascadeIntensity++;
+
+        console.log(`🌊 CASCADE TRIGGERED! Intensity: ${this.cascadeIntensity}`);
+        this.showNotification('🌊💥 CASCADE MODE! 💥🌊', 'Everything is connected!');
+
+        // Choose cascade pattern based on intensity
+        if (this.cascadeIntensity === 1) {
+            this.cascadePattern_RippleEffect(sourceButton);
+        } else if (this.cascadeIntensity === 2) {
+            this.cascadePattern_ExplodeAll();
+        } else if (this.cascadeIntensity >= 3) {
+            this.cascadePattern_CHAOS();
+            this.cascadeIntensity = 0; // Reset after chaos
+        }
+
+        // Reset cascade flag after delay
+        setTimeout(() => {
+            this.cascadeActive = false;
+        }, 5000);
+    }
+
+    // Pattern 1: Ripple Effect - Buttons explode in waves
+    cascadePattern_RippleEffect(sourceButton) {
+        const sourceRect = sourceButton.getBoundingClientRect();
+        const sourceCenterX = sourceRect.left + sourceRect.width / 2;
+        const sourceCenterY = sourceRect.top + sourceRect.height / 2;
+
+        // Calculate distance from source for all buttons
+        const buttonsWithDistance = this.allButtons.map(btn => {
+            const rect = btn.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const distance = Math.sqrt(
+                Math.pow(centerX - sourceCenterX, 2) +
+                Math.pow(centerY - sourceCenterY, 2)
+            );
+            return { button: btn, distance };
+        });
+
+        // Sort by distance
+        buttonsWithDistance.sort((a, b) => a.distance - b.distance);
+
+        // Trigger effects in waves based on distance
+        buttonsWithDistance.forEach((item, index) => {
+            setTimeout(() => {
+                this.spawnRainbowExplosion(item.button);
+            }, index * 100);
+        });
+    }
+
+    // Pattern 2: Explode ALL buttons at once!
+    cascadePattern_ExplodeAll() {
+        this.showNotification('💣 ALL BUTTONS EXPLODING! 💣');
+
+        this.allButtons.forEach((button, index) => {
+            setTimeout(() => {
+                this.spawnRainbowExplosion(button);
+
+                // Every 5th button triggers screen shake
+                if (index % 5 === 0) {
+                    this.shakeScreen();
+                }
+            }, index * 50);
+        });
+
+        // After all explosions, disco mode!
+        setTimeout(() => {
+            this.discoMode();
+        }, this.allButtons.length * 50 + 500);
+    }
+
+    // Pattern 3: TOTAL CHAOS - Everything happens at once!
+    cascadePattern_CHAOS() {
+        this.showNotification('🌀💥 TOTAL CHAOS MODE! 💥🌀', 'REALITY IS BREAKING!');
+
+        // Trigger EVERY effect simultaneously
+        this.playMushroomSong();
+        this.spawnEmojiRain();
+        this.matrixEffect();
+        this.shakeScreen();
+        this.discoMode();
+
+        // Mushroom rain
+        setTimeout(() => this.spawnMushroomEmojis(), 500);
+
+        // Explode random buttons continuously
+        let explosionCount = 0;
+        const chaosInterval = setInterval(() => {
+            const randomButton = this.allButtons[Math.floor(Math.random() * this.allButtons.length)];
+            this.spawnRainbowExplosion(randomButton);
+            this.reverseGravity(randomButton);
+
+            explosionCount++;
+            if (explosionCount >= 20) {
+                clearInterval(chaosInterval);
+            }
+        }, 200);
+
+        // Final quantum flicker
+        setTimeout(() => {
+            this.quantumFlicker();
+        }, 4000);
     }
 
     triggerRandomEffect(button) {
