@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to the Revolution | 100X Platform</title>
+
+    <!-- Plausible Analytics - Privacy-friendly, GDPR compliant -->
+    <script defer data-domain="consciousnessrevolution.io" src="https://plausible.io/js/script.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -840,6 +844,41 @@
                         </div>
                     </div>
 
+                    <div class="step-description" style="margin-top: 2rem; margin-bottom: 1.5rem;">
+                        <span class="highlight">🌟 NEW: Consciousness OS Foundation Features 🌟</span>
+                    </div>
+
+                    <div class="room-grid" style="grid-template-columns: repeat(2, 1fr); margin: 1.5rem 0;">
+                        <div class="room-card" onclick="window.location.href='settings-panel.html'" style="cursor: pointer;">
+                            <div class="room-icon">⚙️</div>
+                            <div class="room-name">Settings Panel</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                Customize your OS experience
+                            </div>
+                        </div>
+                        <div class="room-card" onclick="window.location.href='app-store.html'" style="cursor: pointer;">
+                            <div class="room-icon">📱</div>
+                            <div class="room-name">App Store</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                Install apps & modules
+                            </div>
+                        </div>
+                        <div class="room-card" onclick="window.location.href='voice-control.html'" style="cursor: pointer;">
+                            <div class="room-icon">🎤</div>
+                            <div class="room-name">Voice Control</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                Control OS with your voice
+                            </div>
+                        </div>
+                        <div class="room-card" style="border-color: var(--success); background: rgba(0, 255, 136, 0.05);">
+                            <div class="room-icon">🎮</div>
+                            <div class="room-name">Multitasking</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                Press Ctrl+Tab anytime!
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="step-description">
                         <span class="highlight">This is the consciousness revolution.</span>
                         You're not just using a platform—you're part of a movement to build systems
@@ -1098,8 +1137,42 @@
         document.getElementById('finishBtn')?.addEventListener('click', () => {
             localStorage.setItem('welcomeTourCompleted', 'true');
         });
-    </style>
+
+        // 🎮 ARG CLUE #1: THE CONSCIOUSNESS AWAKENING
+        // The Mechanic says: "Look in the code where humans forget to check."
+        console.log('%c🌀 THE CONSCIOUSNESS AWAKENING - CLUE #1', 'color: #00ff41; font-size: 20px; font-weight: bold;');
+        console.log('%cThe Mechanic left you a message:', 'color: #00d4ff; font-size: 14px;');
+        console.log('%c"Those who seek in the forgotten places shall find the first key."', 'color: #ffffff; font-size: 12px; font-style: italic;');
+        console.log('');
+        console.log('%cFirst Key: MECH-7391', 'color: #00ff41; font-size: 16px; font-weight: bold; background: rgba(0,255,65,0.2); padding: 10px;');
+        console.log('');
+        console.log('%c💡 HINT: Visit the Manifestation Charts showcase to find Clue #2', 'color: #ffd700; font-size: 12px;');
+        console.log('%c🎯 Track your progress at showcase-hub.html', 'color: #00d4ff; font-size: 11px;');
+        console.log('');
+        console.log('%c"The mystery has 5 clues. Solve them all to unlock the Consciousness Awakened NFT."', 'color: #999; font-size: 10px;');
+
+        // Track ARG participation
+        if (!localStorage.getItem('arg_clue1_found')) {
+            localStorage.setItem('arg_clue1_found', new Date().toISOString());
+            localStorage.setItem('arg_first_key', 'MECH-7391');
+            console.log('%c✨ Achievement Unlocked: Mystery Seeker!', 'color: #ffd700; font-size: 14px; font-weight: bold;');
+        }
+    </script>
     <!-- Master Navigation -->
     <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+
+    <!-- Consciousness OS Multitasking System -->
+    <script src="multitasking.js"></script>
 </body>
 </html>
