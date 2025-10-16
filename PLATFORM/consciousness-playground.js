@@ -198,22 +198,8 @@ class ConsciousnessPlayground {
     playMushroomSong() {
         console.log('🍄 MUSHROOM MUSHROOM! 🍄');
 
-        // Create audio element
-        const audio = new Audio();
-
-        // Try to play from local music library first
-        fetch('http://localhost:8888/api/music/random')
-            .then(r => r.json())
-            .then(data => {
-                if (data.url) {
-                    audio.src = data.url;
-                    audio.play();
-                }
-            })
-            .catch(() => {
-                // Fallback: Just show notification
-                this.showNotification('🍄 MUSHROOM SONG ACTIVATED! 🍄', 'Open YouTube for the full experience!');
-            });
+        // Just show notification and visual effects (works for everyone!)
+        this.showNotification('🍄 MUSHROOM MUSHROOM! 🍄', 'Badger Badger Badger!');
 
         // Visual effect
         this.spawnMushroomEmojis();
