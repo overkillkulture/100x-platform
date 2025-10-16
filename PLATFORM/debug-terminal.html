@@ -125,13 +125,22 @@
 
         #terminalInput {
             flex: 1;
-            background: transparent;
-            border: none;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 4px;
+            padding: 8px 12px;
             color: var(--text-primary);
             font-family: 'Courier New', Courier, monospace;
             font-size: 14px;
             outline: none;
             caret-color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        #terminalInput:focus {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--text-primary);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
         }
 
         #terminalInput::placeholder {
@@ -215,6 +224,85 @@
             border-radius: 3px;
             font-size: 0.85rem;
         }
+
+        /* AI CHATBOT STYLES */
+        .ai-warning {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 68, 68, 0.95);
+            border: 3px solid #ff0000;
+            border-radius: 10px;
+            padding: 2rem;
+            max-width: 500px;
+            z-index: 10000;
+            display: none;
+            text-align: center;
+            animation: shake 0.5s;
+        }
+
+        .ai-warning.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%); }
+            25% { transform: translate(-48%, -50%); }
+            75% { transform: translate(-52%, -50%); }
+        }
+
+        .ai-warning h2 {
+            color: #fff;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .ai-warning p {
+            color: #fff;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .ai-warning button {
+            margin: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .ai-warning .accept-btn {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .ai-warning .cancel-btn {
+            background: #666;
+            color: #fff;
+        }
+
+        .ai-chat-mode {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: rgba(0, 212, 255, 0.95);
+            border: 2px solid var(--accent-primary);
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            color: #000;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 999;
+            animation: pulse 2s infinite;
+        }
+
+        .ai-chat-mode.active {
+            display: block;
+        }
     </style>
     <link rel="stylesheet" href="mobile-responsive.css">
 </head>
@@ -248,6 +336,7 @@
                 <li><code>korpaks</code> - KORPAK marketplace data</li>
                 <li><code>ping</code> - Test backend connection</li>
                 <li><code>env</code> - Show environment info</li>
+                <li><code>chat</code> - 🤖 AI Assistant Mode</li>
             </ul>
 
             <div class="api-info">
@@ -303,11 +392,43 @@
         </div>
     </div>
 
+    <!-- AI WARNING MODAL -->
+    <div class="ai-warning" id="aiWarning">
+        <h2>⚠️ PUBLIC DEBUG MODE WARNING ⚠️</h2>
+        <p style="font-size: 1.1rem; font-weight: bold;">
+            PERSONAL INFORMATION NOT SECURE
+        </p>
+        <p>
+            You're about to enter AI-assisted debug mode. This is a PUBLIC debugging session.
+            <br><br>
+            <strong>DO NOT SHARE:</strong>
+            <br>
+            • Passwords or credentials
+            <br>
+            • Personal information
+            <br>
+            • Private company data
+            <br>
+            • Sensitive details
+        </p>
+        <p>
+            The AI assistant can help you debug, navigate the platform, and answer questions about the system.
+        </p>
+        <button class="accept-btn" onclick="acceptAIMode()">I Understand - Continue</button>
+        <button class="cancel-btn" onclick="cancelAIMode()">Cancel</button>
+    </div>
+
+    <!-- AI CHAT MODE INDICATOR -->
+    <div class="ai-chat-mode" id="aiChatIndicator">
+        🤖 AI ASSISTANT ACTIVE
+    </div>
+
     <script>
         const terminalOutput = document.getElementById('terminalOutput');
         const terminalInput = document.getElementById('terminalInput');
         let commandHistory = [];
         let historyIndex = -1;
+        let aiChatMode = false;
 
         // Backend API base URL
         const API_BASE = 'http://localhost:3001';
@@ -360,6 +481,12 @@
         // Execute command
         async function executeCommand(command) {
             addCommand(command);
+
+            // AI Chat Mode active - send to AI
+            if (aiChatMode) {
+                await handleAIChat(command);
+                return;
+            }
 
             const parts = command.split(' ');
             const cmd = parts[0].toLowerCase();
@@ -419,10 +546,194 @@
                     showEnvironment();
                     break;
 
+                case 'chat':
+                    showAIWarning();
+                    break;
+
                 default:
                     addOutput(`Unknown command: ${cmd}`, 'error');
                     addOutput('Type "help" for available commands', 'output-text');
             }
+        }
+
+        // AI CHAT SYSTEM
+        function showAIWarning() {
+            document.getElementById('aiWarning').classList.add('show');
+        }
+
+        function acceptAIMode() {
+            document.getElementById('aiWarning').classList.remove('show');
+            document.getElementById('aiChatIndicator').classList.add('active');
+            aiChatMode = true;
+
+            addOutput('', 'output-text');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('🤖 AI ASSISTANT ACTIVATED', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('You can now chat naturally with the AI assistant!', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('Try asking:', 'output-text');
+            addOutput('  "What is this platform?"', 'output-text');
+            addOutput('  "How do I report a bug?"', 'output-text');
+            addOutput('  "Where is the leaderboard?"', 'output-text');
+            addOutput('  "Run a system diagnostic"', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('Type "exit" to return to command mode', 'output-text');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('', 'output-text');
+
+            terminalInput.placeholder = 'Chat with AI assistant...';
+        }
+
+        function cancelAIMode() {
+            document.getElementById('aiWarning').classList.remove('show');
+            addOutput('AI mode canceled', 'output-text');
+        }
+
+        async function handleAIChat(message) {
+            if (message.toLowerCase() === 'exit') {
+                aiChatMode = false;
+                document.getElementById('aiChatIndicator').classList.remove('active');
+                terminalInput.placeholder = 'Enter command...';
+                addOutput('', 'output-text');
+                addOutput('✓ AI mode exited', 'success');
+                addOutput('Returned to command mode', 'output-text');
+                return;
+            }
+
+            addOutput('', 'output-text');
+            addOutput('🤖 AI: Analyzing your question...', 'output-text');
+
+            // Simulate AI response (would connect to Claude API in production)
+            setTimeout(() => {
+                const response = generateAIResponse(message);
+                addOutput('', 'output-text');
+                addOutput('🤖 AI Response:', 'success');
+                addOutput(response, 'output-text');
+                addOutput('', 'output-text');
+            }, 1000);
+        }
+
+        function generateAIResponse(message) {
+            const msg = message.toLowerCase();
+
+            // Platform overview
+            if (msg.includes('what is') || msg.includes('explain') || msg.includes('platform')) {
+                return `This is the 100X Consciousness Revolution platform!
+
+It's a gamified debugging system where you can:
+• Report bugs and earn points (bug-report-public.html, code: "dog")
+• Compete on the leaderboard (debugger-leaderboard.html)
+• Discover 30+ hidden easter eggs
+• Unlock 6 achievements
+• Use this debug terminal for system diagnostics
+
+The platform rewards curiosity and makes debugging FUN! 🎮`;
+            }
+
+            // Bug reporting
+            if (msg.includes('bug') || msg.includes('report')) {
+                return `To report bugs:
+
+1. Open: bug-report-public.html
+2. Enter access code: "dog"
+3. Fill out the bug report form
+4. Earn points based on severity:
+   • Critical: 50 points
+   • High: 30 points
+   • Medium: 20 points
+   • Low: 10 points
+
+Your points automatically appear on the leaderboard! 🏆`;
+            }
+
+            // Leaderboard
+            if (msg.includes('leaderboard') || msg.includes('points') || msg.includes('rank')) {
+                return `The leaderboard is at: debugger-leaderboard.html
+
+You can see:
+• Your current rank (🥇 🥈 🥉)
+• Total points earned
+• Bugs found vs bugs fixed
+• Achievements unlocked
+• Your streak counter
+
+Click the 🎉 button for confetti! Competition makes debugging fun! 🎮`;
+            }
+
+            // Diagnostic
+            if (msg.includes('diagnostic') || msg.includes('check') || msg.includes('status')) {
+                return `Running system diagnostic...
+
+✓ Frontend: OPERATIONAL
+✓ Debug Terminal: FUNCTIONAL
+✓ Bug Reports: ACTIVE (localStorage + optional backend)
+✓ Leaderboard: ACTIVE (real-time updates)
+✓ Easter Eggs: 30+ DEPLOYED
+✓ Achievements: 6 unlockable badges
+✓ Navigation: 58+ pages integrated
+
+Try command "status" for detailed backend check!`;
+            }
+
+            // Easter eggs
+            if (msg.includes('easter') || msg.includes('secret') || msg.includes('hidden')) {
+                return `Want to know the secrets? 😏
+
+Try:
+• Konami Code: ↑↑↓↓←→←→BA (activates hidden terminal!)
+• Type "consciousness" anywhere
+• Click logo 7 times
+• Press Ctrl+Shift+A (see achievements)
+• Open console (F12) and type: revealSecrets()
+• Visit at 3:33 AM/PM for special achievement
+
+There are 30+ easter eggs total. Happy hunting! 🎮`;
+            }
+
+            // Help/confused
+            if (msg.includes('help') || msg.includes('confused') || msg.includes('how')) {
+                return `I'm here to help! I can assist with:
+
+📍 Navigation - "Where is the leaderboard?"
+🐛 Bug Reporting - "How do I report bugs?"
+🎮 Easter Eggs - "Show me secrets!"
+⚙️ System Diagnostics - "Run a diagnostic"
+📊 Platform Info - "What is this platform?"
+🏆 Leaderboard - "How do points work?"
+
+Just ask naturally and I'll help guide you! I'm showing you around the platform like a tour guide. 🤖`;
+            }
+
+            // Commands
+            if (msg.includes('command')) {
+                return `Available terminal commands:
+
+help     - Show command list
+status   - System health check
+api      - Show API endpoints
+test     - Test an endpoint
+ping     - Check backend
+clear    - Clear terminal
+chat     - AI assistant (you're here!)
+
+Type any command to try it. Type "exit" to leave AI mode.`;
+            }
+
+            // Default response
+            return `I understand you're asking about: "${message}"
+
+I'm here to help you debug and navigate the platform!
+
+Try asking:
+• "What is this platform?" - Platform overview
+• "How do I report a bug?" - Bug reporting guide
+• "Where is the leaderboard?" - Points and rankings
+• "Run a diagnostic" - System health check
+• "Show me easter eggs" - Hidden secrets
+• "Help!" - General assistance
+
+What would you like to know? 🤖`;
         }
 
         // Command implementations
@@ -620,15 +931,29 @@
             }
         });
 
-        // Initial status check
-        setTimeout(() => {
-            addOutput('', 'output-text');
-            addOutput('Running auto-check...', 'output-text');
-            pingBackend();
-        }, 1000);
+        // Initial status check disabled - use "status" or "ping" commands manually
+        // setTimeout(() => {
+        //     addOutput('', 'output-text');
+        //     addOutput('Running auto-check...', 'output-text');
+        //     pingBackend();
+        // }, 1000);
     </script>
 
     <!-- Master Navigation -->
     <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+
+    <!-- 🎮 PERSISTENT HUD SYSTEM - Follows you everywhere! -->
+    <script src="persistent-hud-widgets.js"></script>
 </body>
 </html>

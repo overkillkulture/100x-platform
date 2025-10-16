@@ -530,7 +530,7 @@
         }
 
         // Checkout
-        function checkout() {
+        async function checkout() {
             const cart = loadCart();
 
             // Track checkout attempt
@@ -543,7 +543,47 @@
 
             const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
 
-            alert(`💳 CHECKOUT\n\nTotal: $${total.toLocaleString()}\n\nPayment processing coming soon!\nStripe integration in progress.\n\nFor now, contact us to complete your order.`);
+            // Disable button while processing
+            const checkoutBtn = event.target;
+            checkoutBtn.disabled = true;
+            checkoutBtn.textContent = '💳 PROCESSING...';
+
+            try {
+                // Call Stripe checkout API (reusing Philosopher AI backend pattern)
+                const response = await fetch('https://stagey-hilary-nongremial.ngrok-free.dev/api/stripe/create-checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        items: cart.map(item => ({
+                            name: item.name,
+                            price: item.price,
+                            description: item.description || `${item.type}: ${item.name}`,
+                            quantity: 1
+                        })),
+                        successUrl: window.location.origin + '/PLATFORM/store-success.html',
+                        cancelUrl: window.location.origin + '/PLATFORM/store-cart.html'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.url) {
+                    // Redirect to Stripe checkout
+                    window.location.href = data.url;
+                } else {
+                    throw new Error('No checkout URL returned');
+                }
+
+            } catch (error) {
+                console.error('Checkout error:', error);
+                alert(`❌ CHECKOUT ERROR\n\nCouldn't process payment.\n\n${error.message}\n\nPlease try again or contact support.`);
+
+                // Re-enable button
+                checkoutBtn.disabled = false;
+                checkoutBtn.textContent = '💳 PROCEED TO CHECKOUT';
+            }
         }
 
         // Render cart
@@ -821,5 +861,16 @@
 
     <!-- Master Navigation -->
     <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
 </body>
 </html>

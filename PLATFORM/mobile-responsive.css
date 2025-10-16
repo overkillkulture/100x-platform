@@ -342,6 +342,47 @@ body {
     }
 }
 
+/* Bug Reporter Widget - FIX OVERLAP ISSUE */
+@media (max-width: 767px) {
+    /* Bug widget positioning to avoid overlap with navigation */
+    .bug-widget,
+    #bugWidget,
+    #bugReporter,
+    [class*="bug-reporter"],
+    [id*="bugReport"] {
+        bottom: 80px !important; /* Move up to avoid nav overlap */
+        right: 15px !important;
+        width: 55px !important;
+        height: 55px !important;
+        font-size: 1.5rem !important;
+        z-index: 998 !important; /* Below nav (999) but above content */
+    }
+
+    /* When expanded, take full width minus margins */
+    .bug-widget.expanded,
+    #bugWidget.expanded,
+    #bugReporter.expanded {
+        width: calc(100vw - 30px) !important;
+        max-width: 350px !important;
+        right: 15px !important;
+        bottom: 80px !important;
+    }
+
+    /* Bug widget form elements mobile-friendly */
+    .bug-widget input,
+    .bug-widget textarea,
+    .bug-widget select {
+        font-size: 16px !important; /* Prevent iOS zoom */
+        width: 100% !important;
+    }
+
+    /* Close button easier to tap */
+    .bug-widget .close-btn {
+        width: 40px !important;
+        height: 40px !important;
+    }
+}
+
 /* ========================================
    UTILITY CLASSES
    ======================================== */

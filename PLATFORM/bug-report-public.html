@@ -429,6 +429,9 @@
             reports.unshift(report);
             localStorage.setItem('bugReports', JSON.stringify(reports));
 
+            // 🎮 Award leaderboard points!
+            awardLeaderboardPoints(report);
+
             // Also send to backend if available
             sendToBackend(report);
 
@@ -527,6 +530,83 @@
             return div.innerHTML;
         }
 
+        // 🎮 GAMIFICATION: Award leaderboard points!
+        function awardLeaderboardPoints(report) {
+            try {
+                // Determine severity based on type and description
+                let severity = 'medium';
+                const desc = report.description.toLowerCase();
+
+                if (desc.includes('critical') || desc.includes('crash') || desc.includes('broken')) {
+                    severity = 'critical';
+                } else if (desc.includes('important') || desc.includes('urgent')) {
+                    severity = 'high';
+                } else if (desc.includes('minor') || desc.includes('small')) {
+                    severity = 'low';
+                }
+
+                // Get reporter name (use email or "Anonymous")
+                const reporter = report.email === 'Anonymous' ? 'Anonymous' : report.email.split('@')[0];
+
+                // Trigger leaderboard update via localStorage event
+                const leaderboardEvent = {
+                    reporter: reporter,
+                    severity: severity,
+                    timestamp: Date.now()
+                };
+
+                localStorage.setItem('newBugReport', JSON.stringify(leaderboardEvent));
+
+                // Show gamification notification
+                showGameNotification(reporter, severity);
+
+            } catch (error) {
+                console.log('Leaderboard integration error:', error);
+            }
+        }
+
+        function showGameNotification(reporter, severity) {
+            const points = {
+                'low': 10,
+                'medium': 20,
+                'high': 30,
+                'critical': 50
+            };
+
+            const earnedPoints = points[severity] || 20;
+
+            // Create floating notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                padding: 20px 30px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                font-weight: bold;
+                z-index: 100000;
+                animation: slideIn 0.5s ease;
+            `;
+            notification.innerHTML = `
+                <div style="font-size: 1.2em; margin-bottom: 5px;">
+                    🎮 +${earnedPoints} Points!
+                </div>
+                <div style="font-size: 0.9em; opacity: 0.9;">
+                    ${reporter} found a ${severity} bug!
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.5s ease';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
         // Check if already accessed (remember for session)
         if (sessionStorage.getItem('bugReportAccess') === 'granted') {
             document.getElementById('accessGate').classList.add('hidden');
@@ -551,5 +631,18 @@
             }
         }
     </script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+    <!-- Master Navigation System -->
+    <script src="master-nav.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
 </body>
 </html>

@@ -247,8 +247,12 @@
                 <div class="terminal-line warning">Everything you type is recorded for debugging</div>
                 <div class="terminal-line info">Don't type anything private or sensitive!</div>
                 <div class="terminal-line">─────────────────────────────────────</div>
-                <div class="terminal-line prompt">Type 'help' for available commands</div>
-                <div class="terminal-line prompt">Type 'debug' to enter debug mode</div>
+                <div class="terminal-line success">🧠 INTELLIGENT MODE ACTIVE</div>
+                <div class="terminal-line info">Just type naturally - no commands needed!</div>
+                <div class="terminal-line info">Examples:</div>
+                <div class="terminal-line prompt">  • "I found a bug on the welcome page"</div>
+                <div class="terminal-line prompt">  • "What can you help me with?"</div>
+                <div class="terminal-line prompt">  • "Show me system status"</div>
                 <div class="terminal-line">─────────────────────────────────────</div>
             </div>
 
@@ -495,20 +499,53 @@
                     // Show command
                     addLine('prompt', '$ > ' + input);
 
-                    // Parse command
+                    // 🧠 INTELLIGENT NATURAL LANGUAGE PROCESSING
+                    // Instead of rigid commands, understand intent
+                    const inputLower = input.toLowerCase();
+
+                    // Detect intent and route intelligently
+                    let handled = false;
+
+                    // Check for explicit commands first (backwards compatible)
                     const parts = input.split(' ');
                     const cmd = parts[0].toLowerCase();
                     const args = parts.slice(1).join(' ');
 
-                    // Execute command
                     if (commands[cmd]) {
+                        // Traditional command - still works!
                         const result = commands[cmd](args);
                         result.forEach(line => {
                             addLine(line.type, line.text);
                         });
-                    } else {
-                        addLine('error', `Command not found: ${cmd}`);
-                        addLine('info', 'Type "help" for available commands');
+                        handled = true;
+                    }
+                    // Natural language intent detection
+                    else if (inputLower.includes('help') || inputLower.includes('what can') || inputLower.includes('how do')) {
+                        commands.help().forEach(line => addLine(line.type, line.text));
+                        handled = true;
+                    }
+                    else if (inputLower.includes('status') || inputLower.includes('system') || inputLower.includes('online')) {
+                        commands.status().forEach(line => addLine(line.type, line.text));
+                        handled = true;
+                    }
+                    else if (inputLower.includes('clear') || inputLower === 'cls') {
+                        commands.clear();
+                        handled = true;
+                    }
+                    else if (inputLower.includes('who am i') || inputLower === 'whoami') {
+                        commands.whoami().forEach(line => addLine(line.type, line.text));
+                        handled = true;
+                    }
+                    else if (inputLower === 'exit' || inputLower === 'logout' || inputLower === 'quit') {
+                        commands.exit();
+                        handled = true;
+                    }
+                    else {
+                        // 🔥 DEFAULT: Everything else goes to AI
+                        // No more "command not found" - just talk naturally!
+                        addLine('info', '💬 Asking Claude AI...');
+                        commands.chat(input);  // Send whole message to AI
+                        handled = true;
                     }
 
                     // Clear input
@@ -568,5 +605,12 @@
     <!-- 🎮 Easter Egg System - Makes platform legendary -->
     <script src="easter-egg-engine.js"></script>
     <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
 </body>
 </html>

@@ -76,6 +76,7 @@ class MasterNavigation {
             'emergency-ai-chat.html': { name: 'Emergency AI', icon: '🚨', category: 'Trinity' },
 
             // Consciousness Tools
+            '3-min-boost.html': { name: '3-Min Boost', icon: '⚡', category: 'Consciousness' },
             'consciousness-boost-dashboard.html': { name: 'Consciousness Boost', icon: '⚡', category: 'Consciousness' },
             'consciousness-speed-test.html': { name: 'Speed Test', icon: '⏱️', category: 'Consciousness' },
             'pattern-recognition-quiz.html': { name: 'Pattern Quiz', icon: '🧩', category: 'Consciousness' },
@@ -100,6 +101,7 @@ class MasterNavigation {
             'store-cart.html': { name: 'Cart', icon: '🛍️', category: 'Store' },
             'store-campaigns.html': { name: 'Campaigns', icon: '📢', category: 'Store' },
             'store-investments.html': { name: 'Investments', icon: '💰', category: 'Store' },
+            'store-success.html': { name: 'Purchase Success', icon: '✅', category: 'Store' },
 
             // Fun & Engagement
             'arcade-hub.html': { name: 'Arcade Hub', icon: '🎮', category: 'Arcade' },
@@ -113,6 +115,7 @@ class MasterNavigation {
             'analytics-test-data-generator.html': { name: 'Test Data Generator', icon: '🧪', category: 'Analytics' },
             'platform-city-map.html': { name: 'Platform Map', icon: '🗺️', category: 'Analytics' },
             'builder-xp-demo.html': { name: 'Builder XP', icon: '⭐', category: 'Analytics' },
+            'sensor-integration-dashboard.html': { name: 'Sensor Integration', icon: '🛰️', category: 'Analytics' },
 
             // Developer Tools
             'debug-terminal.html': { name: 'Debug Terminal', icon: '⚡', category: 'Developer' },
@@ -123,12 +126,22 @@ class MasterNavigation {
             'help.html': { name: 'Help', icon: '❓', category: 'Support' },
             'get-help.html': { name: 'Get Help', icon: '🆘', category: 'Support' },
             'bug-report-public.html': { name: 'Bug Reports', icon: '🐛', category: 'Support' },
+            'debugger-leaderboard.html': { name: 'Debugger Leaderboard', icon: '🏆', category: 'Support' },
             'privacy-policy.html': { name: 'Privacy Policy', icon: '🔒', category: 'Support' },
+
+            // Showcases
+            'showcase-hub.html': { name: 'Showcase Hub', icon: '✨', category: 'Showcases' },
+            'trinity-cockpit.html': { name: 'Trinity Cockpit', icon: '🎛️', category: 'Showcases' },
+            'meritocracy-dashboard.html': { name: 'Meritocracy Dashboard', icon: '⚖️', category: 'Showcases' },
+            'character-matrix.html': { name: 'Character Matrix', icon: '🧬', category: 'Showcases' },
+            'arg-assembly.html': { name: 'ARG Assembly', icon: '🎭', category: 'Showcases' },
 
             // Special
             'carnival-homepage.html': { name: 'Carnival', icon: '🎪', category: 'Special' },
             'baby-gate-test.html': { name: 'Baby Gate Test', icon: '👶', category: 'Special' },
-            'construction.html': { name: 'Under Construction', icon: '🚧', category: 'Special' }
+            'construction.html': { name: 'Under Construction', icon: '🚧', category: 'Special' },
+            'bug-test-demo.html': { name: 'Bug Test Demo', icon: '🐛', category: 'Special' },
+            'mobile-test.html': { name: 'Mobile Test', icon: '📱', category: 'Special' }
         };
 
         const fileName = this.currentPath.split('/').pop();
@@ -462,6 +475,10 @@ class MasterNavigation {
 
                 <div class="nav-section">
                     <div class="nav-section-title">Consciousness</div>
+                    <a href="3-min-boost.html" class="nav-link" data-page="3-min-boost.html">
+                        <span class="nav-icon">⚡</span>
+                        <span>3-Min Boost</span>
+                    </a>
                     <a href="consciousness-boost-dashboard.html" class="nav-link" data-page="consciousness-boost-dashboard.html">
                         <span class="nav-icon">⚡</span>
                         <span>Consciousness Boost</span>
@@ -498,10 +515,14 @@ class MasterNavigation {
                         <span class="nav-icon">🎭</span>
                         <span>Mission Archetype</span>
                     </a>
+                    <a href="communication-patterns.html" class="nav-link" data-page="communication-patterns.html">
+                        <span class="nav-icon">💬</span>
+                        <span>Communication Patterns</span>
+                    </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">Business</div>
+                    <div class="nav-section-title">Business & Store</div>
                     <a href="business-phase-clock.html" class="nav-link" data-page="business-phase-clock.html">
                         <span class="nav-icon">⏰</span>
                         <span>Business Phase Clock</span>
@@ -510,9 +531,29 @@ class MasterNavigation {
                         <span class="nav-icon">🪙</span>
                         <span>Truth Coin</span>
                     </a>
+                    <a href="open-source-decision-module.html" class="nav-link" data-page="open-source-decision-module.html">
+                        <span class="nav-icon">🌐</span>
+                        <span>Open Source Decision</span>
+                    </a>
                     <a href="store.html" class="nav-link" data-page="store.html">
                         <span class="nav-icon">🛒</span>
                         <span>Store</span>
+                    </a>
+                    <a href="store-products.html" class="nav-link" data-page="store-products.html">
+                        <span class="nav-icon">📦</span>
+                        <span>Products</span>
+                    </a>
+                    <a href="store-cart.html" class="nav-link" data-page="store-cart.html">
+                        <span class="nav-icon">🛍️</span>
+                        <span>Shopping Cart</span>
+                    </a>
+                    <a href="store-campaigns.html" class="nav-link" data-page="store-campaigns.html">
+                        <span class="nav-icon">📢</span>
+                        <span>Campaigns</span>
+                    </a>
+                    <a href="store-investments.html" class="nav-link" data-page="store-investments.html">
+                        <span class="nav-icon">💰</span>
+                        <span>Investments</span>
                     </a>
                 </div>
 
@@ -558,6 +599,34 @@ class MasterNavigation {
                         <span class="nav-icon">⭐</span>
                         <span>Builder XP</span>
                     </a>
+                    <a href="sensor-integration-dashboard.html" class="nav-link" data-page="sensor-integration-dashboard.html">
+                        <span class="nav-icon">🛰️</span>
+                        <span>Sensor Integration</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Showcases</div>
+                    <a href="showcase-hub.html" class="nav-link" data-page="showcase-hub.html">
+                        <span class="nav-icon">✨</span>
+                        <span>Showcase Hub</span>
+                    </a>
+                    <a href="trinity-cockpit.html" class="nav-link" data-page="trinity-cockpit.html">
+                        <span class="nav-icon">🎛️</span>
+                        <span>Trinity Cockpit</span>
+                    </a>
+                    <a href="meritocracy-dashboard.html" class="nav-link" data-page="meritocracy-dashboard.html">
+                        <span class="nav-icon">⚖️</span>
+                        <span>Meritocracy Dashboard</span>
+                    </a>
+                    <a href="character-matrix.html" class="nav-link" data-page="character-matrix.html">
+                        <span class="nav-icon">🧬</span>
+                        <span>Character Matrix</span>
+                    </a>
+                    <a href="arg-assembly.html" class="nav-link" data-page="arg-assembly.html">
+                        <span class="nav-icon">🎭</span>
+                        <span>ARG Assembly</span>
+                    </a>
                 </div>
 
                 <div class="nav-section">
@@ -577,6 +646,10 @@ class MasterNavigation {
                     <a href="bug-report-public.html" class="nav-link" data-page="bug-report-public.html">
                         <span class="nav-icon">🐛</span>
                         <span>Bug Reports</span>
+                    </a>
+                    <a href="debugger-leaderboard.html" class="nav-link" data-page="debugger-leaderboard.html">
+                        <span class="nav-icon">🏆</span>
+                        <span>Debugger Leaderboard</span>
                     </a>
                     <div class="nav-link" onclick="MasterNav.logout()">
                         <span class="nav-icon">🚪</span>
@@ -691,9 +764,13 @@ class MasterNavigation {
 
     static logout() {
         if (confirm('Logout from 100X Platform?')) {
+            // Clear all authentication tokens
             localStorage.removeItem('auth_token');
+            localStorage.removeItem('module_user');
             localStorage.removeItem('user_data');
-            window.location.href = '../index.html';
+
+            // Redirect to login page
+            window.location.href = './login.html';
         }
     }
 }
@@ -706,3 +783,9 @@ if (document.readyState === 'loading') {
 } else {
     window.MasterNav = new MasterNavigation();
 }
+
+// Load debug widget automatically
+const debugScript = document.createElement('script');
+debugScript.src = 'shared/debug-widget.js';
+debugScript.onerror = () => debugScript.src = '../shared/debug-widget.js';
+document.head.appendChild(debugScript);
