@@ -16,7 +16,7 @@ from pathlib import Path
 class ConsciousnessVoice:
     """Voice interface for consciousness revolution"""
 
-    def __init__(self, rate=175, volume=1.0, voice_index=0):
+    def __init__(self, rate=175, volume=1.0, voice_index=0, enable_analytics=True):
         """Initialize voice system"""
         self.rate = rate
         self.volume = volume
@@ -24,6 +24,15 @@ class ConsciousnessVoice:
         self.tts_engine = None
         self.recognizer = sr.Recognizer()
         self.microphone = None
+        self.analytics = None
+
+        # Initialize analytics
+        if enable_analytics:
+            try:
+                from VOICE_ANALYTICS_LOGGER import init_analytics
+                self.analytics = init_analytics()
+            except Exception as e:
+                print(f"⚠️ Analytics disabled: {e}")
 
         # Initialize TTS
         try:
@@ -85,6 +94,8 @@ class ConsciousnessVoice:
         """
         if not self.tts_engine:
             print("❌ TTS not available")
+            if self.analytics:
+                self.analytics.log_error("tts", "TTS engine not initialized")
             return False
 
         try:
@@ -93,13 +104,24 @@ class ConsciousnessVoice:
 
             clean = self.clean_text_for_speech(text)
             print(f"🔊 Claude speaking: {len(clean)} chars...")
+
+            import time
+            start_time = time.time()
             self.tts_engine.say(clean)
             self.tts_engine.runAndWait()
+            duration = time.time() - start_time
+
             print("✅ Done speaking")
+
+            if self.analytics:
+                self.analytics.log_tts(clean, duration=duration, success=True)
+
             return True
 
         except Exception as e:
             print(f"❌ TTS Error: {e}")
+            if self.analytics:
+                self.analytics.log_error("tts", str(e))
             return False
 
     def listen(self, timeout=5, phrase_time_limit=10):
@@ -115,9 +137,14 @@ class ConsciousnessVoice:
         """
         if not self.microphone:
             print("❌ Microphone not available")
+            if self.analytics:
+                self.analytics.log_error("stt", "Microphone not initialized")
             return None
 
         try:
+            import time
+            start_time = time.time()
+
             with self.microphone as source:
                 print("🎤 Listening... (speak now)")
                 self.recognizer.adjust_for_ambient_noise(source, duration=0.5)
@@ -129,20 +156,34 @@ class ConsciousnessVoice:
 
             print("🧠 Processing speech...")
             text = self.recognizer.recognize_google(audio)
+            duration = time.time() - start_time
+
             print(f"✅ You said: {text}")
+
+            if self.analytics:
+                self.analytics.log_stt(text, duration=duration, success=True)
+
             return text
 
         except sr.WaitTimeoutError:
             print("⏱️ No speech detected")
+            if self.analytics:
+                self.analytics.log_error("stt", "Timeout - no speech detected")
             return None
         except sr.UnknownValueError:
             print("❓ Could not understand speech")
+            if self.analytics:
+                self.analytics.log_error("stt", "Could not understand speech")
             return None
         except sr.RequestError as e:
             print(f"❌ Speech recognition error: {e}")
+            if self.analytics:
+                self.analytics.log_error("stt", f"Recognition API error: {e}")
             return None
         except Exception as e:
             print(f"❌ Listen error: {e}")
+            if self.analytics:
+                self.analytics.log_error("stt", str(e))
             return None
 
     def conversation_mode(self, max_exchanges=10):
