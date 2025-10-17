@@ -7,7 +7,7 @@
 class StripePaymentSystem {
     constructor() {
         // Initialize Stripe (use your publishable key)
-        this.stripePublishableKey = 'pk_test_YOUR_KEY_HERE'; // REPLACE with actual key
+        this.stripePublishableKey = 'pk_live_51S5fRP5IBd71iNToyK5xhDyCAuId25fk1pECa2qTc1X1mG1isXAEToeRqXWmPBsd5PxuEunR3jb0aMnG8smkLgI0euC51Veaa'; // LIVE KEY
         this.stripe = null;
         this.initialized = false;
 

@@ -5,7 +5,7 @@
  */
 
 const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_YOUR_SECRET_KEY_HERE');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || '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'); // LIVE KEY
 const router = express.Router();
 
 /**
