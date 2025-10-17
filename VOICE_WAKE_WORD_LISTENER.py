@@ -169,7 +169,7 @@ class WakeWordListener:
         print("\n" + "=" * 60)
         print("🎤 WAKE WORD LISTENER ACTIVE")
         print("=" * 60)
-        print(f"Say: {' or '.join([f''{w}'' for w in self.wake_words])}")
+        print(f"Say: {' or '.join([f'\"{w}\"' for w in self.wake_words])}")
         print("Then ask your question or give a command")
         print("Say 'stop listening' to exit")
         print("=" * 60 + "\n")
