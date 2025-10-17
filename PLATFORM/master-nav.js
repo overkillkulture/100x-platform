@@ -123,6 +123,7 @@ class MasterNavigation {
             'terminal.html': { name: 'Terminal', icon: '💻', category: 'Developer' },
 
             // Support
+            'visual-language-legend.html': { name: 'Visual Language Legend', icon: '🎨', category: 'Support' },
             'help.html': { name: 'Help', icon: '❓', category: 'Support' },
             'get-help.html': { name: 'Get Help', icon: '🆘', category: 'Support' },
             'bug-report-public.html': { name: 'Bug Reports', icon: '🐛', category: 'Support' },
@@ -631,6 +632,10 @@ class MasterNavigation {
 
                 <div class="nav-section">
                     <div class="nav-section-title">Support</div>
+                    <a href="visual-language-legend.html" class="nav-link" data-page="visual-language-legend.html">
+                        <span class="nav-icon">🎨</span>
+                        <span>Visual Language Legend</span>
+                    </a>
                     <a href="help.html" class="nav-link" data-page="help.html">
                         <span class="nav-icon">❓</span>
                         <span>Help & Docs</span>
