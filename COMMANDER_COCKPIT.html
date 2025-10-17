@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 COMMANDER'S COCKPIT - Human Tasks Dashboard</title>
+    <link rel="stylesheet" href="PLATFORM/cyberpunk-alien-theme.css">
+    <style>
+        body {
+            font-family: 'Orbitron', 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .cockpit-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .cockpit-title {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .cockpit-subtitle {
+            font-size: 18px;
+            color: var(--neon-cyan);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            color: var(--neon-orange);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--neon-cyan);
+        }
+
+        .tasks-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--neon-purple);
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .task-card {
+            background: rgba(0, 0, 0, 0.9);
+            border-left: 5px solid var(--neon-green);
+            padding: 20px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .task-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+
+        .task-card.priority-high {
+            border-left-color: var(--neon-pink);
+        }
+
+        .task-card.priority-medium {
+            border-left-color: var(--neon-orange);
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-title {
+            font-size: 20px;
+            color: var(--neon-cyan);
+            margin-bottom: 5px;
+        }
+
+        .task-description {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .task-meta {
+            font-size: 12px;
+            color: var(--neon-purple);
+        }
+
+        .task-action {
+            padding: 10px 20px;
+            background: var(--neon-green);
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .task-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+
+        .missing-apis {
+            background: rgba(180, 0, 255, 0.1);
+            border: 2px solid var(--neon-purple);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+
+        .api-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .api-name {
+            color: var(--neon-cyan);
+        }
+
+        .api-status {
+            color: var(--neon-pink);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body class="scanlines">
+    <div class="cockpit-header">
+        <h1 class="cockpit-title neon-text glitch-text" data-text="🚀 COMMANDER'S COCKPIT">
+            🚀 COMMANDER'S COCKPIT
+        </h1>
+        <p class="cockpit-subtitle">Only Human Tasks - Everything Else is Automated</p>
+    </div>
+
+    <!-- Real-time Stats -->
+    <div class="stats-grid">
+        <div class="stat-card cyber-card">
+            <div class="stat-number" id="humanTasks">7</div>
+            <div class="stat-label">Human Tasks</div>
+        </div>
+        <div class="stat-card cyber-card">
+            <div class="stat-number" id="missingAPIs">12</div>
+            <div class="stat-label">Missing APIs</div>
+        </div>
+        <div class="stat-card cyber-card">
+            <div class="stat-number" id="aiTasks">143</div>
+            <div class="stat-label">AI Tasks (Auto)</div>
+        </div>
+        <div class="stat-card cyber-card">
+            <div class="stat-number" id="timeEstimate">~2h</div>
+            <div class="stat-label">Time to Clear</div>
+        </div>
+    </div>
+
+    <!-- Missing APIs Section -->
+    <div class="missing-apis">
+        <h2 class="section-title gradient-80s">🔑 Missing API Keys & Credentials</h2>
+        <div id="missingAPIsList">
+            <div class="api-item">
+                <span class="api-name">🔴 Stripe Secret Key</span>
+                <span class="api-status">BLOCKS PAYMENTS</span>
+            </div>
+            <div class="api-item">
+                <span class="api-name">🟡 Stripe Publishable Key</span>
+                <span class="api-status">BLOCKS CHECKOUT</span>
+            </div>
+            <div class="api-item">
+                <span class="api-name">🟡 OpenAI API Key</span>
+                <span class="api-status">BLOCKS AI FEATURES</span>
+            </div>
+            <div class="api-item">
+                <span class="api-name">🟢 Airtable API Token</span>
+                <span class="api-status">EXISTS - VERIFY</span>
+            </div>
+            <div class="api-item">
+                <span class="api-name">🟡 Twilio Account SID</span>
+                <span class="api-status">BLOCKS SMS</span>
+            </div>
+            <div class="api-item">
+                <span class="api-name">🟡 Twilio Auth Token</span>
+                <span class="api-status">BLOCKS SMS</span>
+            </div>
+            <div class="api-item">
+                <span class="api-name">🟡 SendGrid API Key</span>
+                <span class="api-status">BLOCKS EMAIL</span>
+            </div>
+            <div class="api-item">
+                <span class="api-name">🟡 Gmail App Password</span>
+                <span class="api-status">BLOCKS 2FA READING</span>
+            </div>
+            <div class="api-item">
+                <span class="api-name">🟡 Twitter API Key</span>
+                <span class="api-status">BLOCKS POSTING</span>
+            </div>
+            <div class="api-item">
+                <span class="api-name">🟡 Instagram Credentials</span>
+                <span class="api-status">BLOCKS AUTOMATION</span>
+            </div>
+            <div class="api-item">
+                <span class="api-name">🟡 Netlify Auth Token</span>
+                <span class="api-status">EXISTS - VERIFY</span>
+            </div>
+            <div class="api-item">
+                <span class="api-name">🟡 GitHub Personal Token</span>
+                <span class="api-status">BLOCKS GIT OPERATIONS</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- High Priority Human Tasks -->
+    <div class="tasks-section">
+        <h2 class="section-title gradient-80s">🔥 HIGH PRIORITY - Do These Now</h2>
+        <div class="task-list" id="highPriorityTasks">
+            <div class="task-card priority-high alien-glow">
+                <div class="task-info">
+                    <div class="task-title">Get Stripe API Keys</div>
+                    <div class="task-description">
+                        Go to dashboard.stripe.com/apikeys → Copy pk_test & sk_test keys → Paste into Bitwarden
+                    </div>
+                    <div class="task-meta">⏱️ 5 minutes | 💰 BLOCKS ALL REVENUE</div>
+                </div>
+                <button class="task-action retro-button" onclick="openLink('https://dashboard.stripe.com/apikeys')">
+                    GO NOW
+                </button>
+            </div>
+
+            <div class="task-card priority-high">
+                <div class="task-info">
+                    <div class="task-title">Connect Bank Account to Stripe</div>
+                    <div class="task-description">
+                        Stripe → Settings → Business settings → Add bank account for payouts
+                    </div>
+                    <div class="task-meta">⏱️ 10 minutes | 💰 ENABLES PAYOUTS</div>
+                </div>
+                <button class="task-action retro-button" onclick="openLink('https://dashboard.stripe.com/settings/payouts')">
+                    GO NOW
+                </button>
+            </div>
+
+            <div class="task-card priority-high">
+                <div class="task-info">
+                    <div class="task-title">Get OpenAI API Key</div>
+                    <div class="task-description">
+                        platform.openai.com → API keys → Create new → Copy → Add to Bitwarden
+                    </div>
+                    <div class="task-meta">⏱️ 5 minutes | 🤖 ENABLES AI FEATURES</div>
+                </div>
+                <button class="task-action retro-button" onclick="openLink('https://platform.openai.com/api-keys')">
+                    GO NOW
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medium Priority Tasks -->
+    <div class="tasks-section">
+        <h2 class="section-title">⚡ MEDIUM PRIORITY - Do These Soon</h2>
+        <div class="task-list" id="mediumPriorityTasks">
+            <div class="task-card priority-medium">
+                <div class="task-info">
+                    <div class="task-title">Get Twilio Account (SMS/Voice)</div>
+                    <div class="task-description">
+                        Sign up at twilio.com → Get Account SID + Auth Token → Buy phone number
+                    </div>
+                    <div class="task-meta">⏱️ 15 minutes | 📱 ENABLES SMS AUTOMATION</div>
+                </div>
+                <button class="task-action" onclick="openLink('https://www.twilio.com/try-twilio')">
+                    SIGN UP
+                </button>
+            </div>
+
+            <div class="task-card priority-medium">
+                <div class="task-info">
+                    <div class="task-title">Create Gmail App Password</div>
+                    <div class="task-description">
+                        Google Account → Security → 2FA → App passwords → Generate → Save
+                    </div>
+                    <div class="task-meta">⏱️ 10 minutes | 📧 ENABLES EMAIL READING</div>
+                </div>
+                <button class="task-action" onclick="openLink('https://myaccount.google.com/apppasswords')">
+                    CREATE NOW
+                </button>
+            </div>
+
+            <div class="task-card priority-medium">
+                <div class="task-info">
+                    <div class="task-title">Export Chrome Passwords to Bitwarden</div>
+                    <div class="task-description">
+                        Chrome → Settings → Passwords → Export → Import to Bitwarden
+                    </div>
+                    <div class="task-meta">⏱️ 20 minutes | 🔑 UNLOCKS ALL LOGINS</div>
+                </div>
+                <button class="task-action" onclick="alert('1. Open Chrome\\n2. Go to chrome://settings/passwords\\n3. Click Export\\n4. Save CSV\\n5. Import to Bitwarden')">
+                    SHOW STEPS
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Priority -->
+    <div class="tasks-section">
+        <h2 class="section-title">💚 NICE TO HAVE - Do When You Have Time</h2>
+        <div class="task-list" id="lowPriorityTasks">
+            <div class="task-card">
+                <div class="task-info">
+                    <div class="task-title">Get Twitter API Access</div>
+                    <div class="task-description">
+                        Apply for developer account → Create app → Get API keys
+                    </div>
+                    <div class="task-meta">⏱️ 30 minutes | 🐦 ENABLES TWITTER AUTOMATION</div>
+                </div>
+                <button class="task-action" onclick="openLink('https://developer.twitter.com/en/portal/dashboard')">
+                    APPLY
+                </button>
+            </div>
+
+            <div class="task-card">
+                <div class="task-info">
+                    <div class="task-title">Setup SendGrid for Email</div>
+                    <div class="task-description">
+                        Sign up → Verify domain → Get API key → Configure sender
+                    </div>
+                    <div class="task-meta">⏱️ 20 minutes | 📧 ENABLES MASS EMAIL</div>
+                </div>
+                <button class="task-action" onclick="openLink('https://signup.sendgrid.com/')">
+                    SIGN UP
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openLink(url) {
+            window.open(url, '_blank');
+        }
+
+        // Auto-refresh stats every 30 seconds
+        setInterval(() => {
+            // Could fetch from API here
+            console.log('🔄 Stats refreshed');
+        }, 30000);
+
+        console.log('🚀 COMMANDER COCKPIT LOADED');
+        console.log('💡 Only show Commander tasks that REQUIRE HUMAN ACTION');
+    </script>
+</body>
+</html>
