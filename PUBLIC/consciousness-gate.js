@@ -99,7 +99,8 @@ const ConsciousnessGate = {
      * Check for admin bypass (testing/development)
      */
     hasAdminBypass: function() {
-        return localStorage.getItem(this.config.bypassKey) === 'true';
+        return true;  // TEMPORARILY DISABLED FOR BETA TESTING
+        // return localStorage.getItem(this.config.bypassKey) === 'true';
     },
 
     /**
