@@ -33,6 +33,10 @@ class CommunityWidget {
     }
 
     init() {
+        // Check if widget was dismissed
+        if (sessionStorage.getItem('communityWidgetDismissed') === 'true') {
+            return; // Don't initialize if dismissed
+        }
         this.injectStyles();
         this.createHTML();
         this.attachEventListeners();
@@ -64,6 +68,10 @@ class CommunityWidget {
                 box-shadow: 0 4px 20px rgba(0, 255, 255, 0.5);
                 transition: all 0.3s ease;
                 position: relative;
+            }
+
+            .community-widget-button.hidden {
+                display: none;
             }
 
             .community-widget-button:hover {
@@ -137,6 +145,18 @@ class CommunityWidget {
 
             .community-close:hover {
                 color: #ff6b00;
+            }
+
+            .community-dismiss {
+                color: #ff6b00;
+                font-size: 14px;
+                cursor: pointer;
+                transition: color 0.3s;
+                margin-left: 10px;
+            }
+
+            .community-dismiss:hover {
+                color: #ff0000;
             }
 
             .community-tabs {
@@ -330,7 +350,10 @@ class CommunityWidget {
             <div class="community-window" id="community-window">
                 <div class="community-header">
                     <h3>🌐 Community</h3>
-                    <div class="community-close" onclick="window.communityWidget.toggle()">×</div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="community-dismiss" onclick="window.communityWidget.dismiss()">Hide</div>
+                        <div class="community-close" onclick="window.communityWidget.toggle()">×</div>
+                    </div>
                 </div>
 
                 <div class="community-tabs">
@@ -480,6 +503,12 @@ class CommunityWidget {
         setInterval(() => {
             this.updateStats();
         }, 15000);
+    }
+
+    dismiss() {
+        // Hide widget permanently for this session
+        sessionStorage.setItem('communityWidgetDismissed', 'true');
+        document.querySelector('.community-widget-container').style.display = 'none';
     }
 }
 

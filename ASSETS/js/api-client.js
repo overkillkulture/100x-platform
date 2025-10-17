@@ -112,7 +112,8 @@ class APIClient {
       localStorage.setItem('jwt_token', data.token);
       localStorage.setItem('user_data', JSON.stringify(data.user));
 
-      console.log('✅ Registration successful:', data.user.username);
+      // 🛡️ SECURITY: Removed username logging (information disclosure)
+      console.log('✅ Registration successful');
       return data.user;
 
     } catch (error) {
@@ -140,7 +141,8 @@ class APIClient {
       localStorage.setItem('jwt_token', data.token);
       localStorage.setItem('user_data', JSON.stringify(data.user));
 
-      console.log('✅ Login successful:', data.user.username);
+      // 🛡️ SECURITY: Removed username logging (information disclosure)
+      console.log('✅ Login successful');
       return data.user;
 
     } catch (error) {
@@ -285,7 +287,8 @@ class APIClient {
       // Update stored user data
       localStorage.setItem('user_data', JSON.stringify(user));
 
-      console.log('✅ Session restored:', user.username);
+      // 🛡️ SECURITY: Removed username logging (information disclosure)
+      console.log('✅ Session restored');
 
     } catch (error) {
       console.error('⚠️ Session expired, logging out');
@@ -305,7 +308,8 @@ class APIClient {
   async healthCheck() {
     try {
       const data = await this.request('/health');
-      console.log('✅ API health check passed:', data.status);
+      // 🛡️ SECURITY: Removed data.status logging (could leak internal info)
+      console.log('✅ API health check passed');
       return data;
 
     } catch (error) {

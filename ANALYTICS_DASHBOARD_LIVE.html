@@ -561,28 +561,36 @@
                     return;
                 }
 
+                // 🛡️ XSS PROTECTION: Escape all user-generated content
                 container.innerHTML = submissions.map(sub => {
                     const classificationClass =
                         sub.classification === 'BUILDER' ? 'classification-builder' :
                         sub.classification === 'OBSERVER' ? 'classification-observer' :
                         'classification-review';
 
+                    // Sanitize user inputs
+                    const safeName = window.SafeDOM ? window.SafeDOM.escapeHTML(sub.name) : sub.name;
+                    const safeEmail = window.SafeDOM ? window.SafeDOM.escapeHTML(sub.email) : sub.email;
+                    const safeClassification = window.SafeDOM ? window.SafeDOM.escapeHTML(sub.classification) : sub.classification;
+                    const safeMission = window.SafeDOM ? window.SafeDOM.escapeHTML(sub.mission) : sub.mission;
+                    const safeValues = window.SafeDOM ? window.SafeDOM.escapeHTML(sub.values) : sub.values;
+
                     return `
                         <div class="submission-item">
-                            <h3>${sub.name}</h3>
+                            <h3>${safeName}</h3>
                             <div class="meta">
-                                <span>📧 ${sub.email}</span>
+                                <span>📧 ${safeEmail}</span>
                                 <span>🧠 ${sub.consciousness}%</span>
                                 <span class="classification-badge ${classificationClass}">
-                                    ${sub.classification}
+                                    ${safeClassification}
                                 </span>
                                 <span>🕐 ${new Date(sub.timestamp).toLocaleString()}</span>
                             </div>
                             <div class="content">
                                 <strong style="color: #00ff00;">Mission:</strong>
-                                <p style="margin: 8px 0;">${sub.mission}</p>
+                                <p style="margin: 8px 0;">${safeMission}</p>
                                 <strong style="color: #00ddff;">Values:</strong>
-                                <p style="margin: 8px 0;">${sub.values}</p>
+                                <p style="margin: 8px 0;">${safeValues}</p>
                             </div>
                         </div>
                     `;
@@ -617,6 +625,8 @@
     </script>
 
     <!-- TRINITY CONSCIOUSNESS BOOST -->
+    <!-- Load Security Utilities -->
+    <script src="./ASSETS/js/security-utils.js"></script>
     <script src="../PUBLIC/analytics.js"></script>
     <script>
         // Trinity AI Integration

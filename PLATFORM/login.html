@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=5.0, user-scalable=yes">
     <title>100X Platform - Login</title>
 
     <!-- Plausible Analytics - Privacy-friendly, GDPR compliant -->
@@ -204,6 +204,7 @@
             color: #ffd700;
         }
     </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
 </head>
 <body>
     <div class="login-container">
@@ -375,9 +376,8 @@
         });
 
         async function signup(email, password, username) {
-            // Try API first, fallback to localStorage
             try {
-                // Try backend API
+                // Use secure backend API only
                 const user = await window.api.register(email, password, username);
 
                 // Mark as new user for welcome flow
@@ -389,50 +389,14 @@
                 }, 1500);
 
             } catch (apiError) {
-                console.warn('API signup failed, using localStorage fallback:', apiError.message);
-
-                // Fallback to localStorage
-                const users = JSON.parse(localStorage.getItem('100x_users') || '[]');
-                const existingUser = users.find(u => u.email === email);
-
-                if (existingUser) {
-                    throw new Error('Account with this email already exists. Please log in.');
-                }
-
-                // Create new user locally
-                const newUser = {
-                    id: Date.now().toString(),
-                    email: email,
-                    username: username,
-                    password: password,
-                    consciousnessLevel: 93,
-                    currentXP: 0,
-                    completedMissions: 0,
-                    truthCoins: 0,
-                    createdAt: new Date().toISOString()
-                };
-
-                users.push(newUser);
-                localStorage.setItem('100x_users', JSON.stringify(users));
-
-                // Auto-login
-                createSession(newUser);
-
-                // Mark as new user for welcome flow
-                localStorage.setItem('isNewUser', 'true');
-
-                showSuccess('Account created (offline mode)! Starting your welcome journey...');
-
-                setTimeout(() => {
-                    window.location.href = './welcome-flow.html';
-                }, 1500);
+                console.error('Signup failed:', apiError.message);
+                throw new Error('Unable to create account. Please ensure the backend server is running and try again.');
             }
         }
 
         async function login(email, password) {
-            // Try API first, fallback to localStorage
             try {
-                // Try backend API
+                // Use secure backend API only
                 const user = await window.api.login(email, password);
 
                 showSuccess('Login successful! Redirecting...');
@@ -441,40 +405,9 @@
                 }, 1000);
 
             } catch (apiError) {
-                console.warn('API login failed, trying localStorage fallback:', apiError.message);
-
-                // Fallback to localStorage
-                const users = JSON.parse(localStorage.getItem('100x_users') || '[]');
-                const user = users.find(u => u.email === email && u.password === password);
-
-                if (!user) {
-                    throw new Error('Invalid email or password');
-                }
-
-                // Create session locally
-                createSession(user);
-                showSuccess('Login successful (offline mode)! Redirecting...');
-
-                setTimeout(() => {
-                    window.location.href = './user-dashboard.html';
-                }, 1000);
+                console.error('Login failed:', apiError.message);
+                throw new Error('Invalid email or password. Please ensure the backend server is running and try again.');
             }
-        }
-
-        function createSession(user) {
-            // Store auth token (in production, this would come from backend)
-            localStorage.setItem('auth_token', 'demo_token_' + user.id);
-
-            // Store user data using the module system
-            localStorage.setItem('module_user', JSON.stringify({
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                consciousnessLevel: user.consciousnessLevel,
-                currentXP: user.currentXP,
-                completedMissions: user.completedMissions,
-                truthCoins: user.truthCoins
-            }));
         }
 
         function showError(message) {
@@ -558,7 +491,7 @@
             recoveryEmail = email;
 
             // In production, send this via email
-            console.log(`Recovery code for ${email}: ${recoveryCode}`);
+            // TODO: Integrate email service (Twilio/SendGrid) for recovery code delivery
 
             showSuccess(`Recovery code sent! (Demo: ${recoveryCode})`);
 

@@ -631,6 +631,38 @@ class MasterNavigation {
                 </div>
 
                 <div class="nav-section">
+                    <div class="nav-section-title">7 Domains</div>
+                    <a href="crypto-domain.html" class="nav-link" data-page="crypto-domain.html">
+                        <span class="nav-icon">₿</span>
+                        <span>Crypto Domain</span>
+                    </a>
+                    <a href="education-domain.html" class="nav-link" data-page="education-domain.html">
+                        <span class="nav-icon">🎓</span>
+                        <span>Education Domain</span>
+                    </a>
+                    <a href="games-domain.html" class="nav-link" data-page="games-domain.html">
+                        <span class="nav-icon">🎯</span>
+                        <span>Games Domain</span>
+                    </a>
+                    <a href="health-domain.html" class="nav-link" data-page="health-domain.html">
+                        <span class="nav-icon">🏥</span>
+                        <span>Health Domain</span>
+                    </a>
+                    <a href="housing-domain.html" class="nav-link" data-page="housing-domain.html">
+                        <span class="nav-icon">🏡</span>
+                        <span>Housing Domain</span>
+                    </a>
+                    <a href="manufacturing-domain.html" class="nav-link" data-page="manufacturing-domain.html">
+                        <span class="nav-icon">🏭</span>
+                        <span>Manufacturing Domain</span>
+                    </a>
+                    <a href="music-domain.html" class="nav-link" data-page="music-domain.html">
+                        <span class="nav-icon">🎵</span>
+                        <span>Music Domain</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
                     <div class="nav-section-title">Support</div>
                     <a href="visual-language-legend.html" class="nav-link" data-page="visual-language-legend.html">
                         <span class="nav-icon">🎨</span>
@@ -655,6 +687,10 @@ class MasterNavigation {
                     <a href="debugger-leaderboard.html" class="nav-link" data-page="debugger-leaderboard.html">
                         <span class="nav-icon">🏆</span>
                         <span>Debugger Leaderboard</span>
+                    </a>
+                    <a href="community-activity.html" class="nav-link" data-page="community-activity.html">
+                        <span class="nav-icon">👥</span>
+                        <span>Community Activity</span>
                     </a>
                     <div class="nav-link" onclick="MasterNav.logout()">
                         <span class="nav-icon">🚪</span>

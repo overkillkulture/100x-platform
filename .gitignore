@@ -1,78 +1,40 @@
-# Consciousness Revolution Platform - .gitignore
-
-# === DEPLOYMENT ===
-# Local Netlify folder
-.netlify
-
-# === SECRETS & CREDENTIALS ===
-.env
-.env.local
-.env.production
-*.key
-*.pem
-credentials.json
-api_keys.json
-*_passwords.csv
-all_passwords_backup.csv
-*_token.txt
-*_api_key.txt
-
-# === NODE/NPM ===
-node_modules/
-npm-debug.log*
-package-lock.json
-yarn.lock
-
-# === PYTHON ===
+# Python
 __pycache__/
 *.py[cod]
+*$py.class
 *.so
+.Python
+env/
 venv/
+ENV/
 *.egg-info/
+dist/
+build/
 
-# === OPERATING SYSTEM ===
+# Environment variables
+.env
+.env.local
+
+# Sessions and tokens
+twitter_session/
+instagram_session/
+youtube_token.pickle
+youtube_client_secrets.json
+
+# Logs
+*.log
+
+# OS
 .DS_Store
 Thumbs.db
-Desktop.ini
-$RECYCLE.BIN/
 
-# === EDITORS/IDEs ===
+# IDE
 .vscode/
 .idea/
 *.swp
-*~
+*.swo
 
-# === LOGS & TEMP ===
-*.log
-logs/
-*.tmp
-consciousness_log_*.json
-session_*.json
-
-# === BACKUPS ===
-*_backup.*
-*_old.*
-
-# === BUILD ===
-dist/
-build/
-out/
-.cache/
-
-# === SCREENSHOTS (development) ===
+# Temp files
+temp_voice.mp3
 current_screen.png
-screenshot_*.png
-automation_test_screenshot.png
-
-# === DATABASE ===
-*.sqlite
-*.db
-
-# === KEEP THESE ===
-!README.md
-!LICENSE
-!CONTRIBUTING.md
-!PUBLIC/*.html
-!PUBLIC/*.js
-!PLATFORM/*.html
-!DOCS/*.md
+*.tmp

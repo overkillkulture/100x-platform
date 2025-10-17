@@ -648,7 +648,7 @@
                 sync: async () => {
                     const consent = localStorage.getItem('sync_consent');
                     if (!consent) {
-                        console.log('Sync not enabled - data stays local');
+                        // Sync not enabled - data stays local
                         return;
                     }
                     // Sync logic here
@@ -1005,21 +1005,46 @@
         </div>
 
         <div class="cta-section">
-            <div class="cta-title">READY TO ESCAPE THE 9-5?</div>
+            <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; margin-bottom: 30px;">
+                <div style="font-size: 24px; color: #000; font-weight: bold; margin-bottom: 10px;">⚠️ Currently in Beta</div>
+                <div style="font-size: 18px; color: #1a1a2e;">
+                    We're working with beta testers to iron out the platform. Sign up to get notified when we launch!
+                </div>
+            </div>
+            <div class="cta-title">WANT TO BE NOTIFIED WHEN WE LAUNCH?</div>
             <div class="cta-subtitle">
                 Join the builder community. Hang out with real people. Build your ideas together. Have fun. Learn. Grow.
             </div>
-            <button class="cta-button" onclick="enterPlatform()" data-doc="Performs: enterPlatform()" data-why="Interactive feature for user control">
-                🚀 JOIN THE BUILDER COMMUNITY
+            <button class="cta-button" onclick="signupForUpdates()" data-doc="Performs: signupForUpdates()" data-why="Interactive feature for user control">
+                📧 GET NOTIFIED WHEN IT'S READY
             </button>
         </div>
     </div>
 
     <script src="PUBLIC/analytics.js"></script>
     <script>
+        // Safe Analytics Wrapper (Learned from extension error handling)
+        const SafeAnalytics = {
+            trackPageView: function() {
+                if (window.Analytics100X && typeof window.Analytics100X.trackPageView === 'function') {
+                    window.Analytics100X.trackPageView();
+                }
+            },
+            trackButtonClick: function(data) {
+                if (window.Analytics100X && typeof window.Analytics100X.trackButtonClick === 'function') {
+                    window.Analytics100X.trackButtonClick(data);
+                }
+            },
+            track: function(event, data) {
+                if (window.Analytics100X && typeof window.Analytics100X.track === 'function') {
+                    window.Analytics100X.track(event, data);
+                }
+            }
+        };
+
         // Track homepage view
         setTimeout(() => {
-            Analytics100X.trackPageView();
+            SafeAnalytics.trackPageView();
         }, 100);
 
         function openSystem(system) {
@@ -1044,7 +1069,7 @@
             const path = systems[system];
 
             // Track button click
-            Analytics100X.trackButtonClick({
+            SafeAnalytics.trackButtonClick({
                 text: `Open ${system}`,
                 id: `btn-${system}`,
                 target: path,
@@ -1058,16 +1083,28 @@
             }
         }
 
-        function enterPlatform() {
+        function signupForUpdates() {
             // Track main CTA click
-            Analytics100X.trackButtonClick({
-                text: 'Join Builder Community',
-                id: 'cta-join-community',
-                target: 'PLATFORM/login.html',
-                system: 'login'
+            SafeAnalytics.trackButtonClick({
+                text: 'Get Notified',
+                id: 'cta-signup-updates',
+                target: 'signup-for-updates.html',
+                system: 'signup'
             });
 
-            window.open('PLATFORM/login.html', '_blank');
+            window.open('signup-for-updates.html', '_blank');
+        }
+
+        function enterPlatform() {
+            // Track main CTA click
+            SafeAnalytics.trackButtonClick({
+                text: 'Join Builder Community',
+                id: 'cta-join-community',
+                target: 'signup-for-updates.html',
+                system: 'signup'
+            });
+
+            window.open('signup-for-updates.html', '_blank');
         }
 
     </script>

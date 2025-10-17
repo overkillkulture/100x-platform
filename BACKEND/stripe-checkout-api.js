@@ -99,7 +99,8 @@ router.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), as
             break;
 
         default:
-            console.log(`Unhandled event type: ${event.type}`);
+            // 🛡️ SECURITY: Log event type only (not full event data)
+            console.log(`Unhandled Stripe event: ${event.type}`);
     }
 
     res.json({ received: true });
@@ -113,9 +114,8 @@ async function fulfillOrder(session) {
         // Get session details
         const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
 
+        // 🛡️ SECURITY: Removed customer email and items logging (PII/PCI disclosure)
         console.log('Fulfilling order for session:', session.id);
-        console.log('Customer email:', session.customer_details.email);
-        console.log('Items:', lineItems.data);
 
         // TODO: Implement order fulfillment
         // - Send digital products via email

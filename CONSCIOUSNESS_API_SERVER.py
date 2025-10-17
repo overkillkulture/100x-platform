@@ -514,6 +514,6 @@ if __name__ == '__main__':
 
     app.run(
         host='0.0.0.0',
-        port=5000,
+        port=5001,  # Changed from 5000 (Singularity Stabilizer is on 5000)
         debug=True
     )

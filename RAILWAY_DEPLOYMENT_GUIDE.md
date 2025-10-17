@@ -1,0 +1,11 @@
+Flask==3.1.2
+Flask-CORS==5.0.0
+requests==2.32.3
+python-dotenv==1.0.0
+playwright==1.48.0
+pyperclip==1.9.0
+gTTS==2.5.4
+moviepy==2.1.2
+google-api-python-client==2.156.0
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.2.1

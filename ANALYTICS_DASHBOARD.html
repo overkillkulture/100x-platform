@@ -474,6 +474,9 @@
         <button class="refresh-btn" onclick="loadAnalytics()" data-doc="Performs: loadAnalytics()" data-why="Interactive feature for user control">🔄 REFRESH DATA</button>
     </div>
 
+    <!-- Load Security Utilities -->
+    <script src="./ASSETS/js/security-utils.js"></script>
+
     <script>
         // Netlify Analytics Check
         async function checkNetlifyAnalytics() {
@@ -546,16 +549,17 @@
                 return;
             }
 
+            // 🛡️ XSS PROTECTION: Escape all user-generated content
             container.innerHTML = submissions.map(sub => `
                 <div class="submission-item">
-                    <h3>${sub.name}</h3>
+                    <h3>${window.SafeDOM ? window.SafeDOM.escapeHTML(sub.name) : sub.name}</h3>
                     <div class="meta">
-                        📧 ${sub.email} |
+                        📧 ${window.SafeDOM ? window.SafeDOM.escapeHTML(sub.email) : sub.email} |
                         🧠 ${sub.consciousness}% Consciousness |
                         🕐 ${new Date(sub.timestamp).toLocaleString()}
                     </div>
                     <div class="content">
-                        <strong>Mission:</strong> ${sub.mission}
+                        <strong>Mission:</strong> ${window.SafeDOM ? window.SafeDOM.escapeHTML(sub.mission) : sub.mission}
                     </div>
                 </div>
             `).join('');
