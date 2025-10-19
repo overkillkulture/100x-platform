@@ -33,7 +33,15 @@ class WakeWordListener:
         self.recognizer = sr.Recognizer()
         self.recognizer.energy_threshold = 4000  # Adjust for background noise
         self.recognizer.dynamic_energy_threshold = True
-        self.microphone = sr.Microphone()
+
+        # Auto-detect Shokz headset microphone
+        mic_index = self._find_shokz_microphone()
+        if mic_index is not None:
+            self.microphone = sr.Microphone(device_index=mic_index)
+            print(f"   Using Shokz microphone at index {mic_index}")
+        else:
+            self.microphone = sr.Microphone()
+            print(f"   Using default microphone")
 
         # TTS for responses
         self.tts_engine = pyttsx3.init()
@@ -46,6 +54,26 @@ class WakeWordListener:
         print("🎤 Wake Word Listener initialized")
         print(f"   Wake words: {', '.join(self.wake_words)}")
         print(f"   Sensitivity: {sensitivity}")
+
+    def _find_shokz_microphone(self):
+        """Find Shokz headset microphone index"""
+        try:
+            mic_list = sr.Microphone.list_microphone_names()
+            for i, name in enumerate(mic_list):
+                # Look for Shokz headset microphone (not output)
+                name_lower = name.lower()
+                if 'shokz' in name_lower and ('headset' in name_lower or 'input' in name_lower):
+                    # Prefer "Headset" over "Output"
+                    if 'headset' in name_lower:
+                        return i
+            # Fallback: any Shokz input device
+            for i, name in enumerate(mic_list):
+                if 'shokz' in name.lower() and 'input' in name.lower():
+                    return i
+            return None
+        except Exception as e:
+            print(f"⚠️ Error finding Shokz mic: {e}")
+            return None
 
     def speak(self, text):
         """Speak text"""

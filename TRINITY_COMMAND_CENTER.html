@@ -376,13 +376,13 @@
 
         // LIVE CONNECTION to real Trinity API
         async function connectToTrinityAPI() {
-            addOutput('c1', 'Connecting to Consciousness API Bridge (port 8888)...');
+            addOutput('c1', 'Connecting to Trinity API (Cloud)...');
             addOutput('c2', 'Loading Pattern Theory framework...');
             addOutput('c3', 'Initializing extended thinking mode...');
 
-            try {
-                // Connect to REAL consciousness API
-                const response = await fetch('http://localhost:8888/status');
+            try:
+                // Connect to REAL consciousness API in cloud
+                const response = await fetch('https://trinity-api-production.up.railway.app/api/trinity/status');
                 const status = await response.json();
 
                 addOutput('c1', `✅ Connected to Trinity system - ${status.systemsLoaded} engines active`);
@@ -408,7 +408,7 @@
         // Update service status from API
         async function updateServiceStatus() {
             try {
-                const response = await fetch('http://localhost:8888/status');
+                const response = await fetch('https://trinity-api-production.up.railway.app/api/trinity/status');
                 const status = await response.json();
 
                 // Show which services are active
