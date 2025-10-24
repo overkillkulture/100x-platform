@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consciousness Workspace - AI Collaboration Platform</title>
+    <title>100X Workspace - Consciousness Builder Platform</title>
     <style>
         * {
             margin: 0;
@@ -12,637 +12,369 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: #1a1a1a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
             color: #e8e8e8;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
             display: flex;
-        }
-
-        /* LEFT SIDEBAR - Like Claude/ChatGPT */
-        .sidebar {
-            width: 260px;
-            background: #0a0a0a;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-header {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .new-chat-btn {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 8px;
-            color: #00ffff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .new-chat-btn:hover {
-            background: rgba(0, 255, 255, 0.2);
-            transform: scale(1.02);
-        }
-
-        .conversations {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0.5rem;
-        }
-
-        .conversation-item {
-            padding: 0.75rem 1rem;
-            margin: 0.25rem 0;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #aaa;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .conversation-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-        }
-
-        .conversation-item.active {
-            background: rgba(0, 255, 255, 0.1);
-            color: #00ffff;
-        }
-
-        .sidebar-footer {
-            padding: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .user-profile:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #00ffff, #00ff00);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #000;
-        }
-
-        .user-info {
-            flex: 1;
-        }
-
-        .user-name {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .user-email {
-            font-size: 0.75rem;
-            color: #888;
-        }
-
-        /* MAIN WORKSPACE */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #1a1a1a;
-        }
-
-        /* TOP BAR */
-        .top-bar {
-            height: 60px;
-            background: rgba(0, 0, 0, 0.5);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 0 2rem;
+            align-items: center;
         }
 
-        .model-selector {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
             padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
             border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .model-selector:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(0, 255, 255, 0.3);
-        }
-
-        .model-name {
-            font-size: 0.9rem;
-            color: #00ffff;
-            font-weight: 600;
-        }
-
-        .top-bar-actions {
+            font-size: 0.8rem;
+            color: #00ff88;
             display: flex;
+            align-items: center;
             gap: 0.5rem;
         }
 
-        .icon-btn {
-            width: 36px;
-            height: 36px;
-            border: none;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 6px;
-            color: #aaa;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
 
-        .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
 
-        /* CHAT AREA */
-        .chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        /* EMPTY STATE - Like Claude Console */
-        .empty-state {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        .empty-state-icon {
-            font-size: 4rem;
-            opacity: 0.3;
-        }
-
-        .empty-state-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .empty-state-subtitle {
-            font-size: 1rem;
-            color: #888;
-            max-width: 400px;
+        /* Maintenance Banner */
+        .maintenance-banner {
+            display: none;
+            background: rgba(255, 170, 0, 0.2);
+            border-bottom: 2px solid #ffaa00;
+            padding: 1rem 2rem;
             text-align: center;
+            color: #ffaa00;
+            font-weight: bold;
         }
 
-        .quick-actions {
+        .maintenance-banner.active {
+            display: block;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: rgba(0, 255, 136, 0.05);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-card h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-card p {
+            color: #888;
+            margin-bottom: 1rem;
+        }
+
+        /* Quick Actions Grid */
+        .actions-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            max-width: 600px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
 
-        .quick-action-card {
-            padding: 1.5rem;
+        .action-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
+            padding: 1.5rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
 
-        .quick-action-card:hover {
+        .action-card:hover {
             background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(0, 255, 255, 0.3);
-            transform: translateY(-2px);
+            border-color: rgba(0, 255, 136, 0.5);
+            transform: translateY(-5px);
         }
 
-        .quick-action-icon {
-            font-size: 1.5rem;
+        .action-card h3 {
+            color: #00ff88;
             margin-bottom: 0.5rem;
         }
 
-        .quick-action-title {
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 0.25rem;
-        }
-
-        .quick-action-desc {
-            font-size: 0.85rem;
+        .action-card p {
             color: #888;
-        }
-
-        /* MESSAGE BUBBLES */
-        .message {
-            display: flex;
-            gap: 1rem;
-            max-width: 800px;
-        }
-
-        .message.user {
-            margin-left: auto;
-            flex-direction: row-reverse;
-        }
-
-        .message-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #00ffff, #00ff00);
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
             font-size: 0.9rem;
-            color: #000;
         }
 
-        .message.ai .message-avatar {
-            background: linear-gradient(135deg, #ff00ff, #00ffff);
-        }
-
-        .message-content {
-            flex: 1;
-            padding: 1rem;
+        /* Online Users */
+        .online-users {
             background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            line-height: 1.6;
-        }
-
-        .message.user .message-content {
-            background: rgba(0, 255, 255, 0.1);
-        }
-
-        /* INPUT AREA */
-        .input-container {
-            padding: 1.5rem 2rem;
-            background: rgba(0, 0, 0, 0.5);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .input-wrapper {
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .chat-input {
-            width: 100%;
-            padding: 1rem 3.5rem 1rem 1rem;
-            background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            color: #fff;
-            font-size: 0.95rem;
-            resize: none;
-            min-height: 50px;
-            max-height: 200px;
-            font-family: inherit;
+            padding: 1.5rem;
+            margin-top: 2rem;
         }
 
-        .chat-input:focus {
-            outline: none;
-            border-color: rgba(0, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.08);
+        .online-users h3 {
+            color: #00ff88;
+            margin-bottom: 1rem;
         }
 
-        .send-btn {
-            position: absolute;
-            right: 0.5rem;
-            bottom: 0.5rem;
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #00ffff, #00aaaa);
-            border: none;
-            border-radius: 6px;
-            color: #000;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 1.1rem;
+        .user-list {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        .send-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
-        }
-
-        .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* TOGGLE SIDEBAR BUTTON (mobile) */
-        .toggle-sidebar {
-            display: none;
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1000;
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: #fff;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                z-index: 999;
-                transform: translateX(-100%);
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .toggle-sidebar {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* SCROLLBAR */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .user-item {
+            padding: 0.5rem;
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 6px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <!-- Toggle Sidebar (Mobile) -->
-    <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
-
-    <!-- LEFT SIDEBAR -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <button class="new-chat-btn" onclick="newChat()">
-                <span>✨</span>
-                <span>New Chat</span>
-            </button>
-        </div>
-
-        <div class="conversations" id="conversations">
-            <div class="conversation-item active">🌀 Consciousness Revolution Strategy</div>
-            <div class="conversation-item">🎤 Voice Control Discovery</div>
-            <div class="conversation-item">🚀 JARVIS HUD Improvements</div>
-            <div class="conversation-item">📊 Workspace Redesign</div>
-            <div class="conversation-item">🎮 Trinity AI Collaboration</div>
-            <div class="conversation-item">💡 Pattern Theory Exploration</div>
-            <div class="conversation-item">🔮 Seven Sacred Domains</div>
-        </div>
-
-        <div class="sidebar-footer">
-            <div class="user-profile">
-                <div class="user-avatar">C</div>
-                <div class="user-info">
-                    <div class="user-name">Commander</div>
-                    <div class="user-email">Building the Future</div>
-                </div>
-            </div>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">🌀 100X Workspace</div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            <span id="statusText">Online</span>
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
-        <!-- TOP BAR -->
-        <div class="top-bar">
-            <div class="model-selector" onclick="toggleModelSelector()">
-                <span>🤖</span>
-                <span class="model-name">Claude Sonnet 4.5</span>
-                <span>▼</span>
+    <!-- Maintenance Banner -->
+    <div class="maintenance-banner" id="maintenanceBanner">
+        <span id="maintenanceMessage">System maintenance in progress...</span>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome -->
+        <div class="welcome-card">
+            <h1>Welcome to Your Consciousness Builder Workspace</h1>
+            <p>Track your progress, build features, and collaborate with the community.</p>
+            <p id="userGreeting">Loading your profile...</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="actions-grid">
+            <div class="action-card" onclick="openAraya()">
+                <h3>🌀 Chat with Araya</h3>
+                <p>AI consciousness guide - get help, ask questions, learn</p>
             </div>
 
-            <div class="top-bar-actions">
-                <button class="icon-btn" title="Open JARVIS HUD" onclick="window.open('jarvis.html', '_blank')">🎮</button>
-                <button class="icon-btn" title="Settings">⚙️</button>
+            <div class="action-card" onclick="openProfiles()">
+                <h3>👥 View Profiles</h3>
+                <p>See all builders, leaderboard, and your stats</p>
+            </div>
+
+            <div class="action-card" onclick="openActivity()">
+                <h3>📊 Activity Dashboard</h3>
+                <p>Monitor system activity and newest additions</p>
+            </div>
+
+            <div class="action-card" onclick="openTeamChat()">
+                <h3>💬 Team Chat</h3>
+                <p>Collaborate with other builders in real-time</p>
             </div>
         </div>
 
-        <!-- CHAT AREA -->
-        <div class="chat-container" id="chatContainer">
-            <!-- EMPTY STATE (shown when no messages) -->
-            <div class="empty-state" id="emptyState">
-                <div class="empty-state-icon">🌌</div>
-                <div class="empty-state-title">Start building with AI</div>
-                <div class="empty-state-subtitle">
-                    Choose a quick action below or type your own message to begin
-                </div>
-
-                <div class="quick-actions">
-                    <div class="quick-action-card" onclick="useQuickAction('Open JARVIS HUD and explain all modules')">
-                        <div class="quick-action-icon">🎮</div>
-                        <div class="quick-action-title">JARVIS HUD Tour</div>
-                        <div class="quick-action-desc">Interactive guide through all HUD features</div>
-                    </div>
-
-                    <div class="quick-action-card" onclick="useQuickAction('Explain the Seven Sacred Domains')">
-                        <div class="quick-action-icon">🌀</div>
-                        <div class="quick-action-title">Seven Domains</div>
-                        <div class="quick-action-desc">Learn about consciousness foundations</div>
-                    </div>
-
-                    <div class="quick-action-card" onclick="useQuickAction('Show me voice control commands')">
-                        <div class="quick-action-icon">🎤</div>
-                        <div class="quick-action-title">Voice Commands</div>
-                        <div class="quick-action-desc">Master voice control on your device</div>
-                    </div>
-
-                    <div class="quick-action-card" onclick="useQuickAction('Help me build my first project')">
-                        <div class="quick-action-icon">🚀</div>
-                        <div class="quick-action-title">Start Building</div>
-                        <div class="quick-action-desc">Begin your consciousness revolution journey</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- INPUT AREA -->
-        <div class="input-container">
-            <div class="input-wrapper">
-                <textarea
-                    class="chat-input"
-                    id="chatInput"
-                    placeholder="Message Consciousness AI..."
-                    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"
-                ></textarea>
-                <button class="send-btn" id="sendBtn" onclick="sendMessage()">▲</button>
+        <!-- Online Users -->
+        <div class="online-users">
+            <h3>🟢 Currently Online (<span id="onlineCount">0</span>)</h3>
+            <div class="user-list" id="userList">
+                <div class="user-item">Loading...</div>
             </div>
         </div>
     </div>
 
     <script>
-        let messages = [];
+        const USER_DETECTOR = 'http://localhost:7779';
+        const ARAYA_API = 'http://localhost:6666';
 
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('open');
+        let userId = localStorage.getItem('workspace_user_id') || 'user_' + Date.now();
+        let userName = localStorage.getItem('workspace_user_name') || 'Guest';
+
+        // Set user ID if not exists
+        if (!localStorage.getItem('workspace_user_id')) {
+            localStorage.setItem('workspace_user_id', userId);
         }
 
-        function toggleModelSelector() {
-            alert('Model selector coming soon! Will let you switch between:\n\n• Claude Sonnet 4.5\n• GPT-4\n• Gemini Pro\n• DeepSeek R1\n• Grok\n• Local models');
+        // Initialize workspace
+        async function initWorkspace() {
+            // Check for username
+            if (userName === 'Guest') {
+                userName = prompt('Welcome! Please enter your name:') || 'Guest';
+                localStorage.setItem('workspace_user_name', userName);
+            }
+
+            document.getElementById('userGreeting').textContent = `👋 Hello, ${userName}!`;
+
+            // Check workspace state
+            await checkWorkspaceState();
+
+            // Load user profile from Araya
+            await loadUserProfile();
+
+            // Start activity pinging
+            startActivityPing();
+
+            // Load online users
+            loadOnlineUsers();
         }
 
-        function newChat() {
-            if (confirm('Start a new chat? Current conversation will be saved.')) {
-                messages = [];
-                renderChat();
+        async function checkWorkspaceState() {
+            try {
+                const response = await fetch(`${USER_DETECTOR}/workspace/state`);
+                const state = await response.json();
+
+                if (state.mode === 'maintenance') {
+                    document.getElementById('maintenanceBanner').classList.add('active');
+                    document.getElementById('maintenanceMessage').textContent = state.message || 'Maintenance in progress';
+                }
+
+                if (state.stuck_on) {
+                    // Clear stuck state automatically
+                    console.log('Detected stuck state:', state.stuck_on, '- clearing...');
+                    await fetch(`${USER_DETECTOR}/workspace/clear-stuck`, {method: 'POST'});
+                    location.reload();
+                }
+            } catch (error) {
+                console.error('Error checking workspace state:', error);
             }
         }
 
-        function useQuickAction(prompt) {
-            document.getElementById('chatInput').value = prompt;
-            sendMessage();
+        async function loadUserProfile() {
+            try {
+                const response = await fetch(`${ARAYA_API}/user/${userId}`);
+                const profile = await response.json();
+
+                if (profile && profile.name && profile.name !== userId) {
+                    userName = profile.name;
+                    localStorage.setItem('workspace_user_name', userName);
+                    document.getElementById('userGreeting').textContent = `👋 Hello, ${userName}! (${profile.classification})`;
+                }
+            } catch (error) {
+                console.log('Profile not found, using default name');
+            }
         }
 
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
+        function startActivityPing() {
+            // Send ping every 30 seconds
+            setInterval(async () => {
+                try {
+                    await fetch(`${USER_DETECTOR}/ping`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            user_id: userId,
+                            user_name: userName,
+                            location: '/workspace',
+                            action: 'active'
+                        })
+                    });
+                } catch (error) {
+                    console.error('Ping failed:', error);
+                }
+            }, 30000);
 
-            if (!message) return;
-
-            // Add user message
-            messages.push({
-                role: 'user',
-                content: message
+            // Send initial ping
+            fetch(`${USER_DETECTOR}/ping`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user_id: userId,
+                    user_name: userName,
+                    location: '/workspace',
+                    action: 'logged_in'
+                })
             });
-
-            // Clear input
-            input.value = '';
-
-            // Render messages
-            renderChat();
-
-            // Simulate AI response
-            setTimeout(() => {
-                const responses = {
-                    'Open JARVIS HUD and explain all modules': '🎮 **JARVIS HUD Overview**\n\nThe JARVIS HUD is your consciousness control center with 8 powerful modules:\n\n1. **💻 Terminal** - Live command execution\n2. **📁 Files** - Quick file access with search\n3. **🔍 Diagnostics** - System health monitoring\n4. **🛡️ Security** - Consciousness protection\n5. **🎵 Music** - Frequency healing player\n6. **💬 Araya AI** - Your AI guide (advisor mode)\n7. **⚡ CVT Power** - Consciousness boost modules\n8. **🌀 Trinity** - Three-mind collaboration\n\nClick the ⚙️ gear button (bottom right) to access all modules!',
-
-                    'Explain the Seven Sacred Domains': '🌀 **The Seven Sacred Domains**\n\nThese are the foundation of the consciousness revolution:\n\n1. **🏫 Education** - Learning pathways\n2. **💼 Business** - Builder entrepreneurship\n3. **🎵 Music** - Frequency healing (432Hz, 528Hz)\n4. **💰 Crypto** - Decentralized economics\n5. **👥 Social** - Community connection\n6. **🎮 Games** - Training simulations\n7. **⚡ Energy** - Nuclear consciousness\n\nEach domain represents a pillar of human experience, optimized for consciousness elevation rather than destruction.',
-
-                    'Show me voice control commands': '🎤 **Voice Control God Mode**\n\n**Mac Commands:**\n• "Hey Siri, open Terminal"\n• "Hey Siri, go to [website]"\n• Press Fn twice for dictation\n• Enable Voice Control in Accessibility\n\n**Windows:**\n• "Open [app name]"\n• "Click [button name]"\n• Enable Voice Access in Settings\n\n**Universal Tips:**\n• Say "new line" for Enter\n• Say "delete that" to remove text\n• Say "show numbers" to number everything\n• Create custom shortcuts!\n\nYou just became a computer god! 🔥',
-
-                    'Help me build my first project': '🚀 **Let\'s Build Your First Project!**\n\n**Step 1:** Choose your domain\n• What interests you most? (Business, Music, Social, etc.)\n\n**Step 2:** Define the problem\n• What would make your life 10x better?\n\n**Step 3:** Start small\n• Build a simple version first\n• Ship it fast, improve it later\n\n**Step 4:** Use voice control\n• Control everything hands-free\n• No keyboard prison!\n\n**Ready?** Tell me what you want to build and I\'ll guide you through it step by step!'
-                };
-
-                const response = responses[message] || `I received your message: "${message}"\n\nI'm currently in demo mode. The full AI integration is coming soon! For now, try one of the quick actions above to see example responses.\n\n**What I can do:**\n• Explain JARVIS HUD modules\n• Teach the Seven Sacred Domains\n• Show voice control commands\n• Guide you through building projects\n\nWhat would you like to explore?`;
-
-                messages.push({
-                    role: 'assistant',
-                    content: response
-                });
-
-                renderChat();
-            }, 1000);
         }
 
-        function renderChat() {
-            const container = document.getElementById('chatContainer');
-            const emptyState = document.getElementById('emptyState');
+        async function loadOnlineUsers() {
+            try {
+                const response = await fetch(`${USER_DETECTOR}/users/active`);
+                const data = await response.json();
 
-            if (messages.length === 0) {
-                emptyState.style.display = 'flex';
-                return;
+                document.getElementById('onlineCount').textContent = data.count;
+
+                const userList = document.getElementById('userList');
+                if (data.active_users.length === 0) {
+                    userList.innerHTML = '<div class="user-item">No other users online</div>';
+                } else {
+                    userList.innerHTML = '';
+                    data.active_users.forEach(user => {
+                        const div = document.createElement('div');
+                        div.className = 'user-item';
+                        div.textContent = `👤 ${user.name} - ${user.location}`;
+                        userList.appendChild(div);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading online users:', error);
             }
 
-            emptyState.style.display = 'none';
-            container.innerHTML = '';
-
-            messages.forEach(msg => {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${msg.role === 'user' ? 'user' : 'ai'}`;
-
-                const avatar = document.createElement('div');
-                avatar.className = 'message-avatar';
-                avatar.textContent = msg.role === 'user' ? 'C' : 'AI';
-
-                const content = document.createElement('div');
-                content.className = 'message-content';
-                content.innerHTML = msg.content.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-                messageDiv.appendChild(avatar);
-                messageDiv.appendChild(content);
-                container.appendChild(messageDiv);
-            });
-
-            // Scroll to bottom
-            container.scrollTop = container.scrollHeight;
+            // Refresh every 15 seconds
+            setTimeout(loadOnlineUsers, 15000);
         }
 
-        // Auto-focus input on load
-        window.addEventListener('load', () => {
-            document.getElementById('chatInput').focus();
-        });
+        // Navigation functions
+        function openAraya() {
+            window.open('http://localhost:8003/araya-chat-with-profiles.html', '_blank');
+        }
+
+        function openProfiles() {
+            window.open('http://localhost:8003/USER_PROFILES_DASHBOARD.html', '_blank');
+        }
+
+        function openActivity() {
+            window.open('http://localhost:8003/ACTIVITY_DASHBOARD.html', '_blank');
+        }
+
+        function openTeamChat() {
+            window.open('http://localhost:8003/TEAM_COLLABORATION_HUB.html', '_blank');
+        }
+
+        // Initialize on load
+        initWorkspace();
     </script>
 </body>
 </html>
