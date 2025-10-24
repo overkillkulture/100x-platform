@@ -227,8 +227,8 @@
     </div>
 
     <script>
-        const USER_DETECTOR = 'http://localhost:7779';
-        const ARAYA_API = 'http://localhost:6666';
+        const USER_DETECTOR = '#';
+        const ARAYA_API = '#';
 
         let userId = localStorage.getItem('workspace_user_id') || 'user_' + Date.now();
         let userName = localStorage.getItem('workspace_user_name') || 'Guest';
@@ -358,23 +358,25 @@
 
         // Navigation functions
         function openAraya() {
-            window.open('http://localhost:8003/araya-chat-with-profiles.html', '_blank');
+            window.open('#/araya-chat-with-profiles.html', '_blank');
         }
 
         function openProfiles() {
-            window.open('http://localhost:8003/USER_PROFILES_DASHBOARD.html', '_blank');
+            window.open('#/USER_PROFILES_DASHBOARD.html', '_blank');
         }
 
         function openActivity() {
-            window.open('http://localhost:8003/ACTIVITY_DASHBOARD.html', '_blank');
+            window.open('#/ACTIVITY_DASHBOARD.html', '_blank');
         }
 
         function openTeamChat() {
-            window.open('http://localhost:8003/TEAM_COLLABORATION_HUB.html', '_blank');
+            window.open('#/TEAM_COLLABORATION_HUB.html', '_blank');
         }
 
         // Initialize on load
         initWorkspace();
     </script>
+    <!-- JARVIS HUD System - Ctrl+J to toggle -->
+    <script src="/universal-hud-embed.js"></script>
 </body>
 </html>
