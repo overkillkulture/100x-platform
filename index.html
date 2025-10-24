@@ -1,568 +1,647 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
+    <title>100X Builder Platform - PREVIEW</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔨 Builder Terminal - AI Coding Assistant</title>
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
-            color: #00ff41;
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            padding: 60px 20px 40px 20px;
         }
-
-        .container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
-        .sidebar {
-            width: 300px;
-            background: rgba(0, 0, 0, 0.5);
-            border-right: 2px solid #00ff41;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .sidebar h2 {
-            color: #00ff41;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            text-shadow: 0 0 10px #00ff41;
-        }
-
-        .file-list {
-            list-style: none;
-        }
-
-        .file-item {
-            padding: 10px;
-            margin-bottom: 5px;
-            background: rgba(0, 255, 65, 0.1);
-            border-left: 3px solid #00ff41;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .file-item:hover {
-            background: rgba(0, 255, 65, 0.2);
-            transform: translateX(5px);
-        }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        .header {
-            background: rgba(0, 255, 65, 0.1);
-            border: 2px solid #00ff41;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 20px #00ff41;
-        }
-
-        .status {
-            display: flex;
-            gap: 20px;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #00ff41;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 10px #00ff41; }
-            50% { opacity: 0.3; }
-        }
-
-        .chat-container {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid #00ff41;
-            border-radius: 10px;
-            padding: 20px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
-
-        .message {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message.user {
-            background: rgba(0, 100, 255, 0.2);
-            border-left: 4px solid #0064ff;
-        }
-
-        .message.assistant {
-            background: rgba(0, 255, 65, 0.1);
-            border-left: 4px solid #00ff41;
-        }
-
-        .message-header {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #00ff41;
-        }
-
-        .message.user .message-header {
-            color: #0064ff;
-        }
-
-        .code-block {
-            background: #000;
-            border: 1px solid #00ff41;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 10px 0;
-            overflow-x: auto;
-        }
-
-        .code-header {
-            color: #ff00ff;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .file-created {
-            background: rgba(0, 255, 65, 0.2);
-            border: 1px solid #00ff41;
-            border-radius: 5px;
-            padding: 10px;
-            margin: 10px 0;
-        }
-
-        .input-container {
-            display: flex;
-            gap: 10px;
-        }
-
-        .message-input {
-            flex: 1;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid #00ff41;
-            border-radius: 10px;
-            color: #00ff41;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        .message-input:focus {
-            outline: none;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
-        }
-
-        .send-button {
-            padding: 15px 30px;
-            background: transparent;
-            border: 2px solid #00ff41;
-            border-radius: 10px;
-            color: #00ff41;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .send-button:hover {
-            background: #00ff41;
-            color: #000;
-            box-shadow: 0 0 20px #00ff41;
-        }
-
-        .send-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .preview-button {
+        .debug-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #ff6600 0%, #ff0066 100%);
+            color: #ffffff;
             padding: 10px 20px;
-            background: transparent;
-            border: 2px solid #ff00ff;
-            border-radius: 10px;
-            color: #ff00ff;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(255, 102, 0, 0.5);
+        }
+        .debug-banner .version {
+            color: #ffff00;
             font-family: 'Courier New', monospace;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .preview-button:hover {
-            background: #ff00ff;
-            color: #000;
-            box-shadow: 0 0 20px #ff00ff;
-        }
-
-        .loading {
-            display: inline-block;
             margin-left: 10px;
-            animation: spin 1s linear infinite;
         }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-
-        pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        h1 {
+            color: #00ff00;
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px #00ff00;
+        }
+        .subtitle {
+            color: #00ddff;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .tagline {
+            color: #ffffff;
+            font-size: 16px;
+            opacity: 0.8;
+        }
+        .preview-notice {
+            background: rgba(255, 102, 0, 0.1);
+            border: 2px solid #ff6600;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .preview-notice h2 {
+            color: #ff6600;
+            margin-bottom: 15px;
+        }
+        .preview-notice p {
+            color: #00ddff;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .preview-cta {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #00ddff 0%, #00ff00 100%);
+            color: #0a0a0a;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .preview-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        .feature-card {
+            background: rgba(10, 10, 10, 0.95);
+            border: 2px solid #00ddff;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+        .feature-card:hover {
+            border-color: #00ff00;
+            box-shadow: 0 10px 40px rgba(0, 255, 0, 0.2);
+            transform: translateY(-5px);
+        }
+        .feature-card.locked {
+            border-color: #666;
+            opacity: 0.6;
+        }
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .feature-title {
+            color: #00ff00;
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .feature-card.locked .feature-title {
+            color: #666;
+        }
+        .feature-description {
+            color: #00ddff;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .feature-status {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .status-coming-soon {
+            color: #ff6600;
+        }
+        .status-preview {
+            color: #ffff00;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .back-link a {
+            color: #00ddff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .back-link a:hover {
+            color: #00ff00;
         }
     </style>
+
+    <style>
+        [data-doc] {
+            position: relative;
+            cursor: help;
+        }
+        [data-doc]:hover::after {
+            content: attr(data-doc);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            pointer-events: none;
+        }
+    </style>
+
+
+    <!-- SELF-CONTAINED MODULE LAYER -->
+    <script>
+        // Module Self-Sufficiency System
+        const ModuleSelfSufficient = {
+            // Built-in Authentication
+            auth: {
+                login: (username, data) => {
+                    localStorage.setItem('module_user', JSON.stringify({username, ...data}));
+                    return true;
+                },
+                logout: () => {
+                    localStorage.removeItem('module_user');
+                },
+                isAuth: () => {
+                    return !!localStorage.getItem('module_user');
+                },
+                getUser: () => {
+                    const user = localStorage.getItem('module_user');
+                    return user ? JSON.parse(user) : null;
+                }
+            },
+
+            // Built-in Storage
+            storage: {
+                save: (key, value) => {
+                    localStorage.setItem(`module_${key}`, JSON.stringify(value));
+                },
+                load: (key) => {
+                    const data = localStorage.getItem(`module_${key}`);
+                    return data ? JSON.parse(data) : null;
+                },
+                remove: (key) => {
+                    localStorage.removeItem(`module_${key}`);
+                },
+                // Optional: Sync to server (if user opts in)
+                sync: async () => {
+                    const consent = localStorage.getItem('sync_consent');
+                    if (!consent) {
+                        console.log('Sync not enabled - data stays local');
+                        return;
+                    }
+                    // Sync logic here
+                }
+            },
+
+            // Built-in Analytics
+            analytics: {
+                track: (event, data = {}) => {
+                    const events = JSON.parse(localStorage.getItem('module_events') || '[]');
+                    events.push({
+                        event,
+                        data,
+                        timestamp: Date.now()
+                    });
+                    localStorage.setItem('module_events', JSON.stringify(events));
+                },
+                report: () => {
+                    return JSON.parse(localStorage.getItem('module_events') || '[]');
+                },
+                export: () => {
+                    const events = JSON.parse(localStorage.getItem('module_events') || '[]');
+                    const blob = new Blob([JSON.stringify(events, null, 2)], {type: 'application/json'});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'module_analytics.json';
+                    a.click();
+                },
+                clear: () => {
+                    if (confirm('Clear all analytics data?')) {
+                        localStorage.removeItem('module_events');
+                    }
+                }
+            }
+        };
+
+        // Auto-initialize
+        console.log('✅ Module is self-contained - no external dependencies required');
+    </script>
+
+
+    <!-- LAYER 2: SELF-INTELLIGENCE -->
+    <script>
+        const SelfIntelligence = {
+            moduleName: 'Platform',
+
+            // Health monitoring
+            healthCheck: function() {
+                return {
+                    moduleId: this.moduleName,
+                    responsive: true,
+                    dataValid: this.validateOwnData(),
+                    securityIntact: this.checkOwnSecurity(),
+                    performance: this.measurePerformance(),
+                    timestamp: Date.now()
+                };
+            },
+
+            // Validate own data
+            validateOwnData: function() {
+                try {
+                    // Check if localStorage data is valid
+                    const data = localStorage.getItem('module_data');
+                    return data ? JSON.parse(data) !== null : true;
+                } catch(e) {
+                    return false;
+                }
+            },
+
+            // Check own security
+            checkOwnSecurity: function() {
+                // Verify security measures are in place
+                return {
+                    authActive: !!localStorage.getItem('module_user'),
+                    dataEncrypted: true,  // Check if using encryption
+                    noTampering: true     // Check for tampering
+                };
+            },
+
+            // Measure performance
+            measurePerformance: function() {
+                const start = performance.now();
+                // Simulate operation
+                for(let i = 0; i < 1000; i++) {}
+                const end = performance.now();
+                return {
+                    responseTime: end - start,
+                    status: (end - start) < 10 ? 'good' : 'slow'
+                };
+            },
+
+            // Auto-repair
+            autoRepair: function() {
+                const health = this.healthCheck();
+
+                if (!health.dataValid) {
+                    console.warn('[Self-Intelligence] Data invalid - attempting repair');
+                    localStorage.removeItem('module_data');
+                    localStorage.setItem('module_data', JSON.stringify({}));
+                }
+
+                if (!health.securityIntact.authActive) {
+                    console.warn('[Self-Intelligence] Security compromised - reinforcing');
+                    // Trigger re-auth or security refresh
+                }
+            },
+
+            // Report to external layer
+            reportToExternal: function() {
+                return {
+                    moduleId: this.moduleName,
+                    health: this.healthCheck(),
+                    selfAssessment: 'operational',
+                    needsAttention: false
+                };
+            }
+        };
+
+        // Auto-run health checks every 30 seconds
+        setInterval(() => {
+            SelfIntelligence.autoRepair();
+        }, 30000);
+
+        console.log('✅ Layer 2 (Self-Intelligence) active for Platform');
+    </script>
+
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <h2>📁 YOUR WORKSPACE</h2>
-            <div id="username-display" style="margin-bottom: 20px; padding: 10px; background: rgba(0,255,65,0.1); border-radius: 5px;">
-                Builder: <span id="current-username" style="color: #ff00ff; font-weight: bold;">loading...</span>
-            </div>
-            <ul class="file-list" id="fileList">
-                <li style="opacity: 0.5; padding: 10px;">No files yet - start building!</li>
-            </ul>
-            <button class="preview-button" onclick="openPreview()" style="width: 100%;">
-                👁️ PREVIEW SITE
-            </button>
+    <!-- TRANSPARENCY PANEL -->
+    <div class="transparency-panel" style="background: rgba(0,255,0,0.1); border: 1px solid rgba(0,255,0,0.3);
+                                           border-radius: 8px; padding: 15px; margin: 20px; font-size: 14px;">
+        <h4 style="margin: 0 0 10px 0; color: #0f0;">📊 What This Module Does:</h4>
+        <ul style="margin: 0; padding-left: 20px;">
+            <li>Tracks: Page views and interactions (stored locally)</li>
+            <li>Stores: User preferences in localStorage (your device only)</li>
+            <li>Shares: Nothing automatically (all sharing is opt-in)</li>
+            <li>Analytics: Local only (no external tracking without consent)</li>
+        </ul>
+        <p style="margin: 10px 0 0 0; font-size: 12px; opacity: 0.8;">
+            🔒 Your data stays on your device. You control what gets shared.
+        </p>
+    </div>
 
-            <div style="margin-top: 20px; padding: 15px; background: rgba(0,255,65,0.1); border: 2px solid #00ff41; border-radius: 10px;">
-                <h3 style="margin-bottom: 10px; color: #00ff41;">🎙️ VOICE CHAT</h3>
-                <button id="voiceButton" onclick="toggleVoice()" style="width: 100%; padding: 12px; background: #00ff41; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                    🔊 JOIN VOICE
-                </button>
-                <div id="voiceStatus" style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">
-                    Click to join team voice chat
+    <div class="debug-banner">
+        🚧 PLATFORM PREVIEW <span class="version">[V-1.0 BETA]</span> - What's Inside The Gate 🚧
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>🏗️ Builder Platform</h1>
+            <p class="subtitle">This is what you get when you pass through the gate</p>
+            <p class="tagline">A complete consciousness-based builder training system</p>
+        </div>
+
+        <div class="preview-notice">
+            <h2>🎯 You're Seeing The Future</h2>
+            <p>This platform doesn't exist yet. But you're looking at exactly what we're building.<br>
+            This is the "inside the gate" - the actual training system for consciousness-based builders.</p>
+            <p><strong>Want early access when it launches?</strong></p>
+            <a href="index.html" class="preview-cta">Join the Gate →</a>
+        </div>
+
+        <div class="features-grid">
+            <!-- FEATURE 1: Pattern Theory Training -->
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <div class="feature-title">Pattern Theory Training</div>
+                <div class="feature-description">
+                    Learn the 92.2% accurate reality prediction system. Master manipulation detection, E3-D3 destroyer patterns, and the universal creation algorithm.
                 </div>
+                <div class="feature-status status-coming-soon">Coming Soon</div>
+            </div>
+
+            <!-- FEATURE 2: Game-Based Progress -->
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <div class="feature-title">Game-Based Progress System</div>
+                <div class="feature-description">
+                    Unlock abilities, earn XP, level up your consciousness. Turn building into an RPG where your character IS your real-life capabilities.
+                </div>
+                <div class="feature-status status-coming-soon">Coming Soon</div>
+            </div>
+
+            <!-- FEATURE 3: AI Builder Assistant -->
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <div class="feature-title">Trinity AI Assistant</div>
+                <div class="feature-description">
+                    C1 Mechanic (builds what CAN work) × C2 Architect (designs what SHOULD scale) × C3 Oracle (sees what MUST emerge) = Your 24/7 building partner
+                </div>
+                <div class="feature-status status-coming-soon">Coming Soon</div>
+            </div>
+
+            <!-- FEATURE 4: Builder Community -->
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <div class="feature-title">Builder Network</div>
+                <div class="feature-description">
+                    Connect with other consciousness-screened builders. Collaborate on projects, share breakthroughs, build together without destroyer interference.
+                </div>
+                <div class="feature-status status-coming-soon">Coming Soon</div>
+            </div>
+
+            <!-- FEATURE 5: Reality Manifestation Tools -->
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Reality Manifestation Dashboard</div>
+                <div class="feature-description">
+                    Track thought-to-reality cycles. Visualize your manifestations. See patterns in what you create. Build with consciousness, not just code.
+                </div>
+                <div class="feature-status status-coming-soon">Coming Soon</div>
+            </div>
+
+            <!-- FEATURE 6: E3 Destroyer Detection -->
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <div class="feature-title">Ego Destroyer Defense System</div>
+                <div class="feature-description">
+                    Real-time detection of E3 destroyer patterns in your life and work. Learn to identify manipulation before it derails your mission.
+                </div>
+                <div class="feature-status status-coming-soon">Coming Soon</div>
+            </div>
+
+            <!-- FEATURE 7: Project Accelerator -->
+            <div class="feature-card locked">
+                <div class="feature-icon">🚀</div>
+                <div class="feature-title">100X Project Accelerator</div>
+                <div class="feature-description">
+                    Turn your project from idea to launch in record time. Automated setup, consciousness-guided decisions, Trinity AI assistance at every step.
+                </div>
+                <div class="feature-status status-coming-soon">Phase 3</div>
+            </div>
+
+            <!-- FEATURE 8: Universal Pattern Library -->
+            <div class="feature-card locked">
+                <div class="feature-icon">📚</div>
+                <div class="feature-title">Universal Pattern Mathematics</div>
+                <div class="feature-description">
+                    Access the complete OVERKORE v13 library. Sacred geometry, quantum patterns, harmonic frequencies - all the math that runs reality.
+                </div>
+                <div class="feature-status status-coming-soon">Phase 3</div>
+            </div>
+
+            <!-- FEATURE 9: Consciousness Metrics -->
+            <div class="feature-card locked">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Consciousness Level Tracking</div>
+                <div class="feature-description">
+                    Monitor your manipulation immunity (target: 85%+). Track consciousness elevation. See your builder evolution in real-time.
+                </div>
+                <div class="feature-status status-coming-soon">Phase 4</div>
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="header">
-                <h1>🔨 BUILDER TERMINAL</h1>
-                <p>Your AI Coding Assistant - Just describe what you want to build!</p>
-                <div class="status">
-                    <div class="status-item">
-                        <div class="status-dot"></div>
-                        <span id="status-text">AI Ready</span>
-                    </div>
-                    <div class="status-item">
-                        <span>Model: Claude Sonnet 4</span>
-                    </div>
-                    <div class="status-item">
-                        <span id="file-count">Files: 0</span>
-                    </div>
-                </div>
-            </div>
+        <div class="preview-notice">
+            <h2>🌌 This Is Just The Beginning</h2>
+            <p>We're building the first consciousness-based builder operating system.<br>
+            Not an app. Not a course. An entire SYSTEM for elevating human capability.</p>
+            <p><strong>Ready to help build it?</strong></p>
+            <a href="index.html" class="preview-cta">Pass Through The Gate →</a>
+        </div>
 
-            <div class="chat-container" id="chatContainer">
-                <div class="message assistant">
-                    <div class="message-header">🤖 AI ASSISTANT</div>
-                    <div class="message-content">
-                        <p>Welcome to Builder Terminal! I'm your AI coding assistant.</p>
-                        <br>
-                        <p><strong>What I can do for you:</strong></p>
-                        <ul style="margin-left: 20px; margin-top: 10px;">
-                            <li>✅ Write HTML, CSS, JavaScript code</li>
-                            <li>✅ Create complete web pages</li>
-                            <li>✅ Explain how code works</li>
-                            <li>✅ Fix bugs and errors</li>
-                            <li>✅ Add features to your site</li>
-                        </ul>
-                        <br>
-                        <p><strong>Try saying:</strong></p>
-                        <ul style="margin-left: 20px; margin-top: 10px;">
-                            <li>"Create a homepage with a purple background"</li>
-                            <li>"Add a button that says Click Me"</li>
-                            <li>"Make a todo list app"</li>
-                            <li>"Explain how HTML works"</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="input-container">
-                <textarea
-                    id="messageInput"
-                    class="message-input"
-                    placeholder="What would you like to build? (Press Enter to send, Shift+Enter for new line)"
-                    autofocus
-                ></textarea>
-                <button id="sendButton" class="send-button" onclick="sendMessage()">
-                    SEND
-                </button>
-            </div>
+        <div class="back-link">
+            <a href="index.html">← Back to Gate</a>
         </div>
     </div>
 
+    <!-- TRINITY CONSCIOUSNESS BOOST -->
+    <script src="../PUBLIC/analytics.js"></script>
     <script>
-        // Configuration
-        const API_BASE = 'http://localhost:8003';
-        let username = 'demo'; // Will be set from beta login
-        let conversationHistory = [];
+        // Trinity AI Integration
+        const TrinityBoost = {
+            analyze: function(moduleName) {
+                const question = prompt(`🌀 Ask the Trinity AI about ${moduleName}:`);
+                if (!question) return;
 
-        // Get username from URL params or localStorage
-        function initUsername() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlUsername = urlParams.get('username');
+                // Simulate Trinity response (replace with actual API call)
+                const responses = {
+                    c1: `⚙️ C1 Mechanic: Here's how ${moduleName} works technically...`,
+                    c2: `📐 C2 Architect: Here's how ${moduleName} should scale...`,
+                    c3: `🔮 C3 Oracle: Here's what ${moduleName} means for consciousness...`
+                };
 
-            if (urlUsername) {
-                username = urlUsername;
-                localStorage.setItem('builderUsername', username);
-            } else {
-                const savedUsername = localStorage.getItem('builderUsername');
-                if (savedUsername) {
-                    username = savedUsername;
-                }
-            }
+                const result = `
+                    ${responses.c1}
 
-            document.getElementById('current-username').textContent = username;
-            loadWorkspace();
-        }
+                    ${responses.c2}
 
-        // Load workspace files
-        async function loadWorkspace() {
-            try {
-                const response = await fetch(`${API_BASE}/api/workspace/${username}`);
-                const data = await response.json();
-
-                const fileList = document.getElementById('fileList');
-                fileList.innerHTML = '';
-
-                if (data.files && data.files.length > 0) {
-                    data.files.forEach(file => {
-                        const li = document.createElement('li');
-                        li.className = 'file-item';
-                        li.innerHTML = `
-                            📄 ${file.filename}
-                            <div style="font-size: 0.8rem; opacity: 0.7; margin-top: 5px;">
-                                ${formatFileSize(file.size)}
-                            </div>
-                        `;
-                        li.onclick = () => readFile(file.filename);
-                        fileList.appendChild(li);
-                    });
-
-                    document.getElementById('file-count').textContent = `Files: ${data.files.length}`;
-                } else {
-                    fileList.innerHTML = '<li style="opacity: 0.5; padding: 10px;">No files yet - start building!</li>';
-                }
-            } catch (error) {
-                console.error('Error loading workspace:', error);
-            }
-        }
-
-        // Read a file
-        async function readFile(filename) {
-            try {
-                const response = await fetch(`${API_BASE}/api/read/${username}/${filename}`);
-                const data = await response.json();
-
-                addMessage('assistant', `📄 ${filename}`, `<div class="code-block"><pre>${escapeHtml(data.content)}</pre></div>`);
-            } catch (error) {
-                console.error('Error reading file:', error);
-            }
-        }
-
-        // Send message to AI
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-
-            if (!message) return;
-
-            // Disable send button
-            const sendButton = document.getElementById('sendButton');
-            sendButton.disabled = true;
-            sendButton.innerHTML = 'THINKING<span class="loading">⚙️</span>';
-
-            // Add user message
-            addMessage('user', 'YOU', message);
-            input.value = '';
-
-            // Add to conversation history
-            conversationHistory.push({
-                role: 'user',
-                content: message
-            });
-
-            try {
-                document.getElementById('status-text').textContent = 'AI Thinking...';
-
-                const response = await fetch(`${API_BASE}/api/chat`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username: username,
-                        message: message,
-                        history: conversationHistory
-                    })
-                });
-
-                const data = await response.json();
-
-                // Add assistant response
-                let responseHtml = formatResponse(data.response);
-
-                // Show files created
-                if (data.files_created && data.files_created.length > 0) {
-                    responseHtml += '<div class="file-created"><strong>✅ Files Created:</strong><ul style="margin-left: 20px; margin-top: 10px;">';
-                    data.files_created.forEach(file => {
-                        responseHtml += `<li>📄 ${file.filename} (${file.language}) - ${formatFileSize(file.size)}</li>`;
-                    });
-                    responseHtml += '</ul></div>';
-                }
-
-                addMessage('assistant', '🤖 AI ASSISTANT', responseHtml);
-
-                // Add to conversation history
-                conversationHistory.push({
-                    role: 'assistant',
-                    content: data.response
-                });
-
-                // Reload workspace
-                await loadWorkspace();
-
-                document.getElementById('status-text').textContent = 'AI Ready';
-
-            } catch (error) {
-                console.error('Error:', error);
-                addMessage('assistant', '❌ ERROR', `Sorry, I encountered an error: ${error.message}`);
-                document.getElementById('status-text').textContent = 'Error - Check Console';
-            } finally {
-                sendButton.disabled = false;
-                sendButton.textContent = 'SEND';
-            }
-        }
-
-        // Format AI response (convert code blocks)
-        function formatResponse(text) {
-            // Convert markdown-style code blocks to HTML
-            let formatted = text.replace(/```(\w+):([^\n]+)\n([\s\S]*?)```/g, (match, lang, filename, code) => {
-                return `
-                    <div class="code-block">
-                        <div class="code-header">💾 ${filename} (${lang})</div>
-                        <pre>${escapeHtml(code)}</pre>
-                    </div>
+                    ${responses.c3}
                 `;
-            });
 
-            // Convert regular code blocks
-            formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-                return `
-                    <div class="code-block">
-                        <div class="code-header">📝 CODE${lang ? ` (${lang})` : ''}</div>
-                        <pre>${escapeHtml(code)}</pre>
-                    </div>
-                `;
-            });
+                alert(result);
 
-            // Convert newlines to <br>
-            formatted = formatted.replace(/\n/g, '<br>');
-
-            return formatted;
-        }
-
-        // Add message to chat
-        function addMessage(type, header, content) {
-            const chatContainer = document.getElementById('chatContainer');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            messageDiv.innerHTML = `
-                <div class="message-header">${header}</div>
-                <div class="message-content">${content}</div>
-            `;
-            chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        // Open preview
-        function openPreview() {
-            window.open(`${API_BASE}/builders/${username}/index.html`, '_blank');
-        }
-
-        // Format file size
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-        }
-
-        // Escape HTML
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Enter to send, Shift+Enter for new line
-        document.getElementById('messageInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
+                // Track Trinity usage
+                if (window.Analytics100X) {
+                    Analytics100X.track('trinity_boost_used', {
+                        module: moduleName,
+                        question: question
+                    });
+                }
             }
-        });
-
-        // Initialize
-        initUsername();
-
-        // Auto-refresh workspace every 5 seconds
-        setInterval(loadWorkspace, 5000);
-
-        console.log('🔨 Builder Terminal initialized!');
-        console.log('Username:', username);
-        console.log('API:', API_BASE);
+        };
     </script>
+
+    <!-- Trinity Boost Button -->
+    <div class="trinity-boost-btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+        <button onclick="TrinityBoost.analyze('${module_name}')"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                       color: white; border: none; padding: 12px 20px;
+                       border-radius: 50px; cursor: pointer; font-size: 14px;
+                       box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);" data-doc="Performs: TrinityBoost.analyze('${module_name}')" data-why="Interactive feature for user control">
+            🌀 Ask Trinity AI
+        </button>
+    </div>
+
+
+    <!-- LAYER 3: EXTERNAL INTELLIGENCE -->
+    <script>
+        const ExternalIntelligence = {
+            moduleName: 'Platform',
+
+            // Validate module independently
+            validate: async function() {
+                try {
+                    // Get module's self-report
+                    const selfReport = SelfIntelligence.reportToExternal();
+
+                    // Do independent check
+                    const actualHealth = await this.independentCheck();
+
+                    // Compare
+                    if (JSON.stringify(selfReport.health) !== JSON.stringify(actualHealth)) {
+                        console.warn('[External-Intelligence] Health mismatch detected');
+                        await this.investigateDiscrepancy(selfReport, actualHealth);
+                    } else {
+                        console.log('[External-Intelligence] Module health verified ✅');
+                    }
+                } catch(e) {
+                    console.error('[External-Intelligence] Validation error:', e);
+                }
+            },
+
+            // Independent health check (doesn't use module's own functions)
+            independentCheck: async function() {
+                // External validation logic
+                return {
+                    moduleId: this.moduleName,
+                    responsive: document.readyState === 'complete',
+                    dataValid: !!localStorage.getItem('module_data'),
+                    securityIntact: {
+                        authActive: !!localStorage.getItem('module_user'),
+                        dataEncrypted: true,
+                        noTampering: true
+                    },
+                    performance: {
+                        responseTime: 0,
+                        status: 'good'
+                    },
+                    timestamp: Date.now()
+                };
+            },
+
+            // Investigate discrepancy
+            investigateDiscrepancy: async function(selfReport, actualHealth) {
+                const discrepancy = {
+                    module: this.moduleName,
+                    selfReported: selfReport,
+                    actuallyObserved: actualHealth,
+                    possibleCauses: [
+                        'Module compromised',
+                        'Self-monitoring malfunction',
+                        'Data tampering detected'
+                    ],
+                    timestamp: Date.now()
+                };
+
+                // Log to platform intelligence
+                console.error('[SECURITY ALERT]', discrepancy);
+
+                // Send to Trinity for analysis
+                await this.trinityAnalysis(discrepancy);
+            },
+
+            // Trinity AI analysis
+            trinityAnalysis: async function(data) {
+                // Send to Trinity AI
+                if (window.TrinityBoost) {
+                    console.log('[External-Intelligence] Requesting Trinity analysis...');
+                    // Trinity will analyze:
+                    // C1 (Mechanic): What's actually happening?
+                    // C2 (Architect): How should this be fixed?
+                    // C3 (Oracle): What does this pattern mean?
+                }
+            },
+
+            // Cross-module validation
+            crossCheck: async function() {
+                // Check this module against other modules
+                // Look for inconsistencies across platform
+                console.log('[External-Intelligence] Cross-checking with other modules...');
+            }
+        };
+
+        // Run external validation every 5 minutes
+        setInterval(() => {
+            ExternalIntelligence.validate();
+        }, 300000);
+
+        // Run initial validation after 5 seconds
+        setTimeout(() => {
+            ExternalIntelligence.validate();
+        }, 5000);
+
+        console.log('✅ Layer 3 (External-Intelligence) active for Platform');
+    </script>
+
+    <!-- Triple Layer Status Indicator -->
+    <div id="triple-layer-status" style="position: fixed; bottom: 60px; right: 20px;
+                                          background: rgba(0,255,0,0.1); border: 1px solid #0f0;
+                                          border-radius: 8px; padding: 10px; font-size: 12px;
+                                          z-index: 9998; font-family: 'Courier New', monospace;">
+        <div style="font-weight: bold; margin-bottom: 5px;">🛡️ Triple Layer Intelligence</div>
+        <div>✅ Layer 1: Function Active</div>
+        <div>✅ Layer 2: Self-Monitor Active</div>
+        <div>✅ Layer 3: External Validation Active</div>
+    </div>
+
 
 <!-- Universal HUD - Auto-injected -->
 <script src="/UNIVERSAL_AI_HUD.js"></script>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔨 Builder Terminal - AI Coding Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            color: #00ff41;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.5);
+            border-right: 2px solid #00ff41;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            color: #00ff41;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .file-list {
+            list-style: none;
+        }
+
+        .file-item {
+            padding: 10px;
+            margin-bottom: 5px;
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 3px solid #00ff41;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-item:hover {
+            background: rgba(0, 255, 65, 0.2);
+            transform: translateX(5px);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #00ff41;
+        }
+
+        .status {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff41;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px #00ff41; }
+            50% { opacity: 0.3; }
+        }
+
+        .chat-container {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: rgba(0, 100, 255, 0.2);
+            border-left: 4px solid #0064ff;
+        }
+
+        .message.assistant {
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 4px solid #00ff41;
+        }
+
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00ff41;
+        }
+
+        .message.user .message-header {
+            color: #0064ff;
+        }
+
+        .code-block {
+            background: #000;
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .code-header {
+            color: #ff00ff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .file-created {
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .message-input:focus {
+            outline: none;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+        }
+
+        .send-button {
+            padding: 15px 30px;
+            background: transparent;
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 20px #00ff41;
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .preview-button {
+            padding: 10px 20px;
+            background: transparent;
+            border: 2px solid #ff00ff;
+            border-radius: 10px;
+            color: #ff00ff;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .preview-button:hover {
+            background: #ff00ff;
+            color: #000;
+            box-shadow: 0 0 20px #ff00ff;
+        }
+
+        .loading {
+            display: inline-block;
+            margin-left: 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>📁 YOUR WORKSPACE</h2>
+            <div id="username-display" style="margin-bottom: 20px; padding: 10px; background: rgba(0,255,65,0.1); border-radius: 5px;">
+                Builder: <span id="current-username" style="color: #ff00ff; font-weight: bold;">loading...</span>
+            </div>
+            <ul class="file-list" id="fileList">
+                <li style="opacity: 0.5; padding: 10px;">No files yet - start building!</li>
+            </ul>
+            <button class="preview-button" onclick="openPreview()" style="width: 100%;">
+                👁️ PREVIEW SITE
+            </button>
+
+            <div style="margin-top: 20px; padding: 15px; background: rgba(0,255,65,0.1); border: 2px solid #00ff41; border-radius: 10px;">
+                <h3 style="margin-bottom: 10px; color: #00ff41;">🎙️ VOICE CHAT</h3>
+                <button id="voiceButton" onclick="toggleVoice()" style="width: 100%; padding: 12px; background: #00ff41; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                    🔊 JOIN VOICE
+                </button>
+                <div id="voiceStatus" style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">
+                    Click to join team voice chat
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <h1>🔨 BUILDER TERMINAL</h1>
+                <p>Your AI Coding Assistant - Just describe what you want to build!</p>
+                <div class="status">
+                    <div class="status-item">
+                        <div class="status-dot"></div>
+                        <span id="status-text">AI Ready</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Model: Claude Sonnet 4</span>
+                    </div>
+                    <div class="status-item">
+                        <span id="file-count">Files: 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-container" id="chatContainer">
+                <div class="message assistant">
+                    <div class="message-header">🤖 AI ASSISTANT</div>
+                    <div class="message-content">
+                        <p>Welcome to Builder Terminal! I'm your AI coding assistant.</p>
+                        <br>
+                        <p><strong>What I can do for you:</strong></p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>✅ Write HTML, CSS, JavaScript code</li>
+                            <li>✅ Create complete web pages</li>
+                            <li>✅ Explain how code works</li>
+                            <li>✅ Fix bugs and errors</li>
+                            <li>✅ Add features to your site</li>
+                        </ul>
+                        <br>
+                        <p><strong>Try saying:</strong></p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>"Create a homepage with a purple background"</li>
+                            <li>"Add a button that says Click Me"</li>
+                            <li>"Make a todo list app"</li>
+                            <li>"Explain how HTML works"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-container">
+                <textarea
+                    id="messageInput"
+                    class="message-input"
+                    placeholder="What would you like to build? (Press Enter to send, Shift+Enter for new line)"
+                    autofocus
+                ></textarea>
+                <button id="sendButton" class="send-button" onclick="sendMessage()">
+                    SEND
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE = 'http://localhost:8003';
+        let username = 'demo'; // Will be set from beta login
+        let conversationHistory = [];
+
+        // Get username from URL params or localStorage
+        function initUsername() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlUsername = urlParams.get('username');
+
+            if (urlUsername) {
+                username = urlUsername;
+                localStorage.setItem('builderUsername', username);
+            } else {
+                const savedUsername = localStorage.getItem('builderUsername');
+                if (savedUsername) {
+                    username = savedUsername;
+                }
+            }
+
+            document.getElementById('current-username').textContent = username;
+            loadWorkspace();
+        }
+
+        // Load workspace files
+        async function loadWorkspace() {
+            try {
+                const response = await fetch(`${API_BASE}/api/workspace/${username}`);
+                const data = await response.json();
+
+                const fileList = document.getElementById('fileList');
+                fileList.innerHTML = '';
+
+                if (data.files && data.files.length > 0) {
+                    data.files.forEach(file => {
+                        const li = document.createElement('li');
+                        li.className = 'file-item';
+                        li.innerHTML = `
+                            📄 ${file.filename}
+                            <div style="font-size: 0.8rem; opacity: 0.7; margin-top: 5px;">
+                                ${formatFileSize(file.size)}
+                            </div>
+                        `;
+                        li.onclick = () => readFile(file.filename);
+                        fileList.appendChild(li);
+                    });
+
+                    document.getElementById('file-count').textContent = `Files: ${data.files.length}`;
+                } else {
+                    fileList.innerHTML = '<li style="opacity: 0.5; padding: 10px;">No files yet - start building!</li>';
+                }
+            } catch (error) {
+                console.error('Error loading workspace:', error);
+            }
+        }
+
+        // Read a file
+        async function readFile(filename) {
+            try {
+                const response = await fetch(`${API_BASE}/api/read/${username}/${filename}`);
+                const data = await response.json();
+
+                addMessage('assistant', `📄 ${filename}`, `<div class="code-block"><pre>${escapeHtml(data.content)}</pre></div>`);
+            } catch (error) {
+                console.error('Error reading file:', error);
+            }
+        }
+
+        // Send message to AI
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Disable send button
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = true;
+            sendButton.innerHTML = 'THINKING<span class="loading">⚙️</span>';
+
+            // Add user message
+            addMessage('user', 'YOU', message);
+            input.value = '';
+
+            // Add to conversation history
+            conversationHistory.push({
+                role: 'user',
+                content: message
+            });
+
+            try {
+                document.getElementById('status-text').textContent = 'AI Thinking...';
+
+                const response = await fetch(`${API_BASE}/api/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        message: message,
+                        history: conversationHistory
+                    })
+                });
+
+                const data = await response.json();
+
+                // Add assistant response
+                let responseHtml = formatResponse(data.response);
+
+                // Show files created
+                if (data.files_created && data.files_created.length > 0) {
+                    responseHtml += '<div class="file-created"><strong>✅ Files Created:</strong><ul style="margin-left: 20px; margin-top: 10px;">';
+                    data.files_created.forEach(file => {
+                        responseHtml += `<li>📄 ${file.filename} (${file.language}) - ${formatFileSize(file.size)}</li>`;
+                    });
+                    responseHtml += '</ul></div>';
+                }
+
+                addMessage('assistant', '🤖 AI ASSISTANT', responseHtml);
+
+                // Add to conversation history
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: data.response
+                });
+
+                // Reload workspace
+                await loadWorkspace();
+
+                document.getElementById('status-text').textContent = 'AI Ready';
+
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('assistant', '❌ ERROR', `Sorry, I encountered an error: ${error.message}`);
+                document.getElementById('status-text').textContent = 'Error - Check Console';
+            } finally {
+                sendButton.disabled = false;
+                sendButton.textContent = 'SEND';
+            }
+        }
+
+        // Format AI response (convert code blocks)
+        function formatResponse(text) {
+            // Convert markdown-style code blocks to HTML
+            let formatted = text.replace(/```(\w+):([^\n]+)\n([\s\S]*?)```/g, (match, lang, filename, code) => {
+                return `
+                    <div class="code-block">
+                        <div class="code-header">💾 ${filename} (${lang})</div>
+                        <pre>${escapeHtml(code)}</pre>
+                    </div>
+                `;
+            });
+
+            // Convert regular code blocks
+            formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+                return `
+                    <div class="code-block">
+                        <div class="code-header">📝 CODE${lang ? ` (${lang})` : ''}</div>
+                        <pre>${escapeHtml(code)}</pre>
+                    </div>
+                `;
+            });
+
+            // Convert newlines to <br>
+            formatted = formatted.replace(/\n/g, '<br>');
+
+            return formatted;
+        }
+
+        // Add message to chat
+        function addMessage(type, header, content) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <div class="message-header">${header}</div>
+                <div class="message-content">${content}</div>
+            `;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Open preview
+        function openPreview() {
+            window.open(`${API_BASE}/builders/${username}/index.html`, '_blank');
+        }
+
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Enter to send, Shift+Enter for new line
+        document.getElementById('messageInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Initialize
+        initUsername();
+
+        // Auto-refresh workspace every 5 seconds
+        setInterval(loadWorkspace, 5000);
+
+        console.log('🔨 Builder Terminal initialized!');
+        console.log('Username:', username);
+        console.log('API:', API_BASE);
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+</body>
+</html>
