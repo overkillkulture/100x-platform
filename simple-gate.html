@@ -178,6 +178,16 @@
             </div>
 
             <div class="form-group">
+                <label for="newEmail">Email Address</label>
+                <input type="email" id="newEmail" placeholder="your@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="newPhone">Phone Number (Optional)</label>
+                <input type="tel" id="newPhone" placeholder="555-123-4567">
+            </div>
+
+            <div class="form-group">
                 <label for="newPassword">Choose Password</label>
                 <input type="password" id="newPassword" placeholder="Enter password" required>
             </div>
@@ -269,7 +279,7 @@
             return true;
         }
 
-        function signup(username, password, confirmPassword) {
+        function signup(username, email, phone, password, confirmPassword) {
             const users = getUsers();
 
             if (password !== confirmPassword) {
@@ -290,12 +300,25 @@
             // Create account
             users[username] = {
                 username: username,
+                email: email,
+                phone: phone || '',
                 password: password,
                 name: username,
                 created_at: new Date().toISOString()
             };
 
             saveUsers(users);
+
+            // Send notification to Commander
+            fetch('http://localhost:5555/api/notify-signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: username,
+                    email: email,
+                    phone: phone || 'Not provided'
+                })
+            }).catch(err => console.log('Notification API offline:', err));
 
             // Auto-login after signup
             localStorage.setItem('workspace_user_id', username);
@@ -323,9 +346,11 @@
         document.getElementById('signupForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const username = document.getElementById('newUsername').value;
+            const email = document.getElementById('newEmail').value;
+            const phone = document.getElementById('newPhone').value;
             const password = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            signup(username, password, confirmPassword);
+            signup(username, email, phone, password, confirmPassword);
         });
 
         // Check if already logged in

@@ -520,11 +520,11 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000/api';  // Local API server
+        const API_URL = '/api';  // Static JSON files
 
         async function loadStats() {
             try {
-                const response = await fetch(`${API_URL}/stats`);
+                const response = await fetch(`${API_URL}/stats.json`);
                 const data = await response.json();
 
                 document.getElementById('total-submissions').textContent = data.total_submissions;
@@ -546,7 +546,7 @@
 
         async function loadSubmissions() {
             try {
-                const response = await fetch(`${API_URL}/submissions`);
+                const response = await fetch(`${API_URL}/submissions.json`);
                 const data = await response.json();
                 const submissions = data.submissions;
 
@@ -580,7 +580,7 @@
                             <h3>${safeName}</h3>
                             <div class="meta">
                                 <span>📧 ${safeEmail}</span>
-                                <span>🧠 ${sub.consciousness}%</span>
+                                <span>🧠 ${sub.consciousness_score}%</span>
                                 <span class="classification-badge ${classificationClass}">
                                     ${safeClassification}
                                 </span>
