@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Access Screening</title>
+    <title>Welcome - Consciousness Revolution</title>
     <style>
         * {
             margin: 0;
@@ -19,446 +19,141 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 20px;
         }
 
-        .screening-container {
+        .welcome-container {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 3rem;
-            max-width: 700px;
+            max-width: 600px;
             width: 100%;
-            border: 2px solid #ff4444;
+            border: 2px solid rgba(100, 255, 218, 0.3);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
         }
 
         h1 {
-            font-size: 2rem;
-            text-align: center;
+            font-size: 2.5rem;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+            background: linear-gradient(135deg, #64ffda 0%, #00bfa5 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .subtitle {
-            text-align: center;
+            font-size: 1.2rem;
             color: #b8b8b8;
-            margin-bottom: 2.5rem;
-            font-size: 1.1rem;
+            margin-bottom: 2rem;
         }
 
-        .question-block {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
+        .welcome-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #d0d0d0;
+            margin-bottom: 2rem;
+            text-align: left;
         }
 
-        .question-block:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
         }
 
-        .question-number {
-            color: #ff4444;
-            font-weight: 700;
-            font-size: 0.9rem;
+        .feature {
+            background: rgba(100, 255, 218, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(100, 255, 218, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
             margin-bottom: 0.5rem;
         }
 
-        .question-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #fff;
-            line-height: 1.5;
-        }
-
-        .answer-options {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .answer-option {
-            flex: 1;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .answer-option:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.05);
-        }
-
-        .answer-option.selected {
-            background: rgba(74, 222, 128, 0.2);
-            border-color: #4ade80;
-            color: #4ade80;
-        }
-
-        .answer-option.yes {
-            border-color: #4ade80;
-        }
-
-        .answer-option.no {
-            border-color: #ff4444;
-        }
-
-        .submit-button {
-            width: 100%;
-            padding: 1.2rem 2rem;
-            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 1.3rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 2rem;
-        }
-
-        .submit-button:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.5);
-        }
-
-        .submit-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .result-message {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-top: 2rem;
-            text-align: center;
-            display: none;
-        }
-
-        .result-message.approved {
-            background: rgba(74, 222, 128, 0.2);
-            border: 2px solid #4ade80;
-        }
-
-        .result-message.denied {
-            background: rgba(255, 68, 68, 0.2);
-            border: 2px solid #ff4444;
-        }
-
-        .result-message h2 {
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-        }
-
-        .result-message p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-
-        .pin-display {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin: 1.5rem 0;
-            font-size: 3rem;
-            font-weight: bold;
-            letter-spacing: 0.5rem;
-            color: #4ade80;
+        .feature-text {
+            font-size: 0.9rem;
+            color: #b8b8b8;
         }
 
         .continue-button {
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: linear-gradient(135deg, #64ffda 0%, #00bfa5 100%);
             border: none;
-            border-radius: 10px;
-            color: white;
+            border-radius: 12px;
+            color: #0f0c29;
             font-size: 1.2rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 1rem;
+            margin-top: 2rem;
         }
 
         .continue-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(255, 68, 68, 0.5);
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.5);
         }
 
         @media (max-width: 600px) {
-            .screening-container {
-                padding: 2rem 1.5rem;
-            }
-
-            .answer-options {
-                flex-direction: column;
-            }
-
-            .pin-display {
+            h1 {
                 font-size: 2rem;
+            }
+
+            .welcome-container {
+                padding: 2rem 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="screening-container">
-        <h1>🔥 Access Screening 🔥</h1>
-        <p class="subtitle">Answer honestly - this protects real victims and keeps the system clean.</p>
+    <div class="welcome-container">
+        <h1>🌌 Welcome to the Revolution 🌌</h1>
+        <div class="subtitle">Consciousness-Powered AI Workspace</div>
 
-        <div id="questionsSection">
-            <!-- Question 1 - Ego Destroyer: Shift From Self-Blame -->
-            <div class="question-block">
-                <div class="question-number">Question 1 of 5</div>
-                <div class="question-text">Is everything that happened to you your fault?</div>
-                <div class="answer-options">
-                    <div class="answer-option yes" data-question="1" data-answer="no">✓ No</div>
-                    <div class="answer-option no" data-question="1" data-answer="yes">✗ Yes</div>
-                </div>
-            </div>
-
-            <!-- Question 2 - Worth Assessment -->
-            <div class="question-block">
-                <div class="question-number">Question 2 of 5</div>
-                <div class="question-text">Do you deserve to be treated with respect by law enforcement?</div>
-                <div class="answer-options">
-                    <div class="answer-option yes" data-question="2" data-answer="yes">✓ Yes</div>
-                    <div class="answer-option no" data-question="2" data-answer="no">✗ No</div>
-                </div>
-            </div>
-
-            <!-- Question 3 - Accountability Shift -->
-            <div class="question-block">
-                <div class="question-number">Question 3 of 5</div>
-                <div class="question-text">Are you ready to hold them accountable for what they did?</div>
-                <div class="answer-options">
-                    <div class="answer-option yes" data-question="3" data-answer="yes">✓ Yes</div>
-                    <div class="answer-option no" data-question="3" data-answer="no">✗ No</div>
-                </div>
-            </div>
-
-            <!-- Question 4 - Truth Commitment -->
-            <div class="question-block">
-                <div class="question-number">Question 4 of 5</div>
-                <div class="question-text">Will you tell the complete truth, even if it's difficult?</div>
-                <div class="answer-options">
-                    <div class="answer-option yes" data-question="4" data-answer="yes">✓ Yes</div>
-                    <div class="answer-option no" data-question="4" data-answer="no">✗ No</div>
-                </div>
-            </div>
-
-            <!-- Question 5 - Reality Check -->
-            <div class="question-block">
-                <div class="question-number">Question 5 of 5</div>
-                <div class="question-text">Is this a real incident that actually happened to you (not hypothetical or someone else's story)?</div>
-                <div class="answer-options">
-                    <div class="answer-option yes" data-question="5" data-answer="yes">✓ Yes</div>
-                    <div class="answer-option no" data-question="5" data-answer="no">✗ No</div>
-                </div>
-            </div>
-
-            <button class="submit-button" id="submitButton" disabled>Submit Answers</button>
+        <div class="welcome-text">
+            <p>You're about to enter a workspace where AI and human consciousness collaborate seamlessly. This is your command center for building, creating, and manifesting your vision into reality.</p>
         </div>
 
-        <!-- Result - Approved -->
-        <div class="result-message approved" id="approvedMessage">
-            <h2>✅ Access Approved</h2>
-            <p>You've been verified. Your PIN for workspace access:</p>
-            <div class="pin-display" id="pinDisplay">1776</div>
-            <p>Write this down! You'll need it to access your workspace.</p>
-            <button class="continue-button" onclick="goToAccess()">Continue to Workspace →</button>
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🤖</div>
+                <div class="feature-text">AI Collaboration</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💻</div>
+                <div class="feature-text">Code Generation</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-text">Project Management</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-text">Real-time Tools</div>
+            </div>
         </div>
 
-        <!-- Result - Denied -->
-        <div class="result-message denied" id="deniedMessage">
-            <h2>🎯 Character Development Opportunity</h2>
-            <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">
-                Based on your answers, we recommend our <strong style="color: #4ade80;">Destroyer School</strong> program first.
-            </p>
-            <p style="margin-bottom: 1rem;">
-                This free training helps you break destructive patterns and level up your consciousness before using this workspace.
-            </p>
-            <p style="font-weight: 600; color: #4ade80; margin-bottom: 1.5rem;">
-                Leave your email below and we'll notify you when enrollment opens:
-            </p>
-
-            <input type="email" id="destroyerEmail" placeholder="your.email@example.com" style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 8px; color: white; font-size: 1rem; margin-bottom: 1rem;">
-
-            <button class="continue-button" onclick="submitDestroyerEmail()" style="width: 100%; background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);">
-                ✅ Join Destroyer School Waitlist
-            </button>
-
-            <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #b8b8b8;">
-                <strong>What is Destroyer School?</strong><br>
-                A consciousness training program that teaches you to recognize and eliminate self-destructive patterns. After completion, you can reapply for full workspace access with a clear mind.
-            </p>
-
-            <p style="margin-top: 1rem; font-size: 0.85rem; color: #888;">
-                If this is urgent legal help, email: <a href="mailto:darrick.preble@gmail.com" style="color: #ff4444;">darrick.preble@gmail.com</a>
-            </p>
-        </div>
+        <button class="continue-button" onclick="enterWorkspace()">
+            ✨ Enter Workspace
+        </button>
     </div>
 
-    <!-- Bug Notepad -->
-    <script src="/UNIVERSAL_BUG_NOTEPAD_V2.js"></script>
-
     <script>
-        const answers = {};
-
-        // Handle answer selection
-        document.querySelectorAll('.answer-option').forEach(option => {
-            option.addEventListener('click', function() {
-                const question = this.dataset.question;
-                const answer = this.dataset.answer;
-
-                // Deselect other options in this question
-                document.querySelectorAll(`[data-question="${question}"]`).forEach(opt => {
-                    opt.classList.remove('selected');
-                });
-
-                // Select this option
-                this.classList.add('selected');
-
-                // Store answer
-                answers[question] = answer;
-
-                // Enable submit if all questions answered
-                if (Object.keys(answers).length === 5) {
-                    document.getElementById('submitButton').disabled = false;
-                }
-            });
-        });
-
-        // Submit answers
-        document.getElementById('submitButton').addEventListener('click', function() {
-            // Check for correct consciousness-shifting answers
-            // Q1: "Is everything your fault?" → NO (breaks victim mentality)
-            // Q2-5: All YES (self-worth, accountability, truth, reality)
-            const correctAnswers = {
-                '1': 'no',  // Not your fault!
-                '2': 'yes', // You deserve respect
-                '3': 'yes', // Ready for accountability
-                '4': 'yes', // Will tell truth
-                '5': 'yes'  // This is real
-            };
-
-            let correctCount = 0;
-            for (let q in correctAnswers) {
-                if (answers[q] === correctAnswers[q]) {
-                    correctCount++;
-                }
-            }
-
-            if (correctCount >= 4) {  // Allow 1 wrong answer for flexibility
-                // APPROVED - Generate PIN and show
-                const pin = generatePIN();
-                document.getElementById('pinDisplay').textContent = pin;
-
-                // Store PIN for later verification
-                localStorage.setItem('generated_pin', pin);
-                localStorage.setItem('pin_generated_at', new Date().toISOString());
-
-                // Hide questions, show approval
-                document.getElementById('questionsSection').style.display = 'none';
-                document.getElementById('approvedMessage').style.display = 'block';
-            } else {
-                // DENIED - Show callback message
-                document.getElementById('questionsSection').style.display = 'none';
-                document.getElementById('deniedMessage').style.display = 'block';
-
-                // Log for Commander follow-up
-                logDeniedAccess(answers);
-            }
-        });
-
-        function generatePIN() {
-            // Generate random 4-digit PIN (not 1776 or 2025)
-            let pin;
-            do {
-                pin = Math.floor(1000 + Math.random() * 9000).toString();
-            } while (pin === '1776' || pin === '2025' || pin === '1234');
-
-            return pin;
-        }
-
-        function goToAccess() {
+        function enterWorkspace() {
+            // Simple redirect to access page
             window.location.href = '/access.html';
         }
-
-        function logDeniedAccess(answers) {
-            // Log denied attempts for Commander review
-            const deniedLog = JSON.parse(localStorage.getItem('denied_access_log') || '[]');
-            const logEntry = {
-                id: Date.now(),
-                timestamp: new Date().toISOString(),
-                answers: answers,
-                browser: navigator.userAgent,
-                email: null,  // Will be filled when they submit email
-                notified: false
-            };
-            deniedLog.push(logEntry);
-            localStorage.setItem('denied_access_log', JSON.stringify(deniedLog));
-
-            // Store the log entry ID for email submission
-            sessionStorage.setItem('pending_destroyer_id', logEntry.id);
-        }
-
-        function submitDestroyerEmail() {
-            const email = document.getElementById('destroyerEmail').value.trim();
-
-            if (!email || !email.includes('@')) {
-                alert('⚠️ Please enter a valid email address');
-                return;
-            }
-
-            // Get the pending destroyer log entry
-            const destroyerId = sessionStorage.getItem('pending_destroyer_id');
-            const deniedLog = JSON.parse(localStorage.getItem('denied_access_log') || '[]');
-
-            // Update the log entry with email
-            const entry = deniedLog.find(e => e.id == destroyerId);
-            if (entry) {
-                entry.email = email;
-                localStorage.setItem('denied_access_log', JSON.stringify(deniedLog));
-            }
-
-            // Also add to destroyer school waitlist
-            const waitlist = JSON.parse(localStorage.getItem('destroyer_school_waitlist') || '[]');
-            waitlist.push({
-                email: email,
-                timestamp: new Date().toISOString(),
-                source: 'screening_failure',
-                destroyer_log_id: destroyerId
-            });
-            localStorage.setItem('destroyer_school_waitlist', JSON.stringify(waitlist));
-
-            // Show success message
-            document.getElementById('deniedMessage').innerHTML = `
-                <h2 style="color: #4ade80;">✅ You're On The List!</h2>
-                <p style="font-size: 1.2rem; margin: 1.5rem 0;">
-                    We'll email <strong>${email}</strong> when Destroyer School enrollment opens.
-                </p>
-                <p style="color: #b8b8b8;">
-                    This training will prepare you for full workspace access. Check your email in the coming weeks.
-                </p>
-                <p style="margin-top: 2rem; font-size: 0.9rem; color: #888;">
-                    You can close this page now.
-                </p>
-            `;
-        }
-
-        console.log('🔍 Consciousness screening active');
     </script>
+
+    <!-- Universal HUD - Auto-injected -->
+    <script src="/UNIVERSAL_AI_HUD.js"></script>
+
+    <!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+    <script src="/VISITOR_TRACKING_SNIPPET.js"></script>
 </body>
 </html>
