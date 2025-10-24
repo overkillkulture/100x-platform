@@ -354,7 +354,7 @@
 
                 // Process commands
                 if (command === 'help') {
-                    addLog('[INFO] Available commands: help, status, boost, website, about, clear');
+                    addLog('[INFO] Available commands: help, status, boost, website, about, bug, clear');
                 } else if (command === 'status') {
                     addLog(`[STATUS] Consciousness: ${consciousnessLevel}% | Session: Active | All systems nominal`);
                 } else if (command === 'boost') {
@@ -369,6 +369,9 @@
                     addLog('[INFO] Version 1.0 | Built with Trinity AI');
                 } else if (command === 'clear') {
                     document.getElementById('terminalOutput').innerHTML = '';
+                } else if (command === 'bug' || command === 'report') {
+                    addLog('[INFO] Opening bug report form...');
+                    window.open('/bug-report.html', '_blank');
                 } else {
                     addLog(`[ERROR] Unknown command: ${command}`);
                 }
