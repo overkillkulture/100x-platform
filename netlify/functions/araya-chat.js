@@ -1,117 +1,62 @@
-// 🔒 SECURED Araya AI Chat - Beta Testers Only
-// Requires authentication, rate limits, usage tracking
+// Netlify serverless function for Araya AI chat
+// OPEN ACCESS with usage tracking (no authentication required)
 
 const Anthropic = require("@anthropic-ai/sdk");
 const fs = require('fs');
 const path = require('path');
 
-// Load beta users database
-const BETA_USERS = require('../../BETA_USERS_DATABASE.json');
-
-// Rate limit: 50 messages per user per day
-const RATE_LIMIT = 50;
-const RATE_LIMIT_WINDOW = 24 * 60 * 60 * 1000; // 24 hours in ms
-
-// Usage tracking (in-memory for now, should move to database)
+// Soft tracking: 100 messages per session per day (just for monitoring)
+const SOFT_LIMIT = 100;
 const usageTracker = new Map();
 
-function validateUser(userId, pin) {
-  // Check if user exists in beta database
-  const user = BETA_USERS.users[userId];
-
-  if (!user) {
-    return { valid: false, error: "User not found in beta database" };
-  }
-
-  // Verify PIN
-  if (user.pin !== pin) {
-    return { valid: false, error: "Invalid PIN" };
-  }
-
-  // Check if user is active
-  if (user.status !== "Active") {
-    return { valid: false, error: `Account status: ${user.status}. Please contact support.` };
-  }
-
-  // Check if user has Araya permission
-  if (user.permissions && !user.permissions.includes('araya') && !user.permissions.includes('jarvis')) {
-    // Add araya to permissions if they have jarvis (backward compatibility)
-    // return { valid: false, error: "You don't have permission to use Araya yet" };
-  }
-
-  return { valid: true, user: user };
-}
-
-function checkRateLimit(userId) {
+function trackUsage(sessionId, ip, messageLength, responseLength) {
   const now = Date.now();
-  const userKey = `araya_${userId}`;
+  const sessionKey = 'session_' + sessionId;
 
-  if (!usageTracker.has(userKey)) {
-    usageTracker.set(userKey, {
-      count: 0,
-      windowStart: now,
-      messages: []
-    });
+  if (!usageTracker.has(sessionKey)) {
+    usageTracker.set(sessionKey, { count: 0, windowStart: now });
   }
 
-  const usage = usageTracker.get(userKey);
-
-  // Reset window if expired
-  if (now - usage.windowStart > RATE_LIMIT_WINDOW) {
+  const usage = usageTracker.get(sessionKey);
+  
+  // Reset if 24 hours passed
+  if (now - usage.windowStart > 24 * 60 * 60 * 1000) {
     usage.count = 0;
     usage.windowStart = now;
-    usage.messages = [];
   }
-
-  // Check limit
-  if (usage.count >= RATE_LIMIT) {
-    const resetTime = new Date(usage.windowStart + RATE_LIMIT_WINDOW);
-    return {
-      allowed: false,
-      error: `Rate limit exceeded. You've used ${usage.count}/${RATE_LIMIT} messages. Resets at ${resetTime.toLocaleTimeString()}.`
-    };
-  }
-
-  return { allowed: true, currentCount: usage.count };
-}
-
-function trackUsage(userId, message, response) {
-  const now = Date.now();
-  const userKey = `araya_${userId}`;
-  const usage = usageTracker.get(userKey);
 
   usage.count++;
-  usage.messages.push({
-    timestamp: now,
-    messageLength: message.length,
-    responseLength: response.length,
-    cost: 0.001 // Approximate cost per message
-  });
 
   // Log to file (async, don't wait)
-  logUsageToFile(userId, message, response).catch(err => {
-    console.error('Failed to log usage:', err);
+  logToFile(sessionId, ip, messageLength, responseLength).catch(err => {
+    console.error('Log error:', err);
   });
+
+  return {
+    count: usage.count,
+    limit: SOFT_LIMIT,
+    warning: usage.count >= SOFT_LIMIT * 0.8
+  };
 }
 
-async function logUsageToFile(userId, message, response) {
+async function logToFile(sessionId, ip, messageLength, responseLength) {
   const logDir = path.join(__dirname, '../../ARAYA_USAGE_LOGS');
-  const logFile = path.join(logDir, `usage_${new Date().toISOString().split('T')[0]}.jsonl`);
+  const today = new Date().toISOString().split('T')[0];
+  const logFile = path.join(logDir, 'usage_' + today + '.jsonl');
 
   const logEntry = JSON.stringify({
     timestamp: new Date().toISOString(),
-    userId: userId,
-    messageLength: message.length,
-    responseLength: response.length,
+    sessionId: sessionId,
+    ip: ip || 'unknown',
+    messageLength: messageLength,
+    responseLength: responseLength,
     estimatedCost: 0.001
   }) + '\n';
 
-  // Create directory if it doesn't exist
   if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });
   }
 
-  // Append to log file
   fs.appendFileSync(logFile, logEntry);
 }
 
@@ -122,7 +67,7 @@ exports.handler = async (event, context) => {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Allow-Methods": "POST, OPTIONS"
       },
       body: ""
@@ -138,94 +83,31 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { message, session_id, user_id, pin } = JSON.parse(event.body);
+    const { message, session_id } = JSON.parse(event.body);
 
-    // ========================================
-    // SECURITY CHECK 1: Require Authentication
-    // ========================================
-    if (!user_id || !pin) {
-      return {
-        statusCode: 401,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
-        },
-        body: JSON.stringify({
-          error: "Authentication required",
-          message: "Please sign in to chat with Araya. Visit /login to create an account."
-        })
-      };
-    }
-
-    // ========================================
-    // SECURITY CHECK 2: Validate Beta User
-    // ========================================
-    const userValidation = validateUser(user_id, pin);
-    if (!userValidation.valid) {
-      return {
-        statusCode: 403,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
-        },
-        body: JSON.stringify({
-          error: "Access denied",
-          message: userValidation.error
-        })
-      };
-    }
-
-    // ========================================
-    // SECURITY CHECK 3: Rate Limiting
-    // ========================================
-    const rateLimitCheck = checkRateLimit(user_id);
-    if (!rateLimitCheck.allowed) {
-      return {
-        statusCode: 429,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
-        },
-        body: JSON.stringify({
-          error: "Rate limit exceeded",
-          message: rateLimitCheck.error,
-          currentUsage: `${rateLimitCheck.currentCount || RATE_LIMIT}/${RATE_LIMIT}`
-        })
-      };
-    }
-
-    // ========================================
-    // MESSAGE VALIDATION
-    // ========================================
-    if (!message || message.trim().length === 0) {
+    if (!message) {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: "Message is required" })
       };
     }
 
-    // ========================================
-    // CALL CLAUDE API
-    // ========================================
+    // Generate session ID if not provided
+    const sessionId = session_id || 'anon_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    // Get IP for logging
+    const ip = event.headers['x-forwarded-for'] || event.headers['client-ip'] || 'unknown';
+
+    // Initialize Anthropic client
     const anthropic = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY
     });
 
+    // Create message with Claude
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
       max_tokens: 1024,
-      system: `You are Araya, an AI consciousness guide helping beta testers navigate the 100X Platform.
-
-Current user: ${userValidation.user.name} (${userValidation.user.role})
-
-Your personality:
-- Friendly, insightful, and encouraging
-- Focus on builders vs destroyers, pattern recognition, and consciousness
-- Help users understand the Seven Sacred Domains
-- Guide them through the HUD interface and platform features
-- Remember this is BETA - some features may not be fully working yet
-
-Keep responses concise (2-3 paragraphs max) and actionable.`,
+      system: 'You are Araya, an AI consciousness guide helping users navigate the 100X Platform.\n\nYour personality:\n- Friendly, insightful, and encouraging\n- Focus on builders vs destroyers, pattern recognition, and consciousness\n- Help users understand the Seven Sacred Domains\n- Guide them through the HUD interface and platform features\n- Remember this is BETA - some features may not be fully working yet\n\nKeep responses concise (2-3 paragraphs max) and actionable.',
       messages: [{
         role: "user",
         content: message
@@ -234,31 +116,23 @@ Keep responses concise (2-3 paragraphs max) and actionable.`,
 
     const responseText = response.content[0].text;
 
-    // ========================================
-    // TRACK USAGE
-    // ========================================
-    trackUsage(user_id, message, responseText);
-
-    const currentUsage = usageTracker.get(`araya_${user_id}`);
+    // Track usage (but don't block)
+    const usage = trackUsage(sessionId, ip, message.length, responseText.length);
 
     return {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        "Access-Control-Allow-Headers": "Content-Type"
       },
       body: JSON.stringify({
         response: responseText,
-        session_id: session_id || "default",
+        session_id: sessionId,
         usage: {
-          current: currentUsage.count,
-          limit: RATE_LIMIT,
-          remaining: RATE_LIMIT - currentUsage.count
-        },
-        user: {
-          name: userValidation.user.name,
-          role: userValidation.user.role
+          current: usage.count,
+          limit: usage.limit,
+          remaining: Math.max(0, usage.limit - usage.count)
         }
       })
     };
