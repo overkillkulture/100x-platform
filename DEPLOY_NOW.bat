@@ -1,27 +1,14 @@
 @echo off
-echo.
-echo ========================================
-echo   DEPLOYING OVERKOR TEKNOLOGIES SITE
-echo   TO NETLIFY
-echo ========================================
-echo.
-
-cd C:\Users\dwrek\100X_DEPLOYMENT
-
-echo Deploying complete catalog (12 products: 9 kits + 3 courses)...
-echo.
-
-netlify deploy --prod --dir=. --site=fantastic-twilight-28b317
+echo Opening Netlify deploys page...
+start https://app.netlify.com/sites/verdant-tulumba-fa2a5a/deploys
 
 echo.
-echo ========================================
-echo   DEPLOYMENT COMPLETE!
-echo ========================================
+echo DRAG THIS FOLDER TO NETLIFY:
+echo C:\Users\dwrek\100X_DEPLOYMENT
 echo.
-echo Your site is now live at:
-echo https://fantastic-twilight-28b317.netlify.app
+echo Opening folder...
+start C:\Users\dwrek\100X_DEPLOYMENT
+
 echo.
-echo OR if domain connected:
-echo https://overkillkulture.com
-echo.
+echo DONE. Just drag the folder to the browser.
 pause
