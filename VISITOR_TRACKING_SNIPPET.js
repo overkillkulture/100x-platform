@@ -27,15 +27,25 @@
     function sendHeartbeat() {
         const timeOnPage = Math.floor((Date.now() - lastActivity) / 1000);
 
+        const heartbeatData = {
+            ...pageData,
+            timeOnPage: timeOnPage,
+            isActive: true
+        };
+
+        // Send to LOCAL nerve collector FIRST (in-house)
+        fetch('http://localhost:6000/api/visitor/heartbeat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(heartbeatData)
+        }).catch(err => console.log('Local nerves offline'));
+
+        // Also send to Railway (cloud backup)
         fetch('https://builder-pattern-api-production.up.railway.app/api/visitor/heartbeat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                ...pageData,
-                timeOnPage: timeOnPage,
-                isActive: true
-            })
-        }).catch(err => console.log('Tracking offline'));
+            body: JSON.stringify(heartbeatData)
+        }).catch(err => console.log('Cloud backup offline'));
     }
 
     // Track mouse movement = active
@@ -62,17 +72,29 @@
     // Heartbeat every 10 seconds
     setInterval(sendHeartbeat, 10000);
 
-    // Listen for intercom messages from Commander
-    const eventSource = new EventSource(`https://builder-pattern-api-production.up.railway.app/api/intercom/listen?pin=${userPin}`);
+    // Poll for intercom messages from Commander every 5 seconds
+    async function pollIntercomMessages() {
+        if (!userPin || userPin === 'anonymous') return;
 
-    eventSource.onmessage = function(event) {
-        const data = JSON.parse(event.data);
+        try {
+            // Try local first
+            const response = await fetch(`http://localhost:6000/api/intercom/poll/${userPin}`);
+            const messages = await response.json();
 
-        if (data.type === 'message') {
-            // Show intercom popup
-            showIntercomMessage(data.from, data.message);
+            if (messages && messages.length > 0) {
+                messages.forEach(msg => {
+                    showIntercomMessage(msg.from, msg.message);
+                });
+            }
+        } catch (err) {
+            // Local server offline - that's okay
+            console.log('Intercom service offline');
         }
-    };
+    }
+
+    // Poll every 5 seconds
+    setInterval(pollIntercomMessages, 5000);
+    pollIntercomMessages(); // Initial poll
 
     function showIntercomMessage(from, message) {
         // Create floating intercom popup

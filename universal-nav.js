@@ -100,3 +100,13 @@
 
     console.log('🧭 Universal navigation loaded');
 })();
+
+// Load visitor tracking
+const trackingScript = document.createElement('script');
+trackingScript.src = '/simple-tracking.js';
+document.head.appendChild(trackingScript);
+
+// Load Universal HUD System
+const hudScript = document.createElement('script');
+hudScript.src = '/universal-hud.js';
+document.head.appendChild(hudScript);

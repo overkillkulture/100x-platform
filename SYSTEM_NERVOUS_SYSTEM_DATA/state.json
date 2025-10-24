@@ -1,0 +1,236 @@
+{
+  "services": {
+    "demo_api_1": {
+      "name": "Demo API 1",
+      "url": "http://localhost:9001",
+      "port": 9001,
+      "type": "general",
+      "capabilities": [
+        "data_processing",
+        "analytics"
+      ],
+      "status": "dead",
+      "last_heartbeat": "2025-10-23T18:18:38.484431",
+      "last_heartbeat_time": 1761268718.4844403,
+      "metadata": {}
+    },
+    "demo_api_2": {
+      "name": "Demo API 2",
+      "url": "http://localhost:9002",
+      "port": 9002,
+      "type": "general",
+      "capabilities": [
+        "user_management",
+        "authentication"
+      ],
+      "status": "dead",
+      "last_heartbeat": "2025-10-23T18:18:40.518450",
+      "last_heartbeat_time": 1761268720.5184605,
+      "metadata": {}
+    },
+    "demo_api_3": {
+      "name": "Demo API 3",
+      "url": "http://localhost:9003",
+      "port": 9003,
+      "type": "general",
+      "capabilities": [
+        "file_storage",
+        "backup"
+      ],
+      "status": "dead",
+      "last_heartbeat": "2025-10-23T18:18:42.614370",
+      "last_heartbeat_time": 1761268722.6143785,
+      "metadata": {}
+    }
+  },
+  "events": [
+    {
+      "type": "service_registered",
+      "service_id": "demo_api_1",
+      "data": {
+        "name": "Demo API 1",
+        "type": "general"
+      },
+      "timestamp": "2025-10-23T18:18:04.350063"
+    },
+    {
+      "type": "service_registered",
+      "service_id": "demo_api_2",
+      "data": {
+        "name": "Demo API 2",
+        "type": "general"
+      },
+      "timestamp": "2025-10-23T18:18:06.415362"
+    },
+    {
+      "type": "service_registered",
+      "service_id": "demo_api_3",
+      "data": {
+        "name": "Demo API 3",
+        "type": "general"
+      },
+      "timestamp": "2025-10-23T18:18:08.504197"
+    },
+    {
+      "type": "data_processed",
+      "service_id": "demo_api_1",
+      "data": {
+        "records": 100,
+        "duration": 2.5,
+        "timestamp": 1761268698.6668503
+      },
+      "timestamp": "2025-10-23T18:18:20.734947"
+    },
+    {
+      "type": "backup_request",
+      "service_id": "demo_api_1",
+      "data": {
+        "data": "important_file.json",
+        "priority": "high"
+      },
+      "timestamp": "2025-10-23T18:18:22.803307"
+    },
+    {
+      "type": "info",
+      "service_id": "demo_api_1",
+      "data": {
+        "message": "Normal operation - processing requests",
+        "data": null
+      },
+      "timestamp": "2025-10-23T18:18:26.911138"
+    },
+    {
+      "type": "warning",
+      "service_id": "demo_api_1",
+      "data": {
+        "message": "API rate limit at 80%",
+        "data": null
+      },
+      "timestamp": "2025-10-23T18:18:28.939210"
+    },
+    {
+      "type": "error",
+      "service_id": "demo_api_1",
+      "data": {
+        "message": "Database connection timeout",
+        "data": null
+      },
+      "timestamp": "2025-10-23T18:18:30.954116"
+    },
+    {
+      "type": "critical",
+      "service_id": "demo_api_1",
+      "data": {
+        "message": "DISK SPACE BELOW 5%!",
+        "data": null
+      },
+      "timestamp": "2025-10-23T18:18:32.974310"
+    },
+    {
+      "type": "warning",
+      "service_id": "demo_api_1",
+      "data": {
+        "message": "User user_789 stuck at /dashboard",
+        "data": {
+          "user_id": "user_789",
+          "location": "/dashboard",
+          "reason": "Page not refreshing"
+        }
+      },
+      "timestamp": "2025-10-23T18:18:34.993136"
+    },
+    {
+      "type": "user_stuck",
+      "service_id": "demo_api_1",
+      "data": {
+        "user_id": "user_789",
+        "location": "/dashboard",
+        "reason": "Page not refreshing"
+      },
+      "timestamp": "2025-10-23T18:18:37.011283"
+    },
+    {
+      "type": "warning",
+      "service_id": "demo_api_1",
+      "data": {
+        "message": "User user_790 stuck at /dashboard",
+        "data": {
+          "user_id": "user_790",
+          "location": "/dashboard",
+          "reason": "Page not refreshing"
+        }
+      },
+      "timestamp": "2025-10-23T18:18:39.041577"
+    },
+    {
+      "type": "user_stuck",
+      "service_id": "demo_api_1",
+      "data": {
+        "user_id": "user_790",
+        "location": "/dashboard",
+        "reason": "Page not refreshing"
+      },
+      "timestamp": "2025-10-23T18:18:41.060625"
+    },
+    {
+      "type": "warning",
+      "service_id": "demo_api_1",
+      "data": {
+        "message": "User user_791 stuck at /dashboard",
+        "data": {
+          "user_id": "user_791",
+          "location": "/dashboard",
+          "reason": "Page not refreshing"
+        }
+      },
+      "timestamp": "2025-10-23T18:18:43.064864"
+    },
+    {
+      "type": "user_stuck",
+      "service_id": "demo_api_1",
+      "data": {
+        "user_id": "user_791",
+        "location": "/dashboard",
+        "reason": "Page not refreshing"
+      },
+      "timestamp": "2025-10-23T18:18:45.083360"
+    },
+    {
+      "type": "warning",
+      "service_id": "demo_api_1",
+      "data": {
+        "message": "Failed to ask demo_api_2",
+        "data": null
+      },
+      "timestamp": "2025-10-23T18:18:55.267790"
+    },
+    {
+      "type": "service_dead",
+      "service_id": "demo_api_1",
+      "data": {
+        "name": "Demo API 1",
+        "last_seen": "2025-10-23T18:18:38.484431"
+      },
+      "timestamp": "2025-10-23T18:19:41.485657"
+    },
+    {
+      "type": "service_dead",
+      "service_id": "demo_api_2",
+      "data": {
+        "name": "Demo API 2",
+        "last_seen": "2025-10-23T18:18:40.518450"
+      },
+      "timestamp": "2025-10-23T18:19:41.486462"
+    },
+    {
+      "type": "service_dead",
+      "service_id": "demo_api_3",
+      "data": {
+        "name": "Demo API 3",
+        "last_seen": "2025-10-23T18:18:42.614370"
+      },
+      "timestamp": "2025-10-23T18:19:51.487472"
+    }
+  ],
+  "timestamp": "2025-10-23T18:19:51.487492"
+}

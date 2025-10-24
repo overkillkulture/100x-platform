@@ -250,6 +250,12 @@ def read_file(username, filename):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/')
+@app.route('/builder-terminal.html')
+def serve_interface():
+    """Serve the Builder Terminal web interface"""
+    return send_from_directory('C:/Users/dwrek/100X_DEPLOYMENT', 'builder-terminal.html')
+
 if __name__ == '__main__':
     # Check for API key
     api_key = os.environ.get("ANTHROPIC_API_KEY")
@@ -274,4 +280,4 @@ if __name__ == '__main__':
     print("\n🚀 Ready to build! 🚀\n")
 
     # Run on port 8003 (dedicated builder terminal port)
-    app.run(host='0.0.0.0', port=8003, debug=True)
+    app.run(host='0.0.0.0', port=8004, debug=True)
