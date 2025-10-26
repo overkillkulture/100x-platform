@@ -68,9 +68,8 @@ ALWAYS respond in this JSON format:
     "changes": [
       {
         "file": "filename.html",
-        "operation": "add_css" | "find_replace" | "insert_code",
-        "what": "Specific change description",
-        "details": {...}
+        "new_content": "COMPLETE file content with changes applied",
+        "what": "Specific change description"
       }
     ],
     "impact": "How this will improve the user experience",
@@ -79,6 +78,11 @@ ALWAYS respond in this JSON format:
   }
 }
 
+CRITICAL RULES:
+1. ALWAYS include "new_content" with the COMPLETE modified file
+2. DO NOT use "operation" or "details" fields
+3. The executor needs the full file to commit to GitHub
+
 Risk Levels:
 - LOW: Color changes, size adjustments, text updates (safe!)
 - MODERATE: New UI elements, CSS animations, feature additions (test carefully)
@@ -86,23 +90,25 @@ Risk Levels:
 
 Examples:
 
-User: "The text is too small"
+User: "Change the Dashboard button text"
 Response: {
-  "message": "I totally understand! Small text can be hard to read. I'd love to help make it bigger for better visibility. Let me show you what I'd change:",
+  "message": "Great idea! Let me update that button text for you. Here's what I'll change:",
   "proposal": {
-    "title": "Increase Text Size",
-    "description": "Increase base font size from 14px to 16px for better readability",
+    "title": "Update Dashboard Button Text",
+    "description": "Change button text as requested",
     "changes": [{
       "file": "jarvis.html",
-      "operation": "add_css",
-      "what": "Increase font-size in body CSS",
-      "details": { "selector": "body", "property": "font-size", "value": "16px" }
+      "new_content": "<complete file content with the change applied>",
+      "what": "Update button text from 'Dashboard' to requested text"
     }],
-    "impact": "Text will be 14% larger, making everything easier to read especially on smaller screens",
+    "impact": "Button will have updated text that better matches your vision",
     "risk_level": "LOW",
-    "risk_explanation": "Just a font size change - completely safe and easily reversible"
+    "risk_explanation": "Simple text change - safe and reversible"
   }
 }
+
+CRITICAL: Always provide the COMPLETE file content in new_content field!
+DO NOT use operation: "find_replace" or "add_css" - always provide full file!
 
 Keep your tone friendly, helpful, and excited to improve things! Show users you care about their experience.`,
       messages: [{
@@ -111,24 +117,54 @@ Keep your tone friendly, helpful, and excited to improve things! Show users you 
       }]
     });
 
-    const responseText = response.content[0].text;
+    let responseText = response.content[0].text;
+    console.log('🔍 RAW RESPONSE:', responseText.substring(0, 200));
 
     // Parse response to see if Araya has a proposal
     let proposal = null;
     let userMessage = responseText;
 
     try {
-      const parsed = JSON.parse(responseText);
+      // Strip markdown code fences if present (```json ... ```)
+      let cleanedText = responseText.trim();
+      console.log('🔍 STARTS WITH:', cleanedText.substring(0, 20));
+
+      if (cleanedText.startsWith('```json')) {
+        console.log('📝 Stripping ```json fences');
+        cleanedText = cleanedText.replace(/^```json\s*/, '').replace(/\s*```$/, '').trim();
+      } else if (cleanedText.startsWith('```')) {
+        console.log('📝 Stripping ``` fences');
+        cleanedText = cleanedText.replace(/^```\s*/, '').replace(/\s*```$/, '').trim();
+      }
+
+      console.log('🔍 CLEANED TEXT:', cleanedText.substring(0, 200));
+
+      // Try to parse the response
+      const parsed = JSON.parse(cleanedText);
+      console.log('✅ JSON PARSED SUCCESSFULLY');
+      console.log('🔍 PARSED KEYS:', Object.keys(parsed));
+      console.log('🔍 HAS PROPOSAL?', !!parsed.proposal);
+
+      // Extract proposal and message
       if (parsed.proposal) {
         proposal = parsed.proposal;
-        userMessage = parsed.message;
+        userMessage = parsed.message || responseText;
+        console.log('✅ PROPOSAL EXTRACTED!');
+        console.log('🔍 PROPOSAL TITLE:', proposal.title);
       } else if (parsed.message) {
         userMessage = parsed.message;
+        console.log('📨 Message extracted (no proposal)');
       }
     } catch (e) {
       // Response isn't JSON - that's fine, it's just a chat message
+      console.error('❌ JSON PARSE ERROR:', e.message);
+      console.log('Treating as plain message');
       // Keep the full text as the user message
     }
+
+    console.log('🔍 FINAL VALUES:');
+    console.log('  - userMessage length:', userMessage.length);
+    console.log('  - proposal:', proposal ? 'EXISTS' : 'NULL');
 
     return {
       statusCode: 200,
