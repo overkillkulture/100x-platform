@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main container for the task manager application -->
+    <div class="container">
+        <!-- Header section with app title -->
+        <header class="header">
+            <h1 class="app-title">Personal Task Manager</h1>
+            <p class="app-subtitle">Organize and track your daily tasks</p>
+        </header>
+
+        <!-- Main content area -->
+        <main class="main-content">
+            <!-- Task input section -->
+            <section class="task-input-section">
+                <div class="input-container">
+                    <input 
+                        type="text" 
+                        id="taskInput" 
+                        class="task-input" 
+                        placeholder="Add a new task..."
+                        maxlength="200"
+                        autocomplete="off"
+                    >
+                    <button id="addTaskBtn" class="add-btn" type="button">
+                        <span class="btn-text">Add Task</span>
+                        <span class="btn-icon">+</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Filter controls section -->
+            <section class="filter-section">
+                <div class="filter-controls">
+                    <button class="filter-btn active" data-filter="all">
+                        All Tasks
+                        <span class="task-count" id="allCount">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="active">
+                        Active
+                        <span class="task-count" id="activeCount">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="completed">
+                        Completed
+                        <span class="task-count" id="completedCount">0</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Task list section -->
+            <section class="task-list-section">
+                <!-- Empty state message -->
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-icon">📝</div>
+                    <h3 class="empty-title">No tasks yet</h3>
+                    <p class="empty-message">Add your first task above to get started!</p>
+                </div>
+
+                <!-- Task list container -->
+                <ul class="task-list" id="taskList" role="list">
+                    <!-- Tasks will be dynamically inserted here -->
+                </ul>
+            </section>
+
+            <!-- Bulk actions section -->
+            <section class="bulk-actions" id="bulkActions">
+                <div class="bulk-controls">
+                    <button class="bulk-btn" id="clearCompletedBtn">
+                        Clear Completed
+                    </button>
+                    <span class="task-summary" id="taskSummary">
+                        0 tasks remaining
+                    </span>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer section -->
+        <footer class="footer">
+            <p class="footer-text">
+                Your tasks are automatically saved in your browser
+            </p>
+        </footer>
+    </div>
+
+    <!-- Task item template (hidden, used for cloning) -->
+    <template id="taskTemplate">
+        <li class="task-item" data-task-id="">
+            <div class="task-content">
+                <!-- Checkbox for marking complete/incomplete -->
+                <label class="task-checkbox-label">
+                    <input type="checkbox" class="task-checkbox">
+                    <span class="checkbox-custom"></span>
+                </label>
+
+                <!-- Task text display -->
+                <span class="task-text" tabindex="0"></span>
+
+                <!-- Task text input for editing (hidden by default) -->
+                <input type="text" class="task-edit-input" maxlength="200">
+            </div>
+
+            <!-- Task action buttons -->
+            <div class="task-actions">
+                <button class="action-btn edit-btn" title="Edit task">
+                    <span class="btn-icon">✏️</span>
+                </button>
+                <button class="action-btn delete-btn" title="Delete task">
+                    <span class="btn-icon">🗑️</span>
+                </button>
+            </div>
+        </li>
+    </template>
+
+    <!-- Confirmation modal template -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Action</h3>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="confirmMessage"></p>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel-btn" id="cancelBtn">Cancel</button>
+                <button class="modal-btn confirm-btn" id="confirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading indicator -->
+    <div class="loading-indicator" id="loadingIndicator">
+        <div class="loading-spinner"></div>
+        <p>Loading your tasks...</p>
+    </div>
+
+    <!-- JavaScript files -->
+    <script src="storage.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

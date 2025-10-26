@@ -640,12 +640,25 @@ class UniversalHelpSystem {
         // Show loading
         this.addMessage('Araya is thinking...', 'loading');
 
+        // 🔥 DETECT EDITING REQUESTS!
+        const lowerMsg = message.toLowerCase();
+        const isEditingRequest = lowerMsg.includes('change') || lowerMsg.includes('fix') ||
+                                 lowerMsg.includes('make') || lowerMsg.includes('button') ||
+                                 lowerMsg.includes('color') || lowerMsg.includes('text') ||
+                                 lowerMsg.includes('bigger') || lowerMsg.includes('smaller') ||
+                                 lowerMsg.includes('too small') || lowerMsg.includes('too big') ||
+                                 lowerMsg.includes('layout') || lowerMsg.includes('sizing');
+
+        // Route to EDIT endpoint if editing, CHAT endpoint otherwise
+        const apiUrl = isEditingRequest ? '/.netlify/functions/araya-edit' : this.arayaApiUrl;
+
         try {
-            const response = await fetch(this.arayaApiUrl, {
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: `[Page: ${this.currentPage}] ${message}`,
+                    user_feedback: isEditingRequest ? message : null,
                     session_id: this.sessionId
                 })
             });
@@ -659,12 +672,112 @@ class UniversalHelpSystem {
             // Add Araya's response
             this.addMessage(`🌀 Araya: ${data.response}`, 'araya');
 
+            // If there's a PROPOSAL, show it with APPROVE/REJECT buttons!
+            if (data.proposal) {
+                this.showProposal(data.proposal);
+            }
+
         } catch (error) {
             console.error('Araya error:', error);
             const loadingMsg = document.querySelector('.araya-loading');
             if (loadingMsg) loadingMsg.remove();
             this.addMessage('⚠️ Connection error. Please try again.', 'error');
         }
+    }
+
+
+    showProposal(proposal) {
+        const messagesDiv = document.getElementById('arayaMessages');
+        const proposalDiv = document.createElement('div');
+        proposalDiv.className = 'proposal-box';
+        proposalDiv.innerHTML = `
+            <div style="background: rgba(0,255,136,0.1); border: 2px solid #00ff88; border-radius: 12px; padding: 15px; margin: 10px 0;">
+                <div style="font-size: 16px; font-weight: bold; color: #00ff88; margin-bottom: 10px;">
+                    📋 PROPOSAL: ${proposal.title || proposal.description}
+                </div>
+                <div style="color: #e8e8e8; margin-bottom: 10px;">
+                    ${proposal.description || ''}
+                </div>
+                <div style="color: #aaa; font-size: 14px; margin-bottom: 10px;">
+                    File: ${proposal.changes ? proposal.changes[0].file : proposal.file || 'Unknown'}
+                </div>
+                <div style="color: ${proposal.risk_level === 'LOW' ? '#00ff88' : '#ffaa00'}; font-size: 14px; margin-bottom: 15px;">
+                    Risk: ${proposal.risk_level || proposal.risk || 'UNKNOWN'}
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="universalHelp.approveProposal()" style="background: #00ff88; color: #0a0a0a; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                        ✅ APPROVE
+                    </button>
+                    <button onclick="universalHelp.rejectProposal()" style="background: #ff4444; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                        ❌ REJECT
+                    </button>
+                </div>
+            </div>
+        `;
+        messagesDiv.appendChild(proposalDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+        // Store proposal for approval
+        this.currentProposal = proposal;
+    }
+
+    async approveProposal() {
+        if (!this.currentProposal) return;
+
+        this.addMessage('🔥 EXECUTING CHANGES...', 'loading');
+
+        try {
+            // 🔥 MORTAL KOMBAT FINISHER - Actually execute the proposal!
+            const response = await fetch('/.netlify/functions/araya-execute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    proposal: this.currentProposal
+                })
+            });
+
+            const result = await response.json();
+
+            // Remove loading message
+            const loadingMsg = document.querySelector('.araya-loading');
+            if (loadingMsg) loadingMsg.remove();
+
+            if (result.success) {
+                this.addMessage(`✅ FATALITY! Changes committed to GitHub!\n\n${result.message}`, 'success');
+
+                if (result.results) {
+                    result.results.forEach(r => {
+                        if (r.success) {
+                            this.addMessage(`   ✓ ${r.file} - Committed successfully`, 'success');
+                        } else {
+                            this.addMessage(`   ✗ ${r.file} - ${r.error}`, 'error');
+                        }
+                    });
+                }
+
+                // Clear proposal
+                this.currentProposal = null;
+
+                // Show deployment status
+                setTimeout(() => {
+                    this.addMessage('🚀 Netlify is deploying your changes now! Refresh in 30 seconds to see updates.', 'araya');
+                }, 1000);
+            } else {
+                this.addMessage(`❌ Execution failed: ${result.message || result.error}`, 'error');
+            }
+
+        } catch (error) {
+            const loadingMsg = document.querySelector('.araya-loading');
+            if (loadingMsg) loadingMsg.remove();
+
+            this.addMessage(`❌ Error executing changes: ${error.message}`, 'error');
+            console.error('Execution error:', error);
+        }
+    }
+
+    rejectProposal() {
+        this.addMessage('❌ Proposal rejected. No changes were made.', 'araya');
+        this.currentProposal = null;
     }
 
     askQuickQuestion(question) {
@@ -724,7 +837,7 @@ class UniversalHelpSystem {
 
     // Emergency help actions
     openFullChat() {
-        window.open('/araya-chat.html', '_blank');
+        this.showArayaWidget();  // Open Platform Help widget (the one that creates proposals!)
         this.hideEmergencyModal();
     }
 

@@ -322,7 +322,7 @@ if __name__ == '__main__':
     print("  GET  /channel/<name>/messages")
     print("  GET  /channels/list")
     print("\n" + "=" * 60)
-    print("Starting on http://localhost:7778")
+    print("Starting on http://localhost:7001")
     print("=" * 60 + "\n")
 
-    app.run(host='0.0.0.0', port=7778, debug=False)
+    app.run(host='0.0.0.0', port=7001, debug=False)

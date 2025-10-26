@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builder Workspace - Docking Station</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ff41;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Main Workspace Layout */
+        .workspace {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            grid-template-rows: 60px 1fr 50px;
+            height: 100vh;
+            gap: 2px;
+            background: #000;
+        }
+
+        /* Top Bar - Project Info */
+        .top-bar {
+            grid-column: 1 / -1;
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 2px solid #00ff41;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .project-info h1 {
+            font-size: 20px;
+            color: #00ff41;
+        }
+
+        .project-info .username {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .ai-dock-indicator {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .ai-status {
+            padding: 5px 10px;
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+        }
+
+        /* Left Sidebar - File Tree */
+        .file-sidebar {
+            background: rgba(0, 0, 0, 0.95);
+            border-right: 2px solid #00ff41;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .file-sidebar h3 {
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #00ff41;
+            border-bottom: 1px solid #00ff41;
+            padding-bottom: 10px;
+        }
+
+        .file-list {
+            list-style: none;
+        }
+
+        .file-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: rgba(0, 255, 65, 0.05);
+            border-left: 3px solid #00ff41;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .file-item:hover {
+            background: rgba(0, 255, 65, 0.15);
+            transform: translateX(5px);
+        }
+
+        .file-item .file-icon {
+            margin-right: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* Center - Code/Preview Area */
+        .code-area {
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .code-tabs {
+            display: flex;
+            gap: 2px;
+            background: #000;
+            padding: 10px 20px 0;
+            border-bottom: 2px solid #00ff41;
+        }
+
+        .code-tab {
+            padding: 10px 20px;
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00ff41;
+            border-bottom: none;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .code-tab.active {
+            background: rgba(0, 255, 65, 0.3);
+        }
+
+        .code-tab:hover {
+            background: rgba(0, 255, 65, 0.2);
+        }
+
+        .code-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #00ff41;
+        }
+
+        .code-filename {
+            color: #00ff41;
+            font-weight: bold;
+        }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 5px 15px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 255, 65, 0.2);
+        }
+
+        .code-preview {
+            color: #aaa;
+            white-space: pre-wrap;
+        }
+
+        /* Right Sidebar - AI Instructions Panel */
+        .ai-panel {
+            background: rgba(0, 0, 0, 0.95);
+            border-left: 2px solid #00ff41;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ai-panel h3 {
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #00ff41;
+            border-bottom: 1px solid #00ff41;
+            padding-bottom: 10px;
+        }
+
+        .instruction-block {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .instruction-title {
+            color: #00ff41;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .command-example {
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 3px solid #ffff00;
+            padding: 10px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            color: #ffff00;
+            font-size: 11px;
+        }
+
+        /* Bottom Bar - Quick Actions */
+        .bottom-bar {
+            grid-column: 1 / -1;
+            background: rgba(0, 0, 0, 0.95);
+            border-top: 2px solid #00ff41;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            background: none;
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: rgba(0, 255, 65, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.primary {
+            background: #00ff41;
+            color: #000;
+        }
+
+        .action-btn.primary:hover {
+            background: #00ff66;
+        }
+
+        .workspace-status {
+            font-size: 11px;
+            color: #666;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 255, 65, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 4px;
+        }
+
+        /* Welcome splash for empty workspace */
+        .welcome-splash {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-splash h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #00ff41;
+        }
+
+        .welcome-splash p {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .welcome-splash .start-btn {
+            background: #00ff41;
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .welcome-splash .start-btn:hover {
+            background: #00ff66;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="workspace">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="project-info">
+                <h1>🔨 Builder Workspace</h1>
+                <div class="username">Workspace: <span id="username">demo</span></div>
+            </div>
+            <div class="ai-dock-indicator">
+                <div class="ai-status">🌀 AI Docked</div>
+                <div class="ai-status">📁 <span id="fileCount">0</span> Files</div>
+            </div>
+        </div>
+
+        <!-- Left Sidebar - File Tree -->
+        <div class="file-sidebar">
+            <h3>📁 YOUR FILES</h3>
+            <ul class="file-list" id="fileList">
+                <li class="empty-state">No files yet.<br>Tell your AI to start building!</li>
+            </ul>
+        </div>
+
+        <!-- Center - Code/Preview -->
+        <div class="code-area">
+            <div class="code-tabs">
+                <div class="code-tab active">📝 Code</div>
+                <div class="code-tab">👁️ Preview</div>
+                <div class="code-tab">📋 Instructions</div>
+            </div>
+            <div class="code-content" id="codeContent">
+                <div class="welcome-splash">
+                    <h2>Welcome to Your Builder Workspace</h2>
+                    <p>This is your docking station. Use ANY AI assistant you prefer to build here.</p>
+                    <p>Your AI already knows how to create files - just ask it to build something!</p>
+                    <button class="start-btn" onclick="showInstructions()">See How It Works →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar - AI Instructions -->
+        <div class="ai-panel">
+            <h3>💡 HOW TO USE</h3>
+
+            <div class="instruction-block">
+                <div class="instruction-title">1. Bring Your AI</div>
+                Use Araya, ChatGPT, Claude, or ANY AI assistant you already have.
+            </div>
+
+            <div class="instruction-block">
+                <div class="instruction-title">2. Tell It What To Build</div>
+                Your AI knows how to create files in this workspace.
+                <div class="command-example">
+                    "Build me a landing page for my coffee shop"
+                </div>
+            </div>
+
+            <div class="instruction-block">
+                <div class="instruction-title">3. Files Appear Here</div>
+                Watch your project come to life in real-time as your AI builds it.
+            </div>
+
+            <div class="instruction-block">
+                <div class="instruction-title">4. Download & Deploy</div>
+                When ready, download your files or deploy directly.
+            </div>
+
+            <div class="instruction-block" style="background: rgba(255, 255, 0, 0.1); border-color: #ffff00;">
+                <div class="instruction-title" style="color: #ffff00;">🌀 Using Araya?</div>
+                Just open your Araya panel and say:<br>
+                <div class="command-example">
+                    "Let's build a website in my workspace"
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="bottom-bar">
+            <div class="quick-actions">
+                <button class="action-btn" onclick="refreshWorkspace()">🔄 Refresh</button>
+                <button class="action-btn" onclick="clearWorkspace()">🗑️ Clear</button>
+                <button class="action-btn primary" onclick="downloadAll()">⬇️ Download All</button>
+            </div>
+            <div class="workspace-status">
+                Ready to build | API: <span style="color: #00ff41;">●</span> Connected
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE = 'http://localhost:8004';
+        const username = new URLSearchParams(window.location.search).get('user') || 'demo';
+        document.getElementById('username').textContent = username;
+
+        // Load workspace files
+        async function refreshWorkspace() {
+            try {
+                const response = await fetch(`${API_BASE}/api/workspace/${username}`);
+                const data = await response.json();
+
+                displayFiles(data.files || []);
+                document.getElementById('fileCount').textContent = data.files?.length || 0;
+            } catch (error) {
+                console.error('Error loading workspace:', error);
+            }
+        }
+
+        // Display files in sidebar
+        function displayFiles(files) {
+            const fileList = document.getElementById('fileList');
+
+            if (files.length === 0) {
+                fileList.innerHTML = '<li class="empty-state">No files yet.<br>Tell your AI to start building!</li>';
+                return;
+            }
+
+            fileList.innerHTML = files.map(file => `
+                <li class="file-item" onclick="viewFile('${file.filename}')">
+                    <span class="file-icon">📄</span>
+                    ${file.filename}
+                </li>
+            `).join('');
+        }
+
+        // View a specific file
+        async function viewFile(filename) {
+            try {
+                const response = await fetch(`${API_BASE}/api/read/${username}/${filename}`);
+                const data = await response.json();
+
+                const codeContent = document.getElementById('codeContent');
+                codeContent.innerHTML = `
+                    <div class="code-block">
+                        <div class="code-header">
+                            <div class="code-filename">${filename}</div>
+                            <button class="copy-btn" onclick="copyCode('${filename}')">Copy</button>
+                        </div>
+                        <div class="code-preview">${escapeHtml(data.content)}</div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error reading file:', error);
+            }
+        }
+
+        // Helper functions
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function copyCode(filename) {
+            // Copy to clipboard implementation
+            alert(`Copied ${filename} to clipboard!`);
+        }
+
+        function clearWorkspace() {
+            if (confirm('Clear all files? This cannot be undone.')) {
+                // Implementation
+                alert('Workspace cleared');
+                refreshWorkspace();
+            }
+        }
+
+        function downloadAll() {
+            alert('Downloading all files...');
+            // Implementation
+        }
+
+        function showInstructions() {
+            const codeContent = document.getElementById('codeContent');
+            codeContent.innerHTML = `
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-filename">Getting Started</div>
+                    </div>
+                    <div class="code-preview">
+Ready to build? Here's how:
+
+1. Open your AI assistant (Araya, ChatGPT, Claude, etc.)
+
+2. Tell it what you want to build:
+   "Create a portfolio website"
+   "Build a landing page for my business"
+   "Make a simple calculator app"
+
+3. Your AI will create files in this workspace
+
+4. Watch them appear in the file list on the left
+
+5. Click any file to view or edit it
+
+6. When done, download or deploy your project
+
+That's it! Your workspace is ready.
+                    </div>
+                </div>
+            `;
+        }
+
+        // Auto-refresh every 5 seconds to catch new files
+        setInterval(refreshWorkspace, 5000);
+
+        // Initial load
+        refreshWorkspace();
+
+        console.log('🔨 Builder Workspace Docking Station Ready');
+        console.log('Workspace:', username);
+    </script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+
+<!-- 🆘 UNIVERSAL HELP SYSTEM + BUG NOTEPAD 🆘 -->
+<script src="/UNIVERSAL_HELP_SYSTEM.js"></script>
+<script src="/UNIVERSAL_BUG_NOTEPAD_V2.js"></script>
+    <script>
+/**
+ * FLOATING BUG REPORTER (INLINE)
+ * Always-visible bug reporting widget in bottom-right corner
+ */
+
+(function() {
+    // Create the floating bug reporter
+    const bugReporter = document.createElement('div');
+    bugReporter.id = 'floating-bug-reporter';
+    bugReporter.innerHTML = `
+        <style>
+            #floating-bug-reporter {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 999999;
+                font-family: 'Courier New', monospace;
+            }
+
+            .bug-fab {
+                width: 80px;
+                height: 80px;
+                background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2.5rem;
+                cursor: pointer;
+                box-shadow: 0 4px 20px rgba(255, 68, 68, 0.5);
+                transition: all 0.3s;
+                animation: pulse 2s infinite;
+                border: 3px solid #fff;
+            }
+
+            .bug-fab:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 30px rgba(255, 68, 68, 0.8);
+            }
+
+            @keyframes pulse {
+                0%, 100% {
+                    box-shadow: 0 4px 20px rgba(255, 68, 68, 0.5);
+                }
+                50% {
+                    box-shadow: 0 4px 30px rgba(255, 68, 68, 0.8), 0 0 50px rgba(255, 68, 68, 0.3);
+                }
+            }
+
+            .bug-panel {
+                position: absolute;
+                bottom: 100px;
+                right: 0;
+                width: 400px;
+                max-height: 600px;
+                background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+                border: 3px solid #ff4444;
+                border-radius: 15px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+                display: none;
+                overflow: hidden;
+            }
+
+            .bug-panel.active {
+                display: block;
+                animation: slideUp 0.3s ease-out;
+            }
+
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .bug-panel-header {
+                background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+                color: #fff;
+                padding: 20px;
+                font-size: 1.3rem;
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .bug-panel-close {
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 1.5rem;
+                cursor: pointer;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                transition: background 0.2s;
+            }
+
+            .bug-panel-close:hover {
+                background: rgba(255, 255, 255, 0.2);
+            }
+
+            .bug-panel-body {
+                padding: 20px;
+                color: #e8e8e8;
+                max-height: 500px;
+                overflow-y: auto;
+            }
+
+            .bug-notice {
+                background: rgba(0, 255, 65, 0.1);
+                border-left: 4px solid #00ff41;
+                padding: 15px;
+                margin-bottom: 20px;
+                border-radius: 5px;
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .bug-notice strong {
+                color: #00ff41;
+            }
+
+            .bug-form-group {
+                margin-bottom: 20px;
+            }
+
+            .bug-form-label {
+                display: block;
+                color: #ff6666;
+                font-weight: bold;
+                margin-bottom: 8px;
+                font-size: 0.95rem;
+            }
+
+            .bug-form-input,
+            .bug-form-textarea {
+                width: 100%;
+                background: rgba(255, 255, 255, 0.05);
+                border: 2px solid #444;
+                border-radius: 8px;
+                padding: 12px;
+                color: #e8e8e8;
+                font-family: 'Courier New', monospace;
+                font-size: 0.95rem;
+                transition: border-color 0.3s;
+            }
+
+            .bug-form-input:focus,
+            .bug-form-textarea:focus {
+                outline: none;
+                border-color: #ff4444;
+                background: rgba(255, 68, 68, 0.05);
+            }
+
+            .bug-form-textarea {
+                min-height: 120px;
+                resize: vertical;
+            }
+
+            .bug-submit-btn {
+                width: 100%;
+                background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+                color: #fff;
+                border: none;
+                padding: 15px;
+                border-radius: 8px;
+                font-size: 1.1rem;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s;
+                font-family: 'Courier New', monospace;
+            }
+
+            .bug-submit-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(255, 68, 68, 0.4);
+            }
+
+            .bug-submit-btn:active {
+                transform: translateY(0);
+            }
+
+            .bug-badge {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                background: #00ff41;
+                color: #000;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.8rem;
+                font-weight: bold;
+                border: 2px solid #fff;
+            }
+
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #1a1a1a;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #ff4444;
+                border-radius: 4px;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #ff6666;
+            }
+        </style>
+
+        <div class="bug-fab" onclick="toggleBugPanel()">
+            🐛
+            <div class="bug-badge">!</div>
+        </div>
+
+        <div class="bug-panel" id="bug-panel">
+            <div class="bug-panel-header">
+                <span>🐛 REPORT A BUG</span>
+                <button class="bug-panel-close" onclick="toggleBugPanel()">✕</button>
+            </div>
+            <div class="bug-panel-body">
+                <div class="bug-notice">
+                    <strong>📢 We check bugs every couple hours!</strong><br><br>
+                    Found something broken? Report it here and we'll fix it ASAP.
+                    Every bug report helps make the platform better for everyone.
+                </div>
+
+                <form id="bug-report-form" onsubmit="submitBugReport(event)">
+                    <div class="bug-form-group">
+                        <label class="bug-form-label">What's broken? (Short description)</label>
+                        <input type="text"
+                               class="bug-form-input"
+                               id="bug-title"
+                               placeholder="e.g., Login button doesn't work"
+                               required>
+                    </div>
+
+                    <div class="bug-form-group">
+                        <label class="bug-form-label">Tell us more (What happened?)</label>
+                        <textarea class="bug-form-textarea"
+                                  id="bug-description"
+                                  placeholder="Describe what you were doing when the bug occurred..."
+                                  required></textarea>
+                    </div>
+
+                    <div class="bug-form-group">
+                        <label class="bug-form-label">Your Name/PIN (Optional)</label>
+                        <input type="text"
+                               class="bug-form-input"
+                               id="bug-reporter"
+                               placeholder="e.g., Joshua (PIN 1001)">
+                    </div>
+
+                    <button type="submit" class="bug-submit-btn">
+                        🚀 SUBMIT BUG REPORT
+                    </button>
+                </form>
+            </div>
+        </div>
+    `;
+
+    // Add to page
+    document.body.appendChild(bugReporter);
+
+    // Make functions global
+    window.toggleBugPanel = function() {
+        const panel = document.getElementById('bug-panel');
+        panel.classList.toggle('active');
+    };
+
+    window.submitBugReport = function(event) {
+        event.preventDefault();
+
+        const bugData = {
+            id: 'bug_' + Date.now(),
+            timestamp: new Date().toISOString(),
+            title: document.getElementById('bug-title').value,
+            description: document.getElementById('bug-description').value,
+            reporter: document.getElementById('bug-reporter').value || 'Anonymous',
+            url: window.location.href,
+            userAgent: navigator.userAgent
+        };
+
+        // Save to localStorage
+        const bugs = JSON.parse(localStorage.getItem('bugReports') || '[]');
+        bugs.push(bugData);
+        localStorage.setItem('bugReports', JSON.stringify(bugs));
+
+        // Try to save to server
+        fetch('/api/bug-report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bugData)
+        }).catch(() => {
+            // Fallback: save to local file
+            const blob = new Blob([JSON.stringify(bugData, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+</body>
+</html>

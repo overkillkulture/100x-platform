@@ -251,10 +251,24 @@ def read_file(username, filename):
         return jsonify({"error": str(e)}), 500
 
 @app.route('/')
+def serve_index():
+    """Serve the main entry point"""
+    return send_from_directory('C:/Users/dwrek/100X_DEPLOYMENT', 'index.html')
+
+@app.route('/simple-gate.html')
+def serve_gate():
+    """Serve the authentication gate"""
+    return send_from_directory('C:/Users/dwrek/100X_DEPLOYMENT', 'simple-gate.html')
+
 @app.route('/builder-terminal.html')
-def serve_interface():
-    """Serve the Builder Terminal web interface"""
+def serve_terminal():
+    """Serve the Builder Terminal workspace interface"""
     return send_from_directory('C:/Users/dwrek/100X_DEPLOYMENT', 'builder-terminal.html')
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    """Serve any other static files (CSS, JS, images, etc)"""
+    return send_from_directory('C:/Users/dwrek/100X_DEPLOYMENT', filename)
 
 if __name__ == '__main__':
     # Check for API key

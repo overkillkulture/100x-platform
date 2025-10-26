@@ -68,7 +68,9 @@ ALWAYS respond in this JSON format:
     "changes": [
       {
         "file": "filename.html",
-        "new_content": "COMPLETE file content with changes applied",
+        "operation": "find_replace",
+        "find": "exact text to find",
+        "replace": "exact replacement text",
         "what": "Specific change description"
       }
     ],
@@ -79,9 +81,9 @@ ALWAYS respond in this JSON format:
 }
 
 CRITICAL RULES:
-1. ALWAYS include "new_content" with the COMPLETE modified file
-2. DO NOT use "operation" or "details" fields
-3. The executor needs the full file to commit to GitHub
+1. Use "operation": "find_replace" with exact "find" and "replace" strings
+2. Be VERY specific with find strings - include surrounding context
+3. Backend will fetch file, apply change, and generate final content
 
 Risk Levels:
 - LOW: Color changes, size adjustments, text updates (safe!)
@@ -90,25 +92,24 @@ Risk Levels:
 
 Examples:
 
-User: "Change the Dashboard button text"
+User: "Change the Dashboard button text to Command Center"
 Response: {
-  "message": "Great idea! Let me update that button text for you. Here's what I'll change:",
+  "message": "Great idea! Let me update that button text for you.",
   "proposal": {
     "title": "Update Dashboard Button Text",
-    "description": "Change button text as requested",
+    "description": "Change 'Dashboard' to 'Command Center' in button",
     "changes": [{
       "file": "jarvis.html",
-      "new_content": "<complete file content with the change applied>",
-      "what": "Update button text from 'Dashboard' to requested text"
+      "operation": "find_replace",
+      "find": ">Dashboard</button>",
+      "replace": ">Command Center</button>",
+      "what": "Update button text from 'Dashboard' to 'Command Center'"
     }],
-    "impact": "Button will have updated text that better matches your vision",
+    "impact": "Button will show 'Command Center' instead of 'Dashboard'",
     "risk_level": "LOW",
     "risk_explanation": "Simple text change - safe and reversible"
   }
 }
-
-CRITICAL: Always provide the COMPLETE file content in new_content field!
-DO NOT use operation: "find_replace" or "add_css" - always provide full file!
 
 Keep your tone friendly, helpful, and excited to improve things! Show users you care about their experience.`,
       messages: [{
@@ -165,6 +166,70 @@ Keep your tone friendly, helpful, and excited to improve things! Show users you 
     console.log('🔍 FINAL VALUES:');
     console.log('  - userMessage length:', userMessage.length);
     console.log('  - proposal:', proposal ? 'EXISTS' : 'NULL');
+
+
+    // 🔥 PROCESS FIND/REPLACE OPERATIONS
+    // Fetch file, apply changes, generate complete new_content
+    console.log('🔥🔥🔥 PROCESSING SECTION REACHED!');
+    console.log('  - proposal exists:', !!proposal);
+    console.log('  - proposal.changes:', proposal?.changes);
+
+    if (proposal && proposal.changes) {
+      console.log('🔥 INSIDE PROCESSING BLOCK! Changes:', proposal.changes.length);
+      const fetch = require('node-fetch');
+      const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+      const GITHUB_REPO = process.env.GITHUB_REPO || 'overkillkulture/consciousness-revolution';
+      const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'master';
+
+      for (let change of proposal.changes) {
+        console.log('🔍 Checking change:', {
+          file: change.file,
+          operation: change.operation,
+          hasNewContent: !!change.new_content,
+          hasFindReplace: !!(change.find && change.replace)
+        });
+
+        if (change.operation === 'find_replace' && !change.new_content) {
+          console.log('🔥 MATCHED find_replace condition! Processing...');
+          try {
+            // Fetch current file from live Netlify deployment
+            const fileUrl = `https://conciousnessrevolution.io/${change.file}`;
+            console.log(`🔍 Fetching from Netlify: ${fileUrl}`);
+
+            const fileResponse = await fetch(fileUrl);
+
+            if (fileResponse.ok) {
+              const currentContent = await fileResponse.text();
+              console.log(`✅ Fetched ${currentContent.length} characters from Netlify`);
+
+              // Apply find/replace
+              const findText = change.find;
+              const replaceText = change.replace;
+
+              // Escape special regex characters in find string
+              const escapedFind = findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+              const newContent = currentContent.replace(new RegExp(escapedFind, 'g'), replaceText);
+
+              console.log(`🔍 Find (escaped): "${escapedFind.substring(0, 100)}"`);
+              console.log(`🔍 Replace: "${replaceText.substring(0, 100)}"`);
+              console.log(`🔍 Original length: ${currentContent.length}, New length: ${newContent.length}`);
+
+              // Update change object with complete new_content
+              change.new_content = newContent;
+
+              console.log(`✅ Applied find/replace in ${change.file}`);
+              console.log(`   Find: "${findText.substring(0, 50)}..."`);
+              console.log(`   Replace: "${replaceText.substring(0, 50)}..."`);
+            } else {
+              console.error(`❌ Could not fetch ${change.file}: ${fileResponse.status}`);
+            }
+          } catch (error) {
+            console.error(`❌ Error processing ${change.file}:`, error.message);
+          }
+        }
+      }
+    }
+
 
     return {
       statusCode: 200,
