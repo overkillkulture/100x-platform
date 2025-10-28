@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test - Can We Get Text?</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #ff4444;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: Arial;
+            margin-bottom: 20px;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 18px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        .success {
+            background: #44ff44;
+            color: #006600;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 Report a Bug</h1>
+
+        <!-- Netlify Form - Auto-detected by Netlify -->
+        <form name="test-bug-reports" method="POST" data-netlify="true" onsubmit="return handleSubmit(event)">
+            <input type="hidden" name="form-name" value="test-bug-reports">
+
+            <textarea
+                name="bug_description"
+                placeholder="Describe the bug...
+
+What happened?
+What did you expect?
+Which page?"
+                required
+            ></textarea>
+
+            <button type="submit">📤 Submit Bug Report</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function handleSubmit(event) {
+            // Let Netlify handle it naturally
+            setTimeout(() => {
+                document.getElementById('result').innerHTML =
+                    '<div class="success">✅ Bug report submitted! We received it.</div>';
+            }, 500);
+            return true;
+        }
+    </script>
+</body>
+</html>
