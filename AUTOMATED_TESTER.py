@@ -216,6 +216,36 @@ class SystemTester:
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
+    def test_bug_reporting_system(self):
+        """Test GitHub Issues bug reporting system"""
+        try:
+            # Submit a test bug
+            test_bug = {
+                "title": f"AUTOMATED TEST - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+                "description": "This is an automated test bug. System is checking that bug reporting works.",
+                "reporter": "Automated Tester",
+                "url": f"{BASE_URL}/test"
+            }
+
+            response = requests.post(
+                f"{BASE_URL}/.netlify/functions/submit-bug",
+                json=test_bug,
+                timeout=15
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'issueUrl' in data and 'issueNumber' in data:
+                    return {
+                        'success': True,
+                        'issue_number': data['issueNumber'],
+                        'issue_url': data['issueUrl']
+                    }
+
+            return {'success': False, 'error': f'Status {response.status_code}'}
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+
     def run_all_tests(self):
         """Run complete test suite"""
         print("=" * 60)
@@ -233,6 +263,7 @@ class SystemTester:
         self.test("Instant Notifications", self.test_instant_notifications)
         self.test("Website Accessibility", self.test_website_accessibility)
         self.test("API Failover System", self.test_araya_failover)
+        self.test("Bug Reporting System (GitHub Issues)", self.test_bug_reporting_system)
 
         # Summary
         print("\n" + "=" * 60)

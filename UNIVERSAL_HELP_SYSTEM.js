@@ -39,9 +39,9 @@ class UniversalHelpSystem {
                     "🟢 See who's online and collaborate in real-time"
                 ],
                 quickHelp: [
+                    { q: "How do I create a module?", a: "Go to Tools Hub: <a href='/tools-hub.html' style='color:#00ff00'>conciousnessrevolution.io/tools-hub.html</a>" },
                     { q: "How do I start building?", a: "Click the 'Builder Platform' card or visit /builder" },
-                    { q: "Where's the chat?", a: "Click 'Chat with Araya' card to get AI assistance" },
-                    { q: "What can I do here?", a: "This workspace tracks your progress and connects you with other builders" }
+                    { q: "Where's the chat?", a: "Click 'Chat with Araya' card to get AI assistance" }
                 ]
             },
             command_center: {
@@ -728,27 +728,48 @@ class UniversalHelpSystem {
 
         try {
             // 🔥 MORTAL KOMBAT FINISHER - Actually execute the proposal!
-            const response = await fetch('/.netlify/functions/araya-execute', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    proposal: this.currentProposal
-                })
-            });
+            // Extract file changes from proposal
+            const changes = this.currentProposal.changes;
 
-            const result = await response.json();
+            // Call local file writer service for each file
+            const results = [];
+            for (const change of changes) {
+                try {
+                    const response = await fetch('http://localhost:8889/write-file', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            file: change.file,
+                            content: change.new_content
+                        })
+                    });
+
+                    const result = await response.json();
+                    results.push(result);
+
+                    console.log('✅ File write result:', result);
+                } catch (error) {
+                    console.error('❌ File write error:', error);
+                    results.push({ success: false, file: change.file, error: error.message });
+                }
+            }
+
+            const result = { success: results.every(r => r.success), results };
 
             // Remove loading message
             const loadingMsg = document.querySelector('.araya-loading');
             if (loadingMsg) loadingMsg.remove();
 
             if (result.success) {
-                this.addMessage(`✅ FATALITY! Changes committed to GitHub!\n\n${result.message}`, 'success');
+                this.addMessage('✅ FATALITY! Changes written and deployed!', 'success');
 
                 if (result.results) {
                     result.results.forEach(r => {
                         if (r.success) {
-                            this.addMessage(`   ✓ ${r.file} - Committed successfully`, 'success');
+                            this.addMessage(`   ✓ ${r.file} - ${r.bytes_written} bytes written`, 'success');
+                            if (r.deploy_triggered) {
+                                this.addMessage(`   🚀 Netlify deploy triggered!`, 'success');
+                            }
                         } else {
                             this.addMessage(`   ✗ ${r.file} - ${r.error}`, 'error');
                         }
@@ -760,7 +781,7 @@ class UniversalHelpSystem {
 
                 // Show deployment status
                 setTimeout(() => {
-                    this.addMessage('🚀 Netlify is deploying your changes now! Refresh in 30 seconds to see updates.', 'araya');
+                    this.addMessage('🔥 Changes will be live in ~30 seconds! Refresh to see updates.', 'araya');
                 }, 1000);
             } else {
                 this.addMessage(`❌ Execution failed: ${result.message || result.error}`, 'error');

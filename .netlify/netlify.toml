@@ -1,5 +1,5 @@
 functionsDirectory = "C:\\Users\\dwrek\\100X_DEPLOYMENT\\netlify\\functions"
-functionsDirectoryOrigin = "default"
+functionsDirectoryOrigin = "config"
 headersOrigin = "config"
 plugins = []
 
@@ -40,6 +40,30 @@ X-XSS-Protection = "1; mode=block"
 Referrer-Policy = "strict-origin-when-cross-origin"
 Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(self)"
 Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+[[redirects]]
+from = "/api/bug-report"
+to = "/.netlify/functions/bug-report"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/api/get-bugs"
+to = "/.netlify/functions/get-bugs"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
 
 [[redirects]]
 from = "/"

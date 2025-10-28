@@ -207,3 +207,8 @@
     console.log('🎮 JARVIS HUD loaded! Press Ctrl+J or click the button to open.');
 
 })();
+
+// Load Araya Bug Widget for beta testers
+const script = document.createElement('script');
+script.src = '/ARAYA_BUG_WIDGET.js';
+document.body.appendChild(script);

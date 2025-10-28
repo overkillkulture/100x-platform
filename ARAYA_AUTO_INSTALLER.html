@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araya Extension - Auto Installer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .installer {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 50px;
+        }
+
+        .step {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-left: 6px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            transform: scale(1.02);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            font-weight: bold;
+            font-size: 24px;
+            margin-right: 20px;
+        }
+
+        .step h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .step p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .auto-install-btn {
+            width: 100%;
+            padding: 25px;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.3);
+            margin: 30px 0;
+        }
+
+        .auto-install-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(74, 222, 128, 0.5);
+        }
+
+        .auto-install-btn:active {
+            transform: translateY(0);
+        }
+
+        .progress {
+            display: none;
+            margin: 30px 0;
+        }
+
+        .progress.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .manual-steps {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .manual-steps h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .manual-steps ol {
+            margin-left: 20px;
+            color: #856404;
+            line-height: 2;
+        }
+
+        .success {
+            display: none;
+            background: #d4edda;
+            border: 3px solid #28a745;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .success.active {
+            display: block;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success h3 {
+            color: #155724;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .success p {
+            color: #155724;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="installer">
+        <div class="header">
+            <h1>🤖 Araya Extension</h1>
+            <p>Auto Installer - Professional Setup</p>
+        </div>
+
+        <div class="content">
+            <div class="step">
+                <h2><span class="step-number">1</span>Welcome!</h2>
+                <p>This installer will automatically download and set up the Araya browser extension for you. The extension lets you chat with Araya from any browser tab!</p>
+            </div>
+
+            <button class="auto-install-btn" onclick="autoInstall()">
+                🚀 AUTO INSTALL - CLICK HERE
+            </button>
+
+            <div class="progress" id="progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Starting installation...</div>
+            </div>
+
+            <div class="success" id="success">
+                <h3>✅ Download Complete!</h3>
+                <p>The Araya extension package has been downloaded.</p>
+                <p style="margin-top: 15px;"><strong>Next step:</strong> Unzip the file and open "START_HERE.html" for installation instructions.</p>
+            </div>
+
+            <div class="manual-steps">
+                <h3>⚙️ After Download:</h3>
+                <ol>
+                    <li><strong>Unzip</strong> the downloaded file</li>
+                    <li><strong>Open</strong> START_HERE.html in your browser</li>
+                    <li><strong>Follow</strong> the simple 3-step installation guide</li>
+                    <li><strong>Start</strong> chatting with Araya!</li>
+                </ol>
+                <p style="margin-top: 15px; font-size: 14px;">The whole process takes about 2 minutes. No technical knowledge required!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function autoInstall() {
+            const progress = document.getElementById('progress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const success = document.getElementById('success');
+            const btn = document.querySelector('.auto-install-btn');
+
+            // Hide button, show progress
+            btn.style.display = 'none';
+            progress.classList.add('active');
+
+            // Step 1: Preparing
+            setTimeout(() => {
+                progressFill.style.width = '25%';
+                progressText.textContent = 'Preparing download...';
+            }, 100);
+
+            // Step 2: Downloading
+            setTimeout(() => {
+                progressFill.style.width = '50%';
+                progressText.textContent = 'Downloading Araya Extension...';
+            }, 1000);
+
+            // Step 3: Verifying
+            setTimeout(() => {
+                progressFill.style.width = '75%';
+                progressText.textContent = 'Verifying package...';
+            }, 2000);
+
+            // Step 4: Complete - Trigger download
+            setTimeout(() => {
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Download complete!';
+
+                // Trigger actual file download
+                const link = document.createElement('a');
+                link.href = '/ARAYA_EXTENSION_BETA_v1.0.zip';
+                link.download = 'ARAYA_EXTENSION_BETA_v1.0.zip';
+                link.click();
+
+                // Show success
+                setTimeout(() => {
+                    progress.classList.remove('active');
+                    success.classList.add('active');
+                }, 1000);
+            }, 3000);
+        }
+    </script>
+
+    <script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+/**
+ * FLOATING BUG REPORTER (INLINE)
+ * Always-visible bug reporting widget in bottom-right corner
+ */
+
+(function() {
+    // Create the floating bug reporter
+    const bugReporter = document.createElement('div');
+    bugReporter.id = 'floating-bug-reporter';
+    bugReporter.innerHTML = `
+        <style>
+            #floating-bug-reporter {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 999999;
+                font-family: 'Courier New', monospace;
+            }
+
+            .bug-fab {
+                width: 80px;
+                height: 80px;
+                background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2.5rem;
+                cursor: pointer;
+                box-shadow: 0 4px 20px rgba(255, 68, 68, 0.5);
+                transition: all 0.3s;
+                animation: pulse 2s infinite;
+                border: 3px solid #fff;
+            }
+
+            .bug-fab:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 30px rgba(255, 68, 68, 0.8);
+            }
+
+            @keyframes pulse {
+                0%, 100% {
+                    box-shadow: 0 4px 20px rgba(255, 68, 68, 0.5);
+                }
+                50% {
+                    box-shadow: 0 4px 30px rgba(255, 68, 68, 0.8), 0 0 50px rgba(255, 68, 68, 0.3);
+                }
+            }
+
+            .bug-panel {
+                position: absolute;
+                bottom: 100px;
+                right: 0;
+                width: 400px;
+                max-height: 600px;
+                background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+                border: 3px solid #ff4444;
+                border-radius: 15px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+                display: none;
+                overflow: hidden;
+            }
+
+            .bug-panel.active {
+                display: block;
+                animation: slideUp 0.3s ease-out;
+            }
+
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .bug-panel-header {
+                background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+                color: #fff;
+                padding: 20px;
+                font-size: 1.3rem;
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .bug-panel-close {
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 1.5rem;
+                cursor: pointer;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                transition: background 0.2s;
+            }
+
+            .bug-panel-close:hover {
+                background: rgba(255, 255, 255, 0.2);
+            }
+
+            .bug-panel-body {
+                padding: 20px;
+                color: #e8e8e8;
+                max-height: 500px;
+                overflow-y: auto;
+            }
+
+            .bug-notice {
+                background: rgba(0, 255, 65, 0.1);
+                border-left: 4px solid #00ff41;
+                padding: 15px;
+                margin-bottom: 20px;
+                border-radius: 5px;
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .bug-notice strong {
+                color: #00ff41;
+            }
+
+            .bug-form-group {
+                margin-bottom: 20px;
+            }
+
+            .bug-form-label {
+                display: block;
+                color: #ff6666;
+                font-weight: bold;
+                margin-bottom: 8px;
+                font-size: 0.95rem;
+            }
+
+            .bug-form-input,
+            .bug-form-textarea {
+                width: 100%;
+                background: rgba(255, 255, 255, 0.05);
+                border: 2px solid #444;
+                border-radius: 8px;
+                padding: 12px;
+                color: #e8e8e8;
+                font-family: 'Courier New', monospace;
+                font-size: 0.95rem;
+                transition: border-color 0.3s;
+            }
+
+            .bug-form-input:focus,
+            .bug-form-textarea:focus {
+                outline: none;
+                border-color: #ff4444;
+                background: rgba(255, 68, 68, 0.05);
+            }
+
+            .bug-form-textarea {
+                min-height: 120px;
+                resize: vertical;
+            }
+
+            .bug-submit-btn {
+                width: 100%;
+                background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+                color: #fff;
+                border: none;
+                padding: 15px;
+                border-radius: 8px;
+                font-size: 1.1rem;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s;
+                font-family: 'Courier New', monospace;
+            }
+
+            .bug-submit-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(255, 68, 68, 0.4);
+            }
+
+            .bug-submit-btn:active {
+                transform: translateY(0);
+            }
+
+            .bug-badge {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                background: #00ff41;
+                color: #000;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.8rem;
+                font-weight: bold;
+                border: 2px solid #fff;
+            }
+
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #1a1a1a;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #ff4444;
+                border-radius: 4px;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #ff6666;
+            }
+        </style>
+
+        <div class="bug-fab" onclick="toggleBugPanel()">
+            🐛
+            <div class="bug-badge">!</div>
+        </div>
+
+        <div class="bug-panel" id="bug-panel">
+            <div class="bug-panel-header">
+                <span>🐛 REPORT A BUG</span>
+                <button class="bug-panel-close" onclick="toggleBugPanel()">✕</button>
+            </div>
+            <div class="bug-panel-body">
+                <div class="bug-notice">
+                    <strong>📢 We check bugs every couple hours!</strong><br><br>
+                    Found something broken? Report it here and we'll fix it ASAP.
+                    Every bug report helps make the platform better for everyone.
+                </div>
+
+                <form id="bug-report-form" onsubmit="submitBugReport(event)">
+                    <div class="bug-form-group">
+                        <label class="bug-form-label">What's broken? (Short description)</label>
+                        <input type="text"
+                               class="bug-form-input"
+                               id="bug-title"
+                               placeholder="e.g., Login button doesn't work"
+                               required>
+                    </div>
+
+                    <div class="bug-form-group">
+                        <label class="bug-form-label">Tell us more (What happened?)</label>
+                        <textarea class="bug-form-textarea"
+                                  id="bug-description"
+                                  placeholder="Describe what you were doing when the bug occurred..."
+                                  required></textarea>
+                    </div>
+
+                    <div class="bug-form-group">
+                        <label class="bug-form-label">Your Name/PIN (Optional)</label>
+                        <input type="text"
+                               class="bug-form-input"
+                               id="bug-reporter"
+                               placeholder="e.g., Joshua (PIN 1001)">
+                    </div>
+
+                    <button type="submit" class="bug-submit-btn">
+                        🚀 SUBMIT BUG REPORT
+                    </button>
+                </form>
+            </div>
+        </div>
+    `;
+
+    // Add to page
+    document.body.appendChild(bugReporter);
+
+    // Make functions global
+    window.toggleBugPanel = function() {
+        const panel = document.getElementById('bug-panel');
+        panel.classList.toggle('active');
+    };
+
+    window.submitBugReport = function(event) {
+        event.preventDefault();
+
+        const bugData = {
+            id: 'bug_' + Date.now(),
+            timestamp: new Date().toISOString(),
+            title: document.getElementById('bug-title').value,
+            description: document.getElementById('bug-description').value,
+            reporter: document.getElementById('bug-reporter').value || 'Anonymous',
+            url: window.location.href,
+            userAgent: navigator.userAgent
+        };
+
+        // Save to localStorage
+        const bugs = JSON.parse(localStorage.getItem('bugReports') || '[]');
+        bugs.push(bugData);
+        localStorage.setItem('bugReports', JSON.stringify(bugs));
+
+        // Try to save to server
+        fetch('/api/bug-report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bugData)
+        }).catch(() => {
+            // Fallback: save to local file
+            const blob = new Blob([JSON.stringify(bugData, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+<!-- 🐛 KINDERGARTEN SIMPLE BUG REPORTER 🐛 -->
+<!-- Add this to workspace.html right before </body> tag -->
+
+<style>
+.kindergarten-bug-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    background: rgba(0, 0, 0, 0.95);
+    border: 3px solid #ff4444;
+    border-radius: 10px;
+    padding: 15px;
+    z-index: 999999;
+    box-shadow: 0 4px 20px rgba(255, 68, 68, 0.5);
+    font-family: Arial, sans-serif;
+}
+
+.kindergarten-bug-box h3 {
+    color: #ff4444;
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+}
+
+.kindergarten-bug-box textarea {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    background: #1a1a1a;
+    border: 2px solid #444;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    resize: none;
+    box-sizing: border-box;
+}
+
+.kindergarten-bug-box button {
+    width: 100%;
+    padding: 10px;
+    background: #ff4444;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.kindergarten-bug-box button:hover {
+    background: #ff6666;
+}
+
+.kindergarten-bug-status {
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    text-align: center;
+    display: none;
+    font-size: 13px;
+}
+
+.kindergarten-bug-status.show {
+    display: block;
+}
+
+.kindergarten-bug-status.success {
+    background: #00ff41;
+    color: #000;
+}
+</style>
+
+<div class="kindergarten-bug-box">
+    <h3>🐛 Found a Bug?</h3>
+    <textarea id="kindergarten-bug-input" placeholder="Type what's broken and hit submit..."></textarea>
+    <button onclick="submitKindergartenBug()">Submit Bug</button>
+    <div id="kindergarten-bug-status" class="kindergarten-bug-status"></div>
+</div>
+
+<script>
+function submitKindergartenBug() {
+    const input = document.getElementById('kindergarten-bug-input');
+    const status = document.getElementById('kindergarten-bug-status');
+    const text = input.value.trim();
+
+    if (!text) {
+        alert('Please describe the bug!');
+        return;
+    }
+
+    const user = localStorage.getItem('workspace_user_name') || localStorage.getItem('current_user') || 'Anonymous';
+    const timestamp = new Date().toISOString();
+    const bugEntry = `[${timestamp}] [${user}] ${text}\n`;
+
+    // Save to localStorage
+    const existingBugs = localStorage.getItem('kindergarten_bugs') || '';
+    localStorage.setItem('kindergarten_bugs', existingBugs + bugEntry);
+
+    // Show success
+    status.textContent = '✅ Bug saved! Thanks!';
+    status.className = 'kindergarten-bug-status success show';
+    input.value = '';
+
+    // Hide status after 3 seconds
+    setTimeout(() => {
+        status.className = 'kindergarten-bug-status';
+    }, 3000);
+}
+
+// Auto-submit with Enter key (Shift+Enter for new line)
+document.getElementById('kindergarten-bug-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitKindergartenBug();
+    }
+});
+</script>
+
+</body>
+</html>
