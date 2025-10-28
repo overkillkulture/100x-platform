@@ -323,15 +323,24 @@
             const msg = this.value.trim();
             if (!msg) return;
 
-            fetch('/api/bug-report', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    message: msg,
-                    time: new Date().toISOString(),
-                    page: window.location.href
-                })
-            });
+            // Try multiple endpoints
+            Promise.all([
+                fetch('/api/bug-report', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: msg, time: new Date().toISOString(), page: window.location.href})
+                }),
+                fetch('http://localhost:8877/submit-bug', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: msg, time: new Date().toISOString(), page: window.location.href})
+                }).catch(() => null),
+                fetch('https://formsubmit.co/ajax/darrick.preble@gmail.com', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: msg, time: new Date().toISOString(), page: window.location.href})
+                }).catch(() => null)
+            ]);
 
             const all = localStorage.getItem('messages') || '';
             localStorage.setItem('messages', all + msg + '\n---\n');
