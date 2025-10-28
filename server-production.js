@@ -665,7 +665,9 @@ process.on('SIGTERM', async () => {
 
     server.close(async () => {
         await sequelize.close();
-        if (redisClient) await redisClient.quit();
+        if (redisClient && redisClient.isOpen) {
+            await redisClient.quit();
+        }
         process.exit(0);
     });
 });

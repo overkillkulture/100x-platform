@@ -133,8 +133,12 @@ app.post('/api/login', (req, res) => {
 
 // Logout
 app.post('/api/logout', (req, res) => {
-    req.session.destroy();
-    res.json({ success: true });
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Logout failed' });
+        }
+        res.json({ success: true });
+    });
 });
 
 // Check session
@@ -382,9 +386,9 @@ app.get('/api/stats', (req, res) => {
             const daysSince = (now - lastActive) / (1000 * 60 * 60 * 24);
             return daysSince < 7;
         }).length,
-        avg_consciousness: Math.round(
+        avg_consciousness: db.users.length > 0 ? Math.round(
             db.users.reduce((sum, u) => sum + u.consciousness_level, 0) / db.users.length
-        )
+        ) : 0
     };
 
     res.json(stats);
