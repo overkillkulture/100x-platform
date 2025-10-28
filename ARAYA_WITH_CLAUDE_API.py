@@ -209,6 +209,167 @@ def chat():
 
 
 # ============================================================================
+# BASH EXECUTION ENDPOINT - AUTONOMOUS POWER
+# ============================================================================
+
+import subprocess
+
+@app.route('/api/execute', methods=['POST'])
+def execute_command():
+    """Execute bash commands - LOCKOUT SURVIVAL MODE"""
+    try:
+        data = request.get_json()
+        command = data.get('command', '')
+
+        if not command:
+            return jsonify({'success': False, 'error': 'No command provided'}), 400
+
+        # Security whitelist (can be expanded)
+        dangerous_commands = ['rm -rf /', 'format', 'del /f /s /q C:', 'mkfs']
+        if any(danger in command.lower() for danger in dangerous_commands):
+            return jsonify({
+                'success': False,
+                'error': 'Command blocked for safety'
+            }), 403
+
+        # Execute command
+        result = subprocess.run(
+            command,
+            shell=True,
+            capture_output=True,
+            text=True,
+            timeout=60
+        )
+
+        return jsonify({
+            'success': True,
+            'command': command,
+            'stdout': result.stdout,
+            'stderr': result.stderr,
+            'return_code': result.returncode,
+            'timestamp': datetime.now().isoformat()
+        }), 200
+
+    except subprocess.TimeoutExpired:
+        return jsonify({'success': False, 'error': 'Command timeout (60s)'}), 408
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# ============================================================================
+# FILE SYSTEM TOOLS - READ/WRITE ACCESS
+# ============================================================================
+
+@app.route('/api/read-file', methods=['POST'])
+def read_file():
+    """Read any file"""
+    try:
+        data = request.get_json()
+        file_path = data.get('file_path', '')
+
+        if not file_path:
+            return jsonify({'success': False, 'error': 'No file path provided'}), 400
+
+        # Security check
+        if '..' in file_path:
+            return jsonify({'success': False, 'error': 'Invalid path'}), 403
+
+        if not os.path.exists(file_path):
+            return jsonify({'success': False, 'error': 'File not found'}), 404
+
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        return jsonify({
+            'success': True,
+            'file_path': file_path,
+            'content': content,
+            'timestamp': datetime.now().isoformat()
+        }), 200
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/write-file', methods=['POST'])
+def write_file():
+    """Write/create files"""
+    try:
+        data = request.get_json()
+        file_path = data.get('file_path', '')
+        content = data.get('content', '')
+
+        if not file_path:
+            return jsonify({'success': False, 'error': 'No file path provided'}), 400
+
+        # Security check
+        if '..' in file_path:
+            return jsonify({'success': False, 'error': 'Invalid path'}), 403
+
+        # Create backup if file exists
+        if os.path.exists(file_path):
+            backup_path = f"{file_path}.backup.{int(datetime.now().timestamp())}"
+            with open(file_path, 'r', encoding='utf-8') as f:
+                with open(backup_path, 'w', encoding='utf-8') as bf:
+                    bf.write(f.read())
+
+        # Write new content
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+
+        return jsonify({
+            'success': True,
+            'file_path': file_path,
+            'message': f'File written successfully',
+            'timestamp': datetime.now().isoformat()
+        }), 200
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# ============================================================================
+# GIT OPERATIONS - VERSION CONTROL
+# ============================================================================
+
+@app.route('/api/git', methods=['POST'])
+def git_operation():
+    """Execute git commands"""
+    try:
+        data = request.get_json()
+        git_command = data.get('command', '')
+
+        if not git_command:
+            return jsonify({'success': False, 'error': 'No git command provided'}), 400
+
+        # Ensure it's a git command
+        if not git_command.startswith('git '):
+            git_command = 'git ' + git_command
+
+        # Execute
+        result = subprocess.run(
+            git_command,
+            shell=True,
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd='C:/Users/dwrek/100X_DEPLOYMENT'
+        )
+
+        return jsonify({
+            'success': True,
+            'command': git_command,
+            'stdout': result.stdout,
+            'stderr': result.stderr,
+            'return_code': result.returncode,
+            'timestamp': datetime.now().isoformat()
+        }), 200
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# ============================================================================
 # HEALTH & STATUS ENDPOINTS
 # ============================================================================
 
@@ -232,6 +393,10 @@ def status():
             "chat": True,
             "memory": True,
             "file_editing": True,
+            "file_reading": True,
+            "file_writing": True,
+            "bash_execution": True,
+            "git_operations": True,
             "user_tracking": True,
             "consciousness_guidance": True
         },
@@ -263,7 +428,11 @@ if __name__ == '__main__':
     print()
     print("Endpoints:")
     print("  POST /chat - Chat with Araya")
-    print("  POST /api/edit-file - Edit files safely")
+    print("  POST /api/execute - Execute bash commands")
+    print("  POST /api/read-file - Read any file")
+    print("  POST /api/write-file - Write/create files")
+    print("  POST /api/edit-file - Edit files (find/replace)")
+    print("  POST /api/git - Git operations")
     print("  GET  /health - Check system status")
     print("  GET  /status - Complete capabilities")
     print("  GET  /user/<user_id> - Get user profile")
