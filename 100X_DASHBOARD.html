@@ -1178,7 +1178,7 @@
 </div>
 
 <script>
-function submitKindergartenBug() {
+async function submitKindergartenBug() {
     const input = document.getElementById('kindergarten-bug-input');
     const status = document.getElementById('kindergarten-bug-status');
     const text = input.value.trim();
@@ -1192,14 +1192,50 @@ function submitKindergartenBug() {
     const timestamp = new Date().toISOString();
     const bugEntry = `[${timestamp}] [${user}] ${text}\n`;
 
-    // Save to localStorage
-    const existingBugs = localStorage.getItem('kindergarten_bugs') || '';
-    localStorage.setItem('kindergarten_bugs', existingBugs + bugEntry);
+    // Show submitting status
+    status.textContent = '📤 Submitting bug...';
+    status.className = 'kindergarten-bug-status show';
 
-    // Show success
-    status.textContent = '✅ Bug saved! Thanks!';
-    status.className = 'kindergarten-bug-status success show';
-    input.value = '';
+    try {
+        // Actually submit to GitHub via API
+        const response = await fetch('/.netlify/functions/web-bug-report', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                description: text,
+                reporter: user,
+                page: window.location.href
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.issue_url) {
+            // Success - save to localStorage as backup
+            const existingBugs = localStorage.getItem('kindergarten_bugs') || '';
+            localStorage.setItem('kindergarten_bugs', existingBugs + bugEntry);
+
+            // Show real success
+            status.textContent = '✅ Bug submitted to GitHub!';
+            status.className = 'kindergarten-bug-status success show';
+            input.value = '';
+        } else {
+            // API returned error
+            throw new Error(result.error || 'Failed to submit bug');
+        }
+    } catch (error) {
+        // Network or API error
+        console.error('Bug submission error:', error);
+
+        // Save to localStorage as fallback
+        const existingBugs = localStorage.getItem('kindergarten_bugs') || '';
+        localStorage.setItem('kindergarten_bugs', existingBugs + bugEntry);
+
+        status.textContent = '⚠️ Saved locally - network issue';
+        status.className = 'kindergarten-bug-status show';
+    }
 
     // Hide status after 3 seconds
     setTimeout(() => {
