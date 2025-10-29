@@ -76,6 +76,14 @@
     // Create Bootstrap modal - MOBILE OPTIMIZED (fits screen properly)
     const modalHTML = `
     <style>
+        /* FORCE modal hidden by default */
+        #bugModal {
+            display: none !important;
+        }
+        #bugModal.show {
+            display: block !important;
+        }
+
         #bugModal .modal-dialog {
             max-width: 90%;
             margin: 1rem auto;
