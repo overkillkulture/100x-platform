@@ -5,22 +5,40 @@
     // FIRST: Kill all old debuggers immediately (before anything else)
     const killOldDebuggers = () => {
         const oldDebuggerSelectors = [
+            // Known old debuggers
             '#kindergarten-bug-box',
             '#bug-reporter-panel',
             '#multi-channel-bug-sidebar',
             '#floating-bug-reporter',
             '#simple-bug-button',
             '#simple-bug-popup',
+            // Pattern-based cleanup
             '[class*="bug-reporter"]',
             '[class*="bug-panel"]',
-            '[id*="bug-report"]'
+            '[class*="bug-sidebar"]',
+            '[id*="bug-report"]',
+            '[id*="bug-box"]',
+            '[id*="found-bug"]',
+            '[class*="found-bug"]',
+            // SOS button (old emergency system)
+            '[id*="sos"]',
+            '[class*="sos"]',
+            // Generic bug UI elements
+            'div[style*="position: fixed"][style*="bottom"]',
+            'button[style*="position: fixed"][style*="bottom: 20px"]',
+            'div[style*="background: white"][style*="padding: 20px"]'
         ];
 
         oldDebuggerSelectors.forEach(selector => {
             try {
                 const elements = document.querySelectorAll(selector);
                 elements.forEach(el => {
-                    if (el && el.id !== 'bugModal' && !el.closest('#bugModal')) {
+                    // Don't delete our Bootstrap modal or bug button
+                    if (el &&
+                        el.id !== 'bugModal' &&
+                        !el.closest('#bugModal') &&
+                        !el.hasAttribute('data-bs-toggle') &&
+                        el.innerHTML !== '🐛') {
                         el.remove(); // DELETE, not hide
                     }
                 });
@@ -55,17 +73,38 @@
     bugButton.setAttribute('data-bs-toggle', 'modal');
     bugButton.setAttribute('data-bs-target', '#bugModal');
 
-    // Create Bootstrap modal - MOBILE OPTIMIZED
+    // Create Bootstrap modal - MOBILE OPTIMIZED (fits screen properly)
     const modalHTML = `
+    <style>
+        #bugModal .modal-dialog {
+            max-width: 90%;
+            margin: 1rem auto;
+        }
+        #bugModal .modal-content {
+            width: 100%;
+            max-width: 100%;
+        }
+        #bugModal textarea {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        @media (max-width: 576px) {
+            #bugModal .modal-dialog {
+                max-width: 95%;
+                margin: 0.5rem auto;
+            }
+        }
+    </style>
     <div class="modal fade" id="bugModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header py-2">
                     <h6 class="modal-title m-0">Report Bug</h6>
                     <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-3">
-                    <textarea class="form-control form-control-sm" id="bugDescription" rows="3" placeholder="What's broken?"></textarea>
+                    <textarea class="form-control form-control-sm" id="bugDescription" rows="3" placeholder="What's broken?" style="width: 100%; max-width: 100%;"></textarea>
                     <div id="bugStatus" class="mt-2"></div>
                 </div>
                 <div class="modal-footer p-2">
