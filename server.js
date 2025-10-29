@@ -342,6 +342,124 @@ app.get('/api/posts/feed', (req, res) => {
     res.json(posts);
 });
 
+// ===== BUG REPORTING ENDPOINTS =====
+
+// Submit bug report
+app.post('/api/bugs/report', (req, res) => {
+    const { title, description, severity, category, browser, url } = req.body;
+
+    if (!title || !description) {
+        return res.status(400).json({ error: 'Title and description required' });
+    }
+
+    const db = readDB();
+
+    const newBug = {
+        id: `bug_${Date.now()}`,
+        user_id: req.session.user ? req.session.user.id : 'anonymous',
+        username: req.session.user ? req.session.user.username : 'Anonymous',
+        title: title,
+        description: description,
+        severity: severity || 'medium', // low, medium, high, critical
+        category: category || 'other', // frontend, backend, database, performance, security, other
+        status: 'new', // new, in_progress, resolved, closed
+        browser: browser || 'unknown',
+        url: url || '',
+        created: new Date().toISOString(),
+        updated: new Date().toISOString(),
+        resolved_at: null
+    };
+
+    db.bugs.push(newBug);
+    writeDB(db);
+
+    res.json({
+        success: true,
+        message: 'Bug report submitted successfully',
+        bug: newBug
+    });
+});
+
+// Get all bugs (admin/developer view)
+app.get('/api/bugs', (req, res) => {
+    const db = readDB();
+    const { status, severity, category } = req.query;
+
+    let bugs = db.bugs;
+
+    // Filter by status
+    if (status) {
+        bugs = bugs.filter(b => b.status === status);
+    }
+
+    // Filter by severity
+    if (severity) {
+        bugs = bugs.filter(b => b.severity === severity);
+    }
+
+    // Filter by category
+    if (category) {
+        bugs = bugs.filter(b => b.category === category);
+    }
+
+    // Sort by created date (newest first)
+    bugs.sort((a, b) => new Date(b.created) - new Date(a.created));
+
+    res.json({ bugs });
+});
+
+// Get user's bugs
+app.get('/api/bugs/my', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    const db = readDB();
+    const bugs = db.bugs
+        .filter(b => b.user_id === req.session.user.id)
+        .sort((a, b) => new Date(b.created) - new Date(a.created));
+
+    res.json({ bugs });
+});
+
+// Update bug status (admin)
+app.patch('/api/bugs/:id', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    const { status, notes } = req.body;
+    const db = readDB();
+    const bug = db.bugs.find(b => b.id === req.params.id);
+
+    if (!bug) {
+        return res.status(404).json({ error: 'Bug not found' });
+    }
+
+    if (status) bug.status = status;
+    bug.updated = new Date().toISOString();
+
+    if (status === 'resolved' || status === 'closed') {
+        bug.resolved_at = new Date().toISOString();
+    }
+
+    if (notes) {
+        if (!bug.notes) bug.notes = [];
+        bug.notes.push({
+            author: req.session.user.username,
+            text: notes,
+            timestamp: new Date().toISOString()
+        });
+    }
+
+    writeDB(db);
+
+    res.json({
+        success: true,
+        bug: bug
+    });
+});
+
 // ===== TRINITY AI ENDPOINTS =====
 
 // Chat with Trinity AI

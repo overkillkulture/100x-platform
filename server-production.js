@@ -570,6 +570,119 @@ app.post('/api/posts', async (req, res) => {
     }
 });
 
+// ===== BUG REPORTING ENDPOINTS =====
+
+// Submit bug report
+app.post('/api/bugs/report', async (req, res) => {
+    try {
+        const { title, description, severity, category, browser, url } = req.body;
+
+        if (!title || !description) {
+            return res.status(400).json({ error: 'Title and description required' });
+        }
+
+        // Create bug entry (store in Post model for now, or create Bug model)
+        const bug = await Post.create({
+            content: JSON.stringify({
+                type: 'bug_report',
+                title,
+                description,
+                severity: severity || 'medium',
+                category: category || 'other',
+                browser: browser || 'unknown',
+                url: url || '',
+                status: 'new'
+            }),
+            userId: req.session.user ? req.session.user.id : null
+        });
+
+        res.json({
+            success: true,
+            message: 'Bug report submitted successfully',
+            bug_id: bug.id
+        });
+
+    } catch (error) {
+        console.error('Bug report error:', error);
+        res.status(500).json({ error: 'Failed to submit bug report' });
+    }
+});
+
+// Get all bugs (admin/developer view)
+app.get('/api/bugs', async (req, res) => {
+    try {
+        const posts = await Post.findAll({
+            include: [{ model: User, attributes: ['username', 'id'] }],
+            order: [['createdAt', 'DESC']]
+        });
+
+        // Filter for bug reports
+        const bugs = posts
+            .map(post => {
+                try {
+                    const content = JSON.parse(post.content);
+                    if (content.type === 'bug_report') {
+                        return {
+                            id: post.id,
+                            user_id: post.userId,
+                            username: post.User ? post.User.username : 'Anonymous',
+                            title: content.title,
+                            description: content.description,
+                            severity: content.severity,
+                            category: content.category,
+                            status: content.status,
+                            browser: content.browser,
+                            url: content.url,
+                            created: post.createdAt,
+                            updated: post.updatedAt
+                        };
+                    }
+                } catch (e) {
+                    return null;
+                }
+                return null;
+            })
+            .filter(bug => bug !== null);
+
+        res.json({ bugs });
+
+    } catch (error) {
+        console.error('Get bugs error:', error);
+        res.status(500).json({ error: 'Failed to get bugs' });
+    }
+});
+
+// Update bug status (admin)
+app.patch('/api/bugs/:id', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const { status } = req.body;
+        const post = await Post.findByPk(req.params.id);
+
+        if (!post) {
+            return res.status(404).json({ error: 'Bug not found' });
+        }
+
+        const content = JSON.parse(post.content);
+        if (content.type === 'bug_report') {
+            content.status = status;
+            post.content = JSON.stringify(content);
+            await post.save();
+
+            res.json({ success: true });
+        } else {
+            res.status(400).json({ error: 'Not a bug report' });
+        }
+
+    } catch (error) {
+        console.error('Update bug error:', error);
+        res.status(500).json({ error: 'Failed to update bug' });
+    }
+});
+
 // ===== FRONTEND ROUTES =====
 
 app.get('/', (req, res) => {

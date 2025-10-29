@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report a Bug - 100X Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .success {
+            background: #c6f6d5;
+            color: #2f855a;
+        }
+
+        .info-box {
+            background: #e6fffa;
+            color: #234e52;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .required {
+            color: #e53e3e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐛 Report a Bug</h1>
+            <p>Help us improve the 100X Platform</p>
+        </div>
+
+        <div class="form-container">
+            <div class="info-box">
+                <strong>Thank you for helping us improve!</strong><br>
+                Your bug reports help us build a better platform for everyone. Please provide as much detail as possible.
+            </div>
+
+            <form id="bugForm">
+                <div class="form-group">
+                    <label>Bug Title <span class="required">*</span></label>
+                    <input
+                        type="text"
+                        id="title"
+                        placeholder="Brief description of the bug"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Description <span class="required">*</span></label>
+                    <textarea
+                        id="description"
+                        placeholder="Please describe what happened, what you expected to happen, and steps to reproduce the bug..."
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>Severity</label>
+                        <select id="severity">
+                            <option value="low">Low - Minor issue</option>
+                            <option value="medium" selected>Medium - Noticeable problem</option>
+                            <option value="high">High - Major problem</option>
+                            <option value="critical">Critical - App broken</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="category">
+                            <option value="frontend">Frontend/UI</option>
+                            <option value="backend">Backend/API</option>
+                            <option value="database">Database</option>
+                            <option value="performance">Performance</option>
+                            <option value="security">Security</option>
+                            <option value="other" selected>Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Page URL (where the bug occurred)</label>
+                    <input
+                        type="text"
+                        id="url"
+                        placeholder="e.g., /dashboard or /projects"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Browser</label>
+                    <input
+                        type="text"
+                        id="browser"
+                        placeholder="e.g., Chrome 120, Firefox 115"
+                    >
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">
+                    Submit Bug Report
+                </button>
+
+                <div id="message" class="message"></div>
+            </form>
+
+            <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        // Auto-detect browser
+        document.getElementById('browser').value = navigator.userAgent.split('(')[1]?.split(')')[0] || 'Unknown';
+
+        // Auto-fill current URL
+        document.getElementById('url').value = document.referrer || window.location.pathname;
+
+        document.getElementById('bugForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const messageDiv = document.getElementById('message');
+
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            const bugData = {
+                title: document.getElementById('title').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                severity: document.getElementById('severity').value,
+                category: document.getElementById('category').value,
+                url: document.getElementById('url').value.trim(),
+                browser: document.getElementById('browser').value.trim()
+            };
+
+            try {
+                const response = await fetch('/api/bugs/report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(bugData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageDiv.className = 'message success show';
+                    messageDiv.textContent = '✅ Bug report submitted successfully! Thank you for your help.';
+
+                    // Clear form
+                    document.getElementById('bugForm').reset();
+                    document.getElementById('browser').value = navigator.userAgent.split('(')[1]?.split(')')[0] || 'Unknown';
+
+                    // Scroll to message
+                    messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    throw new Error(data.error || 'Failed to submit bug report');
+                }
+            } catch (error) {
+                messageDiv.className = 'message error show';
+                messageDiv.textContent = '❌ ' + error.message;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Bug Report';
+            }
+        });
+    </script>
+</body>
+</html>
