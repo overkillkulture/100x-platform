@@ -343,14 +343,13 @@
             const actionDiv = addActionExecuting('Araya is analyzing your screen and planning actions...');
 
             try {
-                // Call Araya with vision
-                const response = await fetch(`${API_URL}/api/chat-with-vision`, {
+                // Call Araya chat API
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         message: message,
-                        session_id: sessionId,
-                        include_screenshot: true
+                        session_id: sessionId
                     })
                 });
 
