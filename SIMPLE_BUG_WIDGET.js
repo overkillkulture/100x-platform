@@ -39,10 +39,10 @@
     `;
     bugPopup.innerHTML = `
         <h3 style="margin: 0 0 15px 0; color: #333;">Report a Bug</h3>
-        <textarea id="simple-bug-input" placeholder="Describe the bug..." style="width: 100%; height: 80px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; resize: none;"></textarea>
+        <textarea id="simple-bug-input" placeholder="Describe the bug..." style="width: 100%; height: 80px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; resize: none; -webkit-appearance: none;"></textarea>
         <div style="margin-top: 10px; display: flex; gap: 10px;">
-            <button id="simple-bug-submit" style="flex: 1; background: #00cc66; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px;">Submit</button>
-            <button id="simple-bug-cancel" style="background: #999; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 14px;">Cancel</button>
+            <button id="simple-bug-submit" style="flex: 1; background: #00cc66; color: white; border: none; padding: 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; touch-action: manipulation; -webkit-tap-highlight-color: transparent;">Submit</button>
+            <button id="simple-bug-cancel" style="background: #999; color: white; border: none; padding: 16px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; touch-action: manipulation; -webkit-tap-highlight-color: transparent;">Cancel</button>
         </div>
         <div id="simple-bug-status" style="margin-top: 10px; font-size: 13px; text-align: center;"></div>
     `;
@@ -59,15 +59,23 @@
         }
     });
 
-    // Cancel button
-    document.getElementById('simple-bug-cancel').addEventListener('click', function() {
+    // Cancel button - with touch support
+    const cancelBtn = document.getElementById('simple-bug-cancel');
+    const cancelHandler = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         bugPopup.style.display = 'none';
         document.getElementById('simple-bug-input').value = '';
         document.getElementById('simple-bug-status').textContent = '';
-    });
+    };
+    cancelBtn.addEventListener('click', cancelHandler);
+    cancelBtn.addEventListener('touchend', cancelHandler);
 
-    // Submit button
-    document.getElementById('simple-bug-submit').addEventListener('click', async function() {
+    // Submit button - with touch support
+    const submitBtn = document.getElementById('simple-bug-submit');
+    const submitHandler = async function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         const input = document.getElementById('simple-bug-input');
         const status = document.getElementById('simple-bug-status');
         const description = input.value.trim();
@@ -115,13 +123,32 @@
             status.textContent = '❌ Error: ' + error.message;
             status.style.color = '#ff4444';
         }
-    });
+    };
+    submitBtn.addEventListener('click', submitHandler);
+    submitBtn.addEventListener('touchend', submitHandler);
 
     // Submit on Enter key
     document.getElementById('simple-bug-input').addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            document.getElementById('simple-bug-submit').click();
+            submitBtn.click();
         }
     });
+
+    // Hide old broken debuggers
+    setTimeout(() => {
+        const oldDebuggers = [
+            'kindergarten-bug-box',
+            'bug-reporter-panel',
+            'multi-channel-bug-sidebar',
+            'floating-bug-reporter'
+        ];
+
+        oldDebuggers.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.style.display = 'none';
+            }
+        });
+    }, 500);
 })();
