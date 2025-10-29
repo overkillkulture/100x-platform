@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const PORT = 3100;
@@ -15,11 +16,17 @@ const PORT = 3100;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+// Session configuration
+// NOTE: This is the DEVELOPMENT server - session secret is hardcoded for local testing only
+// For production, use server-production.js with SESSION_SECRET environment variable
 app.use(session({
-    secret: 'consciousness-revolution-2025',
+    secret: process.env.SESSION_SECRET || 'dev-only-consciousness-revolution-2025',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+    cookie: {
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        secure: false // Set to true in production with HTTPS
+    }
 }));
 
 // Simple file-based database (JSON)
@@ -45,90 +52,113 @@ function writeDB(data) {
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
-function hashPassword(password) {
-    return crypto.createHash('sha256').update(password).digest('hex');
+// SECURITY: Using bcrypt for secure password hashing (replaced insecure SHA256)
+async function hashPassword(password) {
+    return await bcrypt.hash(password, 10);
+}
+
+async function verifyPassword(password, hash) {
+    return await bcrypt.compare(password, hash);
 }
 
 // ===== AUTHENTICATION ENDPOINTS =====
 
 // Register new user
-app.post('/api/register', (req, res) => {
-    const { username, password, email } = req.body;
+app.post('/api/register', async (req, res) => {
+    try {
+        const { username, password, email } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password required' });
-    }
-
-    const db = readDB();
-
-    // Check if user exists
-    if (db.users.find(u => u.username === username)) {
-        return res.status(400).json({ error: 'Username already exists' });
-    }
-
-    // Create new user
-    const newUser = {
-        id: `user_${Date.now()}`,
-        username: username,
-        password: hashPassword(password),
-        email: email || '',
-        consciousness_level: 50, // Starting level
-        layer: 1, // Helper tier
-        projects: [],
-        ships: 0,
-        joined: new Date().toISOString(),
-        last_active: new Date().toISOString()
-    };
-
-    db.users.push(newUser);
-    writeDB(db);
-
-    res.json({
-        success: true,
-        message: 'Account created successfully',
-        user: {
-            id: newUser.id,
-            username: newUser.username,
-            consciousness_level: newUser.consciousness_level,
-            layer: newUser.layer
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Username and password required' });
         }
-    });
+
+        if (password.length < 8) {
+            return res.status(400).json({ error: 'Password must be at least 8 characters' });
+        }
+
+        const db = readDB();
+
+        // Check if user exists
+        if (db.users.find(u => u.username === username)) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+
+        // Create new user with bcrypt-hashed password
+        const newUser = {
+            id: `user_${Date.now()}`,
+            username: username,
+            password: await hashPassword(password),
+            email: email || '',
+            consciousness_level: 50, // Starting level
+            layer: 1, // Helper tier
+            projects: [],
+            ships: 0,
+            joined: new Date().toISOString(),
+            last_active: new Date().toISOString()
+        };
+
+        db.users.push(newUser);
+        writeDB(db);
+
+        res.json({
+            success: true,
+            message: 'Account created successfully',
+            user: {
+                id: newUser.id,
+                username: newUser.username,
+                consciousness_level: newUser.consciousness_level,
+                layer: newUser.layer
+            }
+        });
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.status(500).json({ error: 'Registration failed' });
+    }
 });
 
 // Login
-app.post('/api/login', (req, res) => {
-    const { username, password } = req.body;
+app.post('/api/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password required' });
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Username and password required' });
+        }
+
+        const db = readDB();
+        const user = db.users.find(u => u.username === username);
+
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        // Verify password with bcrypt
+        const validPassword = await verifyPassword(password, user.password);
+
+        if (!validPassword) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        // Update last active
+        user.last_active = new Date().toISOString();
+        writeDB(db);
+
+        // Create session
+        req.session.user = {
+            id: user.id,
+            username: user.username,
+            consciousness_level: user.consciousness_level,
+            layer: user.layer
+        };
+
+        res.json({
+            success: true,
+            user: req.session.user
+        });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Login failed' });
     }
-
-    const db = readDB();
-    const user = db.users.find(u =>
-        u.username === username &&
-        u.password === hashPassword(password)
-    );
-
-    if (!user) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    // Update last active
-    user.last_active = new Date().toISOString();
-    writeDB(db);
-
-    // Create session
-    req.session.user = {
-        id: user.id,
-        username: user.username,
-        consciousness_level: user.consciousness_level,
-        layer: user.layer
-    };
-
-    res.json({
-        success: true,
-        user: req.session.user
-    });
 });
 
 // Logout

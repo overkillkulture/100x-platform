@@ -240,10 +240,15 @@ let sessionStore;
             ttl: 24 * 60 * 60 // 24 hours
         });
 
+        // Validate SESSION_SECRET in production
+        if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
+            throw new Error('FATAL: SESSION_SECRET environment variable is required in production');
+        }
+
         // Session middleware
         app.use(session({
             store: sessionStore,
-            secret: process.env.SESSION_SECRET || 'change-this-in-production',
+            secret: process.env.SESSION_SECRET || 'dev-only-fallback-secret',
             resave: false,
             saveUninitialized: false,
             cookie: {
@@ -259,9 +264,14 @@ let sessionStore;
         console.error('❌ Redis connection failed:', err);
         console.log('⚠️ Falling back to memory sessions');
 
+        // Validate SESSION_SECRET in production (even for fallback)
+        if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
+            throw new Error('FATAL: SESSION_SECRET environment variable is required in production');
+        }
+
         // Fallback to memory sessions if Redis unavailable
         app.use(session({
-            secret: process.env.SESSION_SECRET || 'change-this-in-production',
+            secret: process.env.SESSION_SECRET || 'dev-only-fallback-secret',
             resave: false,
             saveUninitialized: false,
             cookie: {

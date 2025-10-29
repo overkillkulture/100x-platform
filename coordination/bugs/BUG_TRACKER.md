@@ -6,20 +6,7 @@
 
 ## 🔴 CRITICAL BUGS
 
-### BUG-002: Insecure password hashing in server.js
-- **Status**: IDENTIFIED
-- **Severity**: CRITICAL - Security vulnerability
-- **Reported**: October 29, 2025
-- **Description**: server.js uses SHA256 for password hashing (line 48-50), which is NOT secure for passwords. SHA256 is fast and can be brute-forced.
-- **Files Affected**: server.js:48-50
-- **Expected Behavior**: Use bcrypt with proper salt rounds (already implemented in server-production.js)
-- **Actual Behavior**: Uses crypto.createHash('sha256') which is vulnerable
-- **Impact**: User passwords in database.json could be compromised if leaked
-- **Recommendation**:
-  - server.js is for local development only
-  - Ensure production uses server-production.js which has bcrypt
-  - Consider migrating existing user passwords or warning users
-  - Document that server.js is DEV ONLY
+None - All critical bugs resolved!
 
 ---
 
@@ -30,31 +17,6 @@
 - **Description**: User reports "Computer one" left an urgent message at coordination/messages/122.md but file doesn't exist
 - **Impact**: Possible communication breakdown between Claude instances
 - **Next Steps**: Created coordination directory structure, waiting for clarification
-
-### BUG-003: Hardcoded session secret in server.js
-- **Status**: IDENTIFIED
-- **Severity**: MEDIUM - Security issue for local dev
-- **Reported**: October 29, 2025
-- **Description**: server.js has hardcoded session secret 'consciousness-revolution-2025' (line 19)
-- **Files Affected**: server.js:19
-- **Expected Behavior**: Use environment variable
-- **Actual Behavior**: Hardcoded string
-- **Impact**: Session hijacking possible in local development if attacker knows the secret
-- **Recommendation**:
-  - This is OK for local dev only
-  - Ensure production uses server-production.js with SESSION_SECRET env var
-  - Add warning comment in code
-
-### BUG-004: Weak fallback session secret in server-production.js
-- **Status**: IDENTIFIED
-- **Severity**: MEDIUM - Security issue if deployed without env var
-- **Reported**: October 29, 2025
-- **Description**: server-production.js has fallback 'change-this-in-production' if SESSION_SECRET not set (lines 246, 264)
-- **Files Affected**: server-production.js:246, 264
-- **Expected Behavior**: Fail fast if SESSION_SECRET not provided
-- **Actual Behavior**: Falls back to weak default
-- **Impact**: If deployed without env var, sessions are insecure
-- **Recommendation**: Throw error if SESSION_SECRET not set, don't use fallback
 
 ---
 
@@ -73,7 +35,47 @@
 
 ## ✅ RESOLVED BUGS
 
-None yet.
+### BUG-002: Insecure password hashing in server.js ✅ FIXED
+- **Status**: RESOLVED
+- **Severity**: CRITICAL - Security vulnerability
+- **Reported**: October 29, 2025
+- **Resolved**: October 29, 2025
+- **Description**: server.js used SHA256 for password hashing, which is NOT secure for passwords
+- **Fix Applied**:
+  - ✅ Replaced SHA256 with bcrypt (10 salt rounds)
+  - ✅ Made register/login functions async
+  - ✅ Added password length validation (minimum 8 characters)
+  - ✅ Added proper error handling with try-catch
+  - ✅ Added security comment explaining bcrypt usage
+- **Files Modified**: server.js (lines 10, 49-56, 61-111, 114-156)
+- **Testing Status**: Ready for testing
+
+### BUG-003: Hardcoded session secret in server.js ✅ FIXED
+- **Status**: RESOLVED
+- **Severity**: MEDIUM - Security issue for local dev
+- **Reported**: October 29, 2025
+- **Resolved**: October 29, 2025
+- **Description**: server.js had hardcoded session secret
+- **Fix Applied**:
+  - ✅ Changed to use process.env.SESSION_SECRET with dev fallback
+  - ✅ Added clear comment: "DEVELOPMENT server - for local testing only"
+  - ✅ Renamed fallback to 'dev-only-consciousness-revolution-2025' to make it obvious
+  - ✅ Added cookie configuration comments
+- **Files Modified**: server.js (lines 19-30)
+
+### BUG-004: Weak fallback session secret in server-production.js ✅ FIXED
+- **Status**: RESOLVED
+- **Severity**: MEDIUM - Security issue if deployed without env var
+- **Reported**: October 29, 2025
+- **Resolved**: October 29, 2025
+- **Description**: server-production.js had weak fallback if SESSION_SECRET not set
+- **Fix Applied**:
+  - ✅ Added validation: throws FATAL error if SESSION_SECRET missing in production
+  - ✅ Changed fallback to 'dev-only-fallback-secret' for dev/test environments
+  - ✅ Added validation in BOTH Redis session config AND fallback memory session
+  - ✅ Server will crash immediately if deployed to production without SESSION_SECRET
+- **Files Modified**: server-production.js (lines 243-246, 267-270)
+- **Security Impact**: Production deployment is now fail-safe
 
 ---
 
