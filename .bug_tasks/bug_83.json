@@ -1,0 +1,11 @@
+{
+  "bug_number": 83,
+  "title": "Bug via Web Form",
+  "reporter": "overkillkulture",
+  "description": "**Bug reported via web form**\n\n**Reporter:** Christopher Michael Dobbins\n\n**Description:**\nError loading bugs / Failed to fetch / Retrying in 5 seconds\n\n**Submitted:** 2025-10-29",
+  "created_at": "2025-10-29T19:00:00Z",
+  "status": "completed",
+  "task_created": "2025-10-29T19:30:00Z",
+  "fixed_at": "2025-10-29T21:00:00Z",
+  "fix_description": "Fixed GitHub API rate limiting causing 500 errors. Added GitHub token authentication (increases rate limit from 60/hr to 5000/hr). Implemented 30-second cache to reduce API calls. Better error handling with detailed logging. Falls back gracefully if token not available. File: netlify/functions/get-all-bugs.js"
+}
