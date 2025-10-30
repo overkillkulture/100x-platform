@@ -1,7 +1,14 @@
 /**
  * Netlify Function: Get All Bugs from GitHub
- * Fetches issues from consciousness-revolution repo
+ * Fetches issues from consciousness-bugs repo with caching to avoid rate limits
  */
+
+// Simple in-memory cache (persists during function lifetime)
+let cache = {
+  data: null,
+  timestamp: 0,
+  ttl: 30000  // 30 seconds cache
+};
 
 exports.handler = async (event, context) => {
   // Enable CORS
@@ -17,13 +24,31 @@ exports.handler = async (event, context) => {
     return { statusCode: 200, headers, body: '' };
   }
 
+  // Check cache first
+  const now = Date.now();
+  if (cache.data && (now - cache.timestamp) < cache.ttl) {
+    console.log('Returning cached data');
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify(cache.data)
+    };
+  }
+
   try {
-    // Fetch bugs from GitHub
+    // Fetch bugs from GitHub with authentication to avoid rate limits
+    const fetchHeaders = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'Consciousness-Revolution-Bug-Monitor'
+    };
+
+    // Add auth token if available (increases rate limit from 60/hr to 5000/hr)
+    if (process.env.GITHUB_TOKEN) {
+      fetchHeaders['Authorization'] = `Bearer ${process.env.GITHUB_TOKEN}`;
+    }
+
     const response = await fetch('https://api.github.com/repos/overkillkulture/consciousness-bugs/issues?state=all&per_page=100', {
-      headers: {
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'Consciousness-Revolution-Bug-Monitor'
-      }
+      headers: fetchHeaders
     });
 
     if (!response.ok) {
@@ -47,6 +72,11 @@ exports.handler = async (event, context) => {
       },
       labels: bug.labels.map(l => l.name)
     }));
+
+    // Update cache
+    cache.data = allBugs;
+    cache.timestamp = Date.now();
+    console.log(`Cached ${allBugs.length} bugs`);
 
     return {
       statusCode: 200,
