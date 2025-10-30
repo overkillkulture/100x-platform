@@ -196,38 +196,31 @@
 
         <!-- Quick Actions -->
         <div class="actions-grid">
-            <!-- 🔥 CREATE MODULE - MOST IMPORTANT ACTION -->
-            <div class="action-card" onclick="window.location.href='jarvis.html'" style="background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,255,255,0.1) 100%); border: 3px solid #00ff88; box-shadow: 0 0 30px rgba(0,255,136,0.4);">
-                <h3 style="font-size: 1.5rem; color: #00ff88;">🔧 CREATE A MODULE</h3>
-                <p style="font-size: 1.1rem; margin-top: 0.5rem;">Build custom features and automation<br>
-                <strong style="color: #00ffff;">→ Start building now!</strong></p>
+            <div class="action-card" onclick="window.location.href='downloads.html'" style="background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,255,255,0.1) 100%); border: 3px solid #00ff88; box-shadow: 0 0 30px rgba(0,255,136,0.4);">
+                <h3 style="font-size: 1.5rem; color: #00ff88;">📦 DOWNLOAD ARAYA</h3>
+                <p style="font-size: 1.1rem; margin-top: 0.5rem;">Chrome Extension • File Automation • Pattern Detection<br>
+                <strong style="color: #00ffff;">→ Get the beta now!</strong></p>
             </div>
 
-            <div class="action-card" onclick="window.location.href='downloads.html'">
-                <h3>📦 ARAYA 1.0 - File Automation</h3>
-                <p>Chrome Extension • Gmail Integration • Pattern Detection<br>
-                Automation software to save files and detect patterns</p>
+            <div class="action-card" onclick="alert('Found a bug? Click the 🐛 button in the bottom-right corner!')">
+                <h3>🐛 Report a Bug</h3>
+                <p>See something broken? Click the bug button in the corner to let us know</p>
             </div>
 
-            <div class="action-card" style="opacity: 0.7; cursor: default;">
-                <h3>🎤 ARAYA 2.0 - Full Voice (Coming Soon)</h3>
-                <p>Voice-enabled AI assistant with natural conversation<br>
-                In development - Available in next version</p>
+            <div class="action-card" onclick="window.location.href='bugs-live.html'" style="background: linear-gradient(135deg, rgba(0,255,255,0.2) 0%, rgba(0,255,136,0.1) 100%); border: 2px solid #00ffff;">
+                <h3>⚡ LIVE BUG MONITOR</h3>
+                <p><strong>AUTO-REFRESH every 5 seconds</strong><br>Watch bugs appear in real-time • No manual refresh needed</p>
             </div>
 
-            <div class="action-card" onclick="openProfiles()">
-                <h3>👥 View Profiles</h3>
-                <p>See all builders, leaderboard, and your stats</p>
+            <div class="action-card" onclick="window.open('https://github.com/overkillkulture/consciousness-bugs/issues', '_blank')">
+                <h3>📋 View on GitHub</h3>
+                <p>See bugs on GitHub (manual view)</p>
             </div>
 
-            <div class="action-card" onclick="openActivity()">
-                <h3>📊 Activity Dashboard</h3>
-                <p>Monitor system activity and newest additions</p>
-            </div>
-
-            <div class="action-card" onclick="openTeamChat()">
-                <h3>💬 Team Chat</h3>
-                <p>Collaborate with other builders in real-time</p>
+            <div class="action-card" onclick="window.open('https://6900eed7f2455b1690e62836--verdant-tulumba-fa2a5a.netlify.app/#features', '_blank')" style="background: linear-gradient(135deg, rgba(138,43,226,0.2) 0%, rgba(75,0,130,0.1) 100%); border: 2px solid #9370DB;">
+                <h3>💬 Chat with Araya</h3>
+                <p>Talk to your AI companion • Get instant help • Pattern detection assistant<br>
+                <strong style="color: #9370DB;">→ Start chatting now!</strong></p>
             </div>
         </div>
 
@@ -391,42 +384,17 @@
         // Initialize on load
         initWorkspace();
     </script>
-    <!-- JARVIS HUD System - Ctrl+J to toggle -->
-    <script src="/universal-hud-embed.js"></script>
 
-<!-- UNIVERSAL NAVIGATION SYSTEM - Auto-injected -->
-<script src="/UNIVERSAL_NAVIGATION.js"></script>
+    <!-- FEATURE ANNOUNCEMENTS - Shows new features automatically -->
+    <script src="/UNIVERSAL_FEATURE_ANNOUNCEMENTS.js"></script>
 
-<script src="/UNIVERSAL_HELP_SYSTEM.js"></script>
+    <!-- NAVIGATION SYSTEM -->
+    <script src="/UNIVERSAL_NAVIGATION.js"></script>
 
-<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
-<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
-    <script>
+    <!-- VISITOR TRACKING -->
+    <script src="/VISITOR_TRACKING_SNIPPET.js"></script>
 
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `bug_${Date.now()}.json`;
-            a.click();
-        });
-
-        // Show success message
-        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
-
-        // Reset form
-        document.getElementById('bug-report-form').reset();
-        toggleBugPanel();
-    };
-})();
-</script>
-<script src="UNIVERSAL_BUG_REPORTER.js"></script>
-
-
-</body> tag -->
-
-
-
-
-    <!-- Simple Bug Reporter -->
-    <script src="/BOOTSTRAP_BUG_WIDGET.js"></script>
+    <!-- BOOTSTRAP BUG REPORTER - Clean, mobile-friendly -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
 </body>
 </html>

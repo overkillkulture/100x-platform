@@ -165,6 +165,8 @@
 
             <button type="submit" class="btn">Enter Workspace</button>
 
+            <button type="button" class="btn" style="background: rgba(255,255,255,0.1); color: #00ff88; margin-top: 0.5rem;" onclick="browseAsGuest()">Browse as Guest</button>
+
             <div class="toggle-mode">
                 Don't have an account? <a href="#" onclick="toggleMode(); return false;">Sign up</a>
             </div>
@@ -250,6 +252,17 @@
         function hideMessages() {
             document.getElementById('errorMessage').style.display = 'none';
             document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function browseAsGuest() {
+            // Set guest credentials
+            localStorage.setItem('workspace_user_id', 'guest_' + Date.now());
+            localStorage.setItem('workspace_user_name', 'Guest Explorer');
+            localStorage.setItem('beta_user_pin', 'GUEST');
+            localStorage.setItem('beta_user_name', 'Guest Explorer');
+
+            // Redirect to workspace
+            window.location.href = 'workspace-v3.html';
         }
 
         function login(username, password) {
@@ -362,6 +375,6 @@
 
 
     <!-- Simple Bug Reporter -->
-    <script src="/BOOTSTRAP_BUG_WIDGET.js"></script>
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
 </body>
 </html>
