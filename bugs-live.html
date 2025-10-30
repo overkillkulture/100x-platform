@@ -151,6 +151,52 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 0 2rem;
+        }
+
+        .tab-btn {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            color: #00ff88;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            background: rgba(0, 255, 136, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: #00ff88;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .tab-count {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+
+        .bug-state-open {
+            color: #00ff88;
+        }
+
+        .bug-state-closed {
+            color: #ff4444;
+        }
     </style>
 </head>
 <body>
@@ -162,6 +208,18 @@
         <div class="refresh-info">
             Auto-refresh every 5 seconds • Last update: <span id="lastUpdate">--:--:--</span>
         </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-filter="all">
+            ALL <span class="tab-count" id="countAll">0</span>
+        </button>
+        <button class="tab-btn" data-filter="open">
+            🟢 OPEN <span class="tab-count" id="countOpen">0</span>
+        </button>
+        <button class="tab-btn" data-filter="closed">
+            🔴 CLOSED <span class="tab-count" id="countClosed">0</span>
+        </button>
     </div>
 
     <div id="debugInfo" class="debug-info" style="display: none;">
@@ -176,6 +234,8 @@
         let lastBugCount = 0;
         let knownBugs = new Set();
         let loadAttempt = 0;
+        let currentFilter = 'all';
+        let allBugsData = [];
 
         function updateDebug(msg) {
             const debugDiv = document.getElementById('debugInfo');
@@ -183,6 +243,88 @@
             debugDiv.style.display = 'block';
             debugText.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
             console.log('[DEBUG]', msg);
+        }
+
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Update active state
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    // Update filter
+                    currentFilter = tab.getAttribute('data-filter');
+
+                    // Re-render with filter
+                    renderBugs(allBugsData);
+                });
+            });
+        }
+
+        function updateTabCounts(bugs) {
+            const openCount = bugs.filter(b => b.state === 'open').length;
+            const closedCount = bugs.filter(b => b.state === 'closed').length;
+
+            document.getElementById('countAll').textContent = bugs.length;
+            document.getElementById('countOpen').textContent = openCount;
+            document.getElementById('countClosed').textContent = closedCount;
+        }
+
+        function renderBugs(bugs) {
+            const bugList = document.getElementById('bugList');
+
+            // Filter bugs based on current tab
+            let filteredBugs = bugs;
+            if (currentFilter === 'open') {
+                filteredBugs = bugs.filter(b => b.state === 'open');
+            } else if (currentFilter === 'closed') {
+                filteredBugs = bugs.filter(b => b.state === 'closed');
+            }
+
+            // Check for new bugs
+            const newBugNumbers = bugs.map(b => b.number).filter(n => !knownBugs.has(n));
+            bugs.forEach(b => knownBugs.add(b.number));
+
+            if (filteredBugs.length === 0) {
+                bugList.innerHTML = `<div class="loading">No ${currentFilter === 'all' ? '' : currentFilter} bugs</div>`;
+                return;
+            }
+
+            bugList.innerHTML = '';
+            filteredBugs.forEach(bug => {
+                const isNew = newBugNumbers.includes(bug.number);
+                const bugDiv = document.createElement('div');
+                bugDiv.className = 'bug-item' + (isNew ? ' bug-new' : '');
+
+                const stateEmoji = bug.state === 'open' ? '🟢' : '🔴';
+                const stateClass = bug.state === 'open' ? 'bug-state-open' : 'bug-state-closed';
+
+                bugDiv.innerHTML = `
+                    <div class="bug-header">
+                        <div class="bug-title">
+                            ${bug.title}
+                            ${isNew ? '<span class="new-badge">NEW!</span>' : ''}
+                        </div>
+                        <div class="bug-number">#${bug.number}</div>
+                    </div>
+                    <div class="bug-meta">
+                        <div>👤 ${bug.user.login}</div>
+                        <div>📅 ${new Date(bug.created_at).toLocaleString()}</div>
+                        <div class="${stateClass}">${stateEmoji} ${bug.state.toUpperCase()}</div>
+                    </div>
+                    <div class="bug-description">${bug.body || 'No description provided'}</div>
+                    <a href="${bug.html_url}" target="_blank" class="bug-link">View on GitHub →</a>
+                `;
+
+                bugList.appendChild(bugDiv);
+            });
+
+            // Alert for new bugs
+            if (newBugNumbers.length > 0 && lastBugCount > 0) {
+                console.log(`🚨 ${newBugNumbers.length} NEW BUG(S) DETECTED!`);
+                updateDebug(`🚨 NEW BUGS: #${newBugNumbers.join(', #')}`);
+            }
         }
 
         async function loadBugs() {
@@ -200,6 +342,9 @@
                 const bugs = await response.json();
                 updateDebug(`Successfully loaded ${bugs.length} bugs`);
 
+                // Store all bugs
+                allBugsData = bugs;
+
                 // Update count
                 document.getElementById('bugCount').textContent = bugs.length;
 
@@ -207,52 +352,11 @@
                 const now = new Date();
                 document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
 
-                // Check for new bugs
-                const newBugNumbers = bugs.map(b => b.number).filter(n => !knownBugs.has(n));
-                updateDebug(`New bugs: ${newBugNumbers.length > 0 ? newBugNumbers.join(', ') : 'none'}`);
+                // Update tab counts
+                updateTabCounts(bugs);
 
-                // Update known bugs
-                bugs.forEach(b => knownBugs.add(b.number));
-
-                // Render bugs
-                const bugList = document.getElementById('bugList');
-                bugList.innerHTML = '';
-
-                if (bugs.length === 0) {
-                    bugList.innerHTML = '<div class="loading">No bugs reported yet</div>';
-                    return;
-                }
-
-                bugs.forEach(bug => {
-                    const isNew = newBugNumbers.includes(bug.number);
-                    const bugDiv = document.createElement('div');
-                    bugDiv.className = 'bug-item' + (isNew ? ' bug-new' : '');
-
-                    bugDiv.innerHTML = `
-                        <div class="bug-header">
-                            <div class="bug-title">
-                                ${bug.title}
-                                ${isNew ? '<span class="new-badge">NEW!</span>' : ''}
-                            </div>
-                            <div class="bug-number">#${bug.number}</div>
-                        </div>
-                        <div class="bug-meta">
-                            <div>👤 ${bug.user.login}</div>
-                            <div>📅 ${new Date(bug.created_at).toLocaleString()}</div>
-                            <div>🏷️ ${bug.state === 'open' ? '🟢 OPEN' : '🔴 CLOSED'}</div>
-                        </div>
-                        <div class="bug-description">${bug.body || 'No description provided'}</div>
-                        <a href="${bug.html_url}" target="_blank" class="bug-link">View on GitHub →</a>
-                    `;
-
-                    bugList.appendChild(bugDiv);
-                });
-
-                // Play sound for new bugs (optional)
-                if (newBugNumbers.length > 0 && lastBugCount > 0) {
-                    console.log(`🚨 ${newBugNumbers.length} NEW BUG(S) DETECTED!`);
-                    updateDebug(`🚨 NEW BUGS: #${newBugNumbers.join(', #')}`);
-                }
+                // Render bugs with current filter
+                renderBugs(bugs);
 
                 lastBugCount = bugs.length;
 
@@ -274,11 +378,13 @@
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
                 updateDebug('DOM ready, starting bug monitor...');
+                setupTabs();
                 loadBugs();
                 setInterval(loadBugs, 5000);
             });
         } else {
             updateDebug('DOM already ready, starting bug monitor...');
+            setupTabs();
             loadBugs();
             setInterval(loadBugs, 5000);
         }
