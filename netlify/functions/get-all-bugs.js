@@ -19,7 +19,7 @@ exports.handler = async (event, context) => {
 
   try {
     // Fetch bugs from GitHub
-    const response = await fetch('https://api.github.com/repos/overkillkulture/consciousness-revolution/issues?state=all&per_page=100', {
+    const response = await fetch('https://api.github.com/repos/overkillkulture/consciousness-bugs/issues?state=all&per_page=100', {
       headers: {
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Consciousness-Revolution-Bug-Monitor'
