@@ -251,11 +251,16 @@
     </div>
 
     <script>
-        // Auto-detect browser
-        document.getElementById('browser').value = navigator.userAgent.split('(')[1]?.split(')')[0] || 'Unknown';
+        // Store referrer URL for form reset
+        const referrerUrl = document.referrer ? new URL(document.referrer).pathname : '';
+        const pageUrl = referrerUrl && referrerUrl !== '/report-bug.html' ? referrerUrl : '';
 
-        // Auto-fill current URL
-        document.getElementById('url').value = document.referrer || window.location.pathname;
+        // Auto-detect browser
+        const browserInfo = navigator.userAgent.split('(')[1]?.split(')')[0] || 'Unknown';
+        document.getElementById('browser').value = browserInfo;
+
+        // Auto-fill current URL (where bug occurred)
+        document.getElementById('url').value = pageUrl || 'Not specified';
 
         document.getElementById('bugForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -276,6 +281,15 @@
                 browser: document.getElementById('browser').value.trim()
             };
 
+            // Validate required fields
+            if (!bugData.title || !bugData.description) {
+                messageDiv.className = 'message error show';
+                messageDiv.textContent = '❌ Please fill in both title and description.';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Bug Report';
+                return;
+            }
+
             try {
                 const response = await fetch('/api/bugs/report', {
                     method: 'POST',
@@ -293,7 +307,10 @@
 
                     // Clear form
                     document.getElementById('bugForm').reset();
-                    document.getElementById('browser').value = navigator.userAgent.split('(')[1]?.split(')')[0] || 'Unknown';
+
+                    // Restore auto-filled fields
+                    document.getElementById('browser').value = browserInfo;
+                    document.getElementById('url').value = pageUrl || 'Not specified';
 
                     // Scroll to message
                     messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

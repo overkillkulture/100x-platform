@@ -591,9 +591,11 @@ app.post('/api/bugs/report', async (req, res) => {
                 category: category || 'other',
                 browser: browser || 'unknown',
                 url: url || '',
-                status: 'new'
+                status: 'new',
+                anonymous: !req.session.user
             }),
-            userId: req.session.user ? req.session.user.id : null
+            userId: req.session.user ? req.session.user.id : null,
+            likes: 0  // Set default value for required field
         });
 
         res.json({
@@ -612,7 +614,11 @@ app.post('/api/bugs/report', async (req, res) => {
 app.get('/api/bugs', async (req, res) => {
     try {
         const posts = await Post.findAll({
-            include: [{ model: User, attributes: ['username', 'id'] }],
+            include: [{
+                model: User,
+                attributes: ['username', 'id'],
+                required: false  // Allow null users (anonymous bug reports)
+            }],
             order: [['createdAt', 'DESC']]
         });
 
@@ -624,20 +630,21 @@ app.get('/api/bugs', async (req, res) => {
                     if (content.type === 'bug_report') {
                         return {
                             id: post.id,
-                            user_id: post.userId,
+                            user_id: post.userId || 'anonymous',
                             username: post.User ? post.User.username : 'Anonymous',
-                            title: content.title,
-                            description: content.description,
-                            severity: content.severity,
-                            category: content.category,
-                            status: content.status,
-                            browser: content.browser,
-                            url: content.url,
+                            title: content.title || 'Untitled',
+                            description: content.description || '',
+                            severity: content.severity || 'medium',
+                            category: content.category || 'other',
+                            status: content.status || 'new',
+                            browser: content.browser || 'unknown',
+                            url: content.url || '',
                             created: post.createdAt,
                             updated: post.updatedAt
                         };
                     }
                 } catch (e) {
+                    console.error('Error parsing bug report:', e);
                     return null;
                 }
                 return null;
@@ -666,15 +673,23 @@ app.patch('/api/bugs/:id', async (req, res) => {
             return res.status(404).json({ error: 'Bug not found' });
         }
 
-        const content = JSON.parse(post.content);
-        if (content.type === 'bug_report') {
-            content.status = status;
-            post.content = JSON.stringify(content);
-            await post.save();
+        try {
+            const content = JSON.parse(post.content);
+            if (content.type === 'bug_report') {
+                content.status = status;
+                if (status === 'resolved' || status === 'closed') {
+                    content.resolved_at = new Date().toISOString();
+                }
+                post.content = JSON.stringify(content);
+                await post.save();
 
-            res.json({ success: true });
-        } else {
-            res.status(400).json({ error: 'Not a bug report' });
+                res.json({ success: true });
+            } else {
+                res.status(400).json({ error: 'Not a bug report' });
+            }
+        } catch (parseError) {
+            console.error('Error parsing bug content:', parseError);
+            res.status(500).json({ error: 'Invalid bug data format' });
         }
 
     } catch (error) {
