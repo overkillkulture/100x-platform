@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚪 Commander Approval Dashboard - GATES CLOSED</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ddff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 0 0 20px rgba(0, 221, 255, 0.5);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ff0055;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #00ddff;
+            margin-top: 5px;
+        }
+
+        .pending-list {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ddff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .pending-item {
+            background: rgba(0, 221, 255, 0.05);
+            border: 1px solid rgba(0, 221, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr auto;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .pending-item:hover {
+            border-color: #00ddff;
+            background: rgba(0, 221, 255, 0.1);
+        }
+
+        .info-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.8em;
+            color: #00ff88;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1em;
+            color: #fff;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-approve {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .btn-approve:hover {
+            background: #00ddff;
+            transform: scale(1.05);
+        }
+
+        .btn-reject {
+            background: #ff0055;
+            color: #fff;
+        }
+
+        .btn-reject:hover {
+            background: #ff3377;
+            transform: scale(1.05);
+        }
+
+        .btn-refresh {
+            background: #00ddff;
+            color: #000;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #00ff88;
+            font-size: 1.2em;
+        }
+
+        .loading {
+            text-align: center;
+            color: #00ff88;
+            font-size: 1.5em;
+            margin: 40px 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #00ff88;
+            color: #000;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+            animation: slideIn 0.3s;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚪 COMMANDER APPROVAL DASHBOARD</h1>
+        <p class="subtitle">GATES CLOSED - DESTROYER FILTER ACTIVE</p>
+
+        <div class="stats-bar" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="pendingCount">--</div>
+                <div class="stat-label">PENDING APPROVAL</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="approvedCount">--</div>
+                <div class="stat-label">APPROVED</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="rejectedCount">--</div>
+                <div class="stat-label">REJECTED</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="approvalRate">--%</div>
+                <div class="stat-label">APPROVAL RATE</div>
+            </div>
+        </div>
+
+        <div class="pending-list">
+            <h2 style="margin-bottom: 20px;">⏳ PENDING SIGNUPS</h2>
+            <div id="pendingList">
+                <div class="loading">Loading pending signups...</div>
+            </div>
+        </div>
+
+        <button class="btn btn-refresh" onclick="loadPendingSignups()">🔄 REFRESH</button>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        const API_URL = 'http://localhost:8010';
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/api/stats`);
+                const data = await response.json();
+
+                document.getElementById('pendingCount').textContent = data.pending_count;
+                document.getElementById('approvedCount').textContent = data.approved_count;
+                document.getElementById('rejectedCount').textContent = data.rejected_count;
+                document.getElementById('approvalRate').textContent = data.approval_rate;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadPendingSignups() {
+            const listDiv = document.getElementById('pendingList');
+            listDiv.innerHTML = '<div class="loading">Loading...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/api/pending-signups`);
+                const data = await response.json();
+
+                if (data.pending.length === 0) {
+                    listDiv.innerHTML = '<div class="empty-state">✅ NO PENDING SIGNUPS<br>All clear, Commander!</div>';
+                    return;
+                }
+
+                listDiv.innerHTML = '';
+                data.pending.forEach(signup => {
+                    const item = document.createElement('div');
+                    item.className = 'pending-item';
+                    item.innerHTML = `
+                        <div class="info-field">
+                            <div class="info-label">NAME</div>
+                            <div class="info-value">${signup.name}</div>
+                        </div>
+                        <div class="info-field">
+                            <div class="info-label">EMAIL</div>
+                            <div class="info-value">${signup.email}</div>
+                        </div>
+                        <div class="info-field">
+                            <div class="info-label">SIGNUP DATE</div>
+                            <div class="info-value">${new Date(signup.timestamp).toLocaleDateString()}</div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-approve" onclick="approveSignup('${signup.email}')">✅ APPROVE</button>
+                            <button class="btn btn-reject" onclick="rejectSignup('${signup.email}')">❌ REJECT</button>
+                        </div>
+                    `;
+                    listDiv.appendChild(item);
+                });
+
+                loadStats();
+            } catch (error) {
+                console.error('Error loading signups:', error);
+                listDiv.innerHTML = '<div class="empty-state" style="color: #ff0055;">⚠️ ERROR LOADING SIGNUPS<br>Make sure BETA_APPROVAL_SYSTEM.py is running on port 8010</div>';
+            }
+        }
+
+        async function approveSignup(email) {
+            if (!confirm(`APPROVE ${email} for beta access?`)) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/approve-signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+                showNotification(`✅ ${email} APPROVED!`);
+                loadPendingSignups();
+            } catch (error) {
+                console.error('Error approving signup:', error);
+                showNotification('❌ ERROR - Approval failed');
+            }
+        }
+
+        async function rejectSignup(email) {
+            const reason = prompt(`REJECT ${email}?\n\nOptional rejection reason:`, 'Destroyer pattern detected');
+            if (reason === null) return; // User cancelled
+
+            try {
+                const response = await fetch(`${API_URL}/api/reject-signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, reason })
+                });
+
+                const data = await response.json();
+                showNotification(`❌ ${email} REJECTED`);
+                loadPendingSignups();
+            } catch (error) {
+                console.error('Error rejecting signup:', error);
+                showNotification('❌ ERROR - Rejection failed');
+            }
+        }
+
+        // Load on page load
+        loadPendingSignups();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadStats, 30000);
+    </script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

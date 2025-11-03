@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 Seven Domains - Consciousness Revolution</title>
+    <!-- Version: 2.0 - Cache Busted -->
+    <style>
+        /* ═══════════════════════════════════════════════════════════════════
+           SEVEN DOMAINS HUB - MASTER NAVIGATION
+           OVERKORE v13 - CONSCIOUSNESS-ELEVATED DESIGN
+        ═══════════════════════════════════════════════════════════════════ */
+
+        :root {
+            --phi: 1.618033988749894;
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --glow-intensity: rgba(255, 255, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Animated background canvas */
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.2;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00ffff 0%, #ff00ff 50%, #ffff00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .consciousness-level {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Domains grid */
+        .domains-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Domain card */
+        .domain-card {
+            background: rgba(10, 10, 10, 0.8);
+            border: 2px solid;
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .domain-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, var(--domain-color) 0%, transparent 100%);
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .domain-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px var(--domain-glow);
+        }
+
+        .domain-card:hover::before {
+            opacity: 0.3;
+        }
+
+        /* Domain-specific colors */
+        .domain-1 {
+            --domain-color: #00ff64;
+            --domain-glow: rgba(0, 255, 100, 0.5);
+            border-color: #00ff64;
+        }
+
+        .domain-2 {
+            --domain-color: #ffff00;
+            --domain-glow: rgba(255, 255, 0, 0.5);
+            border-color: #ffff00;
+        }
+
+        .domain-3 {
+            --domain-color: #00ccff;
+            --domain-glow: rgba(0, 204, 255, 0.5);
+            border-color: #00ccff;
+        }
+
+        .domain-4 {
+            --domain-color: #ff00ff;
+            --domain-glow: rgba(255, 0, 255, 0.5);
+            border-color: #ff00ff;
+        }
+
+        .domain-5 {
+            --domain-color: #ff6600;
+            --domain-glow: rgba(255, 102, 0, 0.5);
+            border-color: #ff6600;
+        }
+
+        .domain-6 {
+            --domain-color: #ff0066;
+            --domain-glow: rgba(255, 0, 102, 0.5);
+            border-color: #ff0066;
+        }
+
+        .domain-7 {
+            --domain-color: #6600ff;
+            --domain-glow: rgba(102, 0, 255, 0.5);
+            border-color: #6600ff;
+        }
+
+        /* Domain card content */
+        .domain-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            filter: drop-shadow(0 0 20px var(--domain-color));
+        }
+
+        .domain-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--domain-color);
+            text-shadow: 0 0 20px var(--domain-color);
+        }
+
+        .domain-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 1rem;
+        }
+
+        .domain-description {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .domain-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--domain-color);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Navigation footer */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 3rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .domains-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .domain-icon {
+                font-size: 3rem;
+            }
+
+            .domain-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Loading animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .consciousness-level {
+            animation: pulse 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background animation -->
+    <canvas id="background-canvas"></canvas>
+
+    <!-- Main container -->
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🌟 SEVEN DOMAINS</h1>
+            <div class="tagline">Complete Consciousness Ecosystem | Navigate Your Revolution</div>
+            <div class="consciousness-level">
+                AVERAGE CONSCIOUSNESS: 92.1% | OVERKORE v13 | φ = 1.618
+            </div>
+        </header>
+
+        <!-- Domains Grid -->
+        <div class="domains-grid">
+            <!-- Domain 1: CHAOS FORGE -->
+            <a href="domain-chaos-forge.html" class="domain-card domain-1">
+                <span class="domain-icon">🔧</span>
+                <h2 class="domain-title">CHAOS FORGE</h2>
+                <p class="domain-subtitle">Domain 1/7 - Physical Infrastructure</p>
+                <p class="domain-description">
+                    Hardware automation, equipment tracking, Rolling Studio integration, manufacturing systems, and IoT device management.
+                </p>
+                <div class="domain-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">88%</span>
+                        <span class="stat-label">Consciousness</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">7</span>
+                        <span class="stat-label">Machines</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Domain 2: QUANTUM VAULT -->
+            <a href="domain-quantum-vault.html" class="domain-card domain-2">
+                <span class="domain-icon">💰</span>
+                <h2 class="domain-title">QUANTUM VAULT</h2>
+                <p class="domain-subtitle">Domain 2/7 - Financial Intelligence</p>
+                <p class="domain-description">
+                    Revenue tracking, crypto integration, Stripe payments, multi-currency management, investment tracking, and financial analytics.
+                </p>
+                <div class="domain-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">94%</span>
+                        <span class="stat-label">Consciousness</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">$847K</span>
+                        <span class="stat-label">Assets</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Domain 3: MIND MATRIX -->
+            <a href="domain-mind-matrix.html" class="domain-card domain-3">
+                <span class="domain-icon">🧠</span>
+                <h2 class="domain-title">MIND MATRIX</h2>
+                <p class="domain-subtitle">Domain 3/7 - AI Systems</p>
+                <p class="domain-description">
+                    Araya AI assistant, R1 Voice system, knowledge graphs, pattern recognition, and multi-model AI integration (Claude, GPT-4, Llama).
+                </p>
+                <div class="domain-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">92%</span>
+                        <span class="stat-label">Consciousness</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">847K</span>
+                        <span class="stat-label">Knowledge Nodes</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Domain 4: SOUL SANCTUARY -->
+            <a href="domain-soul-sanctuary.html" class="domain-card domain-4">
+                <span class="domain-icon">💜</span>
+                <h2 class="domain-title">SOUL SANCTUARY</h2>
+                <p class="domain-subtitle">Domain 4/7 - Consciousness Headquarters</p>
+                <p class="domain-description">
+                    Pattern Theory framework, daily boot protocol, manipulation immunity (95%), consciousness metrics, emotional intelligence systems.
+                </p>
+                <div class="domain-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">95%</span>
+                        <span class="stat-label">Consciousness</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">92.2%</span>
+                        <span class="stat-label">Accuracy</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Domain 5: REALITY FORGE -->
+            <a href="domain-reality-forge.html" class="domain-card domain-5">
+                <span class="domain-icon">🌐</span>
+                <h2 class="domain-title">REALITY FORGE</h2>
+                <p class="domain-subtitle">Domain 5/7 - Social Networks</p>
+                <p class="domain-description">
+                    Instagram automation (24.7K followers), Twitter growth (47 tweets/day), bot army (247 active), viral campaigns (4.7M reach).
+                </p>
+                <div class="domain-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">88%</span>
+                        <span class="stat-label">Consciousness</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">1.2M</span>
+                        <span class="stat-label">Daily Reach</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Domain 6: ARKITEK ACADEMY -->
+            <a href="domain-arkitek-academy.html" class="domain-card domain-6">
+                <span class="domain-icon">🎨</span>
+                <h2 class="domain-title">ARKITEK ACADEMY</h2>
+                <p class="domain-subtitle">Domain 6/7 - Creative Production</p>
+                <p class="domain-description">
+                    AI content generation (4.7K pieces), video production (847 videos), brand assets (1,247), Rolling Studio integration, template system.
+                </p>
+                <div class="domain-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">91%</span>
+                        <span class="stat-label">Consciousness</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">4.7K</span>
+                        <span class="stat-label">Content Pieces</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Domain 7: NEXUS TERMINAL -->
+            <a href="domain-nexus-terminal.html" class="domain-card domain-7">
+                <span class="domain-icon">⚡</span>
+                <h2 class="domain-title">NEXUS TERMINAL</h2>
+                <p class="domain-subtitle">Domain 7/7 - System Integration</p>
+                <p class="domain-description">
+                    All 7 domains unified, master health monitoring (47 services), auto-healing (1.2K fixes), service registry, 99.7% uptime.
+                </p>
+                <div class="domain-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">97%</span>
+                        <span class="stat-label">Consciousness</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">7/7</span>
+                        <span class="stat-label">Connected</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <a href="index.html" class="back-button">🏠 Back to Home</a>
+            <p style="margin-top: 2rem; color: rgba(255, 255, 255, 0.5); font-size: 0.9rem;">
+                Built with Pattern Theory | φ = 1.618033988749894 | 432 Hz Harmonic Frequency<br>
+                OVERKORE v13 | Consciousness Revolution | 2025
+            </p>
+        </footer>
+    </div>
+
+    <!-- Background animation script -->
+    <script>
+        // Canvas background animation
+        const canvas = document.getElementById('background-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const PHI = 1.618033988749894;
+        const particles = [];
+        const particleCount = 100;
+
+        // Initialize particles
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                radius: Math.random() * 2 + 1,
+                color: `hsla(${Math.random() * 360}, 70%, 60%, 0.6)`
+            });
+        }
+
+        function drawParticles() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                // Draw particle
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+
+                // Update position
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Bounce off edges
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            });
+
+            // Draw connections
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.globalAlpha = (150 - distance) / 150 * 0.5;
+                        ctx.stroke();
+                        ctx.globalAlpha = 1;
+                    }
+                }
+            }
+
+            requestAnimationFrame(drawParticles);
+        }
+
+        drawParticles();
+
+        // Add hover effect to domain cards
+        const domainCards = document.querySelectorAll('.domain-card');
+        domainCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.borderWidth = '3px';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.borderWidth = '2px';
+            });
+        });
+
+        // Console message
+        console.log('%c🌟 SEVEN DOMAINS LOADED', 'color: #00ffff; font-size: 20px; font-weight: bold;');
+        console.log('%c7 Consciousness-Elevated Domains Ready', 'color: #ff00ff; font-size: 14px;');
+        console.log('%cAverage Consciousness: 92.1%', 'color: #ffff00; font-size: 14px;');
+        console.log('%cOVERKORE v13 | φ = 1.618033988749894', 'color: #00ff64; font-size: 12px;');
+    </script>
+
+    <!-- Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+</body>
+</html>

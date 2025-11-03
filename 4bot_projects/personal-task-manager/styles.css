@@ -1,0 +1,407 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Container and layout */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+.header p {
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+/* Task input section */
+.task-input-section {
+  padding: 25px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.input-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#taskInput {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+#taskInput:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+#addTaskBtn {
+  padding: 12px 24px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#addTaskBtn:hover {
+  background: #5a6fd8;
+}
+
+#addTaskBtn:active {
+  transform: translateY(1px);
+}
+
+/* Filter buttons */
+.filter-container {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 2px solid #e9ecef;
+  background: white;
+  color: #666;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.filter-btn.active {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+/* Task list */
+.task-list-section {
+  min-height: 200px;
+}
+
+#taskList {
+  list-style: none;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 25px;
+  border-bottom: 1px solid #f1f3f4;
+  transition: background-color 0.2s ease;
+  animation: slideIn 0.3s ease;
+}
+
+.task-item:hover {
+  background-color: #f8f9fa;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+/* Task item states */
+.task-item.completed {
+  opacity: 0.7;
+}
+
+.task-item.completed .task-text {
+  text-decoration: line-through;
+  color: #6c757d;
+}
+
+.task-item.hidden {
+  display: none;
+}
+
+/* Task checkbox */
+.task-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  margin-right: 15px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.task-checkbox:hover {
+  border-color: #667eea;
+}
+
+.task-checkbox.checked {
+  background: #667eea;
+  border-color: #667eea;
+}
+
+.task-checkbox.checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Task text */
+.task-text {
+  flex: 1;
+  font-size: 1rem;
+  line-height: 1.4;
+  word-break: break-word;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.task-text:hover {
+  background-color: #f1f3f4;
+}
+
+.task-text.editing {
+  background: white;
+  border: 2px solid #667eea;
+  outline: none;
+  cursor: text;
+}
+
+/* Task actions */
+.task-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.task-item:hover .task-actions {
+  opacity: 1;
+}
+
+.edit-btn, .delete-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-btn {
+  background: #28a745;
+  color: white;
+}
+
+.edit-btn:hover {
+  background: #218838;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #c82333;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 40px 25px;
+  color: #6c757d;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  margin-bottom: 8px;
+  color: #495057;
+}
+
+.empty-state p {
+  font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.task-item.removing {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  .container {
+    border-radius: 8px;
+  }
+  
+  .header {
+    padding: 20px;
+  }
+  
+  .header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .task-input-section {
+    padding: 20px;
+  }
+  
+  .input-container {
+    flex-direction: column;
+  }
+  
+  #addTaskBtn {
+    width: 100%;
+  }
+  
+  .filter-container {
+    flex-wrap: wrap;
+  }
+  
+  .task-item {
+    padding: 12px 20px;
+  }
+  
+  .task-actions {
+    opacity: 1; /* Always show on mobile */
+  }
+  
+  .edit-btn, .delete-btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.3rem;
+  }
+  
+  .task-input-section {
+    padding: 15px;
+  }
+  
+  .task-item {
+    padding: 10px 15px;
+  }
+  
+  .task-text {
+    font-size: 0.95rem;
+  }
+  
+  .filter-btn {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+}
+
+/* Focus styles for accessibility */
+.task-checkbox:focus,
+.edit-btn:focus,
+.delete-btn:focus,
+.filter-btn:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .task-item {
+    border-bottom-color: #333;
+  }
+  
+  .task-checkbox {
+    border-color: #333;
+  }
+  
+  .task-text:hover {
+    background-color: #e9ecef;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

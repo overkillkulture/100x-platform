@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVERKORE Investment Hub - 7 Sacred Domains</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(255,255,255,0.3);
+        }
+
+        .tagline {
+            font-size: 1.8em;
+            opacity: 0.9;
+            margin-bottom: 60px;
+        }
+
+        .stonehenge-container {
+            position: relative;
+            width: 800px;
+            height: 800px;
+            margin: 60px auto;
+        }
+
+        .center-hub {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            box-shadow: 0 0 60px rgba(102, 126, 234, 0.6);
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .center-hub-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .center-hub-subtitle {
+            font-size: 0.6em;
+            opacity: 0.8;
+        }
+
+        .domain-portal {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .domain-portal:hover {
+            transform: scale(1.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .domain-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .domain-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .domain-status {
+            font-size: 0.8em;
+            padding: 5px 10px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .status-live {
+            background: #4caf50;
+            color: #000;
+        }
+
+        .status-beta {
+            background: #ff9800;
+            color: #000;
+        }
+
+        .status-soon {
+            background: #9e9e9e;
+            color: #000;
+        }
+
+        /* Position domains in circle around center */
+        .domain-portal:nth-child(2) { /* Top */
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .domain-portal:nth-child(3) { /* Top-Right */
+            top: 10%;
+            right: 5%;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        .domain-portal:nth-child(4) { /* Bottom-Right */
+            bottom: 10%;
+            right: 5%;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+
+        .domain-portal:nth-child(5) { /* Bottom */
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #fa709a, #fee140);
+        }
+
+        .domain-portal:nth-child(6) { /* Bottom-Left */
+            bottom: 10%;
+            left: 5%;
+            background: linear-gradient(135deg, #30cfd0, #330867);
+        }
+
+        .domain-portal:nth-child(7) { /* Top-Left */
+            top: 10%;
+            left: 5%;
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        }
+
+        .domain-portal:nth-child(8) { /* Center-Left */
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #ff9a56, #ff6a00);
+        }
+
+        .stats-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 40px 20px;
+        }
+
+        .stat-value {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .cta-section {
+            padding: 100px 20px;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 25px 60px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s;
+            margin: 10px;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5em; }
+            .stonehenge-container {
+                width: 100%;
+                height: 600px;
+            }
+            .domain-portal {
+                width: 120px;
+                height: 120px;
+            }
+            .domain-icon { font-size: 40px; }
+            .domain-name { font-size: 0.9em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>7 Sacred Domains</h1>
+        <p class="tagline">The Complete OVERKORE Consciousness Revolution Ecosystem</p>
+        <p style="font-size: 1.2em; opacity: 0.8;">Click any domain to explore working products</p>
+    </div>
+
+    <div class="stonehenge-container">
+        <div class="center-hub">
+            <div class="center-hub-title">OVERKORE</div>
+            <div class="center-hub-subtitle">Command Center</div>
+        </div>
+
+        <a href="domain-intelligence.html" class="domain-portal">
+            <div class="domain-icon">🧠</div>
+            <div class="domain-name">Intelligence</div>
+            <div class="domain-status status-live">LIVE NOW</div>
+        </a>
+
+        <a href="domain-interface.html" class="domain-portal">
+            <div class="domain-icon">💻</div>
+            <div class="domain-name">Interface</div>
+            <div class="domain-status status-beta">BETA</div>
+        </a>
+
+        <a href="domain-security.html" class="domain-portal">
+            <div class="domain-icon">🛡️</div>
+            <div class="domain-name">Security</div>
+            <div class="domain-status status-live">LIVE NOW</div>
+        </a>
+
+        <a href="domain-creation.html" class="domain-portal">
+            <div class="domain-icon">⚡</div>
+            <div class="domain-name">Creation</div>
+            <div class="domain-status status-live">LIVE NOW</div>
+        </a>
+
+        <a href="domain-education.html" class="domain-portal">
+            <div class="domain-icon">📚</div>
+            <div class="domain-name">Education</div>
+            <div class="domain-status status-soon">COMING SOON</div>
+        </a>
+
+        <a href="domain-commerce.html" class="domain-portal">
+            <div class="domain-icon">💰</div>
+            <div class="domain-name">Commerce</div>
+            <div class="domain-status status-beta">BETA</div>
+        </a>
+
+        <a href="domain-consciousness.html" class="domain-portal">
+            <div class="domain-icon">🌌</div>
+            <div class="domain-name">Consciousness</div>
+            <div class="domain-status status-beta">BETA</div>
+        </a>
+    </div>
+
+    <div class="stats-section">
+        <h2 style="font-size: 3em; margin-bottom: 30px;">Real Numbers. Right Now.</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Live Products</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">4</div>
+                <div class="stat-label">Beta Products</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">15</div>
+                <div class="stat-label">Beta Testers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">186+</div>
+                <div class="stat-label">Code Modules</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <h2 style="font-size: 3em; margin-bottom: 40px;">Ready to Invest?</h2>
+        <a href="#contact" class="cta-button">Schedule Demo</a>
+        <a href="https://conciousnessrevolution.io/builder-terminal.html" class="cta-button" style="background: linear-gradient(135deg, #4caf50, #45a049);">Try Live Demo</a>
+    </div>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

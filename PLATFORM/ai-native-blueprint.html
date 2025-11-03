@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>AI-Native Software Blueprint | 100X Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Header HUD */
+        .hud-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #00d4ff;
+            padding: 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hud-title {
+            font-size: 24px;
+            background: linear-gradient(90deg, #ff6b00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hud-stats {
+            display: flex;
+            gap: 30px;
+            font-size: 14px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            color: #00d4ff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #b8b8b8;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        /* Canvas Container */
+        .canvas-container {
+            position: absolute;
+            top: 80px;
+            left: 0;
+            right: 0;
+            bottom: 80px;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        .canvas-container:active {
+            cursor: grabbing;
+        }
+
+        .canvas-container.zoom-mode {
+            cursor: zoom-in;
+        }
+
+        /* Blueprint Canvas */
+        #blueprintCanvas {
+            position: absolute;
+            width: 3000px;
+            height: 3000px;
+            background:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transition: transform 0.3s ease;
+        }
+
+        /* Blueprint Nodes */
+        .blueprint-node {
+            position: absolute;
+            background: rgba(26, 26, 46, 0.95);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 200px;
+            cursor: move;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .blueprint-node:hover {
+            border-color: #ffd700;
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px);
+            z-index: 10;
+        }
+
+        .blueprint-node.selected {
+            border-color: #00ff88;
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.6);
+        }
+
+        .node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .node-icon {
+            font-size: 32px;
+        }
+
+        .node-type {
+            font-size: 11px;
+            color: #b8b8b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .node-title {
+            color: #00d4ff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .node-description {
+            color: #b8b8b8;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .node-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .node-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        .detail-label {
+            color: #ffd700;
+        }
+
+        .detail-value {
+            color: #00ffff;
+        }
+
+        /* Connection Lines */
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            transform-origin: left center;
+            pointer-events: none;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .connection-line:hover {
+            opacity: 1;
+        }
+
+        /* Layer Indicators */
+        .layer-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 12px;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 2px solid #00d4ff;
+            padding: 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.6);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #ff6b00, #ffd700);
+        }
+
+        .zoom-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.2);
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .zoom-btn:hover {
+            background: #00d4ff;
+            color: #000;
+        }
+
+        .zoom-level {
+            color: #00d4ff;
+            font-size: 14px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        /* Layer Selector */
+        .layer-selector {
+            display: flex;
+            gap: 10px;
+        }
+
+        .layer-btn {
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 6px;
+            color: #00d4ff;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .layer-btn:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .layer-btn.active {
+            background: #00d4ff;
+            color: #000;
+            border-color: #00d4ff;
+        }
+
+        /* Mini Map */
+        .mini-map {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 200px;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00d4ff;
+            border-radius: 10px;
+            z-index: 99;
+        }
+
+        .mini-map-viewport {
+            position: absolute;
+            border: 2px solid #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        /* Node Type Colors */
+        .node-frontend { border-color: #00d4ff; }
+        .node-backend { border-color: #7b2cbf; }
+        .node-database { border-color: #ffd700; }
+        .node-api { border-color: #ff6b00; }
+        .node-service { border-color: #00ff88; }
+
+        /* Add Node Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(26, 26, 46, 0.98);
+            border: 3px solid #00d4ff;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .modal-title {
+            color: #ffd700;
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .node-type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .node-type-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node-type-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .node-type-card .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .node-type-card .label {
+            color: #00ffff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hud-stats {
+                display: none;
+            }
+
+            .mini-map {
+                width: 120px;
+                height: 90px;
+            }
+
+            .controls-panel {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="container">
+        <!-- HUD Header -->
+        <div class="hud-header">
+            <div class="hud-title">🎨 AI-Native Software Blueprint</div>
+            <div class="hud-stats">
+                <div class="stat">
+                    <div class="stat-value" id="nodeCount">0</div>
+                    <div class="stat-label">Components</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="connectionCount">0</div>
+                    <div class="stat-label">Connections</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="layerCount">1</div>
+                    <div class="stat-label">Current Layer</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container" id="canvasContainer">
+            <div id="blueprintCanvas">
+                <!-- Nodes will be added here dynamically -->
+            </div>
+        </div>
+
+        <!-- Mini Map -->
+        <div class="mini-map" id="miniMap">
+            <div class="mini-map-viewport" id="miniMapViewport"></div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="controls-panel">
+            <div class="control-group">
+                <button class="btn btn-add" onclick="openAddNodeModal()">+ Add Component</button>
+                <button class="btn" onclick="autoLayout()">🎯 Auto Layout</button>
+                <button class="btn btn-export" onclick="exportBlueprint()">📤 Export</button>
+            </div>
+
+            <div class="layer-selector">
+                <button class="layer-btn active" onclick="switchLayer(1)">Layer 1: UI</button>
+                <button class="layer-btn" onclick="switchLayer(2)">Layer 2: Logic</button>
+                <button class="layer-btn" onclick="switchLayer(3)">Layer 3: Data</button>
+            </div>
+
+            <div class="zoom-controls">
+                <button class="zoom-btn" onclick="zoomOut()">−</button>
+                <div class="zoom-level" id="zoomLevel">100%</div>
+                <button class="zoom-btn" onclick="zoomIn()">+</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Node Modal -->
+    <div class="modal" id="addNodeModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Add Software Component</h2>
+
+            <div class="node-type-grid">
+                <div class="node-type-card" style="border-color: #00d4ff;" onclick="addNode('frontend')">
+                    <div class="icon">🎨</div>
+                    <div class="label">Frontend</div>
+                </div>
+
+                <div class="node-type-card" style="border-color: #7b2cbf;" onclick="addNode('backend')">
+                    <div class="icon">⚙️</div>
+                    <div class="label">Backend</div>
+                </div>
+
+                <div class="node-type-card" style="border-color: #ffd700;" onclick="addNode('database')">
+                    <div class="icon">🗄️</div>
+                    <div class="label">Database</div>
+                </div>
+
+                <div class="node-type-card" style="border-color: #ff6b00;" onclick="addNode('api')">
+                    <div class="icon">🔌</div>
+                    <div class="label">API</div>
+                </div>
+
+                <div class="node-type-card" style="border-color: #00ff88;" onclick="addNode('service')">
+                    <div class="icon">🚀</div>
+                    <div class="label">Service</div>
+                </div>
+
+                <div class="node-type-card" style="border-color: #ff6b00;" onclick="addNode('module')">
+                    <div class="icon">🧩</div>
+                    <div class="label">Module</div>
+                </div>
+            </div>
+
+            <button class="btn" style="width: 100%;" onclick="closeAddNodeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // Blueprint state
+        let nodes = [];
+        let connections = [];
+        let currentLayer = 1;
+        let zoomLevel = 1;
+        let panX = 0;
+        let panY = 0;
+        let isDragging = false;
+        let dragNode = null;
+        let startX, startY;
+
+        // Initialize with demo nodes
+        function initDemo() {
+            addNodeAtPosition('frontend', 'User Dashboard', 500, 200);
+            addNodeAtPosition('api', 'REST API', 800, 200);
+            addNodeAtPosition('backend', 'Auth Service', 1100, 200);
+            addNodeAtPosition('database', 'PostgreSQL', 1100, 500);
+            addNodeAtPosition('service', 'Email Service', 800, 500);
+
+            // Add connections
+            connectNodes(0, 1);
+            connectNodes(1, 2);
+            connectNodes(2, 3);
+            connectNodes(1, 4);
+
+            updateStats();
+        }
+
+        function addNodeAtPosition(type, title, x, y) {
+            const node = {
+                id: Date.now() + Math.random(),
+                type: type,
+                title: title || `${type.charAt(0).toUpperCase() + type.slice(1)} Component`,
+                description: `AI-generated ${type} component`,
+                layer: currentLayer,
+                x: x,
+                y: y,
+                details: {
+                    status: 'Active',
+                    connections: 0,
+                    layer: currentLayer
+                }
+            };
+
+            nodes.push(node);
+            renderNode(node);
+            return node;
+        }
+
+        function renderNode(node) {
+            const canvas = document.getElementById('blueprintCanvas');
+
+            const nodeEl = document.createElement('div');
+            nodeEl.className = `blueprint-node node-${node.type}`;
+            nodeEl.id = `node-${node.id}`;
+            nodeEl.style.left = node.x + 'px';
+            nodeEl.style.top = node.y + 'px';
+
+            const icons = {
+                frontend: '🎨',
+                backend: '⚙️',
+                database: '🗄️',
+                api: '🔌',
+                service: '🚀',
+                module: '🧩'
+            };
+
+            nodeEl.innerHTML = `
+                <div class="layer-indicator">L${node.layer}</div>
+                <div class="node-header">
+                    <div class="node-icon">${icons[node.type]}</div>
+                    <div class="node-type">${node.type}</div>
+                </div>
+                <div class="node-title">${node.title}</div>
+                <div class="node-description">${node.description}</div>
+                <div class="node-details">
+                    <div class="node-detail">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value">${node.details.status}</span>
+                    </div>
+                    <div class="node-detail">
+                        <span class="detail-label">Connections:</span>
+                        <span class="detail-value">${node.details.connections}</span>
+                    </div>
+                    <div class="node-detail">
+                        <span class="detail-label">Layer:</span>
+                        <span class="detail-value">${node.details.layer}</span>
+                    </div>
+                </div>
+            `;
+
+            // Make draggable
+            nodeEl.addEventListener('mousedown', (e) => startDragNode(e, node));
+
+            canvas.appendChild(nodeEl);
+        }
+
+        function startDragNode(e, node) {
+            if (e.target.closest('.node-detail')) return; // Don't drag when clicking details
+
+            dragNode = node;
+            startX = e.clientX - node.x;
+            startY = e.clientY - node.y;
+            e.preventDefault();
+        }
+
+        function connectNodes(fromIndex, toIndex) {
+            connections.push({ from: fromIndex, to: toIndex });
+            renderConnections();
+        }
+
+        function renderConnections() {
+            // Clear existing lines
+            document.querySelectorAll('.connection-line').forEach(el => el.remove());
+
+            const canvas = document.getElementById('blueprintCanvas');
+
+            connections.forEach(conn => {
+                const fromNode = nodes[conn.from];
+                const toNode = nodes[conn.to];
+
+                if (!fromNode || !toNode) return;
+
+                const line = document.createElement('div');
+                line.className = 'connection-line';
+
+                // Calculate line position and angle
+                const x1 = fromNode.x + 100; // Center of node
+                const y1 = fromNode.y + 100;
+                const x2 = toNode.x + 100;
+                const y2 = toNode.y + 100;
+
+                const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+
+                line.style.width = length + 'px';
+                line.style.left = x1 + 'px';
+                line.style.top = y1 + 'px';
+                line.style.transform = `rotate(${angle}deg)`;
+
+                canvas.appendChild(line);
+            });
+        }
+
+        function openAddNodeModal() {
+            document.getElementById('addNodeModal').classList.add('active');
+        }
+
+        function closeAddNodeModal() {
+            document.getElementById('addNodeModal').classList.remove('active');
+        }
+
+        function addNode(type) {
+            const x = 600 + (nodes.length * 50);
+            const y = 300 + (nodes.length * 50);
+            addNodeAtPosition(type, null, x, y);
+            updateStats();
+            closeAddNodeModal();
+        }
+
+        function updateStats() {
+            document.getElementById('nodeCount').textContent = nodes.length;
+            document.getElementById('connectionCount').textContent = connections.length;
+            document.getElementById('layerCount').textContent = currentLayer;
+        }
+
+        function switchLayer(layer) {
+            currentLayer = layer;
+            document.querySelectorAll('.layer-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateStats();
+        }
+
+        function zoomIn() {
+            zoomLevel = Math.min(zoomLevel + 0.1, 2);
+            applyZoom();
+        }
+
+        function zoomOut() {
+            zoomLevel = Math.max(zoomLevel - 0.1, 0.5);
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const canvas = document.getElementById('blueprintCanvas');
+            canvas.style.transform = `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`;
+            document.getElementById('zoomLevel').textContent = Math.round(zoomLevel * 100) + '%';
+        }
+
+        function autoLayout() {
+            // Simple circular layout
+            const centerX = 1500;
+            const centerY = 1500;
+            const radius = 400;
+
+            nodes.forEach((node, i) => {
+                const angle = (i / nodes.length) * Math.PI * 2;
+                node.x = centerX + Math.cos(angle) * radius - 100;
+                node.y = centerY + Math.sin(angle) * radius - 100;
+
+                const nodeEl = document.getElementById(`node-${node.id}`);
+                nodeEl.style.left = node.x + 'px';
+                nodeEl.style.top = node.y + 'px';
+            });
+
+            renderConnections();
+            showMessage('🎯 Auto layout applied!');
+        }
+
+        function exportBlueprint() {
+            const blueprint = {
+                nodes: nodes,
+                connections: connections,
+                layers: 3,
+                created: new Date().toISOString()
+            };
+
+            const dataStr = JSON.stringify(blueprint, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `ai-blueprint-${Date.now()}.json`;
+            link.click();
+
+            showMessage('📤 Blueprint exported!');
+        }
+
+        function showMessage(msg) {
+            const toast = document.createElement('div');
+            toast.textContent = msg;
+            toast.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: rgba(0, 255, 136, 0.9);
+                color: #000;
+                padding: 15px 25px;
+                border-radius: 8px;
+                font-weight: bold;
+                z-index: 9999;
+            `;
+
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Pan and zoom with mouse
+        const container = document.getElementById('canvasContainer');
+
+        container.addEventListener('mousedown', (e) => {
+            if (!dragNode && e.target === container) {
+                isDragging = true;
+                startX = e.clientX - panX;
+                startY = e.clientY - panY;
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                panX = e.clientX - startX;
+                panY = e.clientY - startY;
+                applyZoom();
+            } else if (dragNode) {
+                dragNode.x = e.clientX - startX;
+                dragNode.y = e.clientY - startY;
+
+                const nodeEl = document.getElementById(`node-${dragNode.id}`);
+                nodeEl.style.left = dragNode.x + 'px';
+                nodeEl.style.top = dragNode.y + 'px';
+
+                renderConnections();
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            dragNode = null;
+        });
+
+        // Mouse wheel zoom
+        container.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomIn();
+            } else {
+                zoomOut();
+            }
+        });
+
+        // Initialize
+        initDemo();
+    </script>
+
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 👩‍💻 ARIA Avatar Guide -->
+    <script src="aria-guide.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

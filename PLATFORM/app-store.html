@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>App Store - Consciousness OS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-store-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .search-bar {
+            background: white;
+            border-radius: 50px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1.1em;
+            padding: 5px;
+        }
+
+        .search-bar .icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+            color: #667eea;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .app-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            font-size: 3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .app-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        .app-description {
+            color: #718096;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .app-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .app-category {
+            background: #e6f2ff;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .app-rating {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .install-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            font-size: 1em;
+        }
+
+        .install-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .install-btn.installed {
+            background: #48bb78;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-button:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .installed-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #48bb78;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <button class="back-button" onclick="window.location.href='welcome.html'">← Back</button>
+
+    <div class="app-store-container">
+        <div class="header">
+            <h1>📱 App Store</h1>
+            <p>Discover and install modules for Consciousness OS</p>
+        </div>
+
+        <div class="search-bar">
+            <span class="icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search for apps..." oninput="searchApps()">
+        </div>
+
+        <div class="categories">
+            <button class="category-btn active" onclick="filterCategory('all')">All</button>
+            <button class="category-btn" onclick="filterCategory('productivity')">Productivity</button>
+            <button class="category-btn" onclick="filterCategory('creativity')">Creativity</button>
+            <button class="category-btn" onclick="filterCategory('consciousness')">Consciousness</button>
+            <button class="category-btn" onclick="filterCategory('tools')">Tools</button>
+            <button class="category-btn" onclick="filterCategory('games')">Games</button>
+        </div>
+
+        <div class="apps-grid" id="appsGrid"></div>
+    </div>
+
+    <script>
+        const apps = [
+            {
+                id: 'music-player',
+                name: 'Music Player',
+                icon: '🎵',
+                description: 'Listen to consciousness-elevation music from your personal library and Suno\'s vast collection.',
+                category: 'creativity',
+                rating: '4.9',
+                url: '../CLIENT_FACING_CONSCIOUSNESS_MANIFESTOCHART.html',
+                installed: true
+            },
+            {
+                id: 'jarvis-control',
+                name: 'JARVIS Commander',
+                icon: '🎮',
+                description: 'Monitor and control multiple computers, track agents, and manage your consciousness network.',
+                category: 'tools',
+                rating: '5.0',
+                url: '../JARVIS_COMMANDER_DASHBOARD.html',
+                installed: true
+            },
+            {
+                id: 'settings',
+                name: 'Settings',
+                icon: '⚙️',
+                description: 'Customize your Consciousness OS experience with themes, preferences, and system controls.',
+                category: 'tools',
+                rating: '4.8',
+                url: 'settings-panel.html',
+                installed: true
+            },
+            {
+                id: 'trinity-chat',
+                name: 'Trinity Chat',
+                icon: '🌀',
+                description: 'Collaborate with C1, C2, and C3 AI agents for complex problem solving and development.',
+                category: 'productivity',
+                rating: '4.9',
+                url: '../TRINITY_COMMAND_CHAT.html',
+                installed: true
+            },
+            {
+                id: 'manifestochart',
+                name: 'Manifestochart Viewer',
+                icon: '📊',
+                description: 'Visualize consciousness elevation patterns and business domain connections.',
+                category: 'consciousness',
+                rating: '4.7',
+                url: '../CLIENT_FACING_CONSCIOUSNESS_MANIFESTOCHART.html',
+                installed: false
+            },
+            {
+                id: 'pattern-recognition',
+                name: 'Pattern Recognition',
+                icon: '🧠',
+                description: 'Detect and analyze universal patterns across all consciousness domains.',
+                category: 'consciousness',
+                rating: '4.9',
+                url: 'pattern-recognition.html',
+                installed: false
+            },
+            {
+                id: 'voice-control',
+                name: 'Voice Control',
+                icon: '🎤',
+                description: 'Control Consciousness OS with voice commands. Perfect for hands-free operation.',
+                category: 'productivity',
+                rating: '4.6',
+                url: 'voice-control.html',
+                installed: false
+            },
+            {
+                id: 'video-editor',
+                name: 'Video Editor',
+                icon: '🎬',
+                description: 'Create and edit consciousness-focused video content with AI assistance.',
+                category: 'creativity',
+                rating: '4.5',
+                url: 'video-editor.html',
+                installed: false
+            },
+            {
+                id: 'task-manager',
+                name: 'Task Manager',
+                icon: '✅',
+                description: 'Manage your consciousness revolution tasks with intelligent prioritization.',
+                category: 'productivity',
+                rating: '4.7',
+                url: 'task-manager.html',
+                installed: false
+            },
+            {
+                id: 'meditation-timer',
+                name: 'Meditation Timer',
+                icon: '🧘',
+                description: 'Guided meditation sessions with consciousness frequency harmonics.',
+                category: 'consciousness',
+                rating: '4.8',
+                url: 'meditation-timer.html',
+                installed: false
+            },
+            {
+                id: 'pattern-game',
+                name: 'Pattern Puzzle',
+                icon: '🎯',
+                description: 'Train your pattern recognition abilities with interactive puzzles.',
+                category: 'games',
+                rating: '4.4',
+                url: 'pattern-game.html',
+                installed: false
+            },
+            {
+                id: 'code-editor',
+                name: 'Code Editor',
+                icon: '💻',
+                description: 'Build consciousness-focused software with AI-powered code completion.',
+                category: 'tools',
+                rating: '4.9',
+                url: 'code-editor.html',
+                installed: false
+            }
+        ];
+
+        let currentCategory = 'all';
+
+        function renderApps(appsToRender = apps) {
+            const grid = document.getElementById('appsGrid');
+            grid.innerHTML = '';
+
+            appsToRender.forEach(app => {
+                const card = document.createElement('div');
+                card.className = 'app-card';
+                card.style.position = 'relative';
+                card.innerHTML = `
+                    ${app.installed ? '<div class="installed-badge">✓ Installed</div>' : ''}
+                    <div class="app-icon">${app.icon}</div>
+                    <div class="app-name">${app.name}</div>
+                    <div class="app-description">${app.description}</div>
+                    <div class="app-meta">
+                        <span class="app-category">${app.category}</span>
+                        <span class="app-rating">⭐ ${app.rating}</span>
+                    </div>
+                    <button class="install-btn ${app.installed ? 'installed' : ''}" onclick="toggleInstall('${app.id}')">
+                        ${app.installed ? '✓ Installed - Launch' : '↓ Install'}
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter apps
+            if (category === 'all') {
+                renderApps(apps);
+            } else {
+                const filtered = apps.filter(app => app.category === category);
+                renderApps(filtered);
+            }
+        }
+
+        function searchApps() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            let filtered = apps;
+            if (currentCategory !== 'all') {
+                filtered = apps.filter(app => app.category === currentCategory);
+            }
+
+            if (searchTerm) {
+                filtered = filtered.filter(app =>
+                    app.name.toLowerCase().includes(searchTerm) ||
+                    app.description.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            renderApps(filtered);
+        }
+
+        function toggleInstall(appId) {
+            const app = apps.find(a => a.id === appId);
+
+            if (app.installed) {
+                // Launch the app
+                window.location.href = app.url;
+            } else {
+                // Install the app
+                app.installed = true;
+
+                // Save to localStorage
+                const installedApps = JSON.parse(localStorage.getItem('installedApps') || '[]');
+                if (!installedApps.includes(appId)) {
+                    installedApps.push(appId);
+                    localStorage.setItem('installedApps', JSON.stringify(installedApps));
+                }
+
+                // Re-render to show "Installed" status
+                if (currentCategory === 'all') {
+                    renderApps(apps);
+                } else {
+                    filterCategory(currentCategory);
+                }
+
+                // Show success message
+                alert(`✅ ${app.name} installed successfully! You can now launch it from the App Store or Home Screen.`);
+            }
+        }
+
+        // Load installed apps from localStorage
+        window.addEventListener('DOMContentLoaded', () => {
+            const installedApps = JSON.parse(localStorage.getItem('installedApps') || '[]');
+            installedApps.forEach(appId => {
+                const app = apps.find(a => a.id === appId);
+                if (app) {
+                    app.installed = true;
+                }
+            });
+            renderApps();
+        });
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

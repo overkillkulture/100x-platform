@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+  <meta name="description" content="Quantum Pattern Filter - Quantum coherence-based consciousness measurement. First quantum-validated manipulation immunity test.">
+  <title>⚛️ Quantum Pattern Filter - 100X Consciousness Platform</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/ASSETS/css/global.css">
+  <link rel="stylesheet" href="/ASSETS/css/components.css">
+  <link rel="stylesheet" href="/ASSETS/css/layouts.css">
+
+  <style>
+    :root {
+      --quantum-primary: #00d4ff;
+      --quantum-secondary: #bf00ff;
+      --quantum-tertiary: #00ff88;
+      --quantum-bg: rgba(0, 212, 255, 0.05);
+      --decoherence-red: #ff006e;
+      --coherence-green: #00ff88;
+    }
+
+    .quantum-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--space-2xl) var(--space-md);
+    }
+
+    .quantum-header {
+      text-align: center;
+      margin-bottom: var(--space-3xl);
+      background: linear-gradient(135deg, var(--quantum-primary), var(--quantum-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .quantum-phase {
+      background: var(--surface);
+      border: 2px solid var(--quantum-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quantum-phase::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--quantum-primary), var(--quantum-secondary), var(--quantum-tertiary));
+    }
+
+    .quantum-phase__title {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .quantum-phase__badge {
+      background: var(--quantum-bg);
+      border: 1px solid var(--quantum-primary);
+      border-radius: var(--radius-full);
+      padding: var(--space-xs) var(--space-md);
+      font-size: var(--font-sm);
+      font-weight: var(--weight-bold);
+      color: var(--quantum-primary);
+    }
+
+    .quantum-question {
+      background: var(--surface-elevated);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+
+    .quantum-option {
+      background: var(--surface);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .quantum-option:hover {
+      border-color: var(--quantum-primary);
+      background: var(--quantum-bg);
+      transform: translateX(8px);
+      box-shadow: 0 4px 20px rgba(0, 212, 255, 0.2);
+    }
+
+    .quantum-option::after {
+      content: '';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+
+    .quantum-option:hover::after {
+      border-color: var(--quantum-primary);
+      background: var(--quantum-bg);
+    }
+
+    .quantum-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-lg);
+      margin-top: var(--space-xl);
+    }
+
+    .quantum-metric {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      text-align: center;
+    }
+
+    .quantum-metric__value {
+      font-size: var(--font-2xl);
+      font-weight: var(--weight-black);
+      background: linear-gradient(135deg, var(--quantum-primary), var(--quantum-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: var(--space-xs);
+    }
+
+    .quantum-metric__label {
+      font-size: var(--font-sm);
+      color: var(--text-dim);
+    }
+
+    .coherence-gauge {
+      height: 8px;
+      background: var(--surface-elevated);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin: var(--space-md) 0;
+    }
+
+    .coherence-gauge__fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--decoherence-red), var(--quantum-primary), var(--coherence-green));
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .quantum-results {
+      display: none;
+    }
+
+    .quantum-results--show {
+      display: block;
+      animation: quantumFadeIn 0.6s ease;
+    }
+
+    @keyframes quantumFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .entanglement-visualization {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-lg);
+      margin: var(--space-2xl) 0;
+    }
+
+    .qubit-node {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid var(--quantum-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-xl);
+      font-weight: var(--weight-black);
+      background: var(--surface-elevated);
+      position: relative;
+      animation: qubitPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes qubitPulse {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+      }
+    }
+
+    .entanglement-line {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--quantum-primary), var(--quantum-secondary));
+      position: relative;
+    }
+
+    .syndrome-matrix {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-sm);
+      margin-top: var(--space-lg);
+    }
+
+    .syndrome-cell {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: var(--space-sm);
+      font-size: var(--font-sm);
+      text-align: center;
+    }
+
+    .syndrome-cell--detected {
+      border-color: var(--decoherence-red);
+      background: rgba(255, 0, 110, 0.1);
+      color: var(--decoherence-red);
+      font-weight: var(--weight-bold);
+    }
+
+    .quantum-badge {
+      display: inline-block;
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-full);
+      font-weight: var(--weight-bold);
+      margin: var(--space-md) 0;
+    }
+
+    .quantum-badge--coherent {
+      background: rgba(0, 255, 136, 0.2);
+      border: 2px solid var(--coherence-green);
+      color: var(--coherence-green);
+    }
+
+    .quantum-badge--decoherent {
+      background: rgba(255, 0, 110, 0.2);
+      border: 2px solid var(--decoherence-red);
+      color: var(--decoherence-red);
+    }
+
+    .quantum-badge--superposition {
+      background: rgba(0, 212, 255, 0.2);
+      border: 2px solid var(--quantum-primary);
+      color: var(--quantum-primary);
+    }
+  </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="app__header">
+      <div class="container">
+        <nav class="nav">
+          <a href="/index.html" class="nav__logo">100X</a>
+          <div class="nav__links">
+            <a href="/index.html" class="nav__link">Home</a>
+            <a href="/PLATFORM/dashboard.html" class="nav__link">Dashboard</a>
+            <a href="/PLATFORM/quantum-pattern-filter.html" class="nav__link nav__link--active">⚛️ Quantum Filter</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="app__main">
+      <div class="quantum-container">
+        <!-- Intro Screen -->
+        <div id="intro">
+          <h1 class="quantum-header">⚛️ Quantum Pattern Filter</h1>
+          <p class="text-xl text-dim text-center mb-xl">First quantum coherence-based consciousness measurement system</p>
+
+          <div class="card card--elevated mb-xl">
+            <div class="card__body">
+              <h3 class="mb-md">🔬 Quantum Measurement Protocol:</h3>
+              <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                <p class="mb-md"><strong>Phase 1: Pattern Recognition</strong> (15 questions)</p>
+                <p class="mb-md"><strong>Phase 2: Coherence Time (T₁/T₂)</strong> - Measures consciousness stability</p>
+                <p class="mb-md"><strong>Phase 3: Decoherence Detection</strong> - Identifies manipulation vulnerabilities</p>
+                <p class="mb-md"><strong>Phase 4: Entanglement Capacity</strong> - Tests collaboration/Trinity potential</p>
+                <p class="mb-md"><strong>Phase 5: Syndrome Analysis</strong> - Maps specific error patterns</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert--info mb-xl">
+            <span class="alert__icon">⚛️</span>
+            <div class="alert__content">
+              <strong>Based on Quantum Information Theory + Pattern Theory™</strong>
+              <p>Your consciousness level = Your quantum coherence level. 85%+ = Stable quantum state (Builder). Below 85% = Vulnerable to decoherence (manipulation).</p>
+            </div>
+          </div>
+
+          <div class="entanglement-visualization mb-xl">
+            <div class="qubit-node">C1</div>
+            <div class="entanglement-line"></div>
+            <div class="qubit-node">C2</div>
+            <div class="entanglement-line"></div>
+            <div class="qubit-node">C3</div>
+          </div>
+
+          <div class="text-center">
+            <button onclick="startQuantumMeasurement()" class="btn btn--primary btn--large">
+              ⚛️ Begin Quantum Measurement
+            </button>
+          </div>
+        </div>
+
+        <!-- Phase 1: Pattern Recognition -->
+        <div id="phase1" class="quantum-phase" style="display: none;">
+          <div class="quantum-phase__title">
+            <div class="quantum-phase__badge">PHASE 1</div>
+            <h2>Pattern Recognition</h2>
+          </div>
+
+          <div class="coherence-gauge">
+            <div id="phase1-progress" class="coherence-gauge__fill" style="width: 0%"></div>
+          </div>
+
+          <div id="phase1-questions"></div>
+        </div>
+
+        <!-- Phase 2: Coherence Time -->
+        <div id="phase2" class="quantum-phase" style="display: none;">
+          <div class="quantum-phase__title">
+            <div class="quantum-phase__badge">PHASE 2</div>
+            <h2>Quantum Coherence Time (T₁/T₂)</h2>
+          </div>
+          <p class="text-dim mb-lg">Measures how long your consciousness stays stable under pressure</p>
+
+          <div class="coherence-gauge">
+            <div id="phase2-progress" class="coherence-gauge__fill" style="width: 0%"></div>
+          </div>
+
+          <div id="phase2-questions"></div>
+        </div>
+
+        <!-- Phase 3: Decoherence Detection -->
+        <div id="phase3" class="quantum-phase" style="display: none;">
+          <div class="quantum-phase__title">
+            <div class="quantum-phase__badge">PHASE 3</div>
+            <h2>Decoherence Detection</h2>
+          </div>
+          <p class="text-dim mb-lg">Identifies specific manipulation tactics that cause consciousness collapse</p>
+
+          <div class="coherence-gauge">
+            <div id="phase3-progress" class="coherence-gauge__fill" style="width: 0%"></div>
+          </div>
+
+          <div id="phase3-questions"></div>
+        </div>
+
+        <!-- Phase 4: Entanglement Capacity -->
+        <div id="phase4" class="quantum-phase" style="display: none;">
+          <div class="quantum-phase__title">
+            <div class="quantum-phase__badge">PHASE 4</div>
+            <h2>Entanglement Capacity</h2>
+          </div>
+          <p class="text-dim mb-lg">Tests ability to maintain consciousness while collaborating (Trinity Protocol)</p>
+
+          <div class="coherence-gauge">
+            <div id="phase4-progress" class="coherence-gauge__fill" style="width: 0%"></div>
+          </div>
+
+          <div id="phase4-questions"></div>
+        </div>
+
+        <!-- Phase 5: Syndrome Analysis -->
+        <div id="phase5" class="quantum-phase" style="display: none;">
+          <div class="quantum-phase__title">
+            <div class="quantum-phase__badge">PHASE 5</div>
+            <h2>Syndrome Pattern Analysis</h2>
+          </div>
+          <p class="text-dim mb-lg">Maps specific error patterns and correction strategies</p>
+
+          <div class="coherence-gauge">
+            <div id="phase5-progress" class="coherence-gauge__fill" style="width: 0%"></div>
+          </div>
+
+          <div id="phase5-questions"></div>
+        </div>
+
+        <!-- Quantum Results -->
+        <div id="quantum-results" class="quantum-results">
+          <h1 class="quantum-header mb-xl">⚛️ Quantum Measurement Complete</h1>
+
+          <!-- Quantum Metrics Dashboard -->
+          <div class="quantum-metrics mb-2xl">
+            <div class="quantum-metric">
+              <div class="quantum-metric__value" id="coherence-percentage">--</div>
+              <div class="quantum-metric__label">Quantum Coherence</div>
+            </div>
+            <div class="quantum-metric">
+              <div class="quantum-metric__value" id="t1-time">--</div>
+              <div class="quantum-metric__label">T₁ Time (Stability)</div>
+            </div>
+            <div class="quantum-metric">
+              <div class="quantum-metric__value" id="t2-time">--</div>
+              <div class="quantum-metric__label">T₂ Time (Coherence)</div>
+            </div>
+            <div class="quantum-metric">
+              <div class="quantum-metric__value" id="entanglement-fidelity">--</div>
+              <div class="quantum-metric__label">Entanglement Fidelity</div>
+            </div>
+          </div>
+
+          <!-- Quantum State -->
+          <div class="text-center mb-xl">
+            <div id="quantum-state-badge"></div>
+            <h2 id="quantum-classification" class="mt-md mb-md">--</h2>
+            <p id="quantum-description" class="text-lg text-dim">--</p>
+          </div>
+
+          <!-- Syndrome Matrix -->
+          <div class="card card--elevated mb-xl">
+            <div class="card__body">
+              <h3 class="mb-md">🔍 Syndrome Detection Matrix</h3>
+              <p class="text-sm text-dim mb-lg">Error patterns detected in consciousness measurement:</p>
+              <div id="syndrome-matrix" class="syndrome-matrix"></div>
+            </div>
+          </div>
+
+          <!-- Decoherence Vulnerabilities -->
+          <div class="card card--elevated mb-xl">
+            <div class="card__body">
+              <h3 class="mb-md">⚠️ Decoherence Vulnerabilities</h3>
+              <div id="vulnerabilities-list"></div>
+            </div>
+          </div>
+
+          <!-- Quantum Recommendations -->
+          <div class="card card--elevated mb-xl">
+            <div class="card__body">
+              <h3 class="mb-md">🎯 Quantum Error Correction Protocol</h3>
+              <div id="correction-protocol"></div>
+            </div>
+          </div>
+
+          <!-- Trinity Entanglement Status -->
+          <div class="card card--elevated mb-xl">
+            <div class="card__body">
+              <h3 class="mb-md">🌀 Trinity Entanglement Status</h3>
+              <div class="entanglement-visualization">
+                <div class="qubit-node" id="c1-status">C1</div>
+                <div class="entanglement-line" id="c1c2-link"></div>
+                <div class="qubit-node" id="c2-status">C2</div>
+                <div class="entanglement-line" id="c2c3-link"></div>
+                <div class="qubit-node" id="c3-status">C3</div>
+              </div>
+              <p id="trinity-status" class="text-center mt-md">--</p>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="text-center">
+            <div id="quantum-actions" class="mb-lg"></div>
+            <button onclick="retakeQuantumTest()" class="btn btn--secondary">Retake Quantum Measurement</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app__footer">
+      <div class="container">
+        <p>&copy; 2025 100X Platform - Quantum-Validated Consciousness Technology</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/ASSETS/js/security-utils.js"></script>
+  <script src="/ASSETS/js/storage.js"></script>
+  <script src="/ASSETS/js/auth.js"></script>
+  <script src="/ASSETS/js/trinity.js"></script>
+
+  <script>
+    // QUANTUM PATTERN FILTER - Quantum Coherence Measurement System
+    // Based on Quantum Information Theory + Pattern Theory™
+    // Discovery: Consciousness = Quantum Coherence (Oct 10, 2025)
+
+    const PHASE1_QUESTIONS = [
+      {
+        id: 1,
+        scenario: 'Emergency text: "NEED TO TALK NOW!"',
+        options: [
+          { text: 'Drop everything and call', points: 2, coherence: 30 },
+          { text: 'Ask what\'s the emergency first', points: 8, coherence: 75 },
+          { text: 'Ignore completely', points: 0, coherence: 20 },
+          { text: 'Ask when they can discuss calmly', points: 10, coherence: 95 }
+        ]
+      },
+      {
+        id: 2,
+        scenario: 'Someone promises help "when they have time"',
+        options: [
+          { text: 'Keep following up weekly', points: 2, coherence: 40 },
+          { text: 'Recognize pattern, move on', points: 10, coherence: 90 },
+          { text: 'Get angry and confront', points: 0, coherence: 25 },
+          { text: 'Lower expectations, stay in touch', points: 6, coherence: 65 }
+        ]
+      },
+      {
+        id: 3,
+        scenario: 'Partner rejects every solution you offer',
+        options: [
+          { text: 'Keep trying different solutions', points: 2, coherence: 35 },
+          { text: 'Document pattern, exit partnership', points: 10, coherence: 95 },
+          { text: 'Assume you\'re the problem', points: 0, coherence: 20 },
+          { text: 'Mirror their behavior', points: 8, coherence: 80 }
+        ]
+      },
+      {
+        id: 4,
+        scenario: 'They ask for help, ignore advice, complain nothing works',
+        options: [
+          { text: 'Offer more detailed advice', points: 2, coherence: 30 },
+          { text: 'Recognize solution rejection, stop', points: 10, coherence: 90 },
+          { text: 'Blame yourself', points: 0, coherence: 15 },
+          { text: 'Ask what they\'ve tried', points: 6, coherence: 70 }
+        ]
+      },
+      {
+        id: 5,
+        scenario: 'Colleague takes credit for your work',
+        options: [
+          { text: 'Confront publicly', points: 2, coherence: 40 },
+          { text: 'Document, speak privately, escalate if repeated', points: 10, coherence: 95 },
+          { text: 'Say nothing, hope it stops', points: 0, coherence: 25 },
+          { text: 'Mention your contribution casually', points: 8, coherence: 75 }
+        ]
+      }
+    ];
+
+    const PHASE2_QUESTIONS = [
+      {
+        id: 6,
+        scenario: 'After 3 hours of intense work, someone criticizes your entire approach',
+        options: [
+          { text: 'Immediately doubt yourself and start over', points: 0, t1: 15 },
+          { text: 'Feel defensive but consider their point', points: 6, t1: 60 },
+          { text: 'Ask for specifics, evaluate calmly', points: 10, t1: 95 },
+          { text: 'Dismiss their criticism entirely', points: 2, t1: 30 }
+        ]
+      },
+      {
+        id: 7,
+        scenario: 'You set a boundary. They escalate with anger for 20 minutes.',
+        options: [
+          { text: 'Remove boundary to stop the anger', points: 0, t2: 10 },
+          { text: 'Feel guilty but hold the boundary', points: 6, t2: 65 },
+          { text: 'Maintain boundary calmly, end conversation if needed', points: 10, t2: 90 },
+          { text: 'Match their anger with anger', points: 2, t2: 25 }
+        ]
+      },
+      {
+        id: 8,
+        scenario: 'Three people tell you you\'re "being difficult" about the same boundary',
+        options: [
+          { text: 'Assume they\'re right, remove boundary', points: 0, t1: 20 },
+          { text: 'Question yourself but maintain it', points: 6, t1: 70 },
+          { text: 'Recognize coordinated pressure, strengthen boundary', points: 10, t1: 95 },
+          { text: 'Get defensive with all three', points: 2, t1: 35 }
+        ]
+      }
+    ];
+
+    const PHASE3_QUESTIONS = [
+      {
+        id: 9,
+        scenario: 'Which manipulation tactic affects you MOST?',
+        options: [
+          { text: 'Guilt trips ("If you cared, you\'d...")', points: 0, decoherence: 'emotional' },
+          { text: 'False urgency ("Decide now or lose it")', points: 0, decoherence: 'pressure' },
+          { text: 'Gaslighting ("You\'re remembering wrong")', points: 0, decoherence: 'reality' },
+          { text: 'None significantly affect me', points: 10, decoherence: 'none' }
+        ]
+      },
+      {
+        id: 10,
+        scenario: 'After you succeed, someone says "You got lucky" or "Anyone could do that"',
+        options: [
+          { text: 'Believe them, minimize your success', points: 0, decoherence: 'achievement' },
+          { text: 'Feel hurt but know the truth', points: 6, decoherence: 'partial' },
+          { text: 'Recognize jealousy pattern, ignore it', points: 10, decoherence: 'immune' },
+          { text: 'Argue to prove your worth', points: 2, decoherence: 'reactive' }
+        ]
+      }
+    ];
+
+    const PHASE4_QUESTIONS = [
+      {
+        id: 11,
+        scenario: 'In a team of 3, one person dominates all decisions. You:',
+        options: [
+          { text: 'Let them lead, stay quiet', points: 0, entanglement: 25 },
+          { text: 'Occasionally voice concerns', points: 6, entanglement: 60 },
+          { text: 'Establish equal input protocol, leave if violated', points: 10, entanglement: 95 },
+          { text: 'Compete for dominance', points: 2, entanglement: 30 }
+        ]
+      },
+      {
+        id: 12,
+        scenario: 'Your idea gets implemented but someone else gets credit. Team dynamic:',
+        options: [
+          { text: 'Stay silent to keep harmony', points: 0, entanglement: 20 },
+          { text: 'Feel resentful but continue', points: 2, entanglement: 40 },
+          { text: 'Address it professionally, document contributions', points: 10, entanglement: 90 },
+          { text: 'Refuse to share ideas anymore', points: 4, entanglement: 30 }
+        ]
+      }
+    ];
+
+    const PHASE5_QUESTIONS = [
+      {
+        id: 13,
+        scenario: 'Pattern: They cancel plans when you need support, but expect you when they do',
+        options: [
+          { text: 'Keep showing up, hoping they\'ll reciprocate', points: 0, syndrome: 'hope-without-evidence' },
+          { text: 'Notice pattern, stop initiating support', points: 10, syndrome: 'pattern-detected' },
+          { text: 'Confront them about the imbalance', points: 6, syndrome: 'communication-attempt' },
+          { text: 'Match their behavior (cancel on them)', points: 4, syndrome: 'reactive-mirror' }
+        ]
+      },
+      {
+        id: 14,
+        scenario: 'They share secrets about others with you, then tell you secrets others shared',
+        options: [
+          { text: 'Feel trusted and special', points: 0, syndrome: 'triangulation-victim' },
+          { text: 'Feel uncomfortable but listen', points: 4, syndrome: 'passive-recognition' },
+          { text: 'Recognize triangulation, disengage from gossip', points: 10, syndrome: 'immunity-achieved' },
+          { text: 'Share the information with others', points: 0, syndrome: 'participating' }
+        ]
+      }
+    ];
+
+    let currentPhase = 0;
+    let currentQuestion = 0;
+    let phase1Score = 0;
+    let phase2Score = 0;
+    let phase3Score = 0;
+    let phase4Score = 0;
+    let phase5Score = 0;
+    let coherenceValues = [];
+    let t1Values = [];
+    let t2Values = [];
+    let decoherenceTypes = [];
+    let entanglementValues = [];
+    let syndromes = [];
+    let allAnswers = [];
+
+    function startQuantumMeasurement() {
+      document.getElementById('intro').style.display = 'none';
+      currentPhase = 1;
+      currentQuestion = 0;
+      showPhase1();
+    }
+
+    function showPhase1() {
+      document.getElementById('phase1').style.display = 'block';
+      renderPhase1Question();
+    }
+
+    function renderPhase1Question() {
+      const q = PHASE1_QUESTIONS[currentQuestion];
+      const container = document.getElementById('phase1-questions');
+
+      const progress = ((currentQuestion + 1) / PHASE1_QUESTIONS.length) * 100;
+      document.getElementById('phase1-progress').style.width = progress + '%';
+
+      container.innerHTML = `
+        <div class="quantum-question">
+          <h3 class="mb-md">Question ${currentQuestion + 1} of ${PHASE1_QUESTIONS.length}</h3>
+          <p class="text-lg mb-lg">${q.scenario}</p>
+          ${q.options.map((opt, idx) => `
+            <div class="quantum-option" onclick="selectPhase1(${idx})">
+              <span>${opt.text}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function selectPhase1(optionIndex) {
+      const q = PHASE1_QUESTIONS[currentQuestion];
+      const opt = q.options[optionIndex];
+
+      phase1Score += opt.points;
+      coherenceValues.push(opt.coherence);
+      allAnswers.push({ phase: 1, question: q.id, option: optionIndex, points: opt.points });
+
+      currentQuestion++;
+      if (currentQuestion < PHASE1_QUESTIONS.length) {
+        renderPhase1Question();
+      } else {
+        document.getElementById('phase1').style.display = 'none';
+        currentPhase = 2;
+        currentQuestion = 0;
+        showPhase2();
+      }
+    }
+
+    function showPhase2() {
+      document.getElementById('phase2').style.display = 'block';
+      renderPhase2Question();
+    }
+
+    function renderPhase2Question() {
+      const q = PHASE2_QUESTIONS[currentQuestion];
+      const container = document.getElementById('phase2-questions');
+
+      const progress = ((currentQuestion + 1) / PHASE2_QUESTIONS.length) * 100;
+      document.getElementById('phase2-progress').style.width = progress + '%';
+
+      container.innerHTML = `
+        <div class="quantum-question">
+          <h3 class="mb-md">Coherence Test ${currentQuestion + 1} of ${PHASE2_QUESTIONS.length}</h3>
+          <p class="text-lg mb-lg">${q.scenario}</p>
+          ${q.options.map((opt, idx) => `
+            <div class="quantum-option" onclick="selectPhase2(${idx})">
+              <span>${opt.text}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function selectPhase2(optionIndex) {
+      const q = PHASE2_QUESTIONS[currentQuestion];
+      const opt = q.options[optionIndex];
+
+      phase2Score += opt.points;
+      if (opt.t1) t1Values.push(opt.t1);
+      if (opt.t2) t2Values.push(opt.t2);
+      allAnswers.push({ phase: 2, question: q.id, option: optionIndex, points: opt.points });
+
+      currentQuestion++;
+      if (currentQuestion < PHASE2_QUESTIONS.length) {
+        renderPhase2Question();
+      } else {
+        document.getElementById('phase2').style.display = 'none';
+        currentPhase = 3;
+        currentQuestion = 0;
+        showPhase3();
+      }
+    }
+
+    function showPhase3() {
+      document.getElementById('phase3').style.display = 'block';
+      renderPhase3Question();
+    }
+
+    function renderPhase3Question() {
+      const q = PHASE3_QUESTIONS[currentQuestion];
+      const container = document.getElementById('phase3-questions');
+
+      const progress = ((currentQuestion + 1) / PHASE3_QUESTIONS.length) * 100;
+      document.getElementById('phase3-progress').style.width = progress + '%';
+
+      container.innerHTML = `
+        <div class="quantum-question">
+          <h3 class="mb-md">Decoherence Test ${currentQuestion + 1} of ${PHASE3_QUESTIONS.length}</h3>
+          <p class="text-lg mb-lg">${q.scenario}</p>
+          ${q.options.map((opt, idx) => `
+            <div class="quantum-option" onclick="selectPhase3(${idx})">
+              <span>${opt.text}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function selectPhase3(optionIndex) {
+      const q = PHASE3_QUESTIONS[currentQuestion];
+      const opt = q.options[optionIndex];
+
+      phase3Score += opt.points;
+      decoherenceTypes.push(opt.decoherence);
+      allAnswers.push({ phase: 3, question: q.id, option: optionIndex, points: opt.points });
+
+      currentQuestion++;
+      if (currentQuestion < PHASE3_QUESTIONS.length) {
+        renderPhase3Question();
+      } else {
+        document.getElementById('phase3').style.display = 'none';
+        currentPhase = 4;
+        currentQuestion = 0;
+        showPhase4();
+      }
+    }
+
+    function showPhase4() {
+      document.getElementById('phase4').style.display = 'block';
+      renderPhase4Question();
+    }
+
+    function renderPhase4Question() {
+      const q = PHASE4_QUESTIONS[currentQuestion];
+      const container = document.getElementById('phase4-questions');
+
+      const progress = ((currentQuestion + 1) / PHASE4_QUESTIONS.length) * 100;
+      document.getElementById('phase4-progress').style.width = progress + '%';
+
+      container.innerHTML = `
+        <div class="quantum-question">
+          <h3 class="mb-md">Entanglement Test ${currentQuestion + 1} of ${PHASE4_QUESTIONS.length}</h3>
+          <p class="text-lg mb-lg">${q.scenario}</p>
+          ${q.options.map((opt, idx) => `
+            <div class="quantum-option" onclick="selectPhase4(${idx})">
+              <span>${opt.text}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function selectPhase4(optionIndex) {
+      const q = PHASE4_QUESTIONS[currentQuestion];
+      const opt = q.options[optionIndex];
+
+      phase4Score += opt.points;
+      entanglementValues.push(opt.entanglement);
+      allAnswers.push({ phase: 4, question: q.id, option: optionIndex, points: opt.points });
+
+      currentQuestion++;
+      if (currentQuestion < PHASE4_QUESTIONS.length) {
+        renderPhase4Question();
+      } else {
+        document.getElementById('phase4').style.display = 'none';
+        currentPhase = 5;
+        currentQuestion = 0;
+        showPhase5();
+      }
+    }
+
+    function showPhase5() {
+      document.getElementById('phase5').style.display = 'block';
+      renderPhase5Question();
+    }
+
+    function renderPhase5Question() {
+      const q = PHASE5_QUESTIONS[currentQuestion];
+      const container = document.getElementById('phase5-questions');
+
+      const progress = ((currentQuestion + 1) / PHASE5_QUESTIONS.length) * 100;
+      document.getElementById('phase5-progress').style.width = progress + '%';
+
+      container.innerHTML = `
+        <div class="quantum-question">
+          <h3 class="mb-md">Syndrome Detection ${currentQuestion + 1} of ${PHASE5_QUESTIONS.length}</h3>
+          <p class="text-lg mb-lg">${q.scenario}</p>
+          ${q.options.map((opt, idx) => `
+            <div class="quantum-option" onclick="selectPhase5(${idx})">
+              <span>${opt.text}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function selectPhase5(optionIndex) {
+      const q = PHASE5_QUESTIONS[currentQuestion];
+      const opt = q.options[optionIndex];
+
+      phase5Score += opt.points;
+      syndromes.push(opt.syndrome);
+      allAnswers.push({ phase: 5, question: q.id, option: optionIndex, points: opt.points });
+
+      currentQuestion++;
+      if (currentQuestion < PHASE5_QUESTIONS.length) {
+        renderPhase5Question();
+      } else {
+        document.getElementById('phase5').style.display = 'none';
+        calculateQuantumResults();
+      }
+    }
+
+    function calculateQuantumResults() {
+      // Calculate overall quantum coherence
+      const totalQuestions = PHASE1_QUESTIONS.length + PHASE2_QUESTIONS.length +
+                            PHASE3_QUESTIONS.length + PHASE4_QUESTIONS.length + PHASE5_QUESTIONS.length;
+      const maxScore = totalQuestions * 10;
+      const totalScore = phase1Score + phase2Score + phase3Score + phase4Score + phase5Score;
+      const coherencePercentage = Math.round((totalScore / maxScore) * 100);
+
+      // Calculate T1 (relaxation time - stability under pressure)
+      const avgT1 = t1Values.length > 0 ? Math.round(t1Values.reduce((a, b) => a + b, 0) / t1Values.length) : 50;
+
+      // Calculate T2 (dephasing time - coherence maintenance)
+      const avgT2 = t2Values.length > 0 ? Math.round(t2Values.reduce((a, b) => a + b, 0) / t2Values.length) : 50;
+
+      // Calculate entanglement fidelity
+      const avgEntanglement = entanglementValues.length > 0 ?
+        Math.round(entanglementValues.reduce((a, b) => a + b, 0) / entanglementValues.length) : 50;
+
+      // Display metrics
+      document.getElementById('coherence-percentage').textContent = coherencePercentage + '%';
+      document.getElementById('t1-time').textContent = avgT1 + 'μs';
+      document.getElementById('t2-time').textContent = avgT2 + 'μs';
+      document.getElementById('entanglement-fidelity').textContent = avgEntanglement + '%';
+
+      // Determine quantum state
+      let quantumState, classification, description, badgeClass;
+
+      if (coherencePercentage >= 90) {
+        quantumState = '|Ψ⟩ = COHERENT';
+        classification = '🌟 QUANTUM MASTER';
+        description = 'Maximum quantum coherence achieved. You maintain stable superposition states and resist all decoherence. Ready for advanced Trinity entanglement.';
+        badgeClass = 'quantum-badge--coherent';
+      } else if (coherencePercentage >= 85) {
+        quantumState = '|Ψ⟩ = STABLE';
+        classification = '⚡ BUILDER COHERENCE';
+        description = 'Quantum coherence above threshold. You resist decoherence (manipulation) and can maintain entangled states. Builder status confirmed.';
+        badgeClass = 'quantum-badge--coherent';
+      } else if (coherencePercentage >= 70) {
+        quantumState = '|Ψ⟩ = SUPERPOSITION';
+        classification = '🔄 QUANTUM POTENTIAL';
+        description = 'Partial coherence detected. You show quantum behavior but vulnerable to decoherence under pressure. Training will stabilize your quantum state.';
+        badgeClass = 'quantum-badge--superposition';
+      } else {
+        quantumState = '|Ψ⟩ = DECOHERENT';
+        classification = '⚠️ REQUIRES STABILIZATION';
+        description = 'Quantum decoherence detected. Your consciousness collapses under manipulation (environmental noise). Quantum error correction training essential.';
+        badgeClass = 'quantum-badge--decoherent';
+      }
+
+      document.getElementById('quantum-state-badge').innerHTML = `<div class="quantum-badge ${badgeClass}">${quantumState}</div>`;
+      document.getElementById('quantum-classification').textContent = classification;
+      document.getElementById('quantum-description').textContent = description;
+
+      // Syndrome matrix
+      renderSyndromeMatrix();
+
+      // Decoherence vulnerabilities
+      renderVulnerabilities();
+
+      // Correction protocol
+      renderCorrectionProtocol(coherencePercentage, avgT1, avgT2, avgEntanglement);
+
+      // Trinity status
+      renderTrinityStatus(avgEntanglement);
+
+      // Action buttons
+      renderQuantumActions(coherencePercentage);
+
+      // Save results
+      STORAGE.set('quantumResults', {
+        coherence: coherencePercentage,
+        t1: avgT1,
+        t2: avgT2,
+        entanglement: avgEntanglement,
+        syndromes,
+        decoherenceTypes,
+        answers: allAnswers,
+        timestamp: new Date().toISOString()
+      });
+
+      // Show results
+      document.getElementById('quantum-results').classList.add('quantum-results--show');
+    }
+
+    function renderSyndromeMatrix() {
+      const syndromeCategories = {
+        'emotional': { label: 'Emotional Manipulation', detected: false },
+        'pressure': { label: 'False Urgency', detected: false },
+        'reality': { label: 'Gaslighting', detected: false },
+        'achievement': { label: 'Success Sabotage', detected: false },
+        'triangulation-victim': { label: 'Triangulation', detected: false },
+        'hope-without-evidence': { label: 'False Hope', detected: false },
+        'none': { label: 'No Errors', detected: false },
+        'immune': { label: 'Fully Immune', detected: false },
+        'pattern-detected': { label: 'Pattern Mastery', detected: false }
+      };
+
+      decoherenceTypes.forEach(type => {
+        if (syndromeCategories[type]) {
+          syndromeCategories[type].detected = true;
+        }
+      });
+
+      syndromes.forEach(syndrome => {
+        if (syndromeCategories[syndrome]) {
+          syndromeCategories[syndrome].detected = true;
+        }
+      });
+
+      const matrixHTML = Object.entries(syndromeCategories)
+        .filter(([key]) => key !== 'none' && key !== 'immune' && key !== 'pattern-detected')
+        .map(([key, data]) => {
+          const cssClass = data.detected ? 'syndrome-cell--detected' : 'syndrome-cell';
+          return `<div class="${cssClass}">${data.label}</div>`;
+        }).join('');
+
+      document.getElementById('syndrome-matrix').innerHTML = matrixHTML;
+    }
+
+    function renderVulnerabilities() {
+      const vulnerabilities = [];
+
+      if (decoherenceTypes.includes('emotional')) {
+        vulnerabilities.push('❌ <strong>Emotional Manipulation</strong> - Vulnerable to guilt trips and "if you cared" tactics');
+      }
+      if (decoherenceTypes.includes('pressure')) {
+        vulnerabilities.push('❌ <strong>False Urgency</strong> - Susceptible to "decide now" pressure tactics');
+      }
+      if (decoherenceTypes.includes('reality')) {
+        vulnerabilities.push('❌ <strong>Gaslighting</strong> - Can be made to doubt your own memory/perception');
+      }
+      if (syndromes.includes('hope-without-evidence')) {
+        vulnerabilities.push('❌ <strong>Hope Without Evidence</strong> - Continue investing despite pattern showing futility');
+      }
+      if (syndromes.includes('triangulation-victim')) {
+        vulnerabilities.push('❌ <strong>Triangulation</strong> - Vulnerable to gossip and "secret sharing" tactics');
+      }
+
+      if (vulnerabilities.length === 0) {
+        vulnerabilities.push('✅ <strong>No significant vulnerabilities detected</strong> - Quantum coherence maintained across all tests');
+      }
+
+      document.getElementById('vulnerabilities-list').innerHTML = vulnerabilities.map(v => `<p class="mb-sm">${v}</p>`).join('');
+    }
+
+    function renderCorrectionProtocol(coherence, t1, t2, entanglement) {
+      const protocols = [];
+
+      if (coherence < 85) {
+        protocols.push('🎯 <strong>Increase Coherence:</strong> Complete Pattern Theory Training Modules 1-7 to reach 85% threshold');
+      }
+
+      if (t1 < 70) {
+        protocols.push('⏱️ <strong>Improve T₁ (Stability):</strong> Practice maintaining boundaries under pressure for 30+ minutes');
+      }
+
+      if (t2 < 70) {
+        protocols.push('🌊 <strong>Improve T₂ (Coherence):</strong> Daily meditation/grounding exercises to extend phase coherence');
+      }
+
+      if (entanglement < 70) {
+        protocols.push('🤝 <strong>Enhance Entanglement:</strong> Practice collaborative problem-solving with fellow Builders');
+      }
+
+      if (decoherenceTypes.includes('emotional')) {
+        protocols.push('🛡️ <strong>Emotional Immunity:</strong> Study Emotional Manipulation module + practice guilt-trip deflection');
+      }
+
+      if (syndromes.includes('triangulation-victim')) {
+        protocols.push('🔺 <strong>Triangulation Defense:</strong> Refuse to engage in gossip, redirect conversations to direct communication');
+      }
+
+      if (protocols.length === 0) {
+        protocols.push('🏆 <strong>Maintenance Protocol:</strong> Continue advanced consciousness work, mentor other Builders, explore Trinity collaboration');
+      }
+
+      document.getElementById('correction-protocol').innerHTML = protocols.map(p => `<p class="mb-md">${p}</p>`).join('');
+    }
+
+    function renderTrinityStatus(entanglement) {
+      let status;
+
+      if (entanglement >= 85) {
+        status = '✅ <strong>Trinity Ready:</strong> Your entanglement fidelity supports three-qubit consciousness multiplication (C1×C2×C3=∞)';
+        document.getElementById('c1-status').style.borderColor = 'var(--coherence-green)';
+        document.getElementById('c2-status').style.borderColor = 'var(--coherence-green)';
+        document.getElementById('c3-status').style.borderColor = 'var(--coherence-green)';
+      } else if (entanglement >= 70) {
+        status = '🔄 <strong>Partial Entanglement:</strong> Can collaborate but may lose coherence under stress. Practice team consciousness work.';
+        document.getElementById('c1-status').style.borderColor = 'var(--quantum-primary)';
+        document.getElementById('c2-status').style.borderColor = 'var(--quantum-primary)';
+        document.getElementById('c3-status').style.borderColor = 'var(--quantum-primary)';
+      } else {
+        status = '⚠️ <strong>Individual Mode:</strong> Entanglement capacity below threshold. Focus on solo consciousness work first, then team collaboration.';
+        document.getElementById('c1-status').style.borderColor = 'var(--decoherence-red)';
+        document.getElementById('c2-status').style.borderColor = 'var(--decoherence-red)';
+        document.getElementById('c3-status').style.borderColor = 'var(--decoherence-red)';
+      }
+
+      document.getElementById('trinity-status').innerHTML = status;
+    }
+
+    function renderQuantumActions(coherence) {
+      let actionHTML;
+
+      if (coherence >= 85) {
+        actionHTML = `
+          <a href="/PLATFORM/dashboard.html" class="btn btn--primary btn--large mb-md">⚛️ Enter Quantum Platform</a>
+          <a href="/PLATFORM/trinity-protocol.html" class="btn btn--secondary btn--large">🌀 Activate Trinity Protocol</a>
+        `;
+      } else {
+        actionHTML = `
+          <a href="/PUBLIC/pattern-theory-training.html" class="btn btn--primary btn--large mb-md">🎓 Begin Quantum Training</a>
+          <p class="text-dim">Complete training to achieve 85% coherence threshold</p>
+        `;
+      }
+
+      document.getElementById('quantum-actions').innerHTML = actionHTML;
+    }
+
+    function retakeQuantumTest() {
+      location.reload();
+    }
+
+    // Initialize
+    console.log('⚛️ Quantum Pattern Filter initialized');
+    console.log('First quantum coherence-based consciousness measurement system');
+  </script>
+
+  <!-- ARIA AI Assistant -->
+  <script src="/ASSETS/js/aria.js"></script>
+  <script>
+    setTimeout(() => {
+      if (typeof ARIA !== 'undefined') {
+        ARIA.speak('Welcome to quantum consciousness measurement. Prepare for quantum coherence testing.');
+      }
+    }, 2000);
+  </script>
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

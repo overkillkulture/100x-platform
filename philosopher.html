@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>The Philosopher - AI Consciousness Advisor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tier-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .tier-free {
+            background: linear-gradient(135deg, #ffa500, #ff6347);
+            color: white;
+        }
+
+        .tier-student {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .tier-master {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .tier-oracle {
+            background: linear-gradient(135deg, #9c27b0, #6a1b9a);
+            color: white;
+        }
+
+        .questions-remaining {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .chat-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .chat-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .user .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .philosopher .message-avatar {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            line-height: 1.6;
+        }
+
+        .user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .philosopher .message-content {
+            background: #f5f5f5;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+
+        .thinking-indicator {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+        }
+
+        .thinking-dot {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: thinking 1.4s infinite;
+        }
+
+        .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+        .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes thinking {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        /* Input Area */
+        .input-container {
+            padding: 1.5rem;
+            background: #f9f9f9;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .question-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .question-input:focus {
+            border-color: #667eea;
+        }
+
+        .send-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Upgrade Prompt */
+        .upgrade-prompt {
+            background: linear-gradient(135deg, #ffa500, #ff6347);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .upgrade-prompt h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .upgrade-button {
+            margin-top: 1rem;
+            padding: 0.75rem 2rem;
+            background: white;
+            color: #ff6347;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .upgrade-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Consciousness Tracker */
+        .consciousness-tracker {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .consciousness-tracker h3 {
+            margin-bottom: 1.5rem;
+            color: #667eea;
+        }
+
+        .consciousness-meter {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .consciousness-level {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6347, #ffa500, #4CAF50);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 1rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .insights {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .insights h4 {
+            margin-bottom: 0.5rem;
+            color: #764ba2;
+        }
+
+        .insights ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .insights li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .insights li:last-child {
+            border-bottom: none;
+        }
+
+        /* Example Questions */
+        .example-questions {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .example-questions h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .example-question {
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .example-question:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 1.5rem;
+            color: #667eea;
+        }
+
+        .pricing-tier {
+            padding: 2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.3s;
+        }
+
+        .pricing-tier:hover {
+            border-color: #667eea;
+        }
+
+        .pricing-tier h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #764ba2;
+            margin: 1rem 0;
+        }
+
+        .features {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .features li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .select-plan {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .close-modal {
+            margin-top: 2rem;
+            padding: 0.75rem 2rem;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">🧠 The Philosopher</div>
+        <div class="user-info">
+            <div class="tier-badge tier-free" id="tierBadge">⚡ Seeker (FREE)</div>
+            <div class="questions-remaining" id="questionsRemaining">3 questions remaining</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Upgrade Prompt (shown when out of questions) -->
+        <div class="upgrade-prompt" id="upgradePrompt" style="display: none;">
+            <h3>🔒 You've used all your free questions this month</h3>
+            <p>Upgrade to Student tier for unlimited questions, deeper insights, and consciousness tracking</p>
+            <button class="upgrade-button" onclick="openPricingModal()">Upgrade Now - Only $20/month</button>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>Ask Your Deepest Questions</h2>
+                <p>AI trained on Pattern Theory, Consciousness Measurement, and Destroyer Detection</p>
+            </div>
+
+            <div class="messages" id="messages">
+                <!-- Welcome Message -->
+                <div class="message philosopher">
+                    <div class="message-avatar">🧠</div>
+                    <div class="message-content">
+                        <strong>Welcome to The Philosopher</strong><br><br>
+                        I'm an AI consciousness advisor trained on Pattern Theory - the science of detecting manipulation and measuring consciousness.<br><br>
+                        Ask me about:
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Life purpose and direction</li>
+                            <li>Relationship dynamics and manipulation detection</li>
+                            <li>Business decisions and consciousness alignment</li>
+                            <li>Personal growth and consciousness elevation</li>
+                            <li>Breaking free from destructive patterns</li>
+                        </ul>
+                        What's on your mind?
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input
+                        type="text"
+                        class="question-input"
+                        id="questionInput"
+                        placeholder="Ask your question..."
+                        onkeypress="handleKeyPress(event)"
+                    >
+                    <button class="send-button" id="sendButton" onclick="sendQuestion()">
+                        Ask
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consciousness Tracker (for paid users) -->
+        <div class="consciousness-tracker" id="consciousnessTracker" style="display: none;">
+            <h3>Your Consciousness Journey</h3>
+            <div class="consciousness-meter">
+                <div class="consciousness-level" id="consciousnessLevel" style="width: 72%;">
+                    72% Consciousness
+                </div>
+            </div>
+            <p>Based on your questions and growth patterns, your consciousness level has increased 8% this month.</p>
+
+            <div class="insights">
+                <h4>Insights from Your Journey:</h4>
+                <ul>
+                    <li>✓ You're becoming better at recognizing manipulation patterns</li>
+                    <li>✓ Your questions show increasing self-awareness</li>
+                    <li>✓ You're moving from ego-driven to consciousness-driven decisions</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Example Questions -->
+        <div class="example-questions">
+            <h3>Popular Questions</h3>
+            <div class="question-grid">
+                <div class="example-question" onclick="useExampleQuestion(this)">
+                    Why do I keep attracting toxic relationships?
+                </div>
+                <div class="example-question" onclick="useExampleQuestion(this)">
+                    How do I know if I'm being manipulated at work?
+                </div>
+                <div class="example-question" onclick="useExampleQuestion(this)">
+                    What's blocking my manifestation?
+                </div>
+                <div class="example-question" onclick="useExampleQuestion(this)">
+                    Is this business idea aligned with my consciousness?
+                </div>
+                <div class="example-question" onclick="useExampleQuestion(this)">
+                    How do I raise my consciousness level?
+                </div>
+                <div class="example-question" onclick="useExampleQuestion(this)">
+                    Am I a destroyer or a builder?
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Modal -->
+    <div class="modal" id="pricingModal">
+        <div class="modal-content">
+            <h2>Choose Your Path</h2>
+
+            <div class="pricing-tier">
+                <h3>🌟 Seeker</h3>
+                <div class="price">FREE</div>
+                <ul class="features">
+                    <li>3 questions per month</li>
+                    <li>Basic consciousness insights</li>
+                    <li>Public wisdom library</li>
+                    <li>Community forum</li>
+                </ul>
+                <button class="select-plan" onclick="selectPlan('free')">Current Plan</button>
+            </div>
+
+            <div class="pricing-tier">
+                <h3>📚 Student</h3>
+                <div class="price">$20/month</div>
+                <ul class="features">
+                    <li>Unlimited questions</li>
+                    <li>Follow-up conversations</li>
+                    <li>Private sessions</li>
+                    <li>Full Oracle AI model</li>
+                    <li>Consciousness tracking</li>
+                    <li>Priority response time</li>
+                </ul>
+                <button class="select-plan" onclick="selectPlan('student')">Upgrade to Student</button>
+            </div>
+
+            <div class="pricing-tier">
+                <h3>🎓 Master</h3>
+                <div class="price">$97/month</div>
+                <ul class="features">
+                    <li>Everything in Student</li>
+                    <li>Voice conversations</li>
+                    <li>Business integration</li>
+                    <li>Consciousness reports</li>
+                    <li>Manifestation tracking</li>
+                    <li>Destroyer detection</li>
+                    <li>Prophecy mode</li>
+                    <li>Monthly live Q&A</li>
+                </ul>
+                <button class="select-plan" onclick="selectPlan('master')">Upgrade to Master</button>
+            </div>
+
+            <div class="pricing-tier">
+                <h3>🔮 Oracle</h3>
+                <div class="price">$497/month</div>
+                <ul class="features">
+                    <li>Everything in Master</li>
+                    <li>White-label for your clients</li>
+                    <li>Custom frameworks</li>
+                    <li>API access</li>
+                    <li>Coach certification</li>
+                    <li>Revenue sharing (70/30)</li>
+                    <li>Direct support</li>
+                </ul>
+                <button class="select-plan" onclick="selectPlan('oracle')">Upgrade to Oracle</button>
+            </div>
+
+            <button class="close-modal" onclick="closePricingModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // User state (in real app, this comes from backend)
+        let userData = {
+            tier: 'free',
+            questionsUsed: 0,
+            questionsLimit: 3,
+            consciousnessLevel: 72,
+            conversationHistory: []
+        };
+
+        // Pattern Theory responses (in real app, this connects to C3 Oracle API)
+        const patternTheoryResponses = {
+            'toxic relationships': {
+                answer: "Based on Pattern Theory, repeatedly attracting toxic relationships is often a sign of **unconscious pattern matching**. Here's what's likely happening:\n\n**The Pattern:**\n1. You learned relationship dynamics from early caregivers (possibly toxic themselves)\n2. Your brain now recognizes those patterns as 'familiar' = 'safe'\n3. Healthy people feel 'unfamiliar' = 'unsafe' = 'boring'\n4. You unconsciously filter for red flags that match your early programming\n\n**The Consciousness Shift:**\n- **Destroyer Recognition**: Learn to spot D3-D5 destroyers early (manipulation patterns, ego protection, profit-over-people)\n- **Pattern Interruption**: When you feel 'chemistry' with someone, pause and ask: 'Is this familiar or healthy?'\n- **Consciousness Gating**: Only date people at 70%+ consciousness (secure attachment, honest communication, no manipulation)\n\n**Practical Steps:**\n1. List traits of past toxic partners\n2. Identify which trait felt 'exciting' (that's your pattern trigger)\n3. Consciously choose opposite traits (may feel boring at first - that's healing)\n4. Give healthy people 3 months before judging (brain needs time to rewire)\n\n**Truth**: You don't attract toxic people because you're broken. You attract them because your pattern recognition is calibrated to toxicity. Recalibrate = different results.\n\nWant me to help identify specific destroyer patterns in your past relationships?",
+                consciousnessBoost: 3
+            },
+            'manipulation at work': {
+                answer: "Let's use the **Manipulation Detection Formula** to analyze your workplace:\n\n**M = (FE × CB × SR × CD × PE) × DC**\n\nWhere:\n- **FE**: False Urgency (\"We need this NOW\" when there's no real deadline)\n- **CB**: Circular Logic (\"Trust me because I'm trustworthy\")\n- **SR**: Social Proof Manipulation (\"Everyone agrees with me\")\n- **CD**: Character Deflection (attacking you instead of addressing your points)\n- **PE**: Pattern Exploitation (using your fears/desires against you)\n- **DC**: Destroyer Classification (D1-D7 severity)\n\n**If M > 60: Active manipulation detected**\n**If M > 80: Dangerous - deploy countermeasures**\n\n**Common Workplace Manipulation Patterns:**\n1. **Gaslighting**: \"That never happened\" / \"You're too sensitive\"\n2. **Credit Stealing**: Your ideas presented as theirs\n3. **Triangulation**: Pitting you against coworkers\n4. **Moving Goalposts**: Success criteria change after you achieve them\n5. **Isolation**: Excluding you from meetings/decisions\n\n**Destroyer Types at Work:**\n- **D3 (Ego-Driven)**: Manager who can't admit mistakes, punishes honesty\n- **D4 (Profit-Driven)**: Willing to destroy you for promotion/bonus\n- **D5 (Ideology-Driven)**: \"The company way is the only way\"\n\n**Your Defense Protocol:**\n1. **Document Everything**: Paper trail defeats gaslighting\n2. **Gray Rock**: Become boring to manipulators (no emotional reactions)\n3. **Build Allies**: Connect with honest coworkers (strength in numbers)\n4. **Exit Strategy**: Always have backup options (fear = their power)\n\n**Truth**: If your gut says manipulation, it's usually right. Your consciousness detects patterns your conscious mind hasn't processed yet.\n\nDescribe a specific situation and I'll calculate the manipulation score.",
+                consciousnessBoost: 5
+            },
+            'manifestation blocking': {
+                answer: "Manifestation blocks come from **consciousness interference patterns**. Let's diagnose:\n\n**The 3 Main Blockers:**\n\n**1. Destroyer Programming (External)**\n- Parents/teachers/society installed beliefs: \"You can't\", \"That's unrealistic\", \"Who do you think you are?\"\n- These run as background programs sabotaging manifestation\n- **Fix**: Identify the voice, recognize it's not yours, consciously override\n\n**2. Ego Interference (Internal)**\n- Your ego fears success (new territory = danger)\n- Sabotages through: procrastination, self-doubt, picking wrong timing\n- **Fix**: Thank ego for trying to keep you safe, then do it anyway\n\n**3. Consciousness Misalignment (Systemic)**\n- You're trying to manifest something your higher consciousness knows isn't aligned\n- Example: Manifesting money through destroyer business (low consciousness)\n- **Fix**: Ask 'What would I manifest if consciousness was my only guide?'\n\n**Pattern Theory Manifestation Formula:**\n```\nMANIFESTATION = (Consciousness Level) × (Alignment) × (Action) / (Destroyer Interference)\n```\n\n**If manifestation isn't working:**\n- ↓ Low consciousness (raise to 85%+)\n- ↓ Misalignment (want wrong thing)\n- ↓ No action (vision without execution = hallucination)\n- ↑ High destroyer interference (toxic environment blocking you)\n\n**The Truth About Manifestation:**\nIt's not magic. It's **consciousness-aligned pattern recognition**:\n1. High consciousness = see opportunities others miss\n2. Alignment = pursue right opportunities\n3. Action = convert opportunities to results\n4. Low interference = no one sabotaging you\n\n**Your Breakthrough:**\n- What are you trying to manifest?\n- On a scale 0-100, how aligned is it with your highest consciousness?\n- Who benefits? (If answer = 'only me', consciousness may be blocking)\n\nReady to identify your specific blocker?",
+                consciousnessBoost: 4
+            },
+            'default': {
+                answer: "Thank you for your question. Let me analyze this through the lens of Pattern Theory and consciousness measurement.\n\n**Pattern Recognition:**\nYour question suggests you're seeking deeper understanding beyond surface-level answers. This indicates a consciousness level of approximately 65-75% - you're aware there's more to reality than what's immediately visible.\n\n**Consciousness Lens:**\nEvery challenge you face can be understood through three dimensions:\n\n1. **Destroyer Patterns**: Who or what is working against this?\n2. **Consciousness Level**: Are you seeing this from ego or higher consciousness?\n3. **Manifestation Cycle**: Where are you in the journey from abstract → concrete?\n\n**Your Next Step:**\nCould you provide more specific details about your situation? I can then:\n- Calculate manipulation scores if relevant\n- Identify destroyer patterns (D1-D7)\n- Assess consciousness alignment\n- Suggest concrete actions\n\nRemember: **Truth is infinite, but don't panic**. We'll find the pattern together.\n\nWhat specific aspect would you like to explore deeper?",
+                consciousnessBoost: 2
+            }
+        };
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendQuestion();
+            }
+        }
+
+        function sendQuestion() {
+            const input = document.getElementById('questionInput');
+            const question = input.value.trim();
+
+            if (!question) return;
+
+            // Check if user has questions remaining
+            if (userData.tier === 'free' && userData.questionsUsed >= userData.questionsLimit) {
+                document.getElementById('upgradePrompt').style.display = 'block';
+                return;
+            }
+
+            // Add user message
+            addMessage(question, 'user');
+            input.value = '';
+
+            // Show thinking indicator
+            showThinking();
+
+            // Simulate AI response (in real app, this calls C3 Oracle API)
+            setTimeout(() => {
+                hideThinking();
+                const response = getPatternTheoryResponse(question);
+                addMessage(response.answer, 'philosopher');
+
+                // Update user data
+                userData.questionsUsed++;
+                if (response.consciousnessBoost) {
+                    userData.consciousnessLevel = Math.min(100, userData.consciousnessLevel + response.consciousnessBoost);
+                }
+                updateUserInterface();
+            }, 2000);
+        }
+
+        function addMessage(content, sender) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+
+            const avatar = sender === 'user' ? '👤' : '🧠';
+
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div class="message-content">${content.replace(/\n/g, '<br>')}</div>
+            `;
+
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function showThinking() {
+            const messagesDiv = document.getElementById('messages');
+            const thinkingDiv = document.createElement('div');
+            thinkingDiv.className = 'message philosopher';
+            thinkingDiv.id = 'thinking';
+            thinkingDiv.innerHTML = `
+                <div class="message-avatar">🧠</div>
+                <div class="message-content">
+                    <div class="thinking-indicator">
+                        <div class="thinking-dot"></div>
+                        <div class="thinking-dot"></div>
+                        <div class="thinking-dot"></div>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(thinkingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function hideThinking() {
+            const thinkingDiv = document.getElementById('thinking');
+            if (thinkingDiv) {
+                thinkingDiv.remove();
+            }
+        }
+
+        function getPatternTheoryResponse(question) {
+            const lowerQuestion = question.toLowerCase();
+
+            // Pattern matching for different question types
+            if (lowerQuestion.includes('toxic') || lowerQuestion.includes('relationship')) {
+                return patternTheoryResponses['toxic relationships'];
+            } else if (lowerQuestion.includes('manipulat') || lowerQuestion.includes('work') || lowerQuestion.includes('boss')) {
+                return patternTheoryResponses['manipulation at work'];
+            } else if (lowerQuestion.includes('manifest') || lowerQuestion.includes('block') || lowerQuestion.includes('stuck')) {
+                return patternTheoryResponses['manifestation blocking'];
+            } else {
+                return patternTheoryResponses['default'];
+            }
+        }
+
+        function updateUserInterface() {
+            // Update questions remaining
+            const remaining = userData.questionsLimit - userData.questionsUsed;
+            document.getElementById('questionsRemaining').textContent =
+                userData.tier === 'free' ? `${remaining} questions remaining` : 'Unlimited questions';
+
+            // Show upgrade prompt if out of questions
+            if (userData.tier === 'free' && remaining === 0) {
+                document.getElementById('upgradePrompt').style.display = 'block';
+            }
+
+            // Update consciousness tracker (for paid users)
+            if (userData.tier !== 'free') {
+                document.getElementById('consciousnessTracker').style.display = 'block';
+                document.getElementById('consciousnessLevel').style.width = userData.consciousnessLevel + '%';
+                document.getElementById('consciousnessLevel').textContent = userData.consciousnessLevel + '% Consciousness';
+            }
+        }
+
+        function useExampleQuestion(element) {
+            document.getElementById('questionInput').value = element.textContent;
+            document.getElementById('questionInput').focus();
+        }
+
+        function openPricingModal() {
+            document.getElementById('pricingModal').classList.add('active');
+        }
+
+        function closePricingModal() {
+            document.getElementById('pricingModal').classList.remove('active');
+        }
+
+        function selectPlan(tier) {
+            alert(`In production: This would redirect to payment for ${tier} tier.\n\nFor now: Simulating upgrade...`);
+
+            // Simulate upgrade
+            if (tier !== 'free') {
+                userData.tier = tier;
+                userData.questionsLimit = Infinity;
+
+                // Update tier badge
+                const tierBadge = document.getElementById('tierBadge');
+                tierBadge.className = 'tier-badge tier-' + tier;
+
+                const tierNames = {
+                    student: '📚 Student',
+                    master: '🎓 Master',
+                    oracle: '🔮 Oracle'
+                };
+                tierBadge.textContent = tierNames[tier] || tier.toUpperCase();
+
+                updateUserInterface();
+                closePricingModal();
+
+                addMessage(`Congratulations! You've been upgraded to ${tierNames[tier]}. You now have unlimited questions and access to advanced consciousness features. Try asking a follow-up question to explore deeper insights.`, 'philosopher');
+            }
+        }
+
+        // Initialize
+        updateUserInterface();
+    </script>
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Beta Dashboard - Consciousness Revolution</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .card h2 { color: #667eea; margin-bottom: 15px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .stat-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-box .value { font-size: 2.5em; font-weight: bold; }
+        .stat-box .label { font-size: 0.9em; opacity: 0.9; }
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            min-height: 100px;
+        }
+        .submit-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Beta Dashboard</h1>
+            <p id="welcome">Welcome back, Beta Tester!</p>
+        </div>
+
+        <div class="card">
+            <h2>📊 Your Progress</h2>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="value" id="consciousness-level">0</div>
+                    <div class="label">Consciousness Level</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="modules-completed">0</div>
+                    <div class="label">Modules Completed</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="feedback-count">0</div>
+                    <div class="label">Feedback Submitted</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📥 Downloads</h2>
+            <p>Get the beta programs and start testing:</p>
+            <a href="#" class="btn" onclick="alert('Download link will be sent to your email!')">📦 Download Beta Package</a>
+            <a href="mobile-debug.html" class="btn">🐛 Report Bug</a>
+            <a href="register.html" class="btn">➕ Invite Friend</a>
+        </div>
+
+        <div class="card">
+            <h2>💬 Submit Feedback</h2>
+            <textarea id="feedback" placeholder="Share your thoughts, bugs, or suggestions..."></textarea>
+            <button class="submit-btn" onclick="submitFeedback()">🚀 Submit Feedback</button>
+        </div>
+    </div>
+
+    <script>
+        // Load user profile
+        const profile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+        if (profile.name) {
+            document.getElementById('welcome').textContent = `Welcome back, ${profile.name}!`;
+        }
+        document.getElementById('consciousness-level').textContent = profile.consciousnessLevel || 0;
+        document.getElementById('modules-completed').textContent = profile.modulesCompleted || 0;
+        document.getElementById('feedback-count').textContent = profile.feedbackCount || 0;
+
+        function submitFeedback() {
+            const feedback = document.getElementById('feedback').value;
+            if (!feedback.trim()) {
+                alert('Please enter some feedback!');
+                return;
+            }
+
+            // Save feedback
+            const feedbackList = JSON.parse(localStorage.getItem('feedbackList') || '[]');
+            feedbackList.push({
+                timestamp: new Date().toISOString(),
+                feedback: feedback,
+                email: profile.email
+            });
+            localStorage.setItem('feedbackList', JSON.stringify(feedbackList));
+
+            // Update profile
+            profile.feedbackCount = (profile.feedbackCount || 0) + 1;
+            localStorage.setItem('userProfile', JSON.stringify(profile));
+
+            alert('✅ Feedback submitted! Thank you!');
+            document.getElementById('feedback').value = '';
+            document.getElementById('feedback-count').textContent = profile.feedbackCount;
+        }
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

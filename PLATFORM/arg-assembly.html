@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Fragment Assembly - The Consciousness Kult</title>
+
+    <!-- Phase Badge -->
+    <meta name="phase" content="experimental">
+    <meta name="version" content="0.1.0">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a0a0a 50%, #0a0e27 100%);
+            color: #00ff41;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Creepy background animation */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(0, 255, 65, 0.1) 0%, transparent 50%);
+            animation: breathe 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 20px;
+            border-bottom: 2px solid #00ff41;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow:
+                0 0 10px #00ff41,
+                0 0 20px #00ff41,
+                0 0 30px #00ff41;
+            animation: flicker 4s infinite;
+            letter-spacing: 3px;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            41%, 43% { opacity: 0.8; }
+            45%, 47% { opacity: 1; }
+        }
+
+        .kult-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff0000, #ff6b6b);
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .warning {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            opacity: 0.8;
+        }
+
+        .assembly-box {
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00ff41;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+        }
+
+        .fragment-display {
+            margin: 30px 0;
+        }
+
+        .fragment {
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 4px solid #00ff41;
+            padding: 20px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            transition: all 0.3s ease;
+        }
+
+        .fragment:hover {
+            background: rgba(0, 255, 65, 0.2);
+            transform: translateX(10px);
+        }
+
+        .fragment.found {
+            opacity: 1;
+        }
+
+        .fragment.missing {
+            opacity: 0.3;
+            border-left-color: #666;
+        }
+
+        .fragment-number {
+            color: #ffd700;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .assembly-instruction {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #ffd700;
+            margin: 40px 0;
+            padding: 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+        }
+
+        .input-area {
+            margin: 40px 0;
+        }
+
+        .input-label {
+            font-size: 1.2rem;
+            color: #00d4ff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        #assemblyInput {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 20px;
+            font-size: 1.1rem;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        #assemblyInput:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00ff41, #00d4ff);
+            color: #0a0e27;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(0, 255, 65, 0.5);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #resultBox {
+            margin-top: 40px;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.3rem;
+            line-height: 2;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success-box {
+            background: rgba(0, 255, 65, 0.2);
+            border: 3px solid #00ff41;
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.5);
+        }
+
+        .error-box {
+            background: rgba(255, 107, 107, 0.2);
+            border: 3px solid #ff6b6b;
+        }
+
+        .kult-message {
+            font-size: 2rem;
+            color: #ffd700;
+            margin: 20px 0;
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        .hint {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid #ffd700;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #ffd700;
+        }
+
+        .trinity-symbol {
+            text-align: center;
+            font-size: 4rem;
+            margin: 40px 0;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 40px 0;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 5px;
+            color: #00d4ff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(0, 212, 255, 0.2);
+            transform: translateX(-5px);
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="kult-badge">⚠️ CONSCIOUSNESS KULT ⚠️</div>
+            <h1>🌀 FRAGMENT ASSEMBLY 🌀</h1>
+            <p class="subtitle">"Three fragments become one truth"</p>
+            <p class="warning">⚠️ Only those who have collected all three fragments may proceed ⚠️</p>
+        </header>
+
+        <div class="assembly-box">
+            <div class="trinity-symbol">△</div>
+
+            <div class="fragment-display">
+                <div class="fragment" id="frag1">
+                    <span class="fragment-number">FRAGMENT 1/3:</span>
+                    <span id="frag1Text">???</span>
+                </div>
+
+                <div class="fragment" id="frag2">
+                    <span class="fragment-number">FRAGMENT 2/3:</span>
+                    <span id="frag2Text">???</span>
+                </div>
+
+                <div class="fragment" id="frag3">
+                    <span class="fragment-number">FRAGMENT 3/3:</span>
+                    <span id="frag3Text">???</span>
+                </div>
+            </div>
+
+            <div class="assembly-instruction">
+                🔮 Combine all three fragments into ONE complete message 🔮
+            </div>
+
+            <div class="input-area">
+                <div class="input-label">Enter the complete assembled message:</div>
+                <input
+                    type="text"
+                    id="assemblyInput"
+                    placeholder="The pattern speaks in..."
+                    autocomplete="off"
+                >
+
+                <button class="submit-btn" onclick="verifyAssembly()" id="submitBtn">
+                    🚀 SUBMIT TO THE KULT 🚀
+                </button>
+            </div>
+
+            <div class="hint">
+                💡 <strong>HINT:</strong> Combine the three fragments in order, exactly as shown above. Pay attention to spacing and punctuation.
+            </div>
+
+            <div id="resultBox"></div>
+        </div>
+
+        <a href="showcase-hub.html" class="back-link">← Back to Showcases</a>
+    </div>
+
+    <script>
+        // Check for fragments
+        const frag1 = localStorage.getItem('arg_fragment_1');
+        const frag2 = localStorage.getItem('arg_fragment_2');
+        const frag3 = localStorage.getItem('arg_fragment_3');
+
+        // Display fragments
+        if (frag1) {
+            document.getElementById('frag1').classList.add('found');
+            document.getElementById('frag1Text').textContent = `"${frag1}"`;
+        } else {
+            document.getElementById('frag1').classList.add('missing');
+            document.getElementById('frag1Text').textContent = 'NOT FOUND - Check Triple Turbo Encryption showcase';
+        }
+
+        if (frag2) {
+            document.getElementById('frag2').classList.add('found');
+            document.getElementById('frag2Text').textContent = `"${frag2}"`;
+        } else {
+            document.getElementById('frag2').classList.add('missing');
+            document.getElementById('frag2Text').textContent = 'NOT FOUND - Check Manipulation Immunity Game showcase';
+        }
+
+        if (frag3) {
+            document.getElementById('frag3').classList.add('found');
+            document.getElementById('frag3Text').textContent = `"${frag3}"`;
+        } else {
+            document.getElementById('frag3').classList.add('missing');
+            document.getElementById('frag3Text').textContent = 'NOT FOUND - Check Live Consciousness Meter showcase';
+        }
+
+        // Disable button if not all fragments found
+        if (!frag1 || !frag2 || !frag3) {
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').textContent = '🔒 COLLECT ALL FRAGMENTS FIRST 🔒';
+        }
+
+        function verifyAssembly() {
+            const input = document.getElementById('assemblyInput').value.trim().toLowerCase();
+            const resultBox = document.getElementById('resultBox');
+
+            // Correct answer variations
+            const correctAnswers = [
+                'the pattern speaks in three tongues but one voice: trnt-3141',
+                'the pattern speaks in three tongues but one voice: TRNT-3141',
+                'the pattern speaks in three tongues but one voice trnt-3141',
+                'the pattern speaks in three tongues but one voice TRNT-3141'
+            ];
+
+            const isCorrect = correctAnswers.some(answer =>
+                input === answer.toLowerCase()
+            );
+
+            if (isCorrect) {
+                // SUCCESS!
+                resultBox.className = 'success-box';
+                resultBox.style.display = 'block';
+                resultBox.innerHTML = `
+                    <div class="kult-message">🎉 KULT MEMBER VERIFIED! 🎉</div>
+                    <p style="color: #00ff41; font-size: 1.5rem; margin: 20px 0;">
+                        YOU HAVE ASSEMBLED THE TRINITY MESSAGE!
+                    </p>
+                    <p style="color: #00d4ff; font-size: 1.2rem; margin-bottom: 30px;">
+                        "The pattern speaks in three tongues but one voice: TRNT-3141"
+                    </p>
+                    <div style="background: rgba(255, 215, 0, 0.2); padding: 20px; border-radius: 10px; margin: 30px 0;">
+                        <p style="color: #ffd700; font-size: 1.1rem; margin-bottom: 15px;">
+                            <strong>🔓 FINAL CLUE UNLOCKED</strong>
+                        </p>
+                        <p style="color: #fff; font-size: 1rem; line-height: 1.8;">
+                            The fourth key has been revealed: <strong style="color: #ffd700;">TRNT-3141</strong><br><br>
+                            You now possess all four keys:<br>
+                            <span style="color: #ff6b6b;">MECH-7391</span> •
+                            <span style="color: #4ecdc4;">ARCH-2847</span> •
+                            <span style="color: #ffd93d;">ORCL-9183</span> •
+                            <span style="color: #00ff41;">TRNT-3141</span>
+                        </p>
+                    </div>
+                    <div style="margin-top: 30px; padding: 20px; background: rgba(255, 0, 0, 0.2); border: 2px solid #ff6b6b; border-radius: 10px;">
+                        <p style="color: #ff6b6b; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px;">
+                            🚨 THE FINAL MYSTERY AWAITS 🚨
+                        </p>
+                        <p style="color: #fff; font-size: 1rem;">
+                            The path to Clue #5 is hidden in the convergence of all four keys...<br>
+                            Look for the pattern. The numbers reveal the way.<br><br>
+                            <span style="color: #666; font-size: 0.9rem; font-style: italic;">
+                            (Clue #5 master puzzle coming soon - you're ahead of the game!)
+                            </span>
+                        </p>
+                    </div>
+                `;
+
+                // Track completion
+                if (!localStorage.getItem('arg_assembly_complete')) {
+                    localStorage.setItem('arg_assembly_complete', 'true');
+                    localStorage.setItem('arg_fourth_key', 'TRNT-3141');
+                    localStorage.setItem('arg_completion_time', new Date().toISOString());
+
+                    console.log('%c🎉 KULT MEMBER VERIFIED!', 'color: #00ff41; font-size: 20px; font-weight: bold;');
+                    console.log('%cYou have successfully assembled the Trinity message!', 'color: #ffd700; font-size: 14px;');
+                }
+
+            } else {
+                // FAILURE
+                resultBox.className = 'error-box';
+                resultBox.style.display = 'block';
+                resultBox.innerHTML = `
+                    <p style="color: #ff6b6b; font-size: 1.5rem; font-weight: bold; margin-bottom: 20px;">
+                        ❌ ASSEMBLY REJECTED ❌
+                    </p>
+                    <p style="color: #fff; font-size: 1.1rem; margin-bottom: 20px;">
+                        The fragments do not align. The pattern is incomplete.
+                    </p>
+                    <p style="color: #00d4ff; font-size: 1rem;">
+                        💡 <strong>HINT:</strong> Copy each fragment EXACTLY as shown above,<br>
+                        then combine them with spaces between each part.
+                    </p>
+                `;
+            }
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('assemblyInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !this.disabled) {
+                verifyAssembly();
+            }
+        });
+
+        // Console logging
+        console.log('%c🌀 CONSCIOUSNESS KULT - Fragment Assembly', 'color: #00ff41; font-size: 16px; font-weight: bold;');
+        console.log('%c⚠️ Only verified Kult members may proceed ⚠️', 'color: #ff6b6b; font-size: 14px;');
+
+        if (frag1 && frag2 && frag3) {
+            console.log('%c✅ All three fragments detected!', 'color: #00ff41; font-size: 14px;');
+            console.log('%cAssemble them to reveal the fourth key...', 'color: #ffd700; font-size: 12px;');
+        } else {
+            console.log('%c🔒 Missing fragments. The Kult awaits your completion.', 'color: #666; font-size: 12px;');
+        }
+    </script>
+
+    <!-- Shared Systems -->
+    <script src="shared/phase-badge-system.js"></script>
+    <script src="shared/viral-share-engine.js"></script>
+    <script>
+        ViralShare.init({
+            title: "I just joined the Consciousness Kult!",
+            text: "Assembled three hidden fragments to unlock the fourth key! This ARG is INSANE 🌀👁️",
+            hashtags: ["ConsciousnessKult", "ARG", "TrinityAI"]
+        });
+    </script>
+    <script src="shared/bug-reporter-widget.js"></script>
+    <!-- Master Navigation System -->
+    <script src="master-nav.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

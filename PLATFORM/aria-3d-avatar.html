@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>ARIA - 3D AI Tour Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* ARIA 3D Avatar Section */
+        #aria-container {
+            width: 400px;
+            height: 100vh;
+            position: relative;
+            border-right: 3px solid #00ff88;
+            background: linear-gradient(180deg, #000 0%, #1a1a2e 100%);
+        }
+
+        #avatar-canvas {
+            width: 100%;
+            height: 60%;
+            border-bottom: 2px solid #00ff88;
+        }
+
+        #aria-controls {
+            padding: 20px;
+            height: 40%;
+            overflow-y: auto;
+        }
+
+        #aria-controls h2 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin: 8px 0;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+        }
+
+        #speech-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        #status {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #00ff88;
+            font-size: 12px;
+        }
+
+        /* Website Preview Section */
+        #website-preview {
+            flex: 1;
+            height: 100vh;
+        }
+
+        #website-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .mood-selector {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .mood-btn {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .mood-btn:hover, .mood-btn.active {
+            background: rgba(0, 255, 136, 0.4);
+            transform: scale(1.05);
+        }
+
+        #quick-phrases {
+            margin-top: 15px;
+        }
+
+        #quick-phrases h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #00ff88;
+        }
+
+        .phrase-btn {
+            background: rgba(255, 136, 0, 0.2);
+            color: #ffa500;
+            border: 1px solid #ffa500;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            margin: 4px;
+            transition: all 0.3s;
+        }
+
+        .phrase-btn:hover {
+            background: rgba(255, 136, 0, 0.4);
+            transform: scale(1.05);
+        }
+
+        .loading {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        #avatar-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0, 255, 136, 0.3);
+            border-top: 4px solid #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <!-- TalkingHead Library from CDN -->
+    <script type="module">
+        import { TalkingHead } from 'https://cdn.jsdelivr.net/npm/talkinghead@1.4.1/talkinghead.mjs';
+
+        // Global variables
+        let head;
+        let currentMood = 'happy';
+        let isSpeaking = false;
+
+        // Initialize ARIA
+        async function initARIA() {
+            try {
+                updateStatus('Initializing ARIA...');
+
+                // Create TalkingHead instance
+                head = new TalkingHead(document.getElementById('avatar-canvas'), {
+                    ttsEndpoint: "https://texttospeech.googleapis.com/v1beta1/text:synthesize",
+                    ttsApikey: null, // Will use browser's built-in speech for demo
+                    lipsyncLang: 'en',
+                    cameraView: "upper body",
+                    cameraDistance: 3,
+                    cameraY: 2.5
+                });
+
+                updateStatus('Loading 3D avatar model...');
+
+                // Load Ready Player Me avatar
+                // For demo, using a sample avatar URL - replace with custom ARIA avatar
+                await head.showAvatar({
+                    url: 'https://models.readyplayer.me/64bfa15f0e72c63d7c3934a6.glb',
+                    body: 'F',
+                    avatarMood: currentMood,
+                    ttsVoice: 'en-US-Standard-C', // Female voice
+                    ttsRate: 1.0,
+                    ttsPitch: 1.2,
+                    lipsyncLang: 'en'
+                });
+
+                updateStatus('✅ ARIA is ready!');
+                document.getElementById('avatar-loading').style.display = 'none';
+
+                // Auto-start introduction
+                setTimeout(() => {
+                    speakPhrase("Hi! I'm ARIA, your AI guide to the Consciousness Revolution!");
+                }, 1000);
+
+            } catch (error) {
+                console.error('Error initializing ARIA:', error);
+                updateStatus('❌ Error loading ARIA. Using fallback mode...');
+                initFallbackMode();
+            }
+        }
+
+        // Fallback mode using browser's built-in capabilities
+        function initFallbackMode() {
+            // Hide loading, show status
+            document.getElementById('avatar-loading').innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <h2 style="color: #00ff88;">🤖 ARIA (Lite Mode)</h2>
+                    <p style="color: #00ff88; margin-top: 15px;">3D avatar requires WebGL support</p>
+                    <p style="color: #888; font-size: 12px; margin-top: 10px;">Voice and controls still work!</p>
+                </div>
+            `;
+        }
+
+        // Speak text using ARIA
+        async function speak(text) {
+            if (isSpeaking) {
+                updateStatus('⏸️ Please wait, ARIA is speaking...');
+                return;
+            }
+
+            try {
+                isSpeaking = true;
+                updateStatus('🎤 ARIA is speaking...');
+
+                if (head) {
+                    // Use TalkingHead's speech synthesis
+                    await head.speakText(text);
+                } else {
+                    // Fallback to browser speech synthesis
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = 1.0;
+                    utterance.pitch = 1.2;
+                    utterance.voice = speechSynthesis.getVoices().find(v => v.name.includes('Female')) || null;
+                    speechSynthesis.speak(utterance);
+                }
+
+                updateStatus('✅ Speech complete!');
+            } catch (error) {
+                console.error('Speech error:', error);
+                updateStatus('❌ Speech failed');
+            } finally {
+                isSpeaking = false;
+            }
+        }
+
+        // Quick phrase shortcuts
+        function speakPhrase(text) {
+            speak(text);
+        }
+
+        // Change mood/expression
+        async function changeMood(mood) {
+            currentMood = mood;
+            updateStatus(`Changing mood to ${mood}...`);
+
+            if (head) {
+                try {
+                    await head.setMood(mood);
+                    updateStatus(`✅ Mood changed to ${mood}`);
+                } catch (error) {
+                    console.error('Mood change error:', error);
+                }
+            }
+
+            // Update active button
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.mood === mood) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Update status display
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+
+        // Navigate website in preview
+        function navigateTo(url) {
+            document.getElementById('website-frame').src = url;
+        }
+
+        // Global functions for HTML buttons
+        window.initARIA = initARIA;
+        window.speak = speak;
+        window.speakPhrase = speakPhrase;
+        window.changeMood = changeMood;
+        window.navigateTo = navigateTo;
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            initARIA();
+        });
+    </script>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div id="container">
+        <!-- ARIA Avatar Section -->
+        <div id="aria-container">
+            <!-- 3D Avatar Canvas -->
+            <div id="avatar-canvas">
+                <div id="avatar-loading">
+                    <div class="spinner"></div>
+                    <div style="color: #00ff88;">Loading ARIA...</div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div id="aria-controls">
+                <h2>🤖 ARIA AI GUIDE</h2>
+
+                <!-- Status -->
+                <div id="status">Initializing...</div>
+
+                <!-- Mood Selector -->
+                <div style="margin-top: 15px;">
+                    <h3 style="font-size: 14px; margin-bottom: 8px;">Mood:</h3>
+                    <div class="mood-selector">
+                        <button class="mood-btn active" data-mood="happy" onclick="changeMood('happy')">😊 Happy</button>
+                        <button class="mood-btn" data-mood="excited" onclick="changeMood('excited')">🚀 Excited</button>
+                        <button class="mood-btn" data-mood="calm" onclick="changeMood('calm')">😌 Calm</button>
+                        <button class="mood-btn" data-mood="thoughtful" onclick="changeMood('thoughtful')">🤔 Thoughtful</button>
+                    </div>
+                </div>
+
+                <!-- Custom Speech Input -->
+                <div style="margin-top: 15px;">
+                    <h3 style="font-size: 14px; margin-bottom: 8px;">Make ARIA say:</h3>
+                    <textarea id="speech-input" placeholder="Type what ARIA should say...">Welcome to the Consciousness Revolution! Let me show you around our seven sacred domains.</textarea>
+                    <button class="control-btn" onclick="speak(document.getElementById('speech-input').value)">
+                        🎤 Speak Custom Text
+                    </button>
+                </div>
+
+                <!-- Quick Phrases -->
+                <div id="quick-phrases">
+                    <h3>Quick Phrases:</h3>
+                    <button class="phrase-btn" onclick="speakPhrase('Welcome to the platform!'); navigateTo('https://conciousnessrevolution.io')">
+                        👋 Welcome
+                    </button>
+                    <button class="phrase-btn" onclick="speakPhrase('Let me show you the seven sacred domains!'); navigateTo('https://conciousnessrevolution.io/PLATFORM/seven-domains-navigator.html')">
+                        🌀 Show Domains
+                    </button>
+                    <button class="phrase-btn" onclick="speakPhrase('The Education Domain offers three learning paths!'); navigateTo('https://conciousnessrevolution.io/PLATFORM/education-domain.html')">
+                        📚 Education
+                    </button>
+                    <button class="phrase-btn" onclick="speakPhrase('Our community has fifty active builders!'); navigateTo('https://conciousnessrevolution.io/PLATFORM/social-domain.html')">
+                        💬 Community
+                    </button>
+                    <button class="phrase-btn" onclick="speakPhrase('Explore consciousness frequencies!'); navigateTo('https://conciousnessrevolution.io/PLATFORM/music-domain.html')">
+                        🎵 Music
+                    </button>
+                    <button class="phrase-btn" onclick="speakPhrase('Builder Tokens are earned, not bought!'); navigateTo('https://conciousnessrevolution.io/PLATFORM/crypto-domain.html')">
+                        ₿ Crypto
+                    </button>
+                    <button class="phrase-btn" onclick="speakPhrase('Training simulations await!'); navigateTo('https://conciousnessrevolution.io/PLATFORM/games-domain.html')">
+                        🎮 Games
+                    </button>
+                </div>
+
+                <!-- Website Navigation -->
+                <div style="margin-top: 15px;">
+                    <h3 style="font-size: 14px; margin-bottom: 8px;">Navigation:</h3>
+                    <button class="control-btn" onclick="navigateTo('https://conciousnessrevolution.io')">
+                        🏠 Homepage
+                    </button>
+                    <button class="control-btn" onclick="navigateTo('https://conciousnessrevolution.io/PLATFORM/seven-domains-navigator.html')">
+                        🌀 Sacred Spiral
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Website Preview -->
+        <div id="website-preview">
+            <iframe id="website-frame" src="https://conciousnessrevolution.io"></iframe>
+        </div>
+    </div>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

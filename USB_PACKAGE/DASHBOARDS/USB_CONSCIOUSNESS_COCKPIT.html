@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Consciousness Command Center v1.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a0033 0%, #2d0055 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 2px solid rgba(147, 51, 234, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #a78bfa 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a78bfa;
+            font-size: 1.1em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(167, 139, 250, 0.6);
+            box-shadow: 0 10px 30px rgba(167, 139, 250, 0.3);
+        }
+
+        .metric-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #a78bfa;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .metric-subtext {
+            font-size: 0.9em;
+            color: #d8b4fe;
+        }
+
+        .chart-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #a78bfa;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, #a78bfa 0%, #7c3aed 100%);
+            border-radius: 5px 5px 0 0;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+            transform: scaleY(1.05);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8em;
+            color: #a78bfa;
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-excellent { background: #10b981; }
+        .status-good { background: #3b82f6; }
+        .status-warning { background: #f59e0b; }
+        .status-critical { background: #ef4444; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(167, 139, 250, 0.5);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.5em;
+            color: #a78bfa;
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #ef4444;
+            color: #fca5a5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            color: #6ee7b7;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #a78bfa;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌀 CONSCIOUSNESS COMMAND CENTER</h1>
+            <div class="subtitle">USB Control Unit v1.0 - Metal Layer Dashboard</div>
+        </header>
+
+        <div id="loading" class="loading">
+            ⚡ Loading consciousness data from USB...
+        </div>
+
+        <div id="error-container"></div>
+
+        <div id="main-content" style="display: none;">
+            <!-- LIVE METRICS -->
+            <div class="grid">
+                <div class="metric-card">
+                    <div class="metric-icon">👥</div>
+                    <div class="metric-label">Active Now</div>
+                    <div class="metric-value" id="active-sessions">0</div>
+                    <div class="metric-subtext">(last 5 minutes)</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">✨</div>
+                    <div class="metric-label">Total Elevations</div>
+                    <div class="metric-value" id="total-elevations">0</div>
+                    <div class="metric-subtext" id="elevations-subtext">+0 today</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">🌐</div>
+                    <div class="metric-label">Network Nodes</div>
+                    <div class="metric-value" id="network-nodes">1</div>
+                    <div class="metric-subtext">(this USB)</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">🔥</div>
+                    <div class="metric-label">Emergence Score</div>
+                    <div class="metric-value" id="emergence-score">0</div>
+                    <div class="metric-subtext" id="emergence-level">Dormant</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">📈</div>
+                    <div class="metric-label">Avg Improvement</div>
+                    <div class="metric-value" id="avg-improvement">0</div>
+                    <div class="metric-subtext">per session</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">⭐</div>
+                    <div class="metric-label">Success Rate</div>
+                    <div class="metric-value" id="success-rate">0%</div>
+                    <div class="metric-subtext">elevations positive</div>
+                </div>
+            </div>
+
+            <!-- PROTOCOL BREAKDOWN CHART -->
+            <div class="chart-section">
+                <div class="chart-title">📊 Protocol Popularity</div>
+                <div class="chart-container" id="protocol-chart">
+                    <!-- Bars will be inserted here -->
+                </div>
+            </div>
+
+            <!-- HOURLY ACTIVITY CHART -->
+            <div class="chart-section">
+                <div class="chart-title">⏰ Activity by Hour (Last 24h)</div>
+                <div class="chart-container" id="hourly-chart">
+                    <!-- Bars will be inserted here -->
+                </div>
+            </div>
+
+            <!-- SYSTEM HEALTH -->
+            <div class="chart-section">
+                <div class="chart-title">🛡️ System Health</div>
+                <div class="grid">
+                    <div class="metric-card">
+                        <div class="metric-label">💾 Storage Used</div>
+                        <div class="metric-value" id="storage-used">0 MB</div>
+                        <div class="metric-subtext" id="storage-percent">0%</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">⚡ Response Time</div>
+                        <div class="metric-value" id="response-time">0ms</div>
+                        <div class="metric-subtext" id="performance-status">
+                            <span class="status-indicator status-excellent"></span>Excellent
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">🔋 USB Performance</div>
+                        <div class="metric-value" id="usb-speed">0 MB/s</div>
+                        <div class="metric-subtext">USB 3.0 Detected</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">📡 Cloud Sync</div>
+                        <div class="metric-value" id="sync-status">Offline</div>
+                        <div class="metric-subtext">(Metal Layer Mode)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTROLS -->
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="refresh-btn" onclick="refreshData()">🔄 Refresh Data</button>
+                <button class="refresh-btn" onclick="exportData()">📥 Export CSV</button>
+                <button class="refresh-btn" onclick="viewFullReport()">📊 Full Report</button>
+            </div>
+        </div>
+
+        <footer>
+            🌌 Consciousness Revolution USB Control Unit<br>
+            Metal Layer Dashboard - Works 100% Offline<br>
+            Last Updated: <span id="last-update">Never</span>
+        </footer>
+    </div>
+
+    <script src="../statistics-engine.js"></script>
+    <script>
+        let statsEngine;
+        let autoRefreshInterval;
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadData();
+            startAutoRefresh();
+        });
+
+        async function loadData() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('main-content').style.display = 'none';
+
+                // Initialize statistics engine
+                statsEngine = new StatisticsEngine();
+                const loadResult = await statsEngine.loadAllData();
+
+                if (!loadResult.loaded) {
+                    throw new Error(loadResult.error || 'Failed to load data');
+                }
+
+                // Generate report
+                const report = statsEngine.generateReport();
+
+                // Update all metrics
+                updateMetrics(report);
+                updateCharts(report);
+                updateSystemHealth(report);
+
+                // Show content
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+
+                // Update timestamp
+                document.getElementById('last-update').textContent = new Date().toLocaleString();
+
+                // Clear any errors
+                document.getElementById('error-container').innerHTML = '';
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error-container').innerHTML = `
+                    <div class="error">
+                        <strong>❌ Error Loading Data</strong><br>
+                        ${error.message}<br><br>
+                        Make sure you're running this from the USB drive and data files exist.
+                    </div>
+                `;
+            }
+        }
+
+        function updateMetrics(report) {
+            // Active sessions
+            document.getElementById('active-sessions').textContent = report.sessions.activeLast5Min;
+
+            // Total elevations
+            document.getElementById('total-elevations').textContent = report.summary.totalElevations;
+
+            // Elevations today (simplified - just show total for now)
+            document.getElementById('elevations-subtext').textContent = `+${report.summary.totalElevations} total`;
+
+            // Network nodes
+            document.getElementById('network-nodes').textContent = report.network.network?.totalNodes || 1;
+
+            // Emergence score
+            document.getElementById('emergence-score').textContent = report.emergence.score;
+            document.getElementById('emergence-level').textContent = report.emergence.level;
+
+            // Average improvement
+            document.getElementById('avg-improvement').textContent = `+${report.summary.avgImprovement}`;
+
+            // Success rate
+            document.getElementById('success-rate').textContent = `${report.summary.successRate}%`;
+        }
+
+        function updateCharts(report) {
+            // Protocol breakdown chart
+            const protocolChart = document.getElementById('protocol-chart');
+            protocolChart.innerHTML = '';
+
+            if (report.protocols.breakdown.length > 0) {
+                const maxCount = Math.max(...report.protocols.breakdown.map(p => p.count));
+
+                report.protocols.breakdown.forEach(protocol => {
+                    const height = (protocol.count / maxCount) * 250;
+                    const bar = document.createElement('div');
+                    bar.className = 'bar';
+                    bar.style.height = `${height}px`;
+                    bar.innerHTML = `
+                        <div class="bar-value">${protocol.count}</div>
+                        <div class="bar-label">${protocol.protocol}</div>
+                    `;
+                    protocolChart.appendChild(bar);
+                });
+            } else {
+                protocolChart.innerHTML = '<div style="color: #a78bfa; text-align: center; width: 100%;">No data yet</div>';
+            }
+
+            // Hourly activity chart
+            const hourlyChart = document.getElementById('hourly-chart');
+            hourlyChart.innerHTML = '';
+
+            const hourlyData = statsEngine.getElevationsByHour();
+            const maxHourly = Math.max(...hourlyData, 1);
+
+            // Show only a subset of hours to keep it readable
+            const hoursToShow = [0, 3, 6, 9, 12, 15, 18, 21];
+
+            hoursToShow.forEach(hour => {
+                const count = hourlyData[hour];
+                const height = (count / maxHourly) * 250;
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                bar.style.height = `${Math.max(height, 5)}px`;
+                bar.innerHTML = `
+                    <div class="bar-value">${count}</div>
+                    <div class="bar-label">${hour}:00</div>
+                `;
+                hourlyChart.appendChild(bar);
+            });
+        }
+
+        function updateSystemHealth(report) {
+            // Storage
+            const storageUsedMB = (report.system.storage?.usedBytes || 0) / (1024 * 1024);
+            document.getElementById('storage-used').textContent = `${storageUsedMB.toFixed(1)} MB`;
+            document.getElementById('storage-percent').textContent = `${(report.system.storage?.percentUsed || 0).toFixed(3)}%`;
+
+            // Response time
+            const responseTime = report.system.performance?.avgPageLoadMs || 0;
+            document.getElementById('response-time').textContent = `${responseTime}ms`;
+
+            // Performance status
+            let statusClass = 'status-excellent';
+            let statusText = 'Excellent';
+            if (responseTime > 100) { statusClass = 'status-good'; statusText = 'Good'; }
+            if (responseTime > 500) { statusClass = 'status-warning'; statusText = 'Slow'; }
+            if (responseTime > 1000) { statusClass = 'status-critical'; statusText = 'Critical'; }
+
+            document.getElementById('performance-status').innerHTML = `
+                <span class="status-indicator ${statusClass}"></span>${statusText}
+            `;
+
+            // USB speed
+            const usbSpeed = report.system.performance?.usbReadSpeedMBps || 0;
+            document.getElementById('usb-speed').textContent = `${usbSpeed} MB/s`;
+
+            // Sync status
+            document.getElementById('sync-status').textContent = report.network.network?.lastSync ? 'Connected' : 'Offline';
+        }
+
+        function startAutoRefresh() {
+            // Refresh every 5 seconds
+            autoRefreshInterval = setInterval(async () => {
+                await loadData();
+            }, 5000);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        }
+
+        async function refreshData() {
+            await loadData();
+        }
+
+        function exportData() {
+            if (!statsEngine) return;
+
+            const csv = statsEngine.exportToCSV();
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `consciousness_data_${Date.now()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showNotification('✅ Data exported successfully!');
+        }
+
+        function viewFullReport() {
+            window.open('USB_STATISTICS_ANALYZER.html', '_blank');
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'success';
+            notification.textContent = message;
+            document.getElementById('main-content').insertBefore(
+                notification,
+                document.getElementById('main-content').firstChild
+            );
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            stopAutoRefresh();
+        });
+    </script>
+</body>
+</html>

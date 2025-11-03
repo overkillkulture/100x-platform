@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Master Kanban Board | Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e27;
+            color: #00ff41;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0a0e27, #1a1e47);
+            border-bottom: 3px solid #00ff41;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            text-shadow: 0 0 20px #00ff41;
+            margin-bottom: 10px;
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #00ff41;
+            color: #0a0e27;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn:hover {
+            background: #00cc33;
+            box-shadow: 0 0 20px #00ff41;
+            transform: scale(1.05);
+        }
+
+        .btn-danger {
+            background: #ff0066;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #cc0052;
+            box-shadow: 0 0 20px #ff0066;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: rgba(0, 255, 65, 0.05);
+            border-bottom: 2px solid #00ff41;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 0 0 15px currentColor;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .kanban-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            min-height: calc(100vh - 300px);
+        }
+
+        .kanban-column {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        .kanban-column.backlog {
+            border-color: #888;
+        }
+
+        .kanban-column.todo {
+            border-color: #ff0066;
+        }
+
+        .kanban-column.in-progress {
+            border-color: #ffaa00;
+        }
+
+        .kanban-column.done {
+            border-color: #00ff41;
+        }
+
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid;
+        }
+
+        .column-title {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .column-count {
+            font-size: 1.5em;
+            opacity: 0.8;
+        }
+
+        .task-card {
+            background: rgba(0, 0, 0, 0.7);
+            border-left: 4px solid;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: grab;
+            transition: all 0.3s;
+        }
+
+        .task-card:active {
+            cursor: grabbing;
+        }
+
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 255, 65, 0.3);
+        }
+
+        .task-card.priority-critical {
+            border-left-color: #ff0000;
+        }
+
+        .task-card.priority-high {
+            border-left-color: #ff0066;
+        }
+
+        .task-card.priority-medium {
+            border-left-color: #ffaa00;
+        }
+
+        .task-card.priority-low {
+            border-left-color: #00ff41;
+        }
+
+        .task-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00ff41;
+        }
+
+        .task-description {
+            font-size: 0.95em;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0, 255, 65, 0.3);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .task-priority {
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .task-category {
+            padding: 4px 10px;
+            background: rgba(0, 100, 255, 0.3);
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .task-btn {
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 5px 10px;
+            font-size: 0.85em;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .task-btn:hover {
+            background: rgba(0, 255, 65, 0.4);
+        }
+
+        .task-btn.delete {
+            background: rgba(255, 0, 102, 0.2);
+            border-color: #ff0066;
+            color: #ff0066;
+        }
+
+        .task-btn.delete:hover {
+            background: rgba(255, 0, 102, 0.4);
+        }
+
+        .add-task-form {
+            background: rgba(0, 100, 255, 0.1);
+            border: 2px solid #0066ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+            color: #00ff41;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            border-radius: 5px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #0a0e27;
+            border: 3px solid #00ff41;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .modal-header {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #00ff41;
+        }
+
+        .drag-over {
+            background: rgba(0, 255, 65, 0.2);
+            border-style: dashed;
+        }
+
+        @media (max-width: 768px) {
+            .kanban-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .stat-value {
+                font-size: 2em;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 MASTER KANBAN BOARD 🎯</h1>
+        <p>Never Lose a Todo Again</p>
+        <div class="header-controls">
+            <button class="btn" onclick="openAddModal()">➕ Add Task</button>
+            <button class="btn" onclick="exportTasks()">💾 Export Backup</button>
+            <button class="btn" onclick="importTasks()">📥 Import Backup</button>
+            <button class="btn btn-danger" onclick="clearCompleted()">🗑️ Clear Completed</button>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat">
+            <div class="stat-value" style="color: #888;" id="statBacklog">0</div>
+            <div class="stat-label">Backlog</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" style="color: #ff0066;" id="statTodo">0</div>
+            <div class="stat-label">To Do</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" style="color: #ffaa00;" id="statInProgress">0</div>
+            <div class="stat-label">In Progress</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" style="color: #00ff41;" id="statDone">0</div>
+            <div class="stat-label">Done</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" style="color: #00ff41;" id="statTotal">0</div>
+            <div class="stat-label">Total</div>
+        </div>
+    </div>
+
+    <div class="kanban-container">
+        <div class="kanban-column backlog" data-status="backlog" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+            <div class="column-header">
+                <span class="column-title" style="color: #888;">📋 BACKLOG</span>
+                <span class="column-count" id="countBacklog">0</span>
+            </div>
+            <div id="backlogTasks"></div>
+        </div>
+
+        <div class="kanban-column todo" data-status="todo" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+            <div class="column-header">
+                <span class="column-title" style="color: #ff0066;">🎯 TO DO</span>
+                <span class="column-count" id="countTodo">0</span>
+            </div>
+            <div id="todoTasks"></div>
+        </div>
+
+        <div class="kanban-column in-progress" data-status="in-progress" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+            <div class="column-header">
+                <span class="column-title" style="color: #ffaa00;">⚡ IN PROGRESS</span>
+                <span class="column-count" id="countInProgress">0</span>
+            </div>
+            <div id="in-progressTasks"></div>
+        </div>
+
+        <div class="kanban-column done" data-status="done" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+            <div class="column-header">
+                <span class="column-title" style="color: #00ff41;">✅ DONE</span>
+                <span class="column-count" id="countDone">0</span>
+            </div>
+            <div id="doneTasks"></div>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div class="modal" id="addTaskModal">
+        <div class="modal-content">
+            <div class="modal-header">➕ Add New Task</div>
+            <div class="add-task-form">
+                <div class="form-group">
+                    <label>Task Title:</label>
+                    <input type="text" id="taskTitle" placeholder="Enter task title...">
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="taskDescription" placeholder="Enter task description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Category:</label>
+                    <select id="taskCategory">
+                        <option value="Trinity">Trinity System</option>
+                        <option value="Computer Consciousness">Computer Consciousness</option>
+                        <option value="Website">Website</option>
+                        <option value="Business">Business</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Development">Development</option>
+                        <option value="Design">Design</option>
+                        <option value="Research">Research</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Priority:</label>
+                    <select id="taskPriority">
+                        <option value="critical">🔴 Critical</option>
+                        <option value="high">🔥 High</option>
+                        <option value="medium" selected>⚠️ Medium</option>
+                        <option value="low">💚 Low</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status:</label>
+                    <select id="taskStatus">
+                        <option value="backlog">Backlog</option>
+                        <option value="todo" selected>To Do</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="done">Done</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn" onclick="addTask()">Add Task</button>
+                    <button class="btn btn-danger" onclick="closeAddModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('masterKanbanTasks')) || [];
+
+        function renderTasks() {
+            // Clear all columns
+            document.getElementById('backlogTasks').innerHTML = '';
+            document.getElementById('todoTasks').innerHTML = '';
+            document.getElementById('in-progressTasks').innerHTML = '';
+            document.getElementById('doneTasks').innerHTML = '';
+
+            // Count tasks by status
+            let counts = {
+                backlog: 0,
+                todo: 0,
+                'in-progress': 0,
+                done: 0
+            };
+
+            // Render each task
+            tasks.forEach((task, index) => {
+                const taskElement = createTaskElement(task, index);
+                const container = document.getElementById(task.status + 'Tasks');
+                if (container) {
+                    container.appendChild(taskElement);
+                    counts[task.status]++;
+                }
+            });
+
+            // Update counts
+            document.getElementById('countBacklog').textContent = counts.backlog;
+            document.getElementById('countTodo').textContent = counts.todo;
+            document.getElementById('countInProgress').textContent = counts['in-progress'];
+            document.getElementById('countDone').textContent = counts.done;
+
+            // Update stats
+            document.getElementById('statBacklog').textContent = counts.backlog;
+            document.getElementById('statTodo').textContent = counts.todo;
+            document.getElementById('statInProgress').textContent = counts['in-progress'];
+            document.getElementById('statDone').textContent = counts.done;
+            document.getElementById('statTotal').textContent = tasks.length;
+        }
+
+        function createTaskElement(task, index) {
+            const div = document.createElement('div');
+            div.className = `task-card priority-${task.priority}`;
+            div.draggable = true;
+            div.dataset.index = index;
+            div.ondragstart = drag;
+
+            const priorityLabels = {
+                critical: '🔴 CRITICAL',
+                high: '🔥 HIGH',
+                medium: '⚠️ MEDIUM',
+                low: '💚 LOW'
+            };
+
+            div.innerHTML = `
+                <div class="task-title">${task.title}</div>
+                <div class="task-description">${task.description}</div>
+                <div class="task-meta">
+                    <span class="task-priority" style="background: rgba(255, 0, 0, ${task.priority === 'critical' ? '0.5' : task.priority === 'high' ? '0.3' : '0.2'})">
+                        ${priorityLabels[task.priority]}
+                    </span>
+                    <span class="task-category">${task.category}</span>
+                    <div class="task-actions">
+                        <button class="task-btn" onclick="editTask(${index})">✏️ Edit</button>
+                        <button class="task-btn delete" onclick="deleteTask(${index})">🗑️</button>
+                    </div>
+                </div>
+            `;
+
+            return div;
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData('taskIndex', event.target.dataset.index);
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('drag-over');
+        }
+
+        function dragLeave(event) {
+            event.currentTarget.classList.remove('drag-over');
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('drag-over');
+
+            const taskIndex = event.dataTransfer.getData('taskIndex');
+            const newStatus = event.currentTarget.dataset.status;
+
+            if (taskIndex !== undefined && newStatus) {
+                tasks[taskIndex].status = newStatus;
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        function openAddModal() {
+            document.getElementById('addTaskModal').classList.add('active');
+        }
+
+        function closeAddModal() {
+            document.getElementById('addTaskModal').classList.remove('active');
+            clearForm();
+        }
+
+        function clearForm() {
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDescription').value = '';
+            document.getElementById('taskCategory').value = 'Trinity';
+            document.getElementById('taskPriority').value = 'medium';
+            document.getElementById('taskStatus').value = 'todo';
+        }
+
+        function addTask() {
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const category = document.getElementById('taskCategory').value;
+            const priority = document.getElementById('taskPriority').value;
+            const status = document.getElementById('taskStatus').value;
+
+            if (title.trim() === '') {
+                alert('Please enter a task title');
+                return;
+            }
+
+            tasks.push({
+                title,
+                description,
+                category,
+                priority,
+                status,
+                created: new Date().toISOString()
+            });
+
+            saveTasks();
+            renderTasks();
+            closeAddModal();
+        }
+
+        function editTask(index) {
+            const task = tasks[index];
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDescription').value = task.description;
+            document.getElementById('taskCategory').value = task.category;
+            document.getElementById('taskPriority').value = task.priority;
+            document.getElementById('taskStatus').value = task.status;
+
+            tasks.splice(index, 1);
+            saveTasks();
+
+            openAddModal();
+        }
+
+        function deleteTask(index) {
+            if (confirm('Delete this task?')) {
+                tasks.splice(index, 1);
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        function clearCompleted() {
+            if (confirm('Clear all completed tasks?')) {
+                tasks = tasks.filter(task => task.status !== 'done');
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        function saveTasks() {
+            localStorage.setItem('masterKanbanTasks', JSON.stringify(tasks));
+        }
+
+        function exportTasks() {
+            const dataStr = JSON.stringify(tasks, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `kanban-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+        }
+
+        function importTasks() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (event) => {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const imported = JSON.parse(e.target.result);
+                        if (confirm(`Import ${imported.length} tasks? This will replace current tasks.`)) {
+                            tasks = imported;
+                            saveTasks();
+                            renderTasks();
+                        }
+                    } catch (error) {
+                        alert('Error importing tasks: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Initial render
+        renderTasks();
+
+        // Add sample tasks if empty
+        if (tasks.length === 0) {
+            tasks = [
+                {
+                    title: 'Design Trinity Orchestration System',
+                    description: 'Military/Circuit Board hierarchy with 4th observer directing C1/C2/C3 network activation',
+                    category: 'Trinity',
+                    priority: 'high',
+                    status: 'todo',
+                    created: new Date().toISOString()
+                },
+                {
+                    title: 'Build JARVIS Demo Video',
+                    description: 'Showcase automation capabilities for Computer Consciousness product',
+                    category: 'Computer Consciousness',
+                    priority: 'high',
+                    status: 'todo',
+                    created: new Date().toISOString()
+                },
+                {
+                    title: 'Deploy Computer Consciousness Landing Page',
+                    description: 'Push to Netlify and verify forms are working',
+                    category: 'Website',
+                    priority: 'critical',
+                    status: 'in-progress',
+                    created: new Date().toISOString()
+                }
+            ];
+            saveTasks();
+            renderTasks();
+        }
+    </script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

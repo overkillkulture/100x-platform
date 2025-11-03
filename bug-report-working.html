@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bug Report - Simple</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 { color: #ff4444; margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        textarea { min-height: 120px; }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover { background: #764ba2; }
+        .success {
+            background: #44ff44;
+            color: #006600;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 Report a Bug</h1>
+
+        <div id="form-container">
+            <form name="working-bug-reports" method="POST" netlify>
+                <input type="hidden" name="form-name" value="working-bug-reports">
+
+                <label>What's broken?</label>
+                <input type="text" name="title" required placeholder="e.g., Login doesn't work">
+
+                <label>Tell us more</label>
+                <textarea name="description" required placeholder="What happened? What did you expect?"></textarea>
+
+                <label>Your email (optional)</label>
+                <input type="email" name="email" placeholder="your@email.com">
+
+                <button type="submit">Submit Bug Report</button>
+            </form>
+        </div>
+
+        <div id="success-message" class="success">
+            ✅ Bug report submitted successfully! We'll look into it.
+        </div>
+    </div>
+
+    <script>
+        // Handle form submission
+        const form = document.querySelector('form');
+        const formContainer = document.getElementById('form-container');
+        const successMessage = document.getElementById('success-message');
+
+        form.addEventListener('submit', function(e) {
+            // Let Netlify handle it, but show success message on return
+            setTimeout(() => {
+                // If we're still on this page after submit, show success
+                const urlParams = new URLSearchParams(window.location.search);
+                if (window.location.search.includes('success') || form.style.display === 'none') {
+                    formContainer.style.display = 'none';
+                    successMessage.style.display = 'block';
+                }
+            }, 1000);
+        });
+
+        // Check if returning from successful submission
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') !== null) {
+                formContainer.style.display = 'none';
+                successMessage.style.display = 'block';
+            }
+        });
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

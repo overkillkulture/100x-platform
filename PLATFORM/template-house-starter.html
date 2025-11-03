@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Your House Name | 100X Platform</title>
+
+    <!-- 🛣️ ROAD INFRASTRUCTURE (DO NOT MODIFY) -->
+    <link rel="stylesheet" href="platform-roads.css">
+    <script src="platform-roads.js" defer></script>
+
+    <!-- 🏠 YOUR HOUSE STYLES (CUSTOMIZE THIS) -->
+    <style>
+        /* Add your custom styles here */
+        .your-content {
+            /* Your unique styling */
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <!-- 🛣️ NAVIGATION (PROVIDED BY ROADS) -->
+    <div class="platform-nav-wrapper"></div>
+
+    <!-- 🏠 YOUR HOUSE CONTENT STARTS HERE -->
+    <div class="house-container">
+        <div class="house-header">
+            <h1>🏠 Your House Title</h1>
+            <p>Your description/tagline</p>
+        </div>
+
+        <div class="house-content">
+            <!-- PUT YOUR CONTENT HERE -->
+
+            <p>This is where YOUR genius lives.</p>
+            <p>The roads handle: auth, data, payments, navigation.</p>
+            <p>You handle: creativity, expertise, value creation.</p>
+
+            <!-- Example: If building a course -->
+            <div class="course-section">
+                <h2>Module 1: Your First Lesson</h2>
+                <video controls>
+                    <source src="your-video.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            <!-- Example: If building a tool -->
+            <div class="tool-interface">
+                <button onclick="yourFunction()">Run Your Tool</button>
+                <div id="tool-output"></div>
+            </div>
+
+            <!-- Example: If building community space -->
+            <div class="community-posts">
+                <div id="posts-container"></div>
+                <textarea id="new-post" placeholder="Share with the community..."></textarea>
+                <button onclick="createPost()">Post</button>
+            </div>
+        </div>
+    </div>
+    <!-- 🏠 YOUR HOUSE CONTENT ENDS HERE -->
+
+    <!-- 🛣️ FOOTER (PROVIDED BY ROADS) -->
+    <div class="platform-footer-wrapper"></div>
+
+    <!-- 🏠 YOUR HOUSE JAVASCRIPT -->
+    <script>
+        // Your custom functionality
+        function yourFunction() {
+            // Your code here
+            console.log('Your house, your rules!');
+        }
+
+        // Access road infrastructure:
+        // - PlatformAuth.getCurrentUser()
+        // - PlatformData.save(key, value)
+        // - PlatformData.load(key)
+        // - PlatformPayments.createCheckout(price)
+        // - PlatformAnalytics.trackEvent(name, data)
+
+        // Example: Save user progress
+        function saveProgress() {
+            const user = PlatformAuth.getCurrentUser();
+            if (user) {
+                PlatformData.save(`${user.id}_progress`, {
+                    module: 1,
+                    lesson: 3,
+                    timestamp: Date.now()
+                });
+            }
+        }
+
+        // Example: Track completion
+        function trackCompletion() {
+            PlatformAnalytics.trackEvent('course_complete', {
+                course: 'Your Course Name',
+                timeSpent: 3600
+            });
+        }
+
+        // Example: Create post
+        function createPost() {
+            const text = document.getElementById('new-post').value;
+            const user = PlatformAuth.getCurrentUser();
+
+            if (!user) {
+                alert('Please log in to post');
+                PlatformAuth.showLogin();
+                return;
+            }
+
+            // Save to platform data system
+            PlatformData.createPost({
+                author: user.username,
+                content: text,
+                domain: 'EDUCATION', // or SOCIAL, MUSIC, etc.
+                timestamp: Date.now()
+            });
+
+            document.getElementById('new-post').value = '';
+            loadPosts();
+        }
+
+        // Example: Load posts
+        function loadPosts() {
+            const posts = PlatformData.loadPosts({ domain: 'EDUCATION', limit: 20 });
+            const container = document.getElementById('posts-container');
+            container.innerHTML = posts.map(post => `
+                <div class="post">
+                    <strong>${post.author}</strong>: ${post.content}
+                    <small>${new Date(post.timestamp).toLocaleString()}</small>
+                </div>
+            `).join('');
+        }
+    </script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

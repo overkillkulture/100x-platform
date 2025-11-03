@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Break Into Any Conversation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 2px solid #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .tagline {
+            font-size: 1.3em;
+            color: #00ff88;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .panel h2 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .service-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .service {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 4px solid #00ff88;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .service:hover {
+            background: rgba(0, 255, 136, 0.1);
+            transform: translateX(5px);
+        }
+
+        .service.dead {
+            border-left-color: #666;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .service.selected {
+            background: rgba(0, 255, 136, 0.2);
+            border-left-color: #00ffff;
+        }
+
+        .service-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .service-status {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .conversation-area {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .conversation-header {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px 8px 0 0;
+            border-bottom: 2px solid #00ff88;
+        }
+
+        .conversation-topic {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .participants {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.system {
+            background: rgba(100, 100, 255, 0.2);
+            border-left: 4px solid #6464ff;
+            font-style: italic;
+        }
+
+        .message.service {
+            background: rgba(0, 255, 136, 0.2);
+            border-left: 4px solid #00ff88;
+        }
+
+        .message.commander {
+            background: rgba(255, 200, 0, 0.2);
+            border-left: 4px solid #ffc800;
+        }
+
+        .message.intercept {
+            background: rgba(255, 0, 100, 0.2);
+            border-left: 4px solid #ff0064;
+            box-shadow: 0 0 15px rgba(255, 0, 100, 0.3);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .message-author {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .message-time {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .message-text {
+            line-height: 1.6;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        input, textarea {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 1em;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        button {
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1em;
+        }
+
+        button.primary {
+            background: #00ff88;
+            color: #000;
+        }
+
+        button.primary:hover {
+            background: #00cc6f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.5);
+        }
+
+        button.danger {
+            background: #ff0064;
+            color: #fff;
+        }
+
+        button.danger:hover {
+            background: #cc0050;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .action-buttons button {
+            flex: 1;
+        }
+
+        .selected-services {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .service-chip {
+            padding: 8px 15px;
+            background: rgba(0, 255, 136, 0.2);
+            border-radius: 20px;
+            border: 2px solid #00ff88;
+            font-size: 0.9em;
+        }
+
+        .no-conversation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 1.5em;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📻 Break Into Any Conversation</h1>
+            <p class="tagline">Direct Message System - Jump into any service conversation</p>
+        </header>
+
+        <div class="grid">
+            <!-- Sidebar: Services -->
+            <div>
+                <div class="panel">
+                    <h2>🚀 Select Services</h2>
+                    <div class="service-list" id="servicesList">
+                        <p style="color: #888;">Loading services...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main: Conversation -->
+            <div class="panel">
+                <div class="action-buttons">
+                    <button class="primary" onclick="createConversation()">💬 Create New Conversation</button>
+                    <button class="danger" onclick="interceptConversation()">🔴 INTERCEPT (Break In!)</button>
+                </div>
+
+                <div class="selected-services" id="selectedServices">
+                    <!-- Selected service chips will appear here -->
+                </div>
+
+                <div class="conversation-area">
+                    <div id="conversationView">
+                        <div class="no-conversation">
+                            <div>
+                                <p>Select services from the left</p>
+                                <p style="font-size: 0.7em; margin-top: 10px;">Then create a conversation or intercept their messages!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const NERVOUS_SYSTEM = 'http://localhost:7776';
+        const INTERCOM = 'http://localhost:7778';
+
+        let selectedServices = [];
+        let currentConversation = null;
+        let messagePolling = null;
+
+        // Load services
+        async function loadServices() {
+            try {
+                const response = await fetch(`${NERVOUS_SYSTEM}/services`);
+                const data = await response.json();
+
+                const list = document.getElementById('servicesList');
+                list.innerHTML = '';
+
+                data.services.forEach(service => {
+                    const div = document.createElement('div');
+                    div.className = `service ${service.status}`;
+                    div.onclick = () => toggleService(service);
+                    div.innerHTML = `
+                        <div class="service-name">${service.name}</div>
+                        <div class="service-status">ID: ${service.id} | ${service.status}</div>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Error loading services:', error);
+            }
+        }
+
+        // Toggle service selection
+        function toggleService(service) {
+            if (service.status !== 'online') return;
+
+            const index = selectedServices.findIndex(s => s.id === service.id);
+
+            if (index > -1) {
+                selectedServices.splice(index, 1);
+            } else {
+                selectedServices.push(service);
+            }
+
+            updateSelectedServices();
+            updateServiceUI();
+        }
+
+        // Update selected services display
+        function updateSelectedServices() {
+            const container = document.getElementById('selectedServices');
+            container.innerHTML = '';
+
+            selectedServices.forEach(service => {
+                const chip = document.createElement('div');
+                chip.className = 'service-chip';
+                chip.textContent = service.name;
+                container.appendChild(chip);
+            });
+        }
+
+        // Update service UI (highlight selected)
+        function updateServiceUI() {
+            document.querySelectorAll('.service').forEach(div => {
+                const serviceName = div.querySelector('.service-name').textContent;
+                const isSelected = selectedServices.some(s => s.name === serviceName);
+                div.classList.toggle('selected', isSelected);
+            });
+        }
+
+        // Create new conversation
+        async function createConversation() {
+            if (selectedServices.length === 0) {
+                alert('Select at least one service first!');
+                return;
+            }
+
+            const topic = prompt('Conversation topic:', 'Direct Message');
+            if (!topic) return;
+
+            const participants = selectedServices.map(s => s.id);
+            participants.push('commander');
+
+            try {
+                const response = await fetch(`${INTERCOM}/conversations/create`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({topic, participants})
+                });
+
+                const data = await response.json();
+
+                // Join the conversation
+                await joinConversation(data.conversation_id);
+
+            } catch (error) {
+                console.error('Error creating conversation:', error);
+                alert('Error: Could not create conversation. Is Intercom running?');
+            }
+        }
+
+        // Intercept conversation (BREAK IN!)
+        async function interceptConversation() {
+            if (selectedServices.length === 0) {
+                alert('Select services to intercept first!');
+                return;
+            }
+
+            const targets = selectedServices.map(s => s.id);
+
+            try {
+                const response = await fetch(`${INTERCOM}/intercept/start`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        user_id: 'commander',
+                        targets
+                    })
+                });
+
+                const data = await response.json();
+
+                // Show intercept started
+                showConversation(data.conversation_id, data.targets.join(', '), true);
+
+                addMessage({
+                    from: 'SYSTEM',
+                    from_name: 'INTERCEPT SYSTEM',
+                    message: data.message,
+                    timestamp: new Date().toISOString(),
+                    type: 'intercept'
+                });
+
+                currentConversation = data.conversation_id;
+                startMessagePolling();
+
+            } catch (error) {
+                console.error('Error intercepting:', error);
+                alert('Error: Could not start intercept. Is Intercom running?');
+            }
+        }
+
+        // Join conversation
+        async function joinConversation(conversationId) {
+            try {
+                const response = await fetch(`${INTERCOM}/conversations/${conversationId}/join`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        user_id: 'commander',
+                        user_name: 'Commander'
+                    })
+                });
+
+                const data = await response.json();
+
+                showConversation(conversationId, data.topic);
+                currentConversation = conversationId;
+                startMessagePolling();
+
+            } catch (error) {
+                console.error('Error joining conversation:', error);
+            }
+        }
+
+        // Show conversation view
+        function showConversation(conversationId, topic, isIntercept = false) {
+            const view = document.getElementById('conversationView');
+            view.innerHTML = `
+                <div class="conversation-header">
+                    <div class="conversation-topic">${isIntercept ? '🔴 INTERCEPTING: ' : '💬 '}${topic}</div>
+                    <div class="participants">Conversation ID: ${conversationId}</div>
+                </div>
+                <div class="messages-container" id="messagesContainer"></div>
+                <div class="input-area">
+                    <div class="input-row">
+                        <textarea id="messageInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }"></textarea>
+                    </div>
+                    <div class="input-row">
+                        <button class="primary" onclick="sendMessage()">Send Message</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Add message to display
+        function addMessage(message) {
+            const container = document.getElementById('messagesContainer');
+            if (!container) return;
+
+            const div = document.createElement('div');
+            const messageClass = message.type === 'intercept' || message.from === 'SYSTEM' ? 'system' :
+                                message.from === 'commander' ? 'commander' : 'service';
+
+            div.className = `message ${messageClass}`;
+            div.innerHTML = `
+                <div class="message-header">
+                    <div class="message-author">${message.from_name || message.from}</div>
+                    <div class="message-time">${new Date(message.timestamp).toLocaleTimeString()}</div>
+                </div>
+                <div class="message-text">${message.message}</div>
+            `;
+
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message || !currentConversation) return;
+
+            try {
+                await fetch(`${INTERCOM}/conversations/${currentConversation}/send`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        from: 'commander',
+                        from_name: 'Commander',
+                        message
+                    })
+                });
+
+                input.value = '';
+
+                // Message will appear via polling
+
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
+        }
+
+        // Poll for new messages
+        let lastMessageCount = 0;
+        async function pollMessages() {
+            if (!currentConversation) return;
+
+            try {
+                const response = await fetch(`${INTERCOM}/conversations/${currentConversation}/messages?since=${lastMessageCount}`);
+                const data = await response.json();
+
+                if (data.messages && data.messages.length > 0) {
+                    data.messages.forEach(msg => addMessage(msg));
+                    lastMessageCount = data.total;
+                }
+            } catch (error) {
+                console.error('Error polling messages:', error);
+            }
+        }
+
+        function startMessagePolling() {
+            if (messagePolling) clearInterval(messagePolling);
+            lastMessageCount = 0;
+            messagePolling = setInterval(pollMessages, 2000);
+        }
+
+        // Initialize
+        loadServices();
+        setInterval(loadServices, 5000);
+    </script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

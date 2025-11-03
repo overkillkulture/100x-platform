@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Collaboration Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 2px solid #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.2em;
+            color: #00ff88;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .panel h2 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .status-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .service-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #00ff88;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .service-item.dead {
+            border-left-color: #ff4444;
+            opacity: 0.6;
+        }
+
+        .service-name {
+            font-weight: bold;
+        }
+
+        .service-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+        }
+
+        .service-status.online {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .service-status.dead {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        .event-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .event {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 3px solid #00ff88;
+        }
+
+        .event.warning {
+            border-left-color: #ffaa00;
+        }
+
+        .event.error {
+            border-left-color: #ff4444;
+        }
+
+        .event.critical {
+            border-left-color: #ff0000;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .event-type {
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 5px;
+        }
+
+        .event-time {
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .message.human {
+            background: rgba(0, 200, 255, 0.2);
+            border-left: 3px solid #00c8ff;
+        }
+
+        .message.ai {
+            background: rgba(0, 255, 136, 0.2);
+            border-left: 3px solid #00ff88;
+        }
+
+        .message-author {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"], textarea {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 1em;
+        }
+
+        button {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            background: #00ff88;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #00cc6f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minwidth(150px, 1fr));
+            gap: 15px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .tap-shoulder {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        select {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧠 Team Collaboration Hub</h1>
+            <p class="tagline">Everyone can communicate. Everyone can build together.</p>
+        </header>
+
+        <!-- System Stats -->
+        <div class="panel">
+            <h2>📊 System Status</h2>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="totalServices">0</div>
+                    <div class="stat-label">Total Services</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="onlineServices">0</div>
+                    <div class="stat-label">Online</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="teamMembers">0</div>
+                    <div class="stat-label">Team Members</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="activeChats">0</div>
+                    <div class="stat-label">Active Chats</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Services Panel -->
+            <div class="panel">
+                <h2>🚀 Active Services</h2>
+                <div class="status-grid" id="servicesList">
+                    <p style="color: #888;">Loading services...</p>
+                </div>
+
+                <div class="tap-shoulder">
+                    <select id="serviceSelect">
+                        <option>Select service...</option>
+                    </select>
+                    <button onclick="tapOnShoulder()">👋 Tap on Shoulder</button>
+                </div>
+            </div>
+
+            <!-- Event Feed -->
+            <div class="panel">
+                <h2>📡 Live Event Feed</h2>
+                <div class="event-feed" id="eventFeed">
+                    <p style="color: #888;">Listening for events...</p>
+                </div>
+            </div>
+
+            <!-- Team Chat -->
+            <div class="panel">
+                <h2>💬 Team Chat</h2>
+                <div class="chat-box">
+                    <div class="messages" id="chatMessages">
+                        <div class="message ai">
+                            <div class="message-author">🧠 System</div>
+                            <div>Welcome to Team Collaboration Hub! All services and humans can communicate here.</div>
+                        </div>
+                    </div>
+                    <div class="input-area">
+                        <input type="text" id="chatInput" placeholder="Type a message... (or @servicename to ping a service)" onkeypress="if(event.key==='Enter') sendMessage()">
+                        <button onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const NERVOUS_SYSTEM = 'http://localhost:7776';
+
+        // Update services list
+        async function updateServices() {
+            try {
+                const response = await fetch(`${NERVOUS_SYSTEM}/services`);
+                const data = await response.json();
+
+                document.getElementById('totalServices').textContent = data.total;
+                document.getElementById('onlineServices').textContent = data.online;
+
+                const list = document.getElementById('servicesList');
+                const select = document.getElementById('serviceSelect');
+
+                // Update services list
+                list.innerHTML = '';
+                select.innerHTML = '<option>Select service...</option>';
+
+                data.services.forEach(service => {
+                    // Service item
+                    const div = document.createElement('div');
+                    div.className = `service-item ${service.status}`;
+                    div.innerHTML = `
+                        <div class="service-name">${service.name}</div>
+                        <div class="service-status ${service.status}">${service.status}</div>
+                    `;
+                    list.appendChild(div);
+
+                    // Select option
+                    if (service.status === 'online') {
+                        const option = document.createElement('option');
+                        option.value = service.id;
+                        option.textContent = service.name;
+                        select.appendChild(option);
+                    }
+                });
+            } catch (error) {
+                console.error('Error updating services:', error);
+            }
+        }
+
+        // Update event feed
+        async function updateEvents() {
+            try {
+                const response = await fetch(`${NERVOUS_SYSTEM}/events?limit=20`);
+                const data = await response.json();
+
+                const feed = document.getElementById('eventFeed');
+                feed.innerHTML = '';
+
+                data.events.reverse().forEach(event => {
+                    const div = document.createElement('div');
+                    div.className = `event ${event.type}`;
+                    div.innerHTML = `
+                        <div class="event-type">${event.type}</div>
+                        <div>${JSON.stringify(event.data).substring(0, 100)}</div>
+                        <div class="event-time">${new Date(event.timestamp).toLocaleTimeString()}</div>
+                    `;
+                    feed.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Error updating events:', error);
+            }
+        }
+
+        // Tap on shoulder
+        async function tapOnShoulder() {
+            const select = document.getElementById('serviceSelect');
+            const serviceId = select.value;
+
+            if (!serviceId || serviceId === 'Select service...') {
+                alert('Please select a service first');
+                return;
+            }
+
+            addChatMessage('human', 'Commander', `👋 Hey ${select.options[select.selectedIndex].text}, what's going on over there?`);
+
+            try {
+                const response = await fetch(`${NERVOUS_SYSTEM}/query/${serviceId}`);
+                const data = await response.json();
+
+                const serviceName = data.registered_info.name;
+                const status = data.registered_info.status;
+                const capabilities = data.registered_info.capabilities.join(', ');
+
+                addChatMessage('ai', serviceName, `I'm ${status}! My capabilities: ${capabilities}`);
+            } catch (error) {
+                addChatMessage('ai', 'System', 'Could not reach that service.');
+            }
+        }
+
+        // Send chat message
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            addChatMessage('human', 'You', message);
+            input.value = '';
+
+            // Check if message mentions a service
+            if (message.startsWith('@')) {
+                const serviceName = message.split(' ')[0].substring(1);
+                addChatMessage('ai', 'System', `Pinging ${serviceName}...`);
+
+                // TODO: Actually send message to service
+            }
+
+            // Broadcast to nervous system
+            fetch(`${NERVOUS_SYSTEM}/broadcast`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    service_id: 'team_hub',
+                    event_type: 'chat_message',
+                    data: {message}
+                })
+            });
+        }
+
+        // Add chat message
+        function addChatMessage(type, author, text) {
+            const messages = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.innerHTML = `
+                <div class="message-author">${author}</div>
+                <div>${text}</div>
+            `;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Auto-refresh
+        setInterval(() => {
+            updateServices();
+            updateEvents();
+        }, 3000);
+
+        // Initial load
+        updateServices();
+        updateEvents();
+    </script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

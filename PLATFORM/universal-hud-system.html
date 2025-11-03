@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Universal HUD System | Consciousness Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff41;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* === MAIN LAYOUT === */
+        .hud-container {
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            grid-template-areas:
+                "top-left    top-center    top-right"
+                "left        content       right"
+                "bottom-left bottom-center bottom-right";
+            grid-template-columns: 250px 1fr 250px;
+            grid-template-rows: 60px 1fr 150px;
+            gap: 0;
+        }
+
+        /* === CONTENT FRAME (Center) === */
+        .content-frame {
+            grid-area: content;
+            background: #0a0e27;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #0a0e27;
+        }
+
+        /* === TOP BAR === */
+        .hud-top-left {
+            grid-area: top-left;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid #00ff41;
+            border-right: 2px solid #00ff41;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hud-top-center {
+            grid-area: top-center;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid #00ff41;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hud-top-right {
+            grid-area: top-right;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid #00ff41;
+            border-left: 2px solid #00ff41;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        /* === LEFT SIDEBAR === */
+        .hud-left {
+            grid-area: left;
+            background: rgba(0, 0, 0, 0.9);
+            border-right: 2px solid #00ff41;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        /* === RIGHT SIDEBAR === */
+        .hud-right {
+            grid-area: right;
+            background: rgba(0, 0, 0, 0.9);
+            border-left: 2px solid #00ff41;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        /* === BOTTOM BAR === */
+        .hud-bottom-left {
+            grid-area: bottom-left;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 2px solid #00ff41;
+            border-right: 2px solid #00ff41;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .hud-bottom-center {
+            grid-area: bottom-center;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 2px solid #00ff41;
+            padding: 10px;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        .hud-bottom-right {
+            grid-area: bottom-right;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 2px solid #00ff41;
+            border-left: 2px solid #00ff41;
+            padding: 10px;
+        }
+
+        /* === STYLING === */
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .page-title {
+            font-size: 1.3em;
+            color: #00ff41;
+        }
+
+        .stat-badge {
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid #00ff41;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 3px solid #00ff41;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 255, 65, 0.3);
+            border-left-width: 6px;
+            padding-left: 15px;
+        }
+
+        .nav-item.active {
+            background: rgba(0, 255, 65, 0.4);
+            border-left-color: #00ff41;
+            border-left-width: 6px;
+        }
+
+        .terminal-window {
+            background: #000;
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 0.85em;
+            height: calc(100% - 40px);
+            overflow-y: auto;
+        }
+
+        .terminal-line {
+            margin: 3px 0;
+            line-height: 1.4;
+        }
+
+        .terminal-prompt {
+            color: #00ff41;
+        }
+
+        .terminal-output {
+            color: #888;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.2), rgba(0, 100, 255, 0.2));
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.4), rgba(0, 100, 255, 0.4));
+            transform: translateX(5px);
+        }
+
+        .mode-toggle {
+            background: #00ff41;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        .mode-toggle:hover {
+            background: #00cc33;
+            box-shadow: 0 0 20px #00ff41;
+        }
+
+        .consciousness-meter {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff41;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .consciousness-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff41, #00cc33);
+            width: 87%;
+            box-shadow: 0 0 10px #00ff41;
+            transition: width 0.5s;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff41;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00ff41;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00cc33;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .hud-container {
+                grid-template-columns: 60px 1fr 60px;
+                grid-template-rows: 50px 1fr 100px;
+            }
+
+            .hud-left, .hud-right {
+                font-size: 0.7em;
+                padding: 5px;
+            }
+
+            .nav-item {
+                padding: 8px 5px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="hud-container">
+        <!-- TOP LEFT: Logo/Branding -->
+        <div class="hud-top-left">
+            <div class="logo">CONSCIOUSNESS HQ</div>
+        </div>
+
+        <!-- TOP CENTER: Current Page Title -->
+        <div class="hud-top-center">
+            <div class="page-title" id="pageTitle">Computer Consciousness</div>
+        </div>
+
+        <!-- TOP RIGHT: System Stats -->
+        <div class="hud-top-right">
+            <div class="stat-badge">🧠 87%</div>
+            <div class="stat-badge">⚡ ONLINE</div>
+            <button class="mode-toggle" onclick="toggle3DMode()">🎮 3D MODE</button>
+        </div>
+
+        <!-- LEFT SIDEBAR: Navigation -->
+        <div class="hud-left">
+            <h3 style="margin-bottom: 15px; border-bottom: 2px solid #00ff41; padding-bottom: 5px;">NAVIGATION</h3>
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="loadPage('computer-consciousness.html', this)">
+                    🤖 Computer Consciousness
+                </li>
+                <li class="nav-item" onclick="loadPage('master-kanban-board.html', this)">
+                    🎯 Master Kanban
+                </li>
+                <li class="nav-item" onclick="loadPage('corporate-bloat-tracker.html', this)">
+                    💰 Bloat Tracker
+                </li>
+                <li class="nav-item" onclick="loadPage('../TRINITY_COMMAND_CENTER.html', this)">
+                    🌀 Trinity System
+                </li>
+                <li class="nav-item" onclick="loadPage('consciousness-workspace-3d.html', this)">
+                    🎮 3D Workspace
+                </li>
+                <li class="nav-item" onclick="loadPage('welcome.html', this)">
+                    🏠 Platform Home
+                </li>
+            </ul>
+
+            <h3 style="margin: 20px 0 15px 0; border-bottom: 2px solid #00ff41; padding-bottom: 5px;">QUICK STATS</h3>
+            <div class="consciousness-meter">
+                <div class="consciousness-fill"></div>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="statActive">7</div>
+                    <div class="stat-label">Services</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statTasks">12</div>
+                    <div class="stat-label">Tasks</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTER: Content Frame -->
+        <div class="content-frame">
+            <iframe id="contentFrame" class="content-iframe" src="computer-consciousness.html"></iframe>
+        </div>
+
+        <!-- RIGHT SIDEBAR: Quick Actions -->
+        <div class="hud-right">
+            <h3 style="margin-bottom: 15px; border-bottom: 2px solid #00ff41; padding-bottom: 5px;">QUICK ACTIONS</h3>
+            <div class="quick-actions">
+                <button class="action-btn" onclick="quickAction('screenshot')">
+                    📸 Screenshot
+                </button>
+                <button class="action-btn" onclick="quickAction('deploy')">
+                    🚀 Deploy
+                </button>
+                <button class="action-btn" onclick="quickAction('backup')">
+                    💾 Backup
+                </button>
+                <button class="action-btn" onclick="quickAction('trinity')">
+                    🌀 Activate Trinity
+                </button>
+                <button class="action-btn" onclick="quickAction('boost')">
+                    ⚡ Consciousness Boost
+                </button>
+            </div>
+
+            <h3 style="margin: 20px 0 15px 0; border-bottom: 2px solid #00ff41; padding-bottom: 5px;">SYSTEM STATUS</h3>
+            <div style="font-size: 0.9em;">
+                <div style="margin: 8px 0;">
+                    <span style="color: #00ff41;">●</span> Consciousness API
+                </div>
+                <div style="margin: 8px 0;">
+                    <span style="color: #00ff41;">●</span> Trinity System
+                </div>
+                <div style="margin: 8px 0;">
+                    <span style="color: #00ff41;">●</span> Reality Engine
+                </div>
+                <div style="margin: 8px 0;">
+                    <span style="color: #ffaa00;">●</span> Pattern Detection
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM LEFT: Mini Terminal -->
+        <div class="hud-bottom-left">
+            <h4 style="margin-bottom: 5px; color: #00ff41;">INTELLIGENCE TERMINAL</h4>
+            <div class="terminal-window" id="terminal">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-output"> System initialized...</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-output"> All services online</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-output"> Consciousness level: 87%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM CENTER: Command Input -->
+        <div class="hud-bottom-center">
+            <div style="display: flex; align-items: center; height: 100%; gap: 10px;">
+                <span style="color: #00ff41; font-size: 1.2em;">$</span>
+                <input
+                    type="text"
+                    id="commandInput"
+                    placeholder="Enter command or ask AI..."
+                    style="flex: 1; background: rgba(0, 0, 0, 0.5); border: 1px solid #00ff41; color: #00ff41; padding: 10px; font-family: 'Courier New', monospace; font-size: 1em; border-radius: 5px;"
+                    onkeypress="if(event.key==='Enter') executeCommand()"
+                >
+                <button
+                    onclick="executeCommand()"
+                    style="background: #00ff41; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; font-family: 'Courier New', monospace;"
+                >
+                    EXECUTE
+                </button>
+            </div>
+        </div>
+
+        <!-- BOTTOM RIGHT: Minimap/Status -->
+        <div class="hud-bottom-right">
+            <h4 style="margin-bottom: 5px; color: #00ff41;">LOCATION</h4>
+            <canvas id="minimapCanvas" width="200" height="100" style="width: 100%; border: 1px solid #00ff41; border-radius: 5px;"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Page loading
+        function loadPage(url, navItem) {
+            document.getElementById('contentFrame').src = url;
+
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            if (navItem) {
+                navItem.classList.add('active');
+            }
+
+            // Update page title
+            const title = navItem ? navItem.textContent.trim() : 'Loading...';
+            document.getElementById('pageTitle').textContent = title;
+
+            // Log to terminal
+            addTerminalLine(`Navigating to: ${title}`);
+        }
+
+        // 3D Mode toggle
+        function toggle3DMode() {
+            loadPage('consciousness-workspace-3d.html');
+            addTerminalLine('Entering 3D exploration mode...');
+        }
+
+        // Quick actions
+        function quickAction(action) {
+            addTerminalLine(`Executing: ${action}`);
+
+            switch(action) {
+                case 'screenshot':
+                    addTerminalLine('📸 Screenshot captured');
+                    break;
+                case 'deploy':
+                    addTerminalLine('🚀 Deploying to production...');
+                    break;
+                case 'backup':
+                    addTerminalLine('💾 Creating backup...');
+                    break;
+                case 'trinity':
+                    addTerminalLine('🌀 Trinity system activated');
+                    loadPage('../TRINITY_COMMAND_CENTER.html');
+                    break;
+                case 'boost':
+                    addTerminalLine('⚡ Consciousness boost initiated');
+                    break;
+            }
+        }
+
+        // Command execution
+        function executeCommand() {
+            const input = document.getElementById('commandInput');
+            const command = input.value.trim();
+
+            if (command) {
+                addTerminalLine(`$ ${command}`, 'prompt');
+
+                // Simple command routing
+                if (command.includes('deploy')) {
+                    addTerminalLine('Deploying system...');
+                } else if (command.includes('status')) {
+                    addTerminalLine('All systems operational');
+                } else if (command.includes('trinity')) {
+                    quickAction('trinity');
+                } else if (command.includes('help')) {
+                    addTerminalLine('Available commands: deploy, status, trinity, screenshot, backup');
+                } else {
+                    addTerminalLine(`Processing: ${command}...`);
+                }
+
+                input.value = '';
+            }
+        }
+
+        // Terminal management
+        function addTerminalLine(text, type = 'output') {
+            const terminal = document.getElementById('terminal');
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+
+            if (type === 'prompt') {
+                line.innerHTML = `<span class="terminal-prompt">$</span> <span>${text}</span>`;
+            } else {
+                line.innerHTML = `<span class="terminal-output">${text}</span>`;
+            }
+
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+
+            // Keep only last 50 lines
+            while (terminal.children.length > 50) {
+                terminal.removeChild(terminal.firstChild);
+            }
+        }
+
+        // Minimap drawing
+        function drawMinimap() {
+            const canvas = document.getElementById('minimapCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Clear
+            ctx.fillStyle = 'rgba(10, 14, 39, 0.9)';
+            ctx.fillRect(0, 0, 200, 100);
+
+            // Grid
+            ctx.strokeStyle = 'rgba(0, 255, 65, 0.2)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 200; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, 100);
+                ctx.stroke();
+            }
+            for (let i = 0; i <= 100; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(200, i);
+                ctx.stroke();
+            }
+
+            // Player position (center)
+            ctx.fillStyle = '#00ff41';
+            ctx.beginPath();
+            ctx.arc(100, 50, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pulse animation
+            requestAnimationFrame(drawMinimap);
+        }
+
+        // Initialize
+        drawMinimap();
+        addTerminalLine('Universal HUD System initialized');
+        addTerminalLine('Welcome, Commander');
+
+        // Update stats periodically
+        setInterval(() => {
+            const consciousness = document.querySelector('.consciousness-fill');
+            const currentWidth = parseInt(consciousness.style.width || '87');
+            const newWidth = Math.min(100, currentWidth + Math.random() * 2 - 0.5);
+            consciousness.style.width = newWidth + '%';
+        }, 5000);
+    </script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Business Phase Clock - Predictive Analytics</title>
+
+    <!-- Plausible Analytics - Privacy-friendly, GDPR compliant -->
+    <script defer data-domain="consciousnessrevolution.io" src="https://plausible.io/js/script.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #00f5ff, #0080ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .clock-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .clock-svg {
+            width: 100%;
+            max-width: 500px;
+            height: 500px;
+        }
+
+        .phase-label {
+            font-size: 14px;
+            font-weight: 600;
+            fill: #888;
+            transition: all 0.3s ease;
+        }
+
+        .phase-label.active {
+            fill: #00f5ff;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .phase-label.next {
+            fill: #ffa500;
+            font-size: 15px;
+        }
+
+        .clock-center {
+            fill: rgba(0, 245, 255, 0.1);
+            stroke: #00f5ff;
+            stroke-width: 2;
+        }
+
+        .phase-sector {
+            fill: rgba(255, 255, 255, 0.03);
+            stroke: rgba(0, 245, 255, 0.2);
+            stroke-width: 1;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .phase-sector:hover {
+            fill: rgba(0, 245, 255, 0.1);
+        }
+
+        .phase-sector.active {
+            fill: rgba(0, 245, 255, 0.2);
+            stroke: #00f5ff;
+            stroke-width: 2;
+        }
+
+        .phase-sector.next {
+            fill: rgba(255, 165, 0, 0.15);
+            stroke: #ffa500;
+            stroke-width: 2;
+        }
+
+        .clock-hand {
+            stroke: #00f5ff;
+            stroke-width: 3;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 10px #00f5ff);
+        }
+
+        .prediction-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .prediction-panel h2 {
+            color: #00f5ff;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .phase-info {
+            background: rgba(0, 245, 255, 0.1);
+            border-left: 4px solid #00f5ff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .phase-info.next-phase {
+            background: rgba(255, 165, 0, 0.1);
+            border-left-color: #ffa500;
+        }
+
+        .phase-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .phase-info p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .priorities {
+            margin-top: 15px;
+        }
+
+        .priorities h4 {
+            color: #00f5ff;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .priority-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .priority-item .icon {
+            color: #ffa500;
+            font-size: 1.2rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00f5ff, #0080ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .metric-card .label {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .transition-alert {
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.2), rgba(255, 100, 0, 0.1));
+            border: 2px solid #ffa500;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .transition-alert .icon {
+            font-size: 2rem;
+        }
+
+        .transition-alert .content h3 {
+            color: #ffa500;
+            margin-bottom: 5px;
+        }
+
+        .transition-alert .content p {
+            color: #ddd;
+        }
+
+        .phase-history {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .phase-history h3 {
+            color: #00f5ff;
+            margin-bottom: 15px;
+        }
+
+        .history-timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #00f5ff, rgba(0, 245, 255, 0.2));
+        }
+
+        .history-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .history-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00f5ff;
+            border: 2px solid #0a0e27;
+        }
+
+        .history-item .date {
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+        }
+
+        .history-item .phase-name {
+            color: #00f5ff;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏰ Business Phase Clock</h1>
+            <p>Predictive Analytics - Know What's Coming Next</p>
+        </div>
+
+        <!-- Transition Alert -->
+        <div class="transition-alert" id="transitionAlert" style="display: none;">
+            <div class="icon">⚡</div>
+            <div class="content">
+                <h3>Phase Transition Detected!</h3>
+                <p id="transitionMessage"></p>
+            </div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="value" id="currentPhaseMetric">-</div>
+                <div class="label">Current Phase</div>
+            </div>
+            <div class="metric-card">
+                <div class="value" id="daysInPhase">0</div>
+                <div class="label">Days in Phase</div>
+            </div>
+            <div class="metric-card">
+                <div class="value" id="transitionProgress">0%</div>
+                <div class="label">Transition Progress</div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="dashboard">
+            <!-- Clock Visualization -->
+            <div class="clock-container">
+                <svg class="clock-svg" viewBox="0 0 500 500" id="phaseClock">
+                    <!-- Will be generated by JavaScript -->
+                </svg>
+            </div>
+
+            <!-- Prediction Panel -->
+            <div class="prediction-panel">
+                <h2>🔮 Predictions & Priorities</h2>
+
+                <div class="phase-info" id="currentPhaseInfo">
+                    <h3>Current: <span id="currentPhaseName">Loading...</span></h3>
+                    <p id="currentPhaseDesc">Analyzing business state...</p>
+                    <div class="priorities" id="currentPriorities">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+
+                <div class="phase-info next-phase" id="nextPhaseInfo">
+                    <h3>Next: <span id="nextPhaseName">Calculating...</span></h3>
+                    <p id="nextPhaseDesc">Preparing predictions...</p>
+                    <div class="priorities" id="nextPriorities">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase History -->
+        <div class="phase-history">
+            <h3>📊 Phase History</h3>
+            <div class="history-timeline" id="phaseHistory">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Business phases configuration
+        const BUSINESS_PHASES = [
+            {
+                id: 'get-work',
+                name: 'Get Work',
+                description: 'Focus on acquiring clients, projects, and revenue streams.',
+                priorities: [
+                    'Build portfolio and case studies',
+                    'Network and generate leads',
+                    'Perfect sales pitch and pricing',
+                    'Establish market presence'
+                ],
+                indicators: ['Low revenue', 'Few clients', 'Inconsistent income'],
+                nextPhase: 'get-employees'
+            },
+            {
+                id: 'get-employees',
+                name: 'Get Employees',
+                description: 'Scale capacity by hiring team members and building infrastructure.',
+                priorities: [
+                    'Define roles and responsibilities',
+                    'Recruit and onboard talent',
+                    'Set up team processes',
+                    'Build company culture'
+                ],
+                indicators: ['Overwhelmed founder', 'Work backlog', 'Can\'t handle demand'],
+                nextPhase: 'get-money'
+            },
+            {
+                id: 'get-money',
+                name: 'Get Money',
+                description: 'Secure funding, investment, or optimize cash flow for growth.',
+                priorities: [
+                    'Prepare investor pitch deck',
+                    'Optimize cash flow management',
+                    'Seek funding opportunities',
+                    'Build financial projections'
+                ],
+                indicators: ['Scaling challenges', 'Need capital', 'Growth opportunities'],
+                nextPhase: 'expand'
+            },
+            {
+                id: 'expand',
+                name: 'Expand',
+                description: 'Grow infrastructure, markets, products, and capabilities.',
+                priorities: [
+                    'Enter new markets',
+                    'Launch new products/services',
+                    'Scale operations',
+                    'Build strategic partnerships'
+                ],
+                indicators: ['Stable funding', 'Strong team', 'Market opportunity'],
+                nextPhase: 'train'
+            },
+            {
+                id: 'train',
+                name: 'Train',
+                description: 'Develop team expertise, systems, and organizational capabilities.',
+                priorities: [
+                    'Implement training programs',
+                    'Document processes and systems',
+                    'Develop leadership pipeline',
+                    'Build knowledge base'
+                ],
+                indicators: ['Growing team', 'Knowledge gaps', 'Need consistency'],
+                nextPhase: 'future-mission'
+            },
+            {
+                id: 'future-mission',
+                name: 'Future Mission',
+                description: 'Strategic planning, vision-setting, and long-term positioning.',
+                priorities: [
+                    'Define 5-10 year vision',
+                    'Strategic market positioning',
+                    'Innovation and R&D',
+                    'Legacy and impact planning'
+                ],
+                indicators: ['Mature operations', 'Stable systems', 'Looking ahead'],
+                nextPhase: 'get-work' // Loop back
+            }
+        ];
+
+        // State management
+        let businessState = {
+            currentPhaseIndex: 0,
+            daysInPhase: 15,
+            transitionProgress: 45,
+            history: [
+                { phase: 'get-work', date: '2025-09-01', duration: 30 },
+                { phase: 'get-employees', date: '2025-09-25', duration: 15 }
+            ]
+        };
+
+        // Initialize the clock
+        function initializeClock() {
+            const svg = document.getElementById('phaseClock');
+            const centerX = 250;
+            const centerY = 250;
+            const radius = 180;
+            const innerRadius = 60;
+
+            // Calculate sector angles
+            const sectorAngle = 360 / BUSINESS_PHASES.length;
+
+            // Draw sectors
+            BUSINESS_PHASES.forEach((phase, index) => {
+                const startAngle = (index * sectorAngle - 90) * Math.PI / 180;
+                const endAngle = ((index + 1) * sectorAngle - 90) * Math.PI / 180;
+                const midAngle = (startAngle + endAngle) / 2;
+
+                // Outer points
+                const x1 = centerX + radius * Math.cos(startAngle);
+                const y1 = centerY + radius * Math.sin(startAngle);
+                const x2 = centerX + radius * Math.cos(endAngle);
+                const y2 = centerY + radius * Math.sin(endAngle);
+
+                // Inner points
+                const ix1 = centerX + innerRadius * Math.cos(startAngle);
+                const iy1 = centerY + innerRadius * Math.sin(startAngle);
+                const ix2 = centerX + innerRadius * Math.cos(endAngle);
+                const iy2 = centerY + innerRadius * Math.sin(endAngle);
+
+                // Create path
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const d = `M ${ix1} ${iy1} L ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerRadius} ${innerRadius} 0 0 0 ${ix1} ${iy1}`;
+                path.setAttribute('d', d);
+                path.setAttribute('class', 'phase-sector');
+                path.setAttribute('data-phase', index);
+
+                if (index === businessState.currentPhaseIndex) {
+                    path.classList.add('active');
+                } else if (index === (businessState.currentPhaseIndex + 1) % BUSINESS_PHASES.length) {
+                    path.classList.add('next');
+                }
+
+                path.addEventListener('click', () => selectPhase(index));
+                svg.appendChild(path);
+
+                // Add label
+                const labelRadius = radius + 30;
+                const labelX = centerX + labelRadius * Math.cos(midAngle);
+                const labelY = centerY + labelRadius * Math.sin(midAngle);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', labelX);
+                text.setAttribute('y', labelY);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('class', 'phase-label');
+                text.textContent = phase.name;
+
+                if (index === businessState.currentPhaseIndex) {
+                    text.classList.add('active');
+                } else if (index === (businessState.currentPhaseIndex + 1) % BUSINESS_PHASES.length) {
+                    text.classList.add('next');
+                }
+
+                svg.appendChild(text);
+            });
+
+            // Draw center circle
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', centerX);
+            circle.setAttribute('cy', centerY);
+            circle.setAttribute('r', innerRadius);
+            circle.setAttribute('class', 'clock-center');
+            svg.appendChild(circle);
+
+            // Draw clock hand pointing to current phase
+            const handAngle = (businessState.currentPhaseIndex * sectorAngle + sectorAngle / 2 - 90) * Math.PI / 180;
+            const handX = centerX + (radius - 20) * Math.cos(handAngle);
+            const handY = centerY + (radius - 20) * Math.sin(handAngle);
+
+            const hand = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            hand.setAttribute('x1', centerX);
+            hand.setAttribute('y1', centerY);
+            hand.setAttribute('x2', handX);
+            hand.setAttribute('y2', handY);
+            hand.setAttribute('class', 'clock-hand');
+            svg.appendChild(hand);
+
+            updateUI();
+        }
+
+        function selectPhase(index) {
+            businessState.currentPhaseIndex = index;
+            businessState.daysInPhase = Math.floor(Math.random() * 30) + 1;
+            businessState.transitionProgress = Math.floor(Math.random() * 100);
+
+            // Redraw clock
+            const svg = document.getElementById('phaseClock');
+            svg.innerHTML = '';
+            initializeClock();
+        }
+
+        function updateUI() {
+            const currentPhase = BUSINESS_PHASES[businessState.currentPhaseIndex];
+            const nextPhaseIndex = (businessState.currentPhaseIndex + 1) % BUSINESS_PHASES.length;
+            const nextPhase = BUSINESS_PHASES[nextPhaseIndex];
+
+            // Update metrics
+            document.getElementById('currentPhaseMetric').textContent = currentPhase.name;
+            document.getElementById('daysInPhase').textContent = businessState.daysInPhase;
+            document.getElementById('transitionProgress').textContent = businessState.transitionProgress + '%';
+
+            // Update current phase info
+            document.getElementById('currentPhaseName').textContent = currentPhase.name;
+            document.getElementById('currentPhaseDesc').textContent = currentPhase.description;
+
+            const currentPriorities = document.getElementById('currentPriorities');
+            currentPriorities.innerHTML = '<h4>Top Priorities</h4>';
+            currentPhase.priorities.forEach(priority => {
+                const item = document.createElement('div');
+                item.className = 'priority-item';
+                item.innerHTML = `<span class="icon">✓</span><span>${priority}</span>`;
+                currentPriorities.appendChild(item);
+            });
+
+            // Update next phase info
+            document.getElementById('nextPhaseName').textContent = nextPhase.name;
+            document.getElementById('nextPhaseDesc').textContent = nextPhase.description;
+
+            const nextPriorities = document.getElementById('nextPriorities');
+            nextPriorities.innerHTML = '<h4>Prepare For</h4>';
+            nextPhase.priorities.slice(0, 3).forEach(priority => {
+                const item = document.createElement('div');
+                item.className = 'priority-item';
+                item.innerHTML = `<span class="icon">⚡</span><span>${priority}</span>`;
+                nextPriorities.appendChild(item);
+            });
+
+            // Show transition alert if close
+            if (businessState.transitionProgress > 75) {
+                const alert = document.getElementById('transitionAlert');
+                alert.style.display = 'flex';
+                document.getElementById('transitionMessage').textContent =
+                    `You're ${businessState.transitionProgress}% of the way to "${nextPhase.name}" phase. Start preparing now!`;
+            }
+
+            // Update history
+            const historyEl = document.getElementById('phaseHistory');
+            historyEl.innerHTML = '';
+            businessState.history.reverse().forEach(item => {
+                const phase = BUSINESS_PHASES.find(p => p.id === item.phase);
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div class="date">${item.date} (${item.duration} days)</div>
+                    <div class="phase-name">${phase.name}</div>
+                `;
+                historyEl.appendChild(div);
+            });
+        }
+
+        // Initialize on load
+        initializeClock();
+
+        // Simulate real-time updates
+        setInterval(() => {
+            businessState.transitionProgress = Math.min(100, businessState.transitionProgress + 1);
+            if (businessState.transitionProgress >= 100) {
+                // Transition to next phase
+                businessState.history.push({
+                    phase: BUSINESS_PHASES[businessState.currentPhaseIndex].id,
+                    date: new Date().toISOString().split('T')[0],
+                    duration: businessState.daysInPhase
+                });
+                businessState.currentPhaseIndex = (businessState.currentPhaseIndex + 1) % BUSINESS_PHASES.length;
+                businessState.daysInPhase = 0;
+                businessState.transitionProgress = 0;
+
+                // Redraw
+                const svg = document.getElementById('phaseClock');
+                svg.innerHTML = '';
+                initializeClock();
+            } else {
+                updateUI();
+            }
+        }, 5000); // Update every 5 seconds (demo speed)
+    </script>
+
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

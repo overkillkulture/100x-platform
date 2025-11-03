@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>🎮 Builder XP & ARIA Demo | 100X Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            width: 100%;
+            margin: 10px 0;
+            transition: transform 0.2s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .stats-display {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .integration-code {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .expression-picker {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .expression-btn {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .expression-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎮 Builder XP & ARIA System</h1>
+            <p class="subtitle">Gamified consciousness building with AI companion</p>
+        </div>
+
+        <!-- Feature Overview -->
+        <div class="card">
+            <h2>✨ What You Get</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <strong>XP System</strong>
+                    <p>Earn experience for every action</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🪙</div>
+                    <strong>Builder Credits</strong>
+                    <p>Build to earn, spend on features</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📈</div>
+                    <strong>100 Levels</strong>
+                    <p>Progress from Builder to Master</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🏆</div>
+                    <strong>Achievements</strong>
+                    <p>Unlock badges & rewards</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎨</div>
+                    <strong>ARIA Avatar</strong>
+                    <p>Expressive AI guide</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <strong>Leaderboards</strong>
+                    <p>Compete with other builders</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- XP Actions -->
+            <div class="card">
+                <h2>🎮 Try XP Actions</h2>
+                <button class="action-btn" onclick="testAction('module_created')">
+                    🏗️ Create Module (+500 XP, +100 Credits)
+                </button>
+                <button class="action-btn" onclick="testAction('pattern_discovered')">
+                    🔍 Discover Pattern (+300 XP, +75 Credits)
+                </button>
+                <button class="action-btn" onclick="testAction('consciousness_raised')">
+                    🧠 Raise Consciousness (+100 XP, +20 Credits)
+                </button>
+                <button class="action-btn" onclick="testAction('helper_assisted')">
+                    🤝 Help Builder (+200 XP, +50 Credits)
+                </button>
+                <button class="action-btn" onclick="testAction('feature_contributed')">
+                    💎 Contribute Feature (+1000 XP, +250 Credits)
+                </button>
+            </div>
+
+            <!-- Current Stats -->
+            <div class="card">
+                <h2>📊 Your Stats</h2>
+                <div id="statsDisplay" class="stats-display">
+                    Loading...
+                </div>
+                <div id="xpBarContainer"></div>
+                <div id="creditsDisplay"></div>
+            </div>
+        </div>
+
+        <!-- ARIA Controls -->
+        <div class="card">
+            <h2>🎨 ARIA Avatar Controls</h2>
+
+            <h3 style="margin-top: 20px;">Expressions:</h3>
+            <div class="expression-picker">
+                <button class="expression-btn" onclick="changeExpression('default')">😊 Default</button>
+                <button class="expression-btn" onclick="changeExpression('thinking')">🤔 Thinking</button>
+                <button class="expression-btn" onclick="changeExpression('excited')">🤩 Excited</button>
+                <button class="expression-btn" onclick="changeExpression('explaining')">💡 Explaining</button>
+                <button class="expression-btn" onclick="changeExpression('supportive')">💚 Supportive</button>
+                <button class="expression-btn" onclick="changeExpression('celebrating')">🎉 Celebrating</button>
+            </div>
+
+            <h3 style="margin-top: 20px;">Test Messages:</h3>
+            <button class="action-btn" onclick="testMessage('Hey Builder! Ready to create something amazing?')">
+                💬 Greeting
+            </button>
+            <button class="action-btn" onclick="testMessage('Great job! You just earned 500 XP!')">
+                🎉 Celebration
+            </button>
+            <button class="action-btn" onclick="testMessage('Need help? Try asking Trinity AI!')">
+                💡 Helpful Tip
+            </button>
+        </div>
+
+        <!-- Integration Guide -->
+        <div class="card">
+            <h2>🔧 How to Integrate</h2>
+
+            <h3 style="margin-top: 20px;">Step 1: Add Scripts</h3>
+            <div class="integration-code">
+&lt;!-- Builder XP System --&gt;
+&lt;script src="BUILDER_XP_SYSTEM.js"&gt;&lt;/script&gt;
+
+&lt;!-- ARIA Avatar --&gt;
+&lt;script src="ARIA_AVATAR_COMPONENT.js"&gt;&lt;/script&gt;
+            </div>
+
+            <h3 style="margin-top: 20px;">Step 2: Reward Actions</h3>
+            <div class="integration-code">
+// When user creates a module
+BuilderXP.rewardAction('module_created');
+
+// When pattern is discovered
+BuilderXP.rewardAction('pattern_discovered');
+
+// Custom XP/credits
+BuilderXP.addXP(100, 'Custom action');
+BuilderXP.earnCredits(50, 'Special bonus');
+            </div>
+
+            <h3 style="margin-top: 20px;">Step 3: Use ARIA</h3>
+            <div class="integration-code">
+// ARIA is auto-created at bottom-right
+// Or create manually:
+const aria = new ARIAAvatar({
+    position: 'bottom-right',
+    size: 'medium'
+});
+
+// Make ARIA speak
+ARIA.speak('Welcome to the platform!');
+
+// Change expression
+ARIA.setExpression('excited', 3000);
+
+// Contextual tips
+ARIA.giveContextualTip('level_up');
+            </div>
+
+            <h3 style="margin-top: 20px;">Step 4: Add UI Widgets</h3>
+            <div class="integration-code">
+// XP Bar
+document.getElementById('xpBar').innerHTML = BuilderXP.createXPBar();
+
+// Credits Display
+document.getElementById('credits').innerHTML = BuilderXP.createCreditDisplay();
+
+// Full Stats Widget
+document.getElementById('stats').innerHTML = BuilderXP.createStatsWidget();
+            </div>
+        </div>
+
+        <!-- Available Actions -->
+        <div class="card">
+            <h2>🎯 All Available Actions</h2>
+            <div class="stats-display" style="max-height: 400px; overflow-y: auto;">
+                <div class="stat-row">
+                    <span><strong>module_created</strong></span>
+                    <span>+500 XP, +100 Credits</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>module_upgraded</strong></span>
+                    <span>+200 XP, +50 Credits</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>pattern_discovered</strong></span>
+                    <span>+300 XP, +75 Credits</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>consciousness_raised</strong></span>
+                    <span>+100 XP, +20 Credits</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>helper_assisted</strong></span>
+                    <span>+200 XP, +50 Credits</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>feature_contributed</strong></span>
+                    <span>+1000 XP, +250 Credits</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>arcade_game_completed</strong></span>
+                    <span>+50 XP, +10 Credits</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>challenge_completed</strong></span>
+                    <span>+500 XP, +125 Credits</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>daily_login</strong></span>
+                    <span>+10 XP, +5 Credits</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>streak_bonus</strong> (every 7 days)</span>
+                    <span>+50 XP, +20 Credits</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Systems -->
+    <script src="../BUILDER_XP_SYSTEM.js"></script>
+    <script src="../ARIA_AVATAR_COMPONENT.js"></script>
+
+    <script>
+        // Test action function
+        function testAction(actionType) {
+            BuilderXP.rewardAction(actionType);
+            updateDisplay();
+        }
+
+        // Update stats display
+        function updateDisplay() {
+            const profile = BuilderXP.profile;
+
+            document.getElementById('statsDisplay').innerHTML = `
+                <div class="stat-row">
+                    <span>Level:</span>
+                    <strong>${profile.level}</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Total XP:</span>
+                    <strong>${profile.xp.toLocaleString()}</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Credits:</span>
+                    <strong>🪙 ${profile.credits.toLocaleString()}</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Modules Created:</span>
+                    <strong>${profile.modulesCreated}</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Patterns Discovered:</span>
+                    <strong>${profile.patternsDiscovered}</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Achievements:</span>
+                    <strong>${profile.achievements.length}/${BuilderXP.achievements.length}</strong>
+                </div>
+            `;
+
+            document.getElementById('xpBarContainer').innerHTML = BuilderXP.createXPBar();
+            document.getElementById('creditsDisplay').innerHTML = BuilderXP.createCreditDisplay();
+        }
+
+        // ARIA controls
+        function changeExpression(expression) {
+            ARIA.setExpression(expression, 5000);
+        }
+
+        function testMessage(message) {
+            ARIA.speak(message);
+        }
+
+        // Initial display
+        updateDisplay();
+
+        // Welcome message from ARIA
+        setTimeout(() => {
+            ARIA.speak('Welcome to the Builder XP Demo! Try clicking the action buttons!');
+        }, 1000);
+    </script>
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

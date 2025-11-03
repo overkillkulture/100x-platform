@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Report a Bug - Consciousness Revolution</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #ff4444;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: Arial;
+            margin-bottom: 20px;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 18px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .success {
+            background: #44ff44;
+            color: #006600;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .error {
+            background: #ffcccc;
+            color: #cc0000;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .alt-method {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 Report a Bug</h1>
+        <div class="subtitle">
+            Your bug report will be created as a GitHub issue automatically
+        </div>
+
+        <form id="bugForm">
+            <textarea
+                id="bugDescription"
+                name="bug_description"
+                placeholder="Describe the bug...
+
+What happened?
+What did you expect?
+Which page?"
+                required
+            ></textarea>
+
+            <button type="submit" id="submitBtn">📤 Submit Bug Report</button>
+        </form>
+
+        <div id="result"></div>
+
+        <div class="alt-method">
+            <strong>Alternative:</strong> Text bugs to <strong>+1 (509) 216-6552</strong><br>
+            They'll become GitHub issues automatically!
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('bugForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const bugDescription = document.getElementById('bugDescription').value;
+            const button = document.getElementById('submitBtn');
+            const resultDiv = document.getElementById('result');
+
+            button.disabled = true;
+            button.textContent = '⏳ Submitting...';
+            resultDiv.innerHTML = '';
+
+            try {
+                // Send to API function that creates GitHub issue
+                const response = await fetch('/.netlify/functions/web-bug-report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: bugDescription.substring(0, 100) + (bugDescription.length > 100 ? '...' : ''),
+                        description: bugDescription,
+                        reporter: 'Anonymous Web User'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            ✅ Bug report submitted!<br>
+                            <strong>GitHub Issue #${data.issue_number} created</strong><br><br>
+                            <a href="${data.issue_url}" target="_blank" style="color: #0066cc; text-decoration: underline;">View on GitHub →</a>
+                        </div>`;
+                    document.getElementById('bugDescription').value = '';
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            ❌ Error: ${data.error}<br><br>
+                            Please try texting it to: <strong>+1 (509) 216-6552</strong>
+                        </div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Error submitting bug report<br><br>
+                        Please try texting it to: <strong>+1 (509) 216-6552</strong>
+                    </div>`;
+            } finally {
+                button.disabled = false;
+                button.textContent = '📤 Submit Bug Report';
+            }
+        });
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

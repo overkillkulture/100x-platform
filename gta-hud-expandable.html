@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X GTA HUD - Expandable Modular Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, rgba(10,10,10,0.95) 0%, rgba(26,26,46,0.95) 50%, rgba(10,10,10,0.95) 100%);
+            color: #e8e8e8;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Widget Base */
+        .widget {
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            position: absolute;
+            pointer-events: auto;
+            cursor: move;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .widget:hover {
+            border-color: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15);
+        }
+
+        /* Size: Mini (just icon) */
+        .widget.mini {
+            width: 60px;
+            height: 60px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .widget.mini .widget-icon {
+            font-size: 2rem;
+            display: block;
+        }
+
+        .widget.mini .widget-content,
+        .widget.mini .widget-header {
+            display: none;
+        }
+
+        /* Size: Medium (icon + simple interface) */
+        .widget.medium {
+            width: 280px;
+            height: 120px;
+            padding: 1rem;
+            border-radius: 16px;
+        }
+
+        .widget.medium .widget-icon {
+            font-size: 1.5rem;
+        }
+
+        .widget.medium .widget-content.full {
+            display: none;
+        }
+
+        .widget.medium .widget-content.simple {
+            display: block;
+        }
+
+        /* Size: Large (full interface) */
+        .widget.large {
+            width: 380px;
+            height: 450px;
+            padding: 1.5rem;
+            border-radius: 20px;
+        }
+
+        .widget.large .widget-icon {
+            font-size: 1.5rem;
+        }
+
+        .widget.large .widget-content.simple {
+            display: none;
+        }
+
+        .widget.large .widget-content.full {
+            display: block;
+        }
+
+        /* Size: Max (expanded full) */
+        .widget.max {
+            width: 500px;
+            height: 600px;
+            padding: 2rem;
+            border-radius: 24px;
+        }
+
+        .widget.max .widget-content.full {
+            display: block;
+        }
+
+        /* Widget Header */
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            user-select: none;
+        }
+
+        .widget-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #00ffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .widget-icon {
+            display: inline-block;
+        }
+
+        .expand-btn {
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.7rem;
+            color: #00ffff;
+        }
+
+        .expand-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            border-color: rgba(0, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        /* Widget Content */
+        .widget-content {
+            color: #e8e8e8;
+            font-size: 0.85rem;
+        }
+
+        /* Simple content for medium size */
+        .widget-content.simple {
+            display: none;
+        }
+
+        .simple-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .simple-input:focus {
+            outline: none;
+            border-color: #00ffff;
+        }
+
+        /* Full content for large/max size */
+        .widget-content.full {
+            display: none;
+            max-height: 100%;
+            overflow-y: auto;
+        }
+
+        /* AI Chat specific */
+        .ai-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .ai-message {
+            background: rgba(102, 126, 234, 0.15);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            padding: 0.6rem;
+            font-size: 0.8rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .ai-send {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #00ffff;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .ai-send:hover {
+            background: rgba(0, 255, 255, 0.3);
+        }
+
+        /* Stats Widget */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .stat-item {
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #00ffff;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        /* Module Grid */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .module-card {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .module-card:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .module-card-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .module-card-name {
+            font-size: 0.75rem;
+            color: #00ffff;
+            font-weight: 600;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+            z-index: 9999;
+        }
+
+        .control-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 255, 0.15);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #00ffff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        /* Pulse */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .pulse { animation: pulse 2s infinite; }
+    </style>
+</head>
+<body>
+    <!-- AI Assistant Widget -->
+    <div class="widget mini" id="widget-ai" style="top: 20px; right: 20px;" onclick="expandWidget('widget-ai', event)">
+        <span class="widget-icon">🤖</span>
+        <div class="widget-header">
+            <div class="widget-title">
+                <span class="widget-icon">🤖</span>
+                AI Assistant
+            </div>
+            <div class="expand-btn" onclick="expandWidget('widget-ai', event)">⇔</div>
+        </div>
+        <div class="widget-content simple">
+            <input type="text" class="simple-input" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') quickChat(this.value, event)">
+        </div>
+        <div class="widget-content full">
+            <div class="ai-messages" id="aiMessages">
+                <div class="ai-message">
+                    <strong>Claude:</strong> Click the expand button (⇔) to resize me! Mini → Medium → Large → Max
+                </div>
+            </div>
+            <div class="ai-input-group">
+                <input type="text" class="simple-input" id="aiInput" placeholder="Type here..." onkeypress="if(event.key==='Enter') sendChat()">
+                <button class="ai-send" onclick="sendChat()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Widget -->
+    <div class="widget mini" id="widget-stats" style="top: 20px; left: 20px;" onclick="expandWidget('widget-stats', event)">
+        <span class="widget-icon">📊</span>
+        <div class="widget-header">
+            <div class="widget-title">
+                <span class="widget-icon">📊</span>
+                Stats
+            </div>
+            <div class="expand-btn" onclick="expandWidget('widget-stats', event)">⇔</div>
+        </div>
+        <div class="widget-content simple">
+            <div style="text-align: center; color: #00ffff; font-size: 1.2rem; font-weight: 900;">93%</div>
+            <div style="text-align: center; font-size: 0.7rem; color: #888;">Consciousness Level</div>
+        </div>
+        <div class="widget-content full">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">93%</div>
+                    <div class="stat-label">Consciousness</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">7</div>
+                    <div class="stat-label">Modules</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">12/20</div>
+                    <div class="stat-label">Tasks</div>
+                </div>
+                <div class="stat-item pulse">
+                    <div class="stat-value">✓</div>
+                    <div class="stat-label">Systems</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modules Widget -->
+    <div class="widget mini" id="widget-modules" style="bottom: 100px; left: 20px;" onclick="expandWidget('widget-modules', event)">
+        <span class="widget-icon">🎯</span>
+        <div class="widget-header">
+            <div class="widget-title">
+                <span class="widget-icon">🎯</span>
+                Modules
+            </div>
+            <div class="expand-btn" onclick="expandWidget('widget-modules', event)">⇔</div>
+        </div>
+        <div class="widget-content simple">
+            <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                <div style="font-size: 1.5rem; cursor: pointer;" onclick="window.open('workspace-v3.html', '_blank')">🚨</div>
+                <div style="font-size: 1.5rem; cursor: pointer;" onclick="window.open('jarvis.html', '_blank')">🤖</div>
+            </div>
+        </div>
+        <div class="widget-content full">
+            <div class="module-grid">
+                <div class="module-card" onclick="window.open('workspace-v3.html', '_blank')">
+                    <div class="module-card-icon">🚨</div>
+                    <div class="module-card-name">Builder</div>
+                </div>
+                <div class="module-card" onclick="window.open('consciousness-workspace.html', '_blank')">
+                    <div class="module-card-icon">💼</div>
+                    <div class="module-card-name">Workspace</div>
+                </div>
+                <div class="module-card" onclick="addMiniWidget('trinity')">
+                    <div class="module-card-icon">🌀</div>
+                    <div class="module-card-name">Trinity</div>
+                </div>
+                <div class="module-card" onclick="addMiniWidget('analytics')">
+                    <div class="module-card-icon">📈</div>
+                    <div class="module-card-name">Analytics</div>
+                </div>
+                <div class="module-card" onclick="window.open('jarvis.html', '_blank')">
+                    <div class="module-card-icon">🤖</div>
+                    <div class="module-card-name">JARVIS</div>
+                </div>
+                <div class="module-card" onclick="addMiniWidget('docs')">
+                    <div class="module-card-icon">📄</div>
+                    <div class="module-card-name">Docs</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <button class="control-btn" onclick="addMiniWidget('custom')">➕ Add Widget</button>
+        <button class="control-btn" onclick="resetAll()">🔄 Reset</button>
+        <button class="control-btn" onclick="saveLayout()">💾 Save</button>
+    </div>
+
+    <script>
+        const sizes = ['mini', 'medium', 'large', 'max'];
+        let activeWidget = null;
+        let offsetX = 0, offsetY = 0;
+        let widgetCounter = 0;
+
+        // Make widgets draggable
+        document.querySelectorAll('.widget').forEach(widget => makeDraggable(widget));
+
+        function makeDraggable(widget) {
+            widget.addEventListener('mousedown', function(e) {
+                if (e.target.classList.contains('expand-btn')) return;
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+                if (e.target.classList.contains('module-card')) return;
+
+                activeWidget = widget;
+                const rect = widget.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+                e.stopPropagation();
+            });
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            if (activeWidget) {
+                activeWidget.style.left = (e.clientX - offsetX) + 'px';
+                activeWidget.style.top = (e.clientY - offsetY) + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            activeWidget = null;
+        });
+
+        // Expand widget through sizes
+        function expandWidget(widgetId, event) {
+            event.stopPropagation();
+            const widget = document.getElementById(widgetId);
+            let currentSize = sizes.find(s => widget.classList.contains(s)) || 'mini';
+            let currentIndex = sizes.indexOf(currentSize);
+            let nextIndex = (currentIndex + 1) % sizes.length;
+
+            sizes.forEach(s => widget.classList.remove(s));
+            widget.classList.add(sizes[nextIndex]);
+        }
+
+        // Quick chat from simple input
+        function quickChat(message, event) {
+            event.stopPropagation();
+            if (!message.trim()) return;
+
+            const widget = document.getElementById('widget-ai');
+            // Expand to large if not already
+            if (!widget.classList.contains('large') && !widget.classList.contains('max')) {
+                sizes.forEach(s => widget.classList.remove(s));
+                widget.classList.add('large');
+            }
+
+            setTimeout(() => {
+                const msg = document.createElement('div');
+                msg.className = 'ai-message';
+                msg.innerHTML = `<strong>You:</strong> ${message}`;
+                document.getElementById('aiMessages').appendChild(msg);
+                event.target.value = '';
+            }, 100);
+        }
+
+        // Send chat from full interface
+        function sendChat() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messagesDiv = document.getElementById('aiMessages');
+            const msg = document.createElement('div');
+            msg.className = 'ai-message';
+            msg.innerHTML = `<strong>You:</strong> ${message}`;
+            messagesDiv.appendChild(msg);
+
+            input.value = '';
+
+            setTimeout(() => {
+                const reply = document.createElement('div');
+                reply.className = 'ai-message';
+                reply.innerHTML = `<strong>Claude:</strong> I understand "${message}". Try clicking the expand button to resize me!`;
+                messagesDiv.appendChild(reply);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 1000);
+        }
+
+        // Add new mini widget
+        function addMiniWidget(type) {
+            widgetCounter++;
+            const icons = {
+                trinity: '🌀',
+                analytics: '📈',
+                docs: '📄',
+                custom: '📦'
+            };
+
+            const widget = document.createElement('div');
+            widget.className = 'widget mini';
+            widget.id = `widget-${type}-${widgetCounter}`;
+            widget.style.top = (100 + widgetCounter * 80) + 'px';
+            widget.style.right = (100 + widgetCounter * 80) + 'px';
+            widget.onclick = function(e) { expandWidget(widget.id, e); };
+            widget.innerHTML = `
+                <span class="widget-icon">${icons[type] || '📦'}</span>
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="widget-icon">${icons[type] || '📦'}</span>
+                        ${type.charAt(0).toUpperCase() + type.slice(1)}
+                    </div>
+                    <div class="expand-btn" onclick="expandWidget('${widget.id}', event)">⇔</div>
+                </div>
+                <div class="widget-content simple">
+                    <p style="font-size: 0.8rem;">Click ⇔ to expand</p>
+                </div>
+                <div class="widget-content full">
+                    <p>${type.charAt(0).toUpperCase() + type.slice(1)} module content here...</p>
+                </div>
+            `;
+            document.body.appendChild(widget);
+            makeDraggable(widget);
+        }
+
+        // Save layout
+        function saveLayout() {
+            const layout = [];
+            document.querySelectorAll('.widget').forEach(w => {
+                const size = sizes.find(s => w.classList.contains(s));
+                layout.push({
+                    id: w.id,
+                    left: w.style.left,
+                    top: w.style.top,
+                    size: size
+                });
+            });
+            localStorage.setItem('gtaHudExpandableLayout', JSON.stringify(layout));
+            alert('✅ Layout saved!');
+        }
+
+        // Reset
+        function resetAll() {
+            localStorage.removeItem('gtaHudExpandableLayout');
+            location.reload();
+        }
+
+        // Load saved layout
+        window.addEventListener('load', function() {
+            const saved = localStorage.getItem('gtaHudExpandableLayout');
+            if (saved) {
+                const layout = JSON.parse(saved);
+                layout.forEach(item => {
+                    const widget = document.getElementById(item.id);
+                    if (widget) {
+                        widget.style.left = item.left;
+                        widget.style.top = item.top;
+                        sizes.forEach(s => widget.classList.remove(s));
+                        widget.classList.add(item.size);
+                    }
+                });
+            }
+        });
+
+        console.log('🎮 GTA HUD - Click widgets to expand: Mini → Medium → Large → Max');
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

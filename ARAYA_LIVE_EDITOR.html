@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Araya Live Code Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr 400px;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+            gap: 0;
+        }
+
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status {
+            color: #0f0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #0f0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* File Browser */
+        .file-browser {
+            background: #252526;
+            border-right: 1px solid #3e3e42;
+            overflow-y: auto;
+        }
+
+        .file-browser-header {
+            padding: 15px;
+            background: #2d2d30;
+            border-bottom: 1px solid #3e3e42;
+            font-weight: bold;
+            color: #cccccc;
+        }
+
+        .file-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-item:hover {
+            background: #2a2d2e;
+        }
+
+        .file-item.active {
+            background: #37373d;
+            border-left: 3px solid #667eea;
+        }
+
+        .file-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Code Editor */
+        .editor-panel {
+            background: #1e1e1e;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-tabs {
+            background: #2d2d30;
+            padding: 8px 15px;
+            display: flex;
+            gap: 5px;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .editor-tab {
+            padding: 8px 15px;
+            background: #2d2d30;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            color: #969696;
+            transition: all 0.2s;
+        }
+
+        .editor-tab.active {
+            background: #1e1e1e;
+            color: #ffffff;
+        }
+
+        #editor {
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Araya Chat Panel */
+        .chat-panel {
+            background: #252526;
+            border-left: 1px solid #3e3e42;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 90%;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            background: #2d2d30;
+            align-self: flex-end;
+            border-left: 3px solid #667eea;
+        }
+
+        .message.araya {
+            background: #1e1e1e;
+            align-self: flex-start;
+            border-left: 3px solid #764ba2;
+        }
+
+        .message.system {
+            background: #0f4;
+            color: #000;
+            align-self: center;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            background: #2d2d30;
+            border-top: 1px solid #3e3e42;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        #chatInput {
+            flex: 1;
+            padding: 12px;
+            background: #3c3c3c;
+            border: 1px solid #4a4a4a;
+            border-radius: 5px;
+            color: #d4d4d4;
+            font-size: 0.95rem;
+        }
+
+        #chatInput:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-icon {
+            width: 45px;
+            padding: 12px;
+            font-size: 1.2rem;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚀 Araya Live Code Editor</h1>
+            <div class="status">
+                <span class="status-dot"></span>
+                <span id="statusText">Connected</span>
+            </div>
+        </div>
+
+        <!-- File Browser -->
+        <div class="file-browser">
+            <div class="file-browser-header">📁 Project Files</div>
+            <div id="fileList">
+                <div class="file-item active" onclick="openFile('ARAYA_UPGRADED_V2.py')">
+                    <span class="file-icon">🐍</span>
+                    <span>ARAYA_UPGRADED_V2.py</span>
+                </div>
+                <div class="file-item" onclick="openFile('araya-chat.html')">
+                    <span class="file-icon">🌐</span>
+                    <span>araya-chat.html</span>
+                </div>
+                <div class="file-item" onclick="openFile('COMMANDER_ANALYTICS_COCKPIT.html')">
+                    <span class="file-icon">🌐</span>
+                    <span>COMMANDER_ANALYTICS_COCKPIT.html</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Editor -->
+        <div class="editor-panel">
+            <div class="editor-tabs">
+                <div class="editor-tab active">ARAYA_UPGRADED_V2.py</div>
+            </div>
+            <div id="editor"></div>
+        </div>
+
+        <!-- Araya Chat -->
+        <div class="chat-panel">
+            <div class="chat-header">
+                <span>🤖 Araya - Your AI Code Assistant</span>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message araya">
+                    Hello Commander! 👋 I can see your code and help you edit it in real-time. Just tell me what you want to change!
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="Ask Araya to edit code..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button class="btn-icon" onclick="startVoiceInput()" title="Voice Input">🎤</button>
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monaco Editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    <script>
+        let editor;
+        let currentFile = 'ARAYA_UPGRADED_V2.py';
+
+        // Initialize Monaco Editor
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+        require(['vs/editor/editor.main'], function () {
+            editor = monaco.editor.create(document.getElementById('editor'), {
+                value: '# Loading file...',
+                language: 'python',
+                theme: 'vs-dark',
+                fontSize: 14,
+                minimap: { enabled: true },
+                automaticLayout: true
+            });
+
+            // Load the initial file
+            loadFile('ARAYA_UPGRADED_V2.py');
+        });
+
+        // Load file content
+        async function loadFile(filename) {
+            currentFile = filename;
+            const path = `C:/Users/dwrek/100X_DEPLOYMENT/${filename}`;
+
+            try {
+                // In real implementation, load via API
+                editor.setValue(`// File: ${filename}\n// Loading from: ${path}\n\n// This would load the actual file content via API`);
+
+                // Set language based on file extension
+                const ext = filename.split('.').pop();
+                const langMap = {
+                    'py': 'python',
+                    'js': 'javascript',
+                    'html': 'html',
+                    'css': 'css',
+                    'json': 'json',
+                    'md': 'markdown'
+                };
+                monaco.editor.setModelLanguage(editor.getModel(), langMap[ext] || 'text');
+
+            } catch (e) {
+                addMessage('system', `Error loading file: ${e.message}`);
+            }
+        }
+
+        function openFile(filename) {
+            // Update active file in list
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.includes(filename)) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Load file
+            loadFile(filename);
+        }
+
+        // Chat functions
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage('user', message);
+            input.value = '';
+
+            // Send to Araya
+            try {
+                const response = await fetch('http://localhost:6666/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        user_id: 'commander',
+                        auto_execute: true,
+                        context: {
+                            current_file: currentFile,
+                            code_visible: editor.getValue()
+                        }
+                    })
+                });
+
+                const data = await response.json();
+
+                // Add Araya's response
+                addMessage('araya', data.response);
+
+                // If auto-execute detected changes
+                if (data.auto_execute?.detected) {
+                    addMessage('system', `🔥 Auto-execute detected ${data.auto_execute.suggestions_count} code changes!`);
+                }
+
+            } catch (e) {
+                addMessage('system', `Error: ${e.message}`);
+            }
+        }
+
+        function addMessage(type, text) {
+            const messages = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.textContent = text;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Voice input
+        function startVoiceInput() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert('Voice input not supported. Use Chrome or Edge.');
+                return;
+            }
+
+            const recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            const input = document.getElementById('chatInput');
+            input.placeholder = '🔴 Listening...';
+
+            recognition.onresult = function(event) {
+                input.value = event.results[0][0].transcript;
+                input.placeholder = 'Ask Araya to edit code...';
+                setTimeout(() => sendMessage(), 500);
+            };
+
+            recognition.onerror = function() {
+                input.placeholder = 'Ask Araya to edit code...';
+            };
+
+            recognition.start();
+        }
+
+        // Keyboard shortcuts
+        document.getElementById('chatInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

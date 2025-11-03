@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 ARIA Interactive Tour - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: radial-gradient(ellipse at center, #0a0a1a 0%, #000 100%);
+            color: #00ff41;
+            overflow: hidden;
+        }
+
+        /* ARIA Avatar */
+        #aria-avatar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #ff0080, #ff00ff);
+            border-radius: 50%;
+            border: 4px solid #00ff41;
+            box-shadow: 0 0 30px #ff0080;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+            z-index: 10000;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Speech Bubble */
+        #aria-speech {
+            position: fixed;
+            bottom: 160px;
+            right: 20px;
+            max-width: 400px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #00ff41;
+            border-radius: 20px;
+            padding: 20px;
+            display: none;
+            z-index: 10001;
+            box-shadow: 0 0 20px #00ff41;
+        }
+
+        #aria-speech.show {
+            display: block;
+            animation: slideUp 0.5s;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        #aria-speech .text {
+            color: #00ff41;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        #aria-speech .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        #aria-speech button {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff0080, #ff00ff);
+            border: 2px solid #00ff41;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #aria-speech button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #ff0080;
+        }
+
+        /* Highlight Pointer */
+        #aria-pointer {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            border: 4px solid #ffd700;
+            border-radius: 50%;
+            pointer-events: none;
+            display: none;
+            animation: pointerPulse 1s infinite;
+            z-index: 9999;
+            box-shadow: 0 0 30px #ffd700;
+        }
+
+        @keyframes pointerPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+        }
+
+        /* Overlay */
+        #aria-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            z-index: 9998;
+        }
+
+        #aria-overlay.show {
+            display: block;
+        }
+
+        /* Welcome Screen */
+        #welcome-screen {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 4px solid #ff0080;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            z-index: 10002;
+            max-width: 600px;
+        }
+
+        #welcome-screen h1 {
+            color: #ff0080;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff0080;
+        }
+
+        #welcome-screen p {
+            color: #00ff41;
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        #welcome-screen button {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #ff0080, #ff00ff);
+            border: 3px solid #00ff41;
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #welcome-screen button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px #ff0080;
+        }
+
+        /* Progress Bar */
+        #tour-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff0080, #00ff41);
+            z-index: 10003;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen">
+        <h1>🤖 Welcome to the Tour! 🤖</h1>
+        <p>
+            Hi! I'm ARIA, your AI tour guide.<br><br>
+            I'll walk you through the Consciousness Revolution platform,
+            showing you all the amazing features we've built!<br><br>
+            Ready to begin?
+        </p>
+        <button onclick="startTour()">🚀 Start Tour</button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div id="tour-progress"></div>
+
+    <!-- Overlay -->
+    <div id="aria-overlay"></div>
+
+    <!-- Pointer -->
+    <div id="aria-pointer"></div>
+
+    <!-- ARIA Avatar -->
+    <div id="aria-avatar" onclick="toggleSpeech()">
+        🤖
+    </div>
+
+    <!-- Speech Bubble -->
+    <div id="aria-speech">
+        <div class="text" id="aria-text">
+            Hi! I'm ARIA, your tour guide!
+        </div>
+        <div class="buttons">
+            <button onclick="nextStep()">Next →</button>
+            <button onclick="skipTour()">Skip Tour</button>
+        </div>
+    </div>
+
+    <script>
+        // Tour Steps
+        const tourSteps = [
+            {
+                message: "Welcome to the Consciousness Revolution! This is the homepage where everything begins. Let me show you around!",
+                action: "navigate",
+                url: "/",
+                duration: 3000
+            },
+            {
+                message: "First, let me show you the STONEHENGE MATH PLAYGROUND - our interactive Seven Domains visualization!",
+                action: "navigate",
+                url: "/stonehenge_math_playground",
+                duration: 3000
+            },
+            {
+                message: "These sliders control different consciousness levels. Try moving the Consciousness slider!",
+                action: "highlight",
+                selector: "#consciousnessSlider",
+                duration: 4000
+            },
+            {
+                message: "Watch what happens when I max out consciousness to 144%! The AI companions will react!",
+                action: "interact",
+                selector: "#consciousnessSlider",
+                value: 144,
+                duration: 4000
+            },
+            {
+                message: "See these alien-grade features? Let me activate HYPERDRIVE for you!",
+                action: "highlight",
+                selector: "#hyperdriveBtn",
+                duration: 3000
+            },
+            {
+                message: "ENGAGING HYPERDRIVE! Hold on tight! 🚀",
+                action: "click",
+                selector: "#hyperdriveBtn",
+                duration: 5000
+            },
+            {
+                message: "Want to see the Matrix? Let's turn on the Matrix Rain!",
+                action: "click",
+                selector: "#matrixBtn",
+                duration: 5000
+            },
+            {
+                message: "Tour complete! You've seen the consciousness playground in action. Want to explore more on your own?",
+                action: "finish",
+                duration: 5000
+            }
+        ];
+
+        let currentStep = -1;
+        let tourActive = false;
+
+        function startTour() {
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('aria-overlay').classList.add('show');
+            document.getElementById('aria-speech').classList.add('show');
+            tourActive = true;
+            currentStep = -1;
+            nextStep();
+        }
+
+        function nextStep() {
+            currentStep++;
+
+            if (currentStep >= tourSteps.length) {
+                endTour();
+                return;
+            }
+
+            const step = tourSteps[currentStep];
+
+            // Update progress bar
+            const progress = ((currentStep + 1) / tourSteps.length) * 100;
+            document.getElementById('tour-progress').style.width = progress + '%';
+
+            // Show message
+            document.getElementById('aria-text').textContent = step.message;
+
+            // Execute action
+            executeAction(step);
+        }
+
+        function executeAction(step) {
+            const overlay = document.getElementById('aria-overlay');
+            const pointer = document.getElementById('aria-pointer');
+
+            switch(step.action) {
+                case 'navigate':
+                    if (step.url && window.location.pathname !== step.url) {
+                        setTimeout(() => {
+                            window.location.href = step.url;
+                        }, step.duration);
+                    }
+                    break;
+
+                case 'highlight':
+                    overlay.classList.add('show');
+                    const element = document.querySelector(step.selector);
+                    if (element) {
+                        const rect = element.getBoundingClientRect();
+                        pointer.style.left = (rect.left + rect.width/2 - 30) + 'px';
+                        pointer.style.top = (rect.top + rect.height/2 - 30) + 'px';
+                        pointer.style.display = 'block';
+
+                        // Scroll element into view
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    setTimeout(() => {
+                        pointer.style.display = 'none';
+                    }, step.duration);
+                    break;
+
+                case 'interact':
+                    const target = document.querySelector(step.selector);
+                    if (target) {
+                        target.value = step.value;
+                        target.dispatchEvent(new Event('input', { bubbles: true }));
+
+                        // Highlight
+                        const rect = target.getBoundingClientRect();
+                        pointer.style.left = (rect.left + rect.width/2 - 30) + 'px';
+                        pointer.style.top = (rect.top + rect.height/2 - 30) + 'px';
+                        pointer.style.display = 'block';
+                        setTimeout(() => pointer.style.display = 'none', step.duration);
+                    }
+                    break;
+
+                case 'click':
+                    const btn = document.querySelector(step.selector);
+                    if (btn) {
+                        // Highlight first
+                        const rect = btn.getBoundingClientRect();
+                        pointer.style.left = (rect.left + rect.width/2 - 30) + 'px';
+                        pointer.style.top = (rect.top + rect.height/2 - 30) + 'px';
+                        pointer.style.display = 'block';
+
+                        setTimeout(() => {
+                            btn.click();
+                            pointer.style.display = 'none';
+                        }, 1500);
+                    }
+                    break;
+
+                case 'finish':
+                    setTimeout(() => {
+                        overlay.classList.remove('show');
+                        endTour();
+                    }, step.duration);
+                    break;
+            }
+        }
+
+        function endTour() {
+            tourActive = false;
+            document.getElementById('aria-speech').classList.remove('show');
+            document.getElementById('aria-overlay').classList.remove('show');
+            document.getElementById('aria-pointer').style.display = 'none';
+            document.getElementById('tour-progress').style.width = '0%';
+
+            // Show completion message
+            alert('🎉 Tour Complete! Thanks for exploring with ARIA!');
+        }
+
+        function skipTour() {
+            if (confirm('Are you sure you want to skip the tour?')) {
+                endTour();
+            }
+        }
+
+        function toggleSpeech() {
+            const speech = document.getElementById('aria-speech');
+            if (tourActive) {
+                speech.classList.toggle('show');
+            } else {
+                startTour();
+            }
+        }
+
+        // Auto-start tour if URL has ?tour=1
+        if (window.location.search.includes('tour=1')) {
+            setTimeout(startTour, 1000);
+        }
+
+        console.log('%c🤖 ARIA Interactive Tour Loaded!', 'color: #ff0080; font-size: 20px; font-weight: bold;');
+        console.log('%cAdd ?tour=1 to URL to auto-start tour', 'color: #00ff41; font-size: 12px;');
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

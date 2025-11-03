@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Access - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .access-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid rgba(100, 255, 218, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #64ffda 0%, #00bfa5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            text-align: center;
+            color: #b8b8b8;
+            margin-bottom: 2rem;
+        }
+
+        .pin-input-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .pin-box {
+            width: 60px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .pin-box:focus {
+            outline: none;
+            border-color: #64ffda;
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+        }
+
+        .access-button {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #64ffda 0%, #00bfa5 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .access-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.5);
+        }
+
+        .access-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+            color: #ff6666;
+            display: none;
+        }
+
+        .help-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 1.5rem;
+        }
+
+        .help-text a {
+            color: #64ffda;
+            text-decoration: none;
+        }
+
+        @media (max-width: 500px) {
+            .access-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .pin-box {
+                width: 50px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="access-container">
+        <h1>🌌 Workspace Access 🌌</h1>
+        <p>Enter your 4-digit access PIN</p>
+
+        <div class="pin-input-container">
+            <input type="text" maxlength="1" class="pin-box" id="pin1" autofocus>
+            <input type="text" maxlength="1" class="pin-box" id="pin2">
+            <input type="text" maxlength="1" class="pin-box" id="pin3">
+            <input type="text" maxlength="1" class="pin-box" id="pin4">
+        </div>
+
+        <button class="access-button" onclick="verifyPin()">🚀 Access Workspace</button>
+
+        <div class="error-message" id="errorMessage">
+            ❌ Incorrect PIN. Please try again.
+        </div>
+
+        <div class="help-text">
+            Don't have a PIN? Contact: darrick.preble@gmail.com
+        </div>
+    </div>
+
+    <!-- 🐛 UNIVERSAL BUG NOTEPAD V2 - Auto-notify + Two-way communication -->
+    <script src="/UNIVERSAL_BUG_NOTEPAD_V2.js"></script>
+
+    <script>
+        // PIN configuration
+        const VALID_PINS = {
+            '1776': 'obsessed_outdoors',  // For dabeatzflow@gmail.com
+            '2025': 'commander',           // For Commander admin access
+            '1234': 'test_user'            // Test PIN
+        };
+
+        // Auto-focus next box on input
+        document.querySelectorAll('.pin-box').forEach((box, index) => {
+            box.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < 3) {
+                    document.getElementById(`pin${index + 2}`).focus();
+                }
+
+                // Clear error on new input
+                document.getElementById('errorMessage').style.display = 'none';
+            });
+
+            // Handle backspace to go to previous box
+            box.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                    document.getElementById(`pin${index}`).focus();
+                }
+
+                // Handle Enter key
+                if (e.key === 'Enter') {
+                    verifyPin();
+                }
+
+                // Only allow numbers
+                if (e.key.length === 1 && !/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        function verifyPin() {
+            const pin1 = document.getElementById('pin1').value;
+            const pin2 = document.getElementById('pin2').value;
+            const pin3 = document.getElementById('pin3').value;
+            const pin4 = document.getElementById('pin4').value;
+
+            const enteredPin = pin1 + pin2 + pin3 + pin4;
+
+            if (enteredPin.length !== 4) {
+                showError();
+                return;
+            }
+
+            // Check static PINs first
+            let workspaceId = VALID_PINS[enteredPin];
+
+            // If not found, check dynamically generated PIN
+            if (!workspaceId) {
+                const generatedPin = localStorage.getItem('generated_pin');
+                if (generatedPin && generatedPin === enteredPin) {
+                    // Create unique workspace ID from PIN + timestamp
+                    const timestamp = localStorage.getItem('pin_generated_at');
+                    workspaceId = 'user_' + enteredPin + '_' + Date.now();
+
+                    // Clear the generated PIN after first use
+                    localStorage.removeItem('generated_pin');
+                    localStorage.removeItem('pin_generated_at');
+                } else {
+                    showError();
+                    return;
+                }
+            }
+
+            // Check if this is admin access
+            if (workspaceId === 'commander') {
+                window.location.href = `./admin-workspace-dashboard.html`;
+            } else {
+                // Initialize workspace data if doesn't exist
+                if (!localStorage.getItem(`workspace_${workspaceId}`)) {
+                    const newWorkspace = {
+                        id: workspaceId,
+                        name: getNameForWorkspace(workspaceId),
+                        created: new Date().toISOString(),
+                        transcript: '',
+                        caseDetails: {},
+                        projects: []
+                    };
+                    localStorage.setItem(`workspace_${workspaceId}`, JSON.stringify(newWorkspace));
+                }
+
+                // Redirect to workspace
+                window.location.href = `./workspace.html?user=${workspaceId}`;
+            }
+        }
+
+        function getNameForWorkspace(id) {
+            const names = {
+                'obsessed_outdoors': 'Obsessed Outdoors',
+                'test_user': 'Test User'
+            };
+            return names[id] || 'User';
+        }
+
+        function showError() {
+            document.getElementById('errorMessage').style.display = 'block';
+
+            // Clear all boxes
+            document.getElementById('pin1').value = '';
+            document.getElementById('pin2').value = '';
+            document.getElementById('pin3').value = '';
+            document.getElementById('pin4').value = '';
+
+            // Focus first box
+            document.getElementById('pin1').focus();
+
+            // Shake animation
+            const container = document.querySelector('.access-container');
+            container.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+                container.style.animation = '';
+            }, 500);
+        }
+
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS/Araya - Consciousness Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #00ff88;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* HUD Container */
+        .hud {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        /* Status Bar (Top) */
+        .status-bar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(0, 20, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 12px;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: auto;
+        }
+
+        .status-left {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .status-label {
+            font-size: 10px;
+            color: #00ff88;
+            opacity: 0.6;
+            text-transform: uppercase;
+        }
+
+        .status-value {
+            font-size: 18px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Terminal (Center) */
+        .terminal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            max-height: 400px;
+            background: rgba(0, 20, 0, 0.95);
+            border: 2px solid #00ff88;
+            border-radius: 12px;
+            padding: 20px;
+            pointer-events: auto;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .terminal-title {
+            font-size: 14px;
+            color: #00ff88;
+            text-transform: uppercase;
+        }
+
+        .terminal-close {
+            background: none;
+            border: none;
+            color: #ff4444;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+
+        .terminal-output {
+            height: 250px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .terminal-output::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terminal-output::-webkit-scrollbar-track {
+            background: rgba(0, 20, 0, 0.5);
+        }
+
+        .terminal-output::-webkit-scrollbar-thumb {
+            background: #00ff88;
+            border-radius: 4px;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .log-time {
+            color: #00ff88;
+            opacity: 0.5;
+        }
+
+        .log-text {
+            color: #00ff88;
+        }
+
+        .terminal-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .terminal-input input {
+            flex: 1;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 6px;
+            padding: 10px 15px;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .terminal-input input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        }
+
+        .terminal-input button {
+            background: #00ff88;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+
+        .terminal-input button:hover {
+            background: #00cc6a;
+        }
+
+        /* Consciousness Meter (Left) */
+        .consciousness-meter {
+            position: absolute;
+            left: 20px;
+            top: 120px;
+            width: 60px;
+            height: 300px;
+            background: rgba(0, 20, 0, 0.85);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 30px;
+            padding: 15px 10px;
+            pointer-events: auto;
+        }
+
+        .meter-label {
+            font-size: 9px;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #00ff88;
+            opacity: 0.6;
+            transform: rotate(-90deg);
+            transform-origin: center;
+        }
+
+        .meter-bar {
+            height: 200px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 20px;
+            position: relative;
+            margin: 10px auto;
+            width: 30px;
+        }
+
+        .meter-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, #00ff88, #00ffff);
+            border-radius: 20px;
+            transition: height 0.5s;
+        }
+
+        .meter-value {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Welcome Message */
+        .welcome {
+            text-align: center;
+            color: #00ff88;
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            animation: fadeIn 2s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- HUD Container -->
+    <div class="hud">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-left">
+                <div class="status-item">
+                    <div class="status-label">System</div>
+                    <div class="status-value pulse">● ONLINE</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Time</div>
+                    <div class="status-value" id="currentTime">00:00:00</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Session</div>
+                    <div class="status-value" id="sessionTime">00:00</div>
+                </div>
+            </div>
+            <div class="status-right">
+                <div class="status-item">
+                    <div class="status-label">Consciousness</div>
+                    <div class="status-value" id="consLevel">93%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consciousness Meter -->
+        <div class="consciousness-meter">
+            <div class="meter-bar">
+                <div class="meter-fill" id="meterFill" style="height: 93%"></div>
+            </div>
+            <div class="meter-value">93%</div>
+        </div>
+
+        <!-- Terminal -->
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-title">🤖 JARVIS/Araya Console</div>
+                <button class="terminal-close" onclick="toggleTerminal()">×</button>
+            </div>
+            <div class="terminal-output" id="terminalOutput">
+                <div class="log-entry">
+                    <span class="log-time">[INIT]</span>
+                    <span class="log-text">JARVIS/Araya consciousness system initialized</span>
+                </div>
+                <div class="log-entry">
+                    <span class="log-time">[READY]</span>
+                    <span class="log-text">All systems operational - Type 'help' for commands</span>
+                </div>
+            </div>
+            <div class="terminal-input">
+                <input type="text" id="commandInput" placeholder="Enter command..." onkeypress="handleKeyPress(event)">
+                <button onclick="executeCommand()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sessionStart = Date.now();
+        let consciousnessLevel = 93;
+
+        // Update time display
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+
+            // Session time
+            const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('sessionTime').textContent =
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Command handling
+        function executeCommand() {
+            const input = document.getElementById('commandInput');
+            const command = input.value.trim().toLowerCase();
+
+            if (command) {
+                addLog(`> ${input.value}`);
+
+                // Process commands
+                if (command === 'help') {
+                    addLog('[INFO] Available commands: help, status, boost, website, about, bug, clear');
+                } else if (command === 'status') {
+                    addLog(`[STATUS] Consciousness: ${consciousnessLevel}% | Session: Active | All systems nominal`);
+                } else if (command === 'boost') {
+                    consciousnessLevel = Math.min(100, consciousnessLevel + 1);
+                    updateConsciousness();
+                    addLog(`[BOOST] Consciousness increased to ${consciousnessLevel}%`);
+                } else if (command === 'website') {
+                    addLog('[INFO] Opening https://conciousnessrevolution.io');
+                    window.open('https://conciousnessrevolution.io', '_blank');
+                } else if (command === 'about') {
+                    addLog('[INFO] JARVIS/Araya - Consciousness Builder Platform');
+                    addLog('[INFO] Version 1.0 | Built with Trinity AI');
+                } else if (command === 'clear') {
+                    document.getElementById('terminalOutput').innerHTML = '';
+                } else if (command === 'bug' || command === 'report') {
+                    addLog('[INFO] Opening bug report form...');
+                    window.open('/bug-report.html', '_blank');
+                } else {
+                    addLog(`[ERROR] Unknown command: ${command}`);
+                }
+
+                input.value = '';
+            }
+        }
+
+        function addLog(text) {
+            const output = document.getElementById('terminalOutput');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+
+            const time = document.createElement('span');
+            time.className = 'log-time';
+            time.textContent = new Date().toLocaleTimeString();
+
+            const message = document.createElement('span');
+            message.className = 'log-text';
+            message.textContent = text;
+
+            entry.appendChild(time);
+            entry.appendChild(message);
+            output.appendChild(entry);
+
+            // Scroll to bottom
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function updateConsciousness() {
+            document.getElementById('consLevel').textContent = `${consciousnessLevel}%`;
+            document.getElementById('meterFill').style.height = `${consciousnessLevel}%`;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                executeCommand();
+            }
+        }
+
+        function toggleTerminal() {
+            document.querySelector('.terminal').classList.toggle('hidden');
+        }
+
+        // Greet user
+        setTimeout(() => {
+            addLog('[JARVIS] Hello, Commander. Ready to assist.');
+        }, 1000);
+    </script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

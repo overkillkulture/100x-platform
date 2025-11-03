@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Report a Bug - Dead Simple</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #ff4444;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: Arial;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 18px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .success {
+            background: #44ff44;
+            color: #006600;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .error {
+            background: #ff4444;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .loading {
+            color: #667eea;
+            text-align: center;
+            padding: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 Found a Bug?</h1>
+        <p class="subtitle">Just type it below and hit submit. That's it!</p>
+
+        <div id="form">
+            <textarea id="bugText" placeholder="Describe the bug...
+
+What happened?
+What did you expect?
+Which page or feature?
+
+(The more detail, the faster we can fix it!)"></textarea>
+
+            <button id="submitBtn" onclick="submitBug()">
+                📤 Submit Bug Report
+            </button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function submitBug() {
+            const bugText = document.getElementById('bugText').value.trim();
+            const resultDiv = document.getElementById('result');
+            const submitBtn = document.getElementById('submitBtn');
+            const formDiv = document.getElementById('form');
+
+            // Validate
+            if (!bugText) {
+                alert('Please describe the bug!');
+                return;
+            }
+
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.textContent = '📤 Sending...';
+
+            try {
+                // OPTION 1: Try Airtable (REPLACE WITH YOUR CREDENTIALS)
+                const airtableBase = 'YOUR_AIRTABLE_BASE_ID'; // e.g., 'appXXXXXXXXXXXXXX'
+                const airtableTable = 'Bug_Reports'; // Your table name
+                const airtableToken = 'YOUR_AIRTABLE_PAT'; // Your Personal Access Token
+
+                const response = await fetch(`https://api.airtable.com/v0/${airtableBase}/${airtableTable}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${airtableToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fields: {
+                            'Bug Description': bugText,
+                            'Submitted At': new Date().toISOString(),
+                            'Status': 'New',
+                            'Source': 'Web Form'
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    // SUCCESS!
+                    formDiv.style.display = 'none';
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            ✅ Bug Report Submitted!<br><br>
+                            We received it and will fix it ASAP.<br>
+                            Thank you! 🙏
+                        </div>
+                    `;
+                } else {
+                    throw new Error('Airtable submission failed');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+
+                // FALLBACK: Open mailto (guaranteed to work!)
+                const subject = 'Bug Report';
+                const body = encodeURIComponent(bugText);
+                const mailtoLink = `mailto:your-email@example.com?subject=${subject}&body=${body}`;
+
+                window.location.href = mailtoLink;
+
+                formDiv.style.display = 'none';
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        📧 Opening your email client...<br><br>
+                        Please send the pre-filled email!<br>
+                        (Backup method)
+                    </div>
+                `;
+            }
+        }
+
+        // Allow Enter key to submit (with Ctrl/Cmd)
+        document.getElementById('bugText').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                submitBug();
+            }
+        });
+
+        // Auto-focus textarea
+        document.getElementById('bugText').focus();
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

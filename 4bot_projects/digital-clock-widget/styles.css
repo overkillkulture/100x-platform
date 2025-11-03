@@ -1,0 +1,173 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Main clock container */
+.clock-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 350px;
+    transition: transform 0.3s ease;
+}
+
+.clock-container:hover {
+    transform: translateY(-5px);
+}
+
+/* Digital clock display */
+.digital-clock {
+    font-size: 4rem;
+    font-weight: 300;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    margin-bottom: 30px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+}
+
+/* Format toggle button */
+.format-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.format-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
+}
+
+.format-toggle:active {
+    transform: scale(0.98);
+}
+
+.format-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive design for tablets */
+@media (max-width: 768px) {
+    .clock-container {
+        padding: 30px;
+        min-width: 300px;
+    }
+    
+    .digital-clock {
+        font-size: 3rem;
+    }
+    
+    .format-toggle {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Responsive design for mobile phones */
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+    
+    .clock-container {
+        padding: 25px 20px;
+        min-width: 280px;
+        border-radius: 15px;
+    }
+    
+    .digital-clock {
+        font-size: 2.5rem;
+        margin-bottom: 25px;
+    }
+    
+    .format-toggle {
+        padding: 10px 18px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 320px) {
+    .digital-clock {
+        font-size: 2rem;
+        letter-spacing: 0.05em;
+    }
+    
+    .clock-container {
+        min-width: 260px;
+        padding: 20px 15px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .clock-container {
+        background: #000000;
+        border: 2px solid #ffffff;
+    }
+    
+    .digital-clock {
+        color: #ffffff;
+        text-shadow: none;
+    }
+    
+    .format-toggle {
+        background: #ffffff;
+        color: #000000;
+        border-color: #ffffff;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .clock-container,
+    .format-toggle {
+        transition: none;
+    }
+    
+    .clock-container:hover {
+        transform: none;
+    }
+    
+    .format-toggle:hover {
+        transform: none;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    }
+    
+    .digital-clock {
+        text-shadow: 0 0 25px rgba(255, 255, 255, 0.7);
+    }
+}

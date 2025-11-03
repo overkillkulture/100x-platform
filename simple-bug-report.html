@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Report a Bug</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 { color: #ff4444; margin-bottom: 10px; }
+        .subtitle { color: #666; margin-bottom: 25px; }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        textarea { min-height: 120px; resize: vertical; }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover { background: #764ba2; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        .success { background: #44ff44; color: #006600; }
+        .error { background: #ff4444; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 Report a Bug</h1>
+        <p class="subtitle">Found something broken? Tell us about it!</p>
+
+        <form id="bugForm">
+            <label>What's broken?</label>
+            <input type="text" id="title" required placeholder="e.g., Login button doesn't work">
+
+            <label>Tell us more</label>
+            <textarea id="description" required placeholder="What happened? What did you expect?"></textarea>
+
+            <label>Your email (optional)</label>
+            <input type="email" id="email" placeholder="your@email.com">
+
+            <button type="submit" id="submitBtn">Submit Bug Report</button>
+        </form>
+
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('bugForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const messageDiv = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            messageDiv.style.display = 'none';
+
+            // Get form data
+            const bugData = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                reporter: document.getElementById('email').value || 'Anonymous',
+                url: window.location.href
+            };
+
+            try {
+                // Submit to Netlify function
+                const response = await fetch('/.netlify/functions/submit-bug', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bugData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // SUCCESS!
+                    messageDiv.className = 'message success';
+                    messageDiv.textContent = `✅ Bug report submitted successfully! Issue #${result.issueNumber}`;
+                    messageDiv.style.display = 'block';
+                    form.reset();
+                } else {
+                    throw new Error(result.error || 'Submission failed');
+                }
+
+            } catch (error) {
+                // ERROR
+                messageDiv.className = 'message error';
+                messageDiv.textContent = `❌ Error: ${error.message}. Please try again or email us directly.`;
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Bug Report';
+            }
+        });
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

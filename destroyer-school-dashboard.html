@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destroyer School Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e8e8e8;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-width: 200px;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #4ade80;
+        }
+
+        .stat-label {
+            color: #b8b8b8;
+            margin-top: 0.5rem;
+        }
+
+        .waitlist-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .waitlist-entry {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .email {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4ade80;
+        }
+
+        .timestamp {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .answers-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+
+        .answer-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .answer-row:last-child {
+            border-bottom: none;
+        }
+
+        .answer-correct {
+            color: #4ade80;
+        }
+
+        .answer-wrong {
+            color: #ff4444;
+        }
+
+        .export-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 2rem;
+        }
+
+        .export-button:hover {
+            transform: scale(1.05);
+        }
+
+        .email-button {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            border-radius: 6px;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .email-button:hover {
+            background: rgba(255, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Destroyer School Dashboard</h1>
+        <p style="color: #b8b8b8; margin-bottom: 2rem;">
+            People who failed screening and want consciousness training
+        </p>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-value" id="totalWaitlist">0</div>
+                <div class="stat-label">Total Waitlist</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="withEmail">0</div>
+                <div class="stat-label">With Email</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalFailed">0</div>
+                <div class="stat-label">Total Failed Screening</div>
+            </div>
+        </div>
+
+        <button class="export-button" onclick="exportWaitlist()">
+            📥 Export All Emails (CSV)
+        </button>
+
+        <div class="waitlist-section">
+            <h2 style="margin-bottom: 1.5rem; color: #fff;">Waitlist Entries</h2>
+            <div id="waitlistEntries">
+                <!-- Entries loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questionText = {
+            '1': 'Is everything that happened to you your fault?',
+            '2': 'Do you deserve to be treated with respect by law enforcement?',
+            '3': 'Are you ready to hold them accountable for what they did?',
+            '4': 'Will you tell the complete truth, even if it\'s difficult?',
+            '5': 'Is this a real incident that actually happened to you?'
+        };
+
+        const correctAnswers = {
+            '1': 'no',
+            '2': 'yes',
+            '3': 'yes',
+            '4': 'yes',
+            '5': 'yes'
+        };
+
+        function loadDashboard() {
+            const waitlist = JSON.parse(localStorage.getItem('destroyer_school_waitlist') || '[]');
+            const deniedLog = JSON.parse(localStorage.getItem('denied_access_log') || '[]');
+
+            // Update stats
+            document.getElementById('totalWaitlist').textContent = waitlist.length;
+            document.getElementById('withEmail').textContent = waitlist.filter(e => e.email).length;
+            document.getElementById('totalFailed').textContent = deniedLog.length;
+
+            // Render entries
+            const entriesContainer = document.getElementById('waitlistEntries');
+            if (waitlist.length === 0) {
+                entriesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 2rem;">No waitlist entries yet.</p>';
+                return;
+            }
+
+            entriesContainer.innerHTML = '';
+            waitlist.forEach((entry, index) => {
+                // Find matching denied log entry
+                const logEntry = deniedLog.find(e => e.id === entry.destroyer_log_id);
+
+                const entryDiv = document.createElement('div');
+                entryDiv.className = 'waitlist-entry';
+
+                let answersHTML = '';
+                if (logEntry && logEntry.answers) {
+                    answersHTML = '<div class="answers-section"><strong>Screening Answers:</strong>';
+                    for (let q in logEntry.answers) {
+                        const userAnswer = logEntry.answers[q];
+                        const isCorrect = userAnswer === correctAnswers[q];
+                        const answerClass = isCorrect ? 'answer-correct' : 'answer-wrong';
+
+                        answersHTML += `
+                            <div class="answer-row">
+                                <span>${questionText[q]}</span>
+                                <span class="${answerClass}">${userAnswer.toUpperCase()} ${isCorrect ? '✓' : '✗'}</span>
+                            </div>
+                        `;
+                    }
+                    answersHTML += '</div>';
+                }
+
+                entryDiv.innerHTML = `
+                    <div class="entry-header">
+                        <div>
+                            <div class="email">${entry.email || 'No email provided'}</div>
+                            <div class="timestamp">${new Date(entry.timestamp).toLocaleString()}</div>
+                        </div>
+                    </div>
+                    ${answersHTML}
+                    <button class="email-button" onclick="copyEmail('${entry.email}')">
+                        📧 Copy Email
+                    </button>
+                `;
+
+                entriesContainer.appendChild(entryDiv);
+            });
+        }
+
+        function exportWaitlist() {
+            const waitlist = JSON.parse(localStorage.getItem('destroyer_school_waitlist') || '[]');
+
+            if (waitlist.length === 0) {
+                alert('No emails to export');
+                return;
+            }
+
+            // Create CSV
+            let csv = 'Email,Timestamp,Source\n';
+            waitlist.forEach(entry => {
+                csv += `${entry.email},${entry.timestamp},${entry.source}\n`;
+            });
+
+            // Download
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `destroyer_school_waitlist_${Date.now()}.csv`;
+            a.click();
+
+            alert(`✅ Exported ${waitlist.length} emails!`);
+        }
+
+        function copyEmail(email) {
+            navigator.clipboard.writeText(email).then(() => {
+                alert(`✅ Copied: ${email}`);
+            });
+        }
+
+        // Load on page load
+        loadDashboard();
+
+        // Refresh every 10 seconds
+        setInterval(loadDashboard, 10000);
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

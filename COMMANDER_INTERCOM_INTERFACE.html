@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commander Intercom - Talk to Beta Testers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #00ff88;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff88;
+        }
+
+        .subtitle {
+            text-align: center;
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        .split-view {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            height: calc(100vh - 150px);
+        }
+
+        .sidebar {
+            background: rgba(0, 20, 0, 0.9);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .conversation-list {
+            list-style: none;
+        }
+
+        .conversation-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .conversation-item:hover {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: #00ff88;
+        }
+
+        .conversation-item.active {
+            background: rgba(0, 255, 136, 0.3);
+            border-color: #00ff88;
+        }
+
+        .chat-area {
+            background: rgba(0, 20, 0, 0.9);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            max-width: 70%;
+        }
+
+        .message.user {
+            background: rgba(0, 100, 255, 0.2);
+            border: 1px solid rgba(0, 100, 255, 0.5);
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message.commander {
+            background: rgba(255, 100, 0, 0.2);
+            border: 1px solid rgba(255, 100, 0, 0.5);
+        }
+
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .message-text {
+            line-height: 1.5;
+        }
+
+        .message-time {
+            font-size: 10px;
+            opacity: 0.5;
+            margin-top: 5px;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid rgba(0, 255, 136, 0.3);
+            display: flex;
+            gap: 10px;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 5px;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+            height: 80px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.online {
+            background: #00ff88;
+        }
+
+        .status-indicator.offline {
+            background: #ff0000;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .new-conversation-btn {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .ai-bridge-panel {
+            background: rgba(0, 100, 255, 0.1);
+            border: 2px solid rgba(0, 100, 255, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .ai-select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 5px;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 COMMANDER INTERCOM 🎮</h1>
+        <p class="subtitle">Talk to beta testers & collaborate with other Claude instances</p>
+
+        <div class="split-view">
+            <!-- Sidebar: Conversation List -->
+            <div class="sidebar">
+                <button class="new-conversation-btn" onclick="createNewConversation()">
+                    ➕ NEW CONVERSATION
+                </button>
+
+                <h3 style="margin-bottom: 15px;">ACTIVE CHATS</h3>
+                <ul class="conversation-list" id="conversationList">
+                    <li class="conversation-item" onclick="selectConversation('demo')">
+                        <div><span class="status-indicator online"></span>Demo User</div>
+                        <div style="font-size: 12px; opacity: 0.5;">Click to open</div>
+                    </li>
+                </ul>
+
+                <!-- Claude-to-Claude Bridge -->
+                <div class="ai-bridge-panel">
+                    <h4 style="margin-bottom: 10px;">🤖 TALK TO OTHER CLAUDE</h4>
+                    <select class="ai-select" id="aiSelect">
+                        <option value="c1">C1 Mechanic (The Body)</option>
+                        <option value="c2" selected>C2 Architect (The Mind)</option>
+                        <option value="c3">C3 Oracle (The Soul)</option>
+                    </select>
+                    <button onclick="talkToClaude()" style="width: 100%;">MESSAGE CLAUDE</button>
+                </div>
+            </div>
+
+            <!-- Main Chat Area -->
+            <div class="chat-area">
+                <div class="chat-header">
+                    <h2 id="chatHeader">Select a conversation</h2>
+                    <p style="opacity: 0.5; font-size: 12px;" id="chatSubheader">Choose from sidebar or create new</p>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div style="text-align: center; opacity: 0.5; padding: 50px;">
+                        No conversation selected
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <textarea id="messageInput" placeholder="Type your message..."></textarea>
+                    <button onclick="sendMessage()">SEND</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const INTERCOM_API = 'http://localhost:7001';
+        const AI_BRIDGE_API = 'http://localhost:8889';
+        let currentConversation = null;
+
+        // Load conversations on startup
+        async function loadConversations() {
+            try {
+                const response = await fetch(`${INTERCOM_API}/conversations/list`);
+                const data = await response.json();
+
+                const list = document.getElementById('conversationList');
+                list.innerHTML = '';
+
+                data.conversations.forEach(conv => {
+                    const item = document.createElement('li');
+                    item.className = 'conversation-item';
+                    item.onclick = () => selectConversation(conv.id);
+                    item.innerHTML = `
+                        <div><span class="status-indicator online"></span>${conv.topic}</div>
+                        <div style="font-size: 12px; opacity: 0.5;">${conv.message_count} messages</div>
+                    `;
+                    list.appendChild(item);
+                });
+            } catch (error) {
+                console.log('Intercom offline:', error);
+            }
+        }
+
+        async function selectConversation(convId) {
+            currentConversation = convId;
+            document.getElementById('chatHeader').textContent = `Conversation: ${convId}`;
+            // Load messages for this conversation
+            // TODO: Fetch actual messages from API
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add message to UI
+            const messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.innerHTML += `
+                <div class="message commander">
+                    <div class="message-sender">COMMANDER</div>
+                    <div class="message-text">${message}</div>
+                    <div class="message-time">${new Date().toLocaleTimeString()}</div>
+                </div>
+            `;
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            input.value = '';
+
+            // Send to API
+            if (currentConversation) {
+                try {
+                    await fetch(`${INTERCOM_API}/conversations/${currentConversation}/send`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            from: 'commander',
+                            from_name: 'Commander',
+                            message: message
+                        })
+                    });
+                } catch (error) {
+                    console.log('Failed to send:', error);
+                }
+            }
+        }
+
+        async function talkToClaude() {
+            const aiSelect = document.getElementById('aiSelect').value;
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message) {
+                alert('Type a message first!');
+                return;
+            }
+
+            // Send to Claude API
+            try {
+                const response = await fetch(`${AI_BRIDGE_API}/chat`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        ai: aiSelect,
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+
+                // Display response
+                const messagesDiv = document.getElementById('chatMessages');
+                messagesDiv.innerHTML += `
+                    <div class="message user">
+                        <div class="message-sender">${data.ai.toUpperCase()}</div>
+                        <div class="message-text">${data.response}</div>
+                        <div class="message-time">${new Date().toLocaleTimeString()}</div>
+                    </div>
+                `;
+
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                input.value = '';
+            } catch (error) {
+                alert('AI Bridge offline. Start AI_BRIDGE_8889.py');
+            }
+        }
+
+        function createNewConversation() {
+            const topic = prompt('Conversation topic:');
+            if (topic) {
+                fetch(`${INTERCOM_API}/conversations/create`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        topic: topic,
+                        participants: ['commander']
+                    })
+                }).then(() => loadConversations());
+            }
+        }
+
+        // Enter to send
+        document.getElementById('messageInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Load on startup
+        loadConversations();
+        setInterval(loadConversations, 5000); // Refresh every 5 seconds
+    </script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

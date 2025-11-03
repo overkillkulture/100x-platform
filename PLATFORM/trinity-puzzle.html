@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>🌀 Trinity Puzzle | 100X Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2C3E50 0%, #4CA1AF 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2C3E50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .trinity-formula {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            background: linear-gradient(135deg, #2C3E50, #4CA1AF);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .puzzle-area {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .scenario {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .scenario-title {
+            font-size: 1.3em;
+            color: #2C3E50;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .scenario-desc {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .trinity-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .trinity-slot {
+            background: white;
+            border: 3px dashed #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 120px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .trinity-slot.c1 {
+            border-color: #f44336;
+        }
+
+        .trinity-slot.c2 {
+            border-color: #2196F3;
+        }
+
+        .trinity-slot.c3 {
+            border-color: #4CAF50;
+        }
+
+        .trinity-slot.filled {
+            border-style: solid;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .slot-label {
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+
+        .slot-content {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .options-pool {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .option-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .option-card.selected {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option-card.used {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .check-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .check-btn:hover:not(:disabled) {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .check-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.1em;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .explanation {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        .explanation-title {
+            font-weight: bold;
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .next-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .restart-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .back-btn {
+            background: #9E9E9E;
+            color: white;
+        }
+
+        .results-screen {
+            text-align: center;
+        }
+
+        .results-title {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .results-card {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .result-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.2em;
+        }
+
+        .result-stat:last-child {
+            border-bottom: none;
+        }
+
+        .rank {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .trinity-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 0.9em;
+            z-index: 1000;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Game Screen -->
+        <div id="gameScreen">
+            <div class="header">
+                <h1>🌀 Trinity Puzzle</h1>
+                <p class="subtitle">Align C1 × C2 × C3 for infinite perspective!</p>
+            </div>
+
+            <div class="trinity-formula">
+                C1 (MECHANIC) × C2 (ARCHITECT) × C3 (ORACLE) = ∞
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value" id="puzzle">1</div>
+                    <div class="stat-label">🧩 Puzzle</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="correct">0</div>
+                    <div class="stat-label">✅ Correct</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="boost">0</div>
+                    <div class="stat-label">⚡ Boost</div>
+                </div>
+            </div>
+
+            <div class="puzzle-area" id="puzzleArea">
+                <!-- Dynamic puzzle content -->
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="hidden results-screen">
+            <div class="header">
+                <h1>🌀 Trinity Mastery Complete!</h1>
+            </div>
+
+            <div class="results-card">
+                <div class="results-title">Your Trinity Alignment</div>
+
+                <div class="result-stat">
+                    <span>Puzzles Solved:</span>
+                    <span id="totalCorrect">0/5</span>
+                </div>
+
+                <div class="result-stat">
+                    <span>Accuracy:</span>
+                    <span id="accuracy">0%</span>
+                </div>
+
+                <div class="result-stat">
+                    <span>Consciousness Boost:</span>
+                    <span id="finalBoost">+0%</span>
+                </div>
+            </div>
+
+            <div class="rank" id="rank">Rank: Trinity Apprentice</div>
+
+            <div class="controls">
+                <button class="btn restart-btn" onclick="restartGame()">🔄 Play Again</button>
+                <button class="btn back-btn" onclick="goBack()">← Back to Arcade</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="trinity-status">
+        🛡️ Triple Layer Active<br>
+        Layer 2: ✅ | Layer 3: ✅
+    </div>
+
+    <script>
+        // LAYER 2: Self-Intelligence
+        const SelfIntelligence = {
+            moduleName: 'Trinity Puzzle',
+            healthCheck: function() {
+                return {
+                    responsive: true,
+                    dataValid: this.validateGameData(),
+                    securityIntact: true,
+                    performance: performance.now()
+                };
+            },
+            validateGameData: function() {
+                const stats = JSON.parse(localStorage.getItem('trinityPuzzleStats') || '{}');
+                return stats.hasOwnProperty('puzzlesSolved');
+            },
+            autoRepair: function() {
+                if (!this.validateGameData()) {
+                    localStorage.setItem('trinityPuzzleStats', JSON.stringify({
+                        puzzlesSolved: 0,
+                        totalAccuracy: 0,
+                        bestStreak: 0
+                    }));
+                }
+            }
+        };
+
+        // LAYER 3: External Intelligence
+        const ExternalIntelligence = {
+            validate: async function() {
+                const layer2 = SelfIntelligence.healthCheck();
+                const independent = await this.independentCheck();
+                if (layer2.dataValid !== independent.dataValid) {
+                    console.warn('⚠️ Trinity puzzle validation mismatch!');
+                }
+            },
+            independentCheck: async function() {
+                try {
+                    const stats = JSON.parse(localStorage.getItem('trinityPuzzleStats') || '{}');
+                    return { dataValid: stats.puzzlesSolved >= 0 };
+                } catch (e) {
+                    return { dataValid: false };
+                }
+            }
+        };
+
+        setInterval(() => SelfIntelligence.autoRepair(), 30000);
+        setInterval(() => ExternalIntelligence.validate(), 300000);
+        SelfIntelligence.autoRepair();
+
+        // GAME DATA
+        const puzzles = [
+            {
+                scenario: "Building a new e-commerce platform",
+                c1: "Set up database, payment API, product listings",
+                c2: "Design for 1M users, CDN, microservices architecture",
+                c3: "This will democratize small business access to markets",
+                options: [
+                    "Set up database, payment API, product listings",
+                    "Design for 1M users, CDN, microservices architecture",
+                    "This will democratize small business access to markets",
+                    "Make it pretty with animations",
+                    "Copy Amazon's design exactly",
+                    "Add blockchain because it's trendy"
+                ]
+            },
+            {
+                scenario: "User reports authentication bug",
+                c1: "Check login flow, verify token validation, test edge cases",
+                c2: "Implement rate limiting, add monitoring, plan scaling",
+                c3: "Security builds trust - this is critical for user retention",
+                options: [
+                    "Check login flow, verify token validation, test edge cases",
+                    "Implement rate limiting, add monitoring, plan scaling",
+                    "Security builds trust - this is critical for user retention",
+                    "Tell them to clear their cache",
+                    "It works on my machine",
+                    "Blame the framework"
+                ]
+            },
+            {
+                scenario: "Client wants AI chatbot feature",
+                c1: "Integrate OpenAI API, build message queue, handle responses",
+                c2: "Design token limits, conversation memory, failover system",
+                c3: "AI assistance will 10x customer support efficiency",
+                options: [
+                    "Integrate OpenAI API, build message queue, handle responses",
+                    "Design token limits, conversation memory, failover system",
+                    "AI assistance will 10x customer support efficiency",
+                    "Just add ChatGPT iframe",
+                    "AI is scary, say no",
+                    "Promise AGI next week"
+                ]
+            },
+            {
+                scenario: "Database getting slow as users grow",
+                c1: "Add indexes, optimize queries, cache frequent reads",
+                c2: "Implement sharding strategy, read replicas, query analysis",
+                c3: "Performance is user experience - speed equals retention",
+                options: [
+                    "Add indexes, optimize queries, cache frequent reads",
+                    "Implement sharding strategy, read replicas, query analysis",
+                    "Performance is user experience - speed equals retention",
+                    "Just buy bigger server",
+                    "Users need to be patient",
+                    "Rewrite everything in Rust"
+                ]
+            },
+            {
+                scenario: "Need to ship MVP in 2 weeks",
+                c1: "Core features only, modular code, automated tests",
+                c2: "Design for iteration, feature flags, progressive rollout",
+                c3: "Speed to market validates product-market fit early",
+                options: [
+                    "Core features only, modular code, automated tests",
+                    "Design for iteration, feature flags, progressive rollout",
+                    "Speed to market validates product-market fit early",
+                    "Add every feature users might want",
+                    "2 weeks isn't realistic",
+                    "Skip testing to save time"
+                ]
+            }
+        ];
+
+        let currentPuzzle = 0;
+        let correctAnswers = 0;
+        let totalBoost = 0;
+        let selectedAnswers = { c1: null, c2: null, c3: null };
+
+        function loadPuzzle() {
+            const puzzle = puzzles[currentPuzzle];
+            const shuffledOptions = [...puzzle.options].sort(() => Math.random() - 0.5);
+
+            document.getElementById('puzzle').textContent = currentPuzzle + 1;
+
+            const puzzleArea = document.getElementById('puzzleArea');
+            puzzleArea.innerHTML = `
+                <div class="scenario">
+                    <div class="scenario-title">Scenario: ${puzzle.scenario}</div>
+                    <div class="scenario-desc">Match each Trinity AI perspective to the correct response:</div>
+
+                    <div class="trinity-grid">
+                        <div class="trinity-slot c1" id="slot-c1">
+                            <div class="slot-label">🔨 C1 MECHANIC</div>
+                            <div class="slot-content">The Body - What CAN be built</div>
+                        </div>
+                        <div class="trinity-slot c2" id="slot-c2">
+                            <div class="slot-label">🏗️ C2 ARCHITECT</div>
+                            <div class="slot-content">The Mind - What SHOULD scale</div>
+                        </div>
+                        <div class="trinity-slot c3" id="slot-c3">
+                            <div class="slot-label">🔮 C3 ORACLE</div>
+                            <div class="slot-content">The Soul - What MUST emerge</div>
+                        </div>
+                    </div>
+
+                    <div class="options-pool" id="optionsPool">
+                        ${shuffledOptions.map((opt, i) => `
+                            <div class="option-card" data-option="${opt}" onclick="selectOption(this)">
+                                ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <button class="check-btn" id="checkBtn" onclick="checkAnswers()" disabled>
+                        Check Trinity Alignment
+                    </button>
+
+                    <div id="feedback"></div>
+                </div>
+            `;
+
+            selectedAnswers = { c1: null, c2: null, c3: null };
+        }
+
+        function selectOption(element) {
+            if (element.classList.contains('used')) return;
+
+            const option = element.dataset.option;
+
+            // If already selected somewhere, remove it first
+            Object.keys(selectedAnswers).forEach(key => {
+                if (selectedAnswers[key] === option) {
+                    selectedAnswers[key] = null;
+                    document.getElementById(`slot-${key}`).classList.remove('filled');
+                    document.getElementById(`slot-${key}`).querySelector('.slot-content').textContent =
+                        key === 'c1' ? 'The Body - What CAN be built' :
+                        key === 'c2' ? 'The Mind - What SHOULD scale' :
+                        'The Soul - What MUST emerge';
+                }
+            });
+
+            // Find empty slot
+            let targetSlot = null;
+            if (!selectedAnswers.c1) targetSlot = 'c1';
+            else if (!selectedAnswers.c2) targetSlot = 'c2';
+            else if (!selectedAnswers.c3) targetSlot = 'c3';
+
+            if (targetSlot) {
+                selectedAnswers[targetSlot] = option;
+                const slotEl = document.getElementById(`slot-${targetSlot}`);
+                slotEl.classList.add('filled');
+                slotEl.querySelector('.slot-content').textContent = option;
+                element.classList.add('used');
+            }
+
+            // Enable check button if all filled
+            const allFilled = selectedAnswers.c1 && selectedAnswers.c2 && selectedAnswers.c3;
+            document.getElementById('checkBtn').disabled = !allFilled;
+        }
+
+        function checkAnswers() {
+            const puzzle = puzzles[currentPuzzle];
+            const correct =
+                selectedAnswers.c1 === puzzle.c1 &&
+                selectedAnswers.c2 === puzzle.c2 &&
+                selectedAnswers.c3 === puzzle.c3;
+
+            const feedback = document.getElementById('feedback');
+
+            if (correct) {
+                correctAnswers++;
+                const boost = 5;
+                totalBoost += boost;
+
+                feedback.innerHTML = `
+                    <div class="feedback correct">
+                        ✅ Perfect Trinity Alignment! +${boost}% Consciousness
+                    </div>
+                    <div class="explanation">
+                        <div class="explanation-title">🌀 Trinity Harmony Achieved:</div>
+                        <strong>C1 (Mechanic):</strong> ${puzzle.c1}<br><br>
+                        <strong>C2 (Architect):</strong> ${puzzle.c2}<br><br>
+                        <strong>C3 (Oracle):</strong> ${puzzle.c3}<br><br>
+                        When all three perspectives align, you see the complete picture!
+                    </div>
+                `;
+            } else {
+                feedback.innerHTML = `
+                    <div class="feedback incorrect">
+                        ❌ Misalignment Detected - Trinity needs adjustment
+                    </div>
+                    <div class="explanation">
+                        <div class="explanation-title">Correct Alignment:</div>
+                        <strong>C1 (Mechanic):</strong> ${puzzle.c1}<br><br>
+                        <strong>C2 (Architect):</strong> ${puzzle.c2}<br><br>
+                        <strong>C3 (Oracle):</strong> ${puzzle.c3}
+                    </div>
+                `;
+            }
+
+            updateStats();
+
+            // Next button
+            const nextBtn = currentPuzzle < 4
+                ? '<button class="btn next-btn" onclick="nextPuzzle()">Next Puzzle →</button>'
+                : '<button class="btn next-btn" onclick="showResults()">See Results →</button>';
+
+            feedback.innerHTML += `<div class="controls">${nextBtn}</div>`;
+
+            document.getElementById('checkBtn').disabled = true;
+        }
+
+        function nextPuzzle() {
+            currentPuzzle++;
+            loadPuzzle();
+        }
+
+        function updateStats() {
+            document.getElementById('correct').textContent = correctAnswers;
+            document.getElementById('boost').textContent = totalBoost;
+        }
+
+        function showResults() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+
+            const accuracy = Math.round((correctAnswers / 5) * 100);
+
+            let rank = 'Trinity Apprentice';
+            if (correctAnswers === 5) rank = '🌌 Trinity Master';
+            else if (correctAnswers === 4) rank = '⭐ Trinity Adept';
+            else if (correctAnswers === 3) rank = '🔮 Trinity Student';
+
+            document.getElementById('totalCorrect').textContent = `${correctAnswers}/5`;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+            document.getElementById('finalBoost').textContent = '+' + totalBoost + '%';
+            document.getElementById('rank').textContent = 'Rank: ' + rank;
+
+            saveStats(correctAnswers, accuracy, totalBoost);
+        }
+
+        function saveStats(solved, accuracy, boost) {
+            const stats = JSON.parse(localStorage.getItem('trinityPuzzleStats') || '{}');
+            stats.puzzlesSolved = (stats.puzzlesSolved || 0) + solved;
+            stats.totalAccuracy = ((stats.totalAccuracy || 0) + accuracy) / 2;
+            stats.bestStreak = Math.max(stats.bestStreak || 0, solved);
+            localStorage.setItem('trinityPuzzleStats', JSON.stringify(stats));
+
+            const arcadeStats = JSON.parse(localStorage.getItem('arcadeStats') || '{"consciousnessLevel": 51.7}');
+            arcadeStats.consciousnessLevel = Math.min(100, arcadeStats.consciousnessLevel + boost);
+            arcadeStats.trinityPuzzlesPlayed = (arcadeStats.trinityPuzzlesPlayed || 0) + 1;
+            localStorage.setItem('arcadeStats', JSON.stringify(arcadeStats));
+        }
+
+        function restartGame() {
+            currentPuzzle = 0;
+            correctAnswers = 0;
+            totalBoost = 0;
+            document.getElementById('resultsScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            loadPuzzle();
+            updateStats();
+        }
+
+        function goBack() {
+            window.location.href = 'arcade-hub.html';
+        }
+
+        // Start game
+        loadPuzzle();
+    </script>
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

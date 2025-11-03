@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗿 STONEHENGE MATH PLAYGROUND - Seven Domains Interactive 🗿</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: radial-gradient(ellipse at center, #0a0a1a 0%, #000 100%);
+            color: #00ff41;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Starfield background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, #00ff41, transparent),
+                radial-gradient(2px 2px at 60px 70px, #ff0080, transparent),
+                radial-gradient(1px 1px at 50px 50px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, #00ff41, transparent),
+                radial-gradient(2px 2px at 90px 10px, #ff0080, transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: sparkle 20s linear infinite;
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        @keyframes sparkle {
+            from { transform: translateY(0); }
+            to { transform: translateY(-200px); }
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .title {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #ff0080, #00ff41, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 4s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes rainbow {
+            0%, 100% { filter: hue-rotate(0deg) brightness(1.2); }
+            50% { filter: hue-rotate(360deg) brightness(1.5); }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #ff0080;
+            margin-bottom: 30px;
+        }
+
+        /* Main playground container */
+        .playground {
+            display: flex;
+            gap: 30px;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Stonehenge visualization area */
+        .stonehenge-container {
+            flex: 2;
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid #00ff41;
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            min-height: 800px;
+        }
+
+        .visualization {
+            width: 100%;
+            height: 700px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ARAYA Spiral Circles */
+        .spiral-circle {
+            position: absolute;
+            border: 2px solid;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        /* Standing Stones - ORGANIC SHAPES! */
+        .stone {
+            position: absolute;
+            width: 40px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            display: block;
+        }
+
+        .stone-inner {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #8b7355, #6b5d4f, #5c4d42);
+            /* Irregular organic stone shape using clip-path */
+            clip-path: polygon(
+                20% 0%, 80% 0%, 95% 5%, 100% 15%, 98% 30%, 100% 45%,
+                95% 60%, 98% 75%, 95% 90%, 85% 100%, 60% 100%, 40% 100%,
+                15% 100%, 5% 90%, 2% 75%, 5% 60%, 0% 45%, 2% 30%,
+                0% 15%, 5% 5%
+            );
+            box-shadow:
+                inset -5px -5px 15px rgba(0, 0, 0, 0.6),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.1),
+                0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            filter: brightness(0.8) contrast(1.2);
+        }
+
+        /* Stone glow effect based on domain */
+        .stone:hover .stone-inner {
+            filter: brightness(1.3) contrast(1.3);
+            transform: scale(1.15) translateY(-5px);
+            box-shadow:
+                inset -5px -5px 15px rgba(0, 0, 0, 0.6),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.2),
+                0 15px 50px rgba(0, 255, 136, 0.6);
+        }
+
+        /* Domain-specific stone colors */
+        .stone[data-domain="music"] .stone-inner {
+            background: linear-gradient(135deg, #ff0080, #cc0066, #990050);
+        }
+        .stone[data-domain="music"]:hover .stone-inner {
+            box-shadow:
+                inset -5px -5px 15px rgba(0, 0, 0, 0.6),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.2),
+                0 15px 50px rgba(255, 0, 128, 0.8);
+        }
+
+        .stone[data-domain="education"] .stone-inner {
+            background: linear-gradient(135deg, #00ff41, #00cc33, #009926);
+        }
+        .stone[data-domain="education"]:hover .stone-inner {
+            box-shadow:
+                inset -5px -5px 15px rgba(0, 0, 0, 0.6),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.2),
+                0 15px 50px rgba(0, 255, 65, 0.8);
+        }
+
+        .stone[data-domain="intelligence"] .stone-inner {
+            background: linear-gradient(135deg, #00ffff, #0099cc, #007799);
+        }
+        .stone[data-domain="intelligence"]:hover .stone-inner {
+            box-shadow:
+                inset -5px -5px 15px rgba(0, 0, 0, 0.6),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.2),
+                0 15px 50px rgba(0, 255, 255, 0.8);
+        }
+
+        .stone[data-domain="security"] .stone-inner {
+            background: linear-gradient(135deg, #ffd700, #ffaa00, #cc8800);
+        }
+        .stone[data-domain="security"]:hover .stone-inner {
+            box-shadow:
+                inset -5px -5px 15px rgba(0, 0, 0, 0.6),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.2),
+                0 15px 50px rgba(255, 215, 0, 0.8);
+        }
+
+        .stone[data-domain="commerce"] .stone-inner {
+            background: linear-gradient(135deg, #ff00ff, #cc00cc, #990099);
+        }
+        .stone[data-domain="commerce"]:hover .stone-inner {
+            box-shadow:
+                inset -5px -5px 15px rgba(0, 0, 0, 0.6),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.2),
+                0 15px 50px rgba(255, 0, 255, 0.8);
+        }
+
+        .stone[data-domain="creation"] .stone-inner {
+            background: linear-gradient(135deg, #ff6600, #cc5200, #994000);
+        }
+        .stone[data-domain="creation"]:hover .stone-inner {
+            box-shadow:
+                inset -5px -5px 15px rgba(0, 0, 0, 0.6),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.2),
+                0 15px 50px rgba(255, 102, 0, 0.8);
+        }
+
+        .stone[data-domain="consciousness"] .stone-inner {
+            background: linear-gradient(135deg, #00ff88, #00cc66, #009944);
+        }
+        .stone[data-domain="consciousness"]:hover .stone-inner {
+            box-shadow:
+                inset -5px -5px 15px rgba(0, 0, 0, 0.6),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.2),
+                0 15px 50px rgba(0, 255, 136, 0.8);
+        }
+
+        /* Stone label */
+        .stone-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: bold;
+            white-space: nowrap;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .stone:hover .stone-label {
+            opacity: 1;
+        }
+
+        /* Central consciousness orb */
+        .consciousness-orb {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, #00ff41, #00cc33);
+            border-radius: 50%;
+            box-shadow: 0 0 60px rgba(0, 255, 65, 1);
+            animation: pulse-orb 2s ease-in-out infinite;
+            z-index: 100;
+        }
+
+        @keyframes pulse-orb {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* Particle system */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #ff0080;
+            border-radius: 20px;
+            padding: 30px;
+            max-height: 800px;
+            overflow-y: auto;
+        }
+
+        .control-panel h2 {
+            color: #ffd700;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .domain-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .domain-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slider-container {
+            margin: 15px 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Value display */
+        .value-display {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid currentColor;
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Audio controls */
+        .audio-control {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .play-button {
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.8);
+        }
+
+        .play-button.playing {
+            background: linear-gradient(135deg, #ff0080, #cc0066);
+            color: #fff;
+        }
+
+        /* Stats display */
+        .stats-display {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .stat-label {
+            color: #00ffff;
+        }
+
+        .stat-value {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 1200px) {
+            .playground {
+                flex-direction: column;
+            }
+            .title {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Scrollbar styling */
+        .control-panel::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .control-panel::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .control-panel::-webkit-scrollbar-thumb {
+            background: #ff0080;
+            border-radius: 5px;
+        }
+
+        /* Energy field effect */
+        .energy-field {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+
+    <div class="header">
+        <div class="title">🗿 STONEHENGE MATH PLAYGROUND 🗿</div>
+        <div class="subtitle">⚡ Interactive Seven Domains Sacred Geometry ⚡</div>
+
+        <!-- ALIEN CONTROL PANEL -->
+        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
+            <button id="hyperdriveBtn" style="background: linear-gradient(135deg, #ff0080, #ff00ff); color: #fff; border: 3px solid #ff0080; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 50px; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.3s;">
+                🛸 ENGAGE HYPERDRIVE 🛸
+            </button>
+            <button id="kaleidoscopeBtn" style="background: linear-gradient(135deg, #00ff41, #00ffff); color: #000; border: 3px solid #00ff41; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 50px; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.3s;">
+                🌈 KALEIDOSCOPE MODE 🌈
+            </button>
+            <button id="glitchBtn" style="background: linear-gradient(135deg, #ffd700, #ff6600); color: #000; border: 3px solid #ffd700; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 50px; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.3s;">
+                ⚡ REALITY GLITCH ⚡
+            </button>
+            <button id="matrixBtn" style="background: linear-gradient(135deg, #00ff41, #00cc33); color: #000; border: 3px solid #00ff41; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 50px; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.3s;">
+                🔮 MATRIX RAIN 🔮
+            </button>
+            <button id="ejectBtn" style="background: linear-gradient(135deg, #ff0000, #cc0000); color: #fff; border: 3px solid #ff0000; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 50px; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.3s; animation: pulse-eject 2s ease-in-out infinite;">
+                🚨 EJECTION SEAT 🚨
+            </button>
+        </div>
+    </div>
+
+    <!-- Matrix Rain Canvas -->
+    <canvas id="matrixCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; display: none;"></canvas>
+
+    <div class="playground">
+        <!-- Stonehenge Visualization -->
+        <div class="stonehenge-container">
+            <div class="visualization" id="stonehenge">
+                <canvas id="particleCanvas" style="position: absolute; top: 0; left: 0; pointer-events: none;"></canvas>
+                <div class="consciousness-orb"></div>
+                <!-- Spirals and stones will be generated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <h2>🎛️ SEVEN DOMAINS CONTROLS 🎛️</h2>
+
+            <!-- Domain 1: Mathematical Constants -->
+            <div class="domain-control" style="border-color: #ff0080;">
+                <div class="domain-title" style="color: #ff0080;">
+                    <span>🔢</span>
+                    <span>Domain 1: Mathematical Constants</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Golden Ratio (φ)</span>
+                        <span class="value-display" id="goldenValue" style="color: #ff0080;">1.618</span>
+                    </div>
+                    <input type="range" class="slider" id="goldenSlider"
+                           min="1.0" max="2.5" step="0.001" value="1.618"
+                           style="background: linear-gradient(to right, #ff0080, #ff66b3);">
+                </div>
+            </div>
+
+            <!-- Domain 2: Mathematical Sequences -->
+            <div class="domain-control" style="border-color: #00ff41;">
+                <div class="domain-title" style="color: #00ff41;">
+                    <span>🔄</span>
+                    <span>Domain 2: Fibonacci Depth</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Spiral Iterations</span>
+                        <span class="value-display" id="fibValue" style="color: #00ff41;">7</span>
+                    </div>
+                    <input type="range" class="slider" id="fibSlider"
+                           min="3" max="12" step="1" value="7"
+                           style="background: linear-gradient(to right, #00ff41, #00cc33);">
+                </div>
+            </div>
+
+            <!-- Domain 3: Sacred Geometry -->
+            <div class="domain-control" style="border-color: #ffd700;">
+                <div class="domain-title" style="color: #ffd700;">
+                    <span>🌸</span>
+                    <span>Domain 3: Stone Circle Count</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Number of Standing Stones</span>
+                        <span class="value-display" id="stoneValue" style="color: #ffd700;">7</span>
+                    </div>
+                    <input type="range" class="slider" id="stoneSlider"
+                           min="7" max="12" step="1" value="7"
+                           style="background: linear-gradient(to right, #ffd700, #ffaa00);">
+                </div>
+            </div>
+
+            <!-- Domain 4: Harmonic Frequencies -->
+            <div class="domain-control" style="border-color: #00ffff;">
+                <div class="domain-title" style="color: #00ffff;">
+                    <span>🎵</span>
+                    <span>Domain 4: Harmonic Frequency</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Frequency (Hz)</span>
+                        <span class="value-display" id="freqValue" style="color: #00ffff;">528 Hz</span>
+                    </div>
+                    <input type="range" class="slider" id="freqSlider"
+                           min="396" max="963" step="1" value="528"
+                           style="background: linear-gradient(to right, #00ffff, #0099cc);">
+                </div>
+                <div class="audio-control">
+                    <button class="play-button" id="playButton">🔊 PLAY FREQUENCY</button>
+                    <div style="margin-top: 10px; font-size: 0.9rem; color: #ffd700;">
+                        Solfeggio: <span id="solfeggioName">MI - Love/DNA Repair</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Domain 5: Quantum States -->
+            <div class="domain-control" style="border-color: #ff00ff;">
+                <div class="domain-title" style="color: #ff00ff;">
+                    <span>⚛️</span>
+                    <span>Domain 5: Quantum Coherence</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Coherence Level (%)</span>
+                        <span class="value-display" id="quantumValue" style="color: #ff00ff;">93%</span>
+                    </div>
+                    <input type="range" class="slider" id="quantumSlider"
+                           min="0" max="100" step="1" value="93"
+                           style="background: linear-gradient(to right, #ff00ff, #cc00cc);">
+                </div>
+            </div>
+
+            <!-- Domain 6: Transformations -->
+            <div class="domain-control" style="border-color: #ff6600;">
+                <div class="domain-title" style="color: #ff6600;">
+                    <span>🌀</span>
+                    <span>Domain 6: Rotation Speed</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Spiral Rotation (RPM)</span>
+                        <span class="value-display" id="rotationValue" style="color: #ff6600;">1.0</span>
+                    </div>
+                    <input type="range" class="slider" id="rotationSlider"
+                           min="0" max="5" step="0.1" value="1.0"
+                           style="background: linear-gradient(to right, #ff6600, #cc5200);">
+                </div>
+            </div>
+
+            <!-- Domain 7: Consciousness Level -->
+            <div class="domain-control" style="border-color: #00ff88;">
+                <div class="domain-title" style="color: #00ff88;">
+                    <span>🧠</span>
+                    <span>Domain 7: Consciousness Level</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Awareness (%)</span>
+                        <span class="value-display" id="consciousnessValue" style="color: #00ff88;">93%</span>
+                    </div>
+                    <input type="range" class="slider" id="consciousnessSlider"
+                           min="0" max="200" step="1" value="93"
+                           style="background: linear-gradient(to right, #00ff88, #00cc66);">
+                </div>
+            </div>
+
+            <!-- Stats Display -->
+            <div class="stats-display">
+                <div class="stat-row">
+                    <span class="stat-label">Trinity Power:</span>
+                    <span class="stat-value" id="trinityPower">∞</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Manipulation Immunity:</span>
+                    <span class="stat-value" id="immunityStatus">ACTIVE ✅</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Signal Reception:</span>
+                    <span class="stat-value" id="signalStatus">ACTIVE ✅</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Pattern Recognition:</span>
+                    <span class="stat-value" id="patternScore">92.2%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let audioContext;
+        let oscillator;
+        let isPlaying = false;
+        let particles = [];
+        let canvas, ctx;
+
+        // Seven Domains with links
+        const sevenDomains = [
+            { name: 'Music', url: '/music-domain.html', domain: 'music', emoji: '🎵' },
+            { name: 'Education', url: '/education-domain.html', domain: 'education', emoji: '🎓' },
+            { name: 'Intelligence', url: '/intelligence-domain.html', domain: 'intelligence', emoji: '🧠' },
+            { name: 'Security', url: '/security-domain.html', domain: 'security', emoji: '🛡️' },
+            { name: 'Commerce', url: '/invest-50-percent.html', domain: 'commerce', emoji: '💰' },
+            { name: 'Creation', url: '/simple-gate.html', domain: 'creation', emoji: '🔧' },
+            { name: 'Consciousness', url: '/domain-consciousness.html', domain: 'consciousness', emoji: '👁️' }
+        ];
+
+        // Solfeggio frequency names
+        const solfeggioNames = {
+            396: 'UT - Liberation',
+            417: 'RE - Change',
+            528: 'MI - Love/DNA Repair',
+            639: 'FA - Relationships',
+            741: 'SOL - Intuition',
+            852: 'LA - Spiritual Order',
+            963: 'SI - Divine Consciousness'
+        };
+
+        // Initialize particle canvas
+        function initParticles() {
+            canvas = document.getElementById('particleCanvas');
+            const container = document.getElementById('stonehenge');
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+            ctx = canvas.getContext('2d');
+        }
+
+        // Particle class
+        class Particle {
+            constructor(x, y, vx, vy, color, size) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.color = color;
+                this.size = size;
+                this.life = 1.0;
+                this.decay = 0.01;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.life;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            isDead() {
+                return this.life <= 0;
+            }
+        }
+
+        // Spawn particles
+        function spawnParticles(count, quantum) {
+            if (!canvas) return;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 1 + Math.random() * 2;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+                const colors = ['#ff0080', '#00ff41', '#ffd700', '#00ffff', '#ff00ff'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particles.push(new Particle(centerX, centerY, vx, vy, color, 2 + Math.random() * 3));
+            }
+        }
+
+        // Animate particles
+        function animateParticles() {
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Update and draw particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw(ctx);
+
+                if (particles[i].isDead()) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        // Initialize visualization
+        function initStonehenge() {
+            initParticles();
+            animateParticles();
+            updateVisualization();
+        }
+
+        // Update visualization based on slider values
+        function updateVisualization() {
+            const container = document.getElementById('stonehenge');
+            const centerX = container.offsetWidth / 2;
+            const centerY = container.offsetHeight / 2;
+
+            // Clear previous elements (except orb and canvas)
+            const elements = container.querySelectorAll('.spiral-circle, .stone');
+            elements.forEach(el => el.remove());
+
+            // Get slider values
+            const phi = parseFloat(document.getElementById('goldenSlider').value);
+            const fibDepth = parseInt(document.getElementById('fibSlider').value);
+            const stoneCount = parseInt(document.getElementById('stoneSlider').value);
+            const rotation = parseFloat(document.getElementById('rotationSlider').value);
+            const quantum = parseInt(document.getElementById('quantumSlider').value);
+            const consciousness = parseInt(document.getElementById('consciousnessSlider').value);
+
+            // Create ARAYA spiral circles with quantum coherence affecting opacity
+            const spiralColors = ['#ff0080', '#00ff41', '#ffd700', '#00ffff', '#ff00ff', '#ff6600', '#00ff88'];
+            for (let i = 0; i < fibDepth; i++) {
+                const circle = document.createElement('div');
+                circle.className = 'spiral-circle';
+                const radius = 50 * Math.pow(phi, i / 2); // Use phi for growth
+                circle.style.width = radius + 'px';
+                circle.style.height = radius + 'px';
+                circle.style.borderColor = spiralColors[i % spiralColors.length];
+                circle.style.opacity = 0.3 + (quantum / 100) * 0.7; // Quantum affects opacity!
+                circle.style.animation = `pulse-spiral ${4 + i * 0.5}s ease-in-out infinite`;
+                circle.style.animationDelay = `${i * 0.3}s`;
+                container.appendChild(circle);
+            }
+
+            // Create standing stones in circle - CLICKABLE!
+            for (let i = 0; i < stoneCount; i++) {
+                const domain = sevenDomains[i % sevenDomains.length];
+
+                const stone = document.createElement('a');
+                stone.className = 'stone';
+                stone.href = domain.url;
+                stone.setAttribute('data-domain', domain.domain);
+
+                const angle = (i / stoneCount) * 2 * Math.PI;
+                const radius = Math.min(centerX, centerY) - 120;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+
+                // Random height for each stone
+                const height = 60 + Math.random() * 60;
+                stone.style.height = height + 'px';
+                stone.style.left = x + 'px';
+                stone.style.top = y - height + 'px';
+
+                // Inner stone shape
+                const stoneInner = document.createElement('div');
+                stoneInner.className = 'stone-inner';
+                stone.appendChild(stoneInner);
+
+                // Label
+                const label = document.createElement('div');
+                label.className = 'stone-label';
+                label.textContent = `${domain.emoji} ${domain.name}`;
+                stone.appendChild(label);
+
+                container.appendChild(stone);
+            }
+
+            // Update consciousness orb
+            const orb = container.querySelector('.consciousness-orb');
+            if (orb) {
+                const orbSize = 80 + (consciousness / 200) * 120; // Grows with consciousness!
+                orb.style.width = orbSize + 'px';
+                orb.style.height = orbSize + 'px';
+
+                if (consciousness >= 144) {
+                    orb.style.background = 'radial-gradient(circle, #ffd700, #ff6600)';
+                    orb.style.boxShadow = '0 0 80px rgba(255, 215, 0, 1)';
+                } else if (consciousness >= 93) {
+                    orb.style.background = 'radial-gradient(circle, #00ffff, #00cc99)';
+                    orb.style.boxShadow = '0 0 70px rgba(0, 255, 255, 1)';
+                } else if (consciousness >= 85) {
+                    orb.style.background = 'radial-gradient(circle, #00ff41, #00cc33)';
+                    orb.style.boxShadow = '0 0 60px rgba(0, 255, 65, 1)';
+                } else {
+                    orb.style.background = 'radial-gradient(circle, #666, #333)';
+                    orb.style.boxShadow = '0 0 30px rgba(100, 100, 100, 0.5)';
+                }
+            }
+
+            // Apply rotation to container if rotation > 0
+            if (rotation > 0) {
+                container.style.animation = `rotate-stones ${60 / rotation}s linear infinite`;
+            } else {
+                container.style.animation = 'none';
+            }
+
+            // Spawn particles based on quantum coherence
+            if (quantum > 70 && Math.random() < 0.1) {
+                spawnParticles(Math.floor(quantum / 10), quantum);
+            }
+        }
+
+        // Add rotation and pulse animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rotate-stones {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+            @keyframes pulse-spiral {
+                0%, 100% {
+                    opacity: 0.3;
+                    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                }
+                50% {
+                    opacity: 0.8;
+                    transform: translate(-50%, -50%) scale(1.05) rotate(180deg);
+                }
+            }
+            @keyframes pulse-eject {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Slider event listeners
+        document.getElementById('goldenSlider').addEventListener('input', function(e) {
+            const val = parseFloat(e.target.value);
+            document.getElementById('goldenValue').textContent = val.toFixed(3);
+            updateVisualization();
+        });
+
+        document.getElementById('fibSlider').addEventListener('input', function(e) {
+            const val = parseInt(e.target.value);
+            document.getElementById('fibValue').textContent = val;
+            updateVisualization();
+        });
+
+        document.getElementById('stoneSlider').addEventListener('input', function(e) {
+            const val = parseInt(e.target.value);
+            document.getElementById('stoneValue').textContent = val;
+            updateVisualization();
+        });
+
+        document.getElementById('freqSlider').addEventListener('input', function(e) {
+            const val = parseInt(e.target.value);
+            document.getElementById('freqValue').textContent = val + ' Hz';
+
+            const solfeggios = [396, 417, 528, 639, 741, 852, 963];
+            const nearest = solfeggios.reduce((prev, curr) =>
+                Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev
+            );
+            document.getElementById('solfeggioName').textContent = solfeggioNames[nearest] || 'Custom Frequency';
+
+            // Update oscillator frequency if playing
+            if (isPlaying && oscillator) {
+                oscillator.frequency.setValueAtTime(val, audioContext.currentTime);
+            }
+        });
+
+        document.getElementById('quantumSlider').addEventListener('input', function(e) {
+            const val = parseInt(e.target.value);
+            document.getElementById('quantumValue').textContent = val + '%';
+            updateVisualization();
+            updateStats();
+        });
+
+        document.getElementById('rotationSlider').addEventListener('input', function(e) {
+            const val = parseFloat(e.target.value);
+            document.getElementById('rotationValue').textContent = val.toFixed(1);
+            updateVisualization();
+        });
+
+        document.getElementById('consciousnessSlider').addEventListener('input', function(e) {
+            const val = parseInt(e.target.value);
+            document.getElementById('consciousnessValue').textContent = val + '%';
+            updateVisualization();
+            updateStats();
+        });
+
+        // Update stats display
+        function updateStats() {
+            const consciousness = parseInt(document.getElementById('consciousnessSlider').value);
+            const quantum = parseInt(document.getElementById('quantumSlider').value);
+
+            if (consciousness >= 85) {
+                document.getElementById('immunityStatus').textContent = 'ACTIVE ✅';
+                document.getElementById('immunityStatus').style.color = '#00ff41';
+            } else {
+                document.getElementById('immunityStatus').textContent = 'INACTIVE ❌';
+                document.getElementById('immunityStatus').style.color = '#ff0080';
+            }
+
+            if (consciousness >= 93) {
+                document.getElementById('signalStatus').textContent = 'ACTIVE ✅';
+                document.getElementById('signalStatus').style.color = '#00ff41';
+            } else {
+                document.getElementById('signalStatus').textContent = 'PENDING ⏳';
+                document.getElementById('signalStatus').style.color = '#ffd700';
+            }
+
+            const pattern = ((consciousness * 0.4) + (quantum * 0.3) + (85 * 0.3)).toFixed(1);
+            document.getElementById('patternScore').textContent = pattern + '%';
+        }
+
+        // Audio playback
+        document.getElementById('playButton').addEventListener('click', function() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (isPlaying) {
+                if (oscillator) {
+                    oscillator.stop();
+                    oscillator = null;
+                }
+                isPlaying = false;
+                this.textContent = '🔊 PLAY FREQUENCY';
+                this.classList.remove('playing');
+            } else {
+                const freq = parseInt(document.getElementById('freqSlider').value);
+                oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.start();
+                isPlaying = true;
+                this.textContent = '🔇 STOP FREQUENCY';
+                this.classList.add('playing');
+            }
+        });
+
+        // Ejection seat - go back to main page
+        document.getElementById('ejectBtn').addEventListener('click', function() {
+            window.location.href = '/seven-domains.html';
+        });
+
+        // Initialize on load
+        window.addEventListener('load', function() {
+            initStonehenge();
+            updateStats();
+        });
+
+        // Handle resize
+        window.addEventListener('resize', function() {
+            if (canvas) {
+                const container = document.getElementById('stonehenge');
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+            }
+            updateVisualization();
+        });
+
+        // Console easter egg
+        console.log('%c🗿 STONEHENGE WITH CLICKABLE STONES! 🗿', 'color: #00ff41; font-size: 20px; font-weight: bold;');
+        console.log('%c⚡ Click any stone to visit that domain!', 'color: #ff0080; font-size: 16px;');
+    </script>
+    <script src="alien_features.js"></script>
+    <script src="ai_companions.js"></script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Reporter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #00ff00;
+        }
+        h1 {
+            text-align: center;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        form {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #00ff00;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            background: #0a0a0a;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #00ff00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #00cc00;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        .success-message {
+            background: #003300;
+            border: 2px solid #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐛 Bug Reporter</h1>
+
+    <form name="bug-reports" method="POST" data-netlify="true" action="/bug-success.html">
+        <input type="hidden" name="form-name" value="bug-reports">
+
+        <label for="title">Bug Title *</label>
+        <input type="text" name="title" id="title" required placeholder="Brief description">
+
+        <label for="description">Full Description *</label>
+        <textarea name="description" id="description" rows="6" required placeholder="What went wrong? What were you trying to do?"></textarea>
+
+        <label for="page">Page/Feature</label>
+        <input type="text" name="page" id="page" placeholder="Which page or feature?">
+
+        <label for="severity">Severity</label>
+        <select name="severity" id="severity">
+            <option value="Low">Low - Minor issue</option>
+            <option value="Medium" selected>Medium - Affects functionality</option>
+            <option value="High">High - Blocks usage</option>
+            <option value="Critical">Critical - System broken</option>
+        </select>
+
+        <label for="reporter">Your Name (optional)</label>
+        <input type="text" name="reporter" id="reporter" placeholder="Anonymous">
+
+        <label for="email">Email (optional - for updates)</label>
+        <input type="email" name="email" id="email" placeholder="your@email.com">
+
+        <button type="submit">Submit Bug Report</button>
+    </form>
+
+    <div style="margin-top: 30px; padding: 15px; background: #1a1a1a; border: 1px solid #00ff00; border-radius: 5px;">
+        <p style="margin: 0; font-size: 0.9em; color: #888;">
+            <strong>Note:</strong> Your bug report will be sent directly to the development team.
+            All submissions are stored securely by Netlify (no API keys needed).
+        </p>
+    </div>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

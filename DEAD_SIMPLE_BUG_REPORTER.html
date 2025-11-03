@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Report a Bug - DEAD SIMPLE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 40px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            margin: 20px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 What's Wrong?</h1>
+        <p>Type your bug report below. Be as specific as possible.</p>
+
+        <textarea id="bugText" placeholder="Example: When I click the logout button, nothing happens"></textarea>
+
+        <button onclick="submitBug()">Submit Bug Report</button>
+
+        <div id="status" class="status"></div>
+
+        <p style="color: #666; font-size: 14px; margin-top: 20px;">
+            Your bug will be saved to:<br>
+            <code>C:\Users\dwrek\100X_DEPLOYMENT\BUGS.txt</code>
+        </p>
+    </div>
+
+    <script>
+    function submitBug() {
+        const text = document.getElementById('bugText').value;
+        const status = document.getElementById('status');
+
+        if (!text.trim()) {
+            alert('Please describe the problem!');
+            return;
+        }
+
+        // Get user info
+        const currentUser = localStorage.getItem('current_user') ||
+                           localStorage.getItem('beta_user_email') ||
+                           'Anonymous';
+
+        const timestamp = new Date().toISOString();
+        const bugEntry = `[${timestamp}] [${currentUser}] ${text}\n`;
+
+        // Save to localStorage as backup
+        const existingBugs = localStorage.getItem('bugs_simple') || '';
+        localStorage.setItem('bugs_simple', existingBugs + bugEntry);
+
+        // Try to write to file using various methods
+        saveBugToFile(bugEntry);
+
+        // Show success message
+        status.className = 'status success';
+        status.textContent = '✅ Bug saved! Thank you for reporting.';
+
+        // Clear form
+        document.getElementById('bugText').value = '';
+
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+            status.style.display = 'none';
+        }, 3000);
+    }
+
+    function saveBugToFile(bugEntry) {
+        // Method 1: Try API if available
+        fetch('http://localhost:8013/api/bug-report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                description: bugEntry,
+                timestamp: new Date().toISOString()
+            })
+        }).catch(() => {
+            console.log('API not available, saved to localStorage only');
+        });
+
+        // Method 2: Copy to clipboard for manual paste
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(bugEntry).then(() => {
+                console.log('Bug also copied to clipboard for manual paste');
+            });
+        }
+
+        // Method 3: Download as file
+        const blob = new Blob([bugEntry], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `bug_${Date.now()}.txt`;
+        // Uncomment below to auto-download each bug
+        // a.click();
+        window.URL.revokeObjectURL(url);
+    }
+    </script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

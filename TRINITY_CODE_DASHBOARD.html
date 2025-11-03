@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trinity Code Dashboard - Real-Time Project Status</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .main-header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+
+        .main-header h1 {
+            font-size: 2.5em;
+            text-shadow: 0 0 20px #00ff00;
+            margin-bottom: 10px;
+        }
+
+        .trinity-status {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .trinity-panel {
+            background: #1a1a1a;
+            border: 2px solid;
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .trinity-panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 30px rgba(0, 255, 0, 0.5);
+        }
+
+        .c1-panel {
+            border-color: #00aaff;
+        }
+
+        .c2-panel {
+            border-color: #ffaa00;
+        }
+
+        .c3-panel {
+            border-color: #aa00ff;
+        }
+
+        .panel-header {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+
+        .status-indicator {
+            font-size: 3em;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .feature-list {
+            background: #0a0a0a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            background: #1a1a1a;
+            border: 2px solid;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateX(10px);
+        }
+
+        .feature-card.not-started {
+            border-color: #ff0000;
+        }
+
+        .feature-card.in-progress {
+            border-color: #ffff00;
+        }
+
+        .feature-card.verified {
+            border-color: #00ff00;
+        }
+
+        .feature-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .feature-name {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00aa00);
+            transition: width 0.5s;
+            text-align: center;
+            line-height: 20px;
+            font-size: 0.8em;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .test-status {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .test-badge {
+            padding: 5px;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .test-passed {
+            background: #003300;
+            border: 1px solid #00ff00;
+        }
+
+        .test-failed {
+            background: #330000;
+            border: 1px solid #ff0000;
+        }
+
+        .test-skipped {
+            background: #333300;
+            border: 1px solid #ffff00;
+        }
+
+        .connection-map {
+            background: #0a0a0a;
+            border: 2px solid #00aaff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .connection {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: #1a1a1a;
+            border-radius: 5px;
+        }
+
+        .connection-node {
+            padding: 10px 15px;
+            background: #333;
+            border-radius: 5px;
+            border: 2px solid #00ff00;
+        }
+
+        .connection-arrow {
+            margin: 0 15px;
+            font-size: 1.5em;
+        }
+
+        .connection-status {
+            margin-left: auto;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .connection-verified {
+            background: #003300;
+            color: #00ff00;
+        }
+
+        .connection-untested {
+            background: #330000;
+            color: #ff0000;
+        }
+
+        .blocker-panel {
+            background: #2a0000;
+            border: 3px solid #ff0000;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .blocker-item {
+            background: #1a0000;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #ff0000;
+            border-radius: 5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .button {
+            padding: 12px 25px;
+            background: #1a1a1a;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .button:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: #1a1a1a;
+            border: 2px solid #00ff00;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .stat-label {
+            margin-top: 10px;
+            color: #888;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #0a0a0a;
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-button {
+            float: right;
+            font-size: 2em;
+            cursor: pointer;
+            color: #ff0000;
+        }
+
+        .close-button:hover {
+            color: #ff5555;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-header">
+        <h1>🌀 TRINITY CODE DASHBOARD</h1>
+        <p>Real-Time Project Status & Verification System</p>
+        <p style="color: #888; margin-top: 10px;">Nothing is "done" until verified by all three Trinity layers</p>
+    </div>
+
+    <!-- Trinity Status Overview -->
+    <div class="trinity-status">
+        <div class="trinity-panel c1-panel">
+            <div class="panel-header" style="color: #00aaff;">C1 - MECHANIC</div>
+            <div class="status-indicator" id="c1-status">⏭️</div>
+            <p>Unit Tests</p>
+            <p style="color: #888; font-size: 0.9em;">Can it be built?</p>
+        </div>
+
+        <div class="trinity-panel c2-panel">
+            <div class="panel-header" style="color: #ffaa00;">C2 - ARCHITECT</div>
+            <div class="status-indicator" id="c2-status">⏭️</div>
+            <p>Integration Tests</p>
+            <p style="color: #888; font-size: 0.9em;">Should it scale?</p>
+        </div>
+
+        <div class="trinity-panel c3-panel">
+            <div class="panel-header" style="color: #aa00ff;">C3 - ORACLE</div>
+            <div class="status-indicator" id="c3-status">⏭️</div>
+            <p>End-to-End Tests</p>
+            <p style="color: #888; font-size: 0.9em;">Must it work?</p>
+        </div>
+    </div>
+
+    <!-- Overall Stats -->
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="stat-value" id="total-features">0</div>
+            <div class="stat-label">Total Features</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="verified-features" style="color: #00ff00;">0</div>
+            <div class="stat-label">Verified ✅</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="in-progress-features" style="color: #ffff00;">0</div>
+            <div class="stat-label">In Progress 🟡</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="blocked-features" style="color: #ff0000;">0</div>
+            <div class="stat-label">Blocked ⛔</div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button class="button" onclick="refreshData()">🔄 Refresh Data</button>
+        <button class="button" onclick="addNewFeature()">➕ Add New Feature</button>
+        <button class="button" onclick="runAllTests()">🧪 Run All Tests</button>
+        <button class="button" onclick="exportReport()">📊 Export Report</button>
+    </div>
+
+    <!-- Active Blockers -->
+    <div id="blockers-section" style="display: none;">
+        <div class="blocker-panel">
+            <h2>⛔ ACTIVE BLOCKERS</h2>
+            <div id="blockers-list"></div>
+        </div>
+    </div>
+
+    <!-- Feature List -->
+    <div class="feature-list">
+        <h2>📋 Active Features</h2>
+        <div id="features-container">
+            <p style="color: #888; text-align: center; padding: 40px;">
+                No features tracked yet. Click "Add New Feature" to get started.
+            </p>
+        </div>
+    </div>
+
+    <!-- Feature Details Modal -->
+    <div id="feature-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data structure - in real use, load from blueprints directory
+        let features = [];
+
+        // Load features from localStorage or create sample
+        function loadFeatures() {
+            const saved = localStorage.getItem('trinity_features');
+            if (saved) {
+                features = JSON.parse(saved);
+            } else {
+                // Sample feature
+                features = [
+                    {
+                        name: "Bug Reporter",
+                        status: "not-started",
+                        completion: 0,
+                        components: [
+                            {name: "Frontend", tasks: 4, completed: 0},
+                            {name: "Backend API", tasks: 4, completed: 0},
+                            {name: "Airtable", tasks: 3, completed: 0}
+                        ],
+                        tests: {
+                            c1: "skipped",
+                            c2: "skipped",
+                            c3: "skipped"
+                        },
+                        blockers: [
+                            "Airtable API key not configured"
+                        ]
+                    }
+                ];
+            }
+            renderFeatures();
+            updateStats();
+        }
+
+        function renderFeatures() {
+            const container = document.getElementById('features-container');
+            if (features.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No features tracked yet.</p>';
+                return;
+            }
+
+            container.innerHTML = features.map((feature, index) => `
+                <div class="feature-card ${feature.status}" onclick="showFeatureDetails(${index})">
+                    <div class="feature-header">
+                        <div class="feature-name">${feature.name}</div>
+                        <div>${getStatusIcon(feature.status)} ${feature.completion}%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${feature.completion}%">
+                            ${feature.completion > 15 ? feature.completion + '%' : ''}
+                        </div>
+                    </div>
+                    <div class="test-status">
+                        <div class="test-badge test-${feature.tests.c1}">
+                            C1: ${getTestIcon(feature.tests.c1)}
+                        </div>
+                        <div class="test-badge test-${feature.tests.c2}">
+                            C2: ${getTestIcon(feature.tests.c2)}
+                        </div>
+                        <div class="test-badge test-${feature.tests.c3}">
+                            C3: ${getTestIcon(feature.tests.c3)}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update blockers
+            const allBlockers = features.flatMap(f => f.blockers || []);
+            if (allBlockers.length > 0) {
+                document.getElementById('blockers-section').style.display = 'block';
+                document.getElementById('blockers-list').innerHTML = allBlockers.map(b => `
+                    <div class="blocker-item">⚠️ ${b}</div>
+                `).join('');
+            }
+        }
+
+        function getStatusIcon(status) {
+            const icons = {
+                'not-started': '🔴',
+                'in-progress': '🟡',
+                'verified': '🟢'
+            };
+            return icons[status] || '❓';
+        }
+
+        function getTestIcon(status) {
+            const icons = {
+                'passed': '✅',
+                'failed': '❌',
+                'skipped': '⏭️'
+            };
+            return icons[status] || '❓';
+        }
+
+        function updateStats() {
+            document.getElementById('total-features').textContent = features.length;
+            document.getElementById('verified-features').textContent = features.filter(f => f.status === 'verified').length;
+            document.getElementById('in-progress-features').textContent = features.filter(f => f.status === 'in-progress').length;
+            document.getElementById('blocked-features').textContent = features.filter(f => f.blockers && f.blockers.length > 0).length;
+
+            // Update Trinity status
+            const allTests = features.flatMap(f => [f.tests.c1, f.tests.c2, f.tests.c3]);
+            const c1Tests = features.map(f => f.tests.c1);
+            const c2Tests = features.map(f => f.tests.c2);
+            const c3Tests = features.map(f => f.tests.c3);
+
+            document.getElementById('c1-status').textContent = getOverallTestStatus(c1Tests);
+            document.getElementById('c2-status').textContent = getOverallTestStatus(c2Tests);
+            document.getElementById('c3-status').textContent = getOverallTestStatus(c3Tests);
+        }
+
+        function getOverallTestStatus(tests) {
+            if (tests.every(t => t === 'passed')) return '✅';
+            if (tests.some(t => t === 'failed')) return '❌';
+            if (tests.some(t => t === 'passed')) return '🟡';
+            return '⏭️';
+        }
+
+        function showFeatureDetails(index) {
+            const feature = features[index];
+            const modal = document.getElementById('feature-modal');
+            const body = document.getElementById('modal-body');
+
+            body.innerHTML = `
+                <h1>${feature.name}</h1>
+                <h2>Status: ${getStatusIcon(feature.status)} ${feature.completion}%</h2>
+
+                <h3>Components:</h3>
+                ${feature.components.map(c => `
+                    <div style="background: #1a1a1a; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                        <strong>${c.name}</strong>: ${c.completed}/${c.tasks} tasks completed
+                        <div class="progress-bar" style="margin-top: 5px;">
+                            <div class="progress-fill" style="width: ${(c.completed/c.tasks)*100}%"></div>
+                        </div>
+                    </div>
+                `).join('')}
+
+                <h3>Trinity Tests:</h3>
+                <div class="test-status">
+                    <div class="test-badge test-${feature.tests.c1}">C1: ${getTestIcon(feature.tests.c1)}</div>
+                    <div class="test-badge test-${feature.tests.c2}">C2: ${getTestIcon(feature.tests.c2)}</div>
+                    <div class="test-badge test-${feature.tests.c3}">C3: ${getTestIcon(feature.tests.c3)}</div>
+                </div>
+
+                ${feature.blockers && feature.blockers.length > 0 ? `
+                    <h3>Blockers:</h3>
+                    ${feature.blockers.map(b => `
+                        <div class="blocker-item">${b}</div>
+                    `).join('')}
+                ` : ''}
+
+                <div class="controls" style="margin-top: 20px;">
+                    <button class="button" onclick="markComplete(${index})">Mark Complete</button>
+                    <button class="button" onclick="runTests(${index})">Run Tests</button>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('feature-modal').style.display = 'none';
+        }
+
+        function refreshData() {
+            loadFeatures();
+            alert('✅ Data refreshed from blueprints directory');
+        }
+
+        function addNewFeature() {
+            const name = prompt('Enter feature name:');
+            if (name) {
+                features.push({
+                    name: name,
+                    status: 'not-started',
+                    completion: 0,
+                    components: [],
+                    tests: {c1: 'skipped', c2: 'skipped', c3: 'skipped'},
+                    blockers: []
+                });
+                saveFeatures();
+                renderFeatures();
+                updateStats();
+            }
+        }
+
+        function runAllTests() {
+            alert('Running Trinity tests on all features...\n\nThis would execute:\n- C1 unit tests\n- C2 integration tests\n- C3 end-to-end tests\n\nSee TRINITY_TESTING_PROTOCOL.py');
+        }
+
+        function exportReport() {
+            const report = {
+                generated: new Date().toISOString(),
+                features: features,
+                summary: {
+                    total: features.length,
+                    verified: features.filter(f => f.status === 'verified').length,
+                    in_progress: features.filter(f => f.status === 'in-progress').length,
+                    blocked: features.filter(f => f.blockers && f.blockers.length > 0).length
+                }
+            };
+
+            const blob = new Blob([JSON.stringify(report, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `trinity_report_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+
+        function saveFeatures() {
+            localStorage.setItem('trinity_features', JSON.stringify(features));
+        }
+
+        // Initialize
+        loadFeatures();
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

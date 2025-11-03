@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>ARIA - Simple Voice Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.95);
+            border: 3px solid #00ff88;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #00d4ff;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+
+        .status {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .status.ready {
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+
+        .status.speaking {
+            border-color: #ffd700;
+            color: #ffd700;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 15px;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        button {
+            flex: 1;
+            min-width: 150px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background: linear-gradient(135deg, #666, #888);
+        }
+
+        .quick-phrases {
+            margin-top: 30px;
+        }
+
+        .quick-phrases h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .phrase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .phrase-btn {
+            background: rgba(0, 212, 255, 0.2);
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .phrase-btn:hover {
+            background: rgba(0, 212, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .voice-settings {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .voice-settings h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .setting-row label {
+            color: #00ff88;
+            font-size: 14px;
+        }
+
+        input[type="range"] {
+            width: 60%;
+            accent-color: #00ff88;
+        }
+
+        .value-display {
+            color: #00d4ff;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 ARIA</h1>
+        <div class="subtitle">AI Voice Assistant - Simple Mode</div>
+
+        <div class="status ready" id="status">✓ Voice system ready</div>
+
+        <textarea id="textInput" placeholder="Type what ARIA should say...">Welcome to the Consciousness Revolution platform! I'm ARIA, your AI guide. Let me show you around our seven sacred domains.</textarea>
+
+        <div class="controls">
+            <button onclick="speak()">🎤 Speak Text</button>
+            <button onclick="stopSpeaking()" class="secondary">⏹️ Stop</button>
+        </div>
+
+        <div class="quick-phrases">
+            <h3>Quick Phrases:</h3>
+            <div class="phrase-grid">
+                <button class="phrase-btn" onclick="speakPhrase('Welcome to the platform!')">
+                    👋 Welcome
+                </button>
+                <button class="phrase-btn" onclick="speakPhrase('Let me show you the seven sacred domains!')">
+                    🌀 Show Domains
+                </button>
+                <button class="phrase-btn" onclick="speakPhrase('The Education Domain offers three learning paths!')">
+                    📚 Education
+                </button>
+                <button class="phrase-btn" onclick="speakPhrase('Our community has active builders online now!')">
+                    💬 Community
+                </button>
+                <button class="phrase-btn" onclick="speakPhrase('Explore consciousness frequencies!')">
+                    🎵 Music
+                </button>
+                <button class="phrase-btn" onclick="speakPhrase('Builder Tokens are earned, not bought!')">
+                    ₿ Crypto
+                </button>
+                <button class="phrase-btn" onclick="speakPhrase('Training simulations await!')">
+                    🎮 Games
+                </button>
+                <button class="phrase-btn" onclick="speakPhrase('How can I help you today?')">
+                    ❓ Help
+                </button>
+            </div>
+        </div>
+
+        <div class="voice-settings">
+            <h3>⚙️ Voice Settings</h3>
+
+            <div class="setting-row">
+                <label>Speech Rate:</label>
+                <input type="range" id="rateSlider" min="0.5" max="2" step="0.1" value="1.0" oninput="updateRate()">
+                <span class="value-display" id="rateValue">1.0x</span>
+            </div>
+
+            <div class="setting-row">
+                <label>Pitch:</label>
+                <input type="range" id="pitchSlider" min="0.5" max="2" step="0.1" value="1.2" oninput="updatePitch()">
+                <span class="value-display" id="pitchValue">1.2x</span>
+            </div>
+
+            <div class="setting-row">
+                <label>Volume:</label>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1.0" oninput="updateVolume()">
+                <span class="value-display" id="volumeValue">100%</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let utterance = null;
+        let isSpeaking = false;
+
+        // Voice settings
+        let settings = {
+            rate: 1.0,
+            pitch: 1.2,
+            volume: 1.0
+        };
+
+        // Initialize speech synthesis
+        function initVoice() {
+            // Wait for voices to load
+            if (speechSynthesis.getVoices().length === 0) {
+                speechSynthesis.addEventListener('voiceschanged', () => {
+                    console.log('Voices loaded:', speechSynthesis.getVoices().length);
+                });
+            }
+        }
+
+        // Speak text
+        function speak() {
+            const text = document.getElementById('textInput').value;
+            if (!text.trim()) {
+                updateStatus('⚠️ Please enter some text', 'ready');
+                return;
+            }
+
+            if (isSpeaking) {
+                updateStatus('⏸️ Already speaking...', 'ready');
+                return;
+            }
+
+            try {
+                // Stop any ongoing speech
+                speechSynthesis.cancel();
+
+                // Create new utterance
+                utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = settings.rate;
+                utterance.pitch = settings.pitch;
+                utterance.volume = settings.volume;
+
+                // Try to use a female voice
+                const voices = speechSynthesis.getVoices();
+                const femaleVoice = voices.find(v =>
+                    v.name.toLowerCase().includes('female') ||
+                    v.name.toLowerCase().includes('zira') ||
+                    v.name.toLowerCase().includes('samantha')
+                );
+                if (femaleVoice) {
+                    utterance.voice = femaleVoice;
+                }
+
+                // Event handlers
+                utterance.onstart = () => {
+                    isSpeaking = true;
+                    updateStatus('🎤 ARIA is speaking...', 'speaking');
+                };
+
+                utterance.onend = () => {
+                    isSpeaking = false;
+                    updateStatus('✓ Speech complete', 'ready');
+                };
+
+                utterance.onerror = (error) => {
+                    isSpeaking = false;
+                    updateStatus(`✗ Error: ${error.error}`, 'ready');
+                    console.error('Speech error:', error);
+                };
+
+                // Speak
+                speechSynthesis.speak(utterance);
+
+            } catch (error) {
+                updateStatus(`✗ Speech failed: ${error.message}`, 'ready');
+                console.error('Speech error:', error);
+            }
+        }
+
+        // Stop speaking
+        function stopSpeaking() {
+            speechSynthesis.cancel();
+            isSpeaking = false;
+            updateStatus('⏹️ Speech stopped', 'ready');
+        }
+
+        // Quick phrase
+        function speakPhrase(text) {
+            document.getElementById('textInput').value = text;
+            speak();
+        }
+
+        // Update status
+        function updateStatus(message, className) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status ' + className;
+        }
+
+        // Update settings
+        function updateRate() {
+            const value = document.getElementById('rateSlider').value;
+            settings.rate = parseFloat(value);
+            document.getElementById('rateValue').textContent = value + 'x';
+        }
+
+        function updatePitch() {
+            const value = document.getElementById('pitchSlider').value;
+            settings.pitch = parseFloat(value);
+            document.getElementById('pitchValue').textContent = value + 'x';
+        }
+
+        function updateVolume() {
+            const value = document.getElementById('volumeSlider').value;
+            settings.volume = parseFloat(value);
+            const percent = Math.round(value * 100);
+            document.getElementById('volumeValue').textContent = percent + '%';
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + Enter to speak
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                speak();
+            }
+
+            // Escape to stop
+            if (e.key === 'Escape') {
+                stopSpeaking();
+            }
+        });
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            initVoice();
+
+            // Auto-speak welcome message after 1 second
+            setTimeout(() => {
+                speak();
+            }, 1000);
+        });
+
+        // Log available voices (for debugging)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const voices = speechSynthesis.getVoices();
+                console.log('Available voices:', voices.length);
+                voices.forEach(v => console.log(`  ${v.name} (${v.lang})`));
+            }, 100);
+        });
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

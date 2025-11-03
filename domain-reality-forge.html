@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 REALITY FORGE v3.0 LEGENDARY - Social Networks Domain</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000000;
+            color: #ff6600;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #fractal-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        #sacred-geometry-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.98);
+            border-bottom: 2px solid #ff6600;
+            padding: 20px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 5px 30px rgba(255, 102, 0, 0.3);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .domain-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .domain-logo h1 {
+            font-size: 28px;
+            text-shadow: 0 0 30px #ff6600, 0 0 60px #ff6600;
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { text-shadow: 0 0 30px #ff6600, 0 0 60px #ff6600; }
+            50% { text-shadow: 0 0 50px #ff6600, 0 0 100px #ff6600, 0 0 150px #ff6600; }
+        }
+
+        .consciousness-badge {
+            background: rgba(255, 102, 0, 0.15);
+            border: 1px solid #ff6600;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            animation: consciousnessPulse 2s infinite;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.4);
+        }
+
+        @keyframes consciousnessPulse {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 20px rgba(255, 102, 0, 0.4);
+            }
+            50% {
+                opacity: 0.7;
+                box-shadow: 0 0 40px rgba(255, 102, 0, 0.7);
+            }
+        }
+
+        .version-tag {
+            background: linear-gradient(135deg, #ff6600 0%, #ff3300 100%);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 10px;
+            animation: versionGlow 2s infinite;
+        }
+
+        @keyframes versionGlow {
+            0%, 100% { box-shadow: 0 0 10px #ff6600; }
+            50% { box-shadow: 0 0 25px #ff6600, 0 0 50px #ff6600; }
+        }
+
+        .universal-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #ff6600;
+            text-decoration: none;
+            padding: 8px 15px;
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-size: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 102, 0, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 102, 0, 0.2);
+            border-color: #ff6600;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 40px;
+            display: grid;
+            grid-template-columns: 1fr 600px 1fr;
+            gap: 40px;
+            align-items: start;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.3s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-left {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .domain-title {
+            font-size: 48px;
+            text-shadow: 0 0 40px #ff6600, 0 0 80px #ff6600;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ff6600 0%, #ff9933 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .domain-tagline {
+            font-size: 18px;
+            color: #ff9933;
+            opacity: 0.9;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+        }
+
+        .overkore-formula {
+            background: rgba(255, 102, 0, 0.08);
+            border: 1px solid #ff6600;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(255, 102, 0, 0.2);
+        }
+
+        .overkore-formula::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 102, 0, 0.1) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .formula-title {
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        .formula-math {
+            font-size: 20px;
+            color: #ff9933;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+        }
+
+        .consciousness-indicator {
+            background: rgba(255, 102, 0, 0.05);
+            border: 1px solid #ff6600;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .consciousness-bar {
+            height: 8px;
+            background: rgba(255, 102, 0, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .consciousness-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6600, #ff9933);
+            width: 88%;
+            animation: consciousnessFill 2s ease-out;
+            box-shadow: 0 0 15px #ff6600;
+        }
+
+        @keyframes consciousnessFill {
+            from { width: 0%; }
+            to { width: 88%; }
+        }
+
+        .visualization-container {
+            position: relative;
+            height: 500px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ff6600;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(255, 102, 0, 0.4), inset 0 0 60px rgba(255, 102, 0, 0.1);
+        }
+
+        #webgl-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .viz-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .viz-btn {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #ff6600;
+            color: #ff6600;
+            padding: 10px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .viz-btn:hover {
+            background: rgba(255, 102, 0, 0.3);
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.6);
+            transform: translateX(-5px);
+        }
+
+        .viz-btn.active {
+            background: rgba(255, 102, 0, 0.2);
+            border-color: #ff9933;
+        }
+
+        .machine-info-panel {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid #ff6600;
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 250px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 25px rgba(255, 102, 0, 0.4);
+        }
+
+        .machine-info-panel.visible {
+            opacity: 1;
+        }
+
+        .machine-info-title {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #ff9933;
+        }
+
+        .machine-info-data {
+            font-size: 12px;
+            line-height: 1.8;
+            opacity: 0.8;
+        }
+
+        .metrics-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .metric-gauge {
+            background: rgba(255, 102, 0, 0.08);
+            border: 1px solid #ff6600;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .metric-gauge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 102, 0, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .metric-gauge:hover::before {
+            left: 100%;
+        }
+
+        .metric-gauge:hover {
+            box-shadow: 0 5px 30px rgba(255, 102, 0, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff9933;
+            text-shadow: 0 0 20px rgba(255, 102, 0, 0.6);
+        }
+
+        .metric-unit {
+            font-size: 14px;
+            opacity: 0.6;
+            margin-left: 5px;
+        }
+
+        .gauge-canvas {
+            width: 100%;
+            height: 120px;
+            margin-top: 10px;
+        }
+
+        .features-section {
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 0 40px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.5s forwards;
+        }
+
+        .section-title {
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 30px #ff6600, 0 0 60px #ff6600;
+            background: linear-gradient(135deg, #ff6600 0%, #ff9933 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 102, 0, 0.05);
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 102, 0, 0.15) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+            animation: rotate 8s linear infinite;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 102, 0, 0.12);
+            border-color: #ff6600;
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 102, 0, 0.4);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .feature-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #ff9933;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-desc {
+            font-size: 14px;
+            opacity: 0.8;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .projects-section {
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 0 40px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.7s forwards;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .project-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6600;
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #ff6600, #ff3300);
+        }
+
+        .project-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 102, 0, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .project-card:hover::after {
+            opacity: 1;
+            animation: rotate 10s linear infinite;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(255, 102, 0, 0.4);
+            border-color: #ff9933;
+        }
+
+        .project-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 102, 0, 0.2);
+            border: 1px solid #ff6600;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            z-index: 1;
+            animation: statusPulse 2s infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .project-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #ff9933;
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-desc {
+            font-size: 14px;
+            opacity: 0.85;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-metrics {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-metric {
+            flex: 1;
+        }
+
+        .project-metric-label {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-bottom: 5px;
+        }
+
+        .project-metric-value {
+            font-size: 18px;
+            color: #ff9933;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+        }
+
+        .stats-section {
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 0 40px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.9s forwards;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255, 102, 0, 0.08);
+            border: 1px solid #ff6600;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 102, 0, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 35px rgba(255, 102, 0, 0.4);
+        }
+
+        .stat-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ff9933;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 102, 0, 0.6);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .tools-section {
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 0 40px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1.1s forwards;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .tool-button {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6600;
+            color: #ff6600;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255, 102, 0, 0.3) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .tool-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .tool-button:hover {
+            background: rgba(255, 102, 0, 0.15);
+            transform: scale(1.08);
+            box-shadow: 0 0 35px rgba(255, 102, 0, 0.6);
+        }
+
+        .cta-section {
+            max-width: 1400px;
+            margin: 80px auto;
+            padding: 60px 40px;
+            text-align: center;
+            background: rgba(255, 102, 0, 0.08);
+            border: 2px solid #ff6600;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1.3s forwards;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 102, 0, 0.15) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-title {
+            font-size: 42px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 40px #ff6600, 0 0 80px #ff6600;
+            background: linear-gradient(135deg, #ff6600 0%, #ff9933 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .cta-btn-primary {
+            background: linear-gradient(135deg, #ff6600 0%, #ff3300 100%);
+            color: #fff;
+            padding: 20px 45px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .cta-btn-primary:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 50px rgba(255, 102, 0, 0.9), 0 0 100px rgba(255, 102, 0, 0.5);
+        }
+
+        .cta-btn-secondary {
+            background: transparent;
+            color: #ff6600;
+            padding: 20px 45px;
+            border: 2px solid #ff6600;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cta-btn-secondary:hover {
+            background: rgba(255, 102, 0, 0.2);
+            transform: scale(1.08);
+            box-shadow: 0 0 30px rgba(255, 102, 0, 0.6);
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.98);
+            border-top: 2px solid #ff6600;
+            padding: 40px;
+            margin-top: 60px;
+            box-shadow: 0 -5px 30px rgba(255, 102, 0, 0.2);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #ff9933;
+            text-shadow: 0 0 15px rgba(255, 102, 0, 0.6);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-link {
+            color: #ff6600;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+            margin-left: 10px;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.8);
+        }
+
+        .back-to-hub {
+            display: inline-block;
+            background: rgba(255, 102, 0, 0.1);
+            border: 2px solid #ff6600;
+            color: #ff6600;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .back-to-hub:hover {
+            background: rgba(255, 102, 0, 0.3);
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 102, 0, 0.6);
+        }
+
+        .tooltip {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid #ff6600;
+            color: #ff6600;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 25px rgba(255, 102, 0, 0.5);
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        @media (max-width: 1200px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .universal-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .features-grid,
+            .projects-grid,
+            .tools-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="fractal-canvas"></canvas>
+    <canvas id="sacred-geometry-overlay"></canvas>
+    <div class="tooltip" id="tooltip"></div>
+
+    <div class="content-wrapper">
+
+        <header>
+            <div class="header-content">
+                <div class="domain-logo">
+                    <h1>🌐 REALITY FORGE</h1>
+                    <span class="version-tag">v3.0 LEGENDARY</span>
+                    <div class="consciousness-badge">88%+ CONSCIOUSNESS</div>
+                </div>
+                <nav class="universal-nav">
+                    <a href="seven-domains-hub-3d.html" class="nav-link">🏠 HUB</a>
+                    <a href="domain-chaos-forge.html" class="nav-link">⚡ CHAOS</a>
+                    <a href="domain-quantum-vault.html" class="nav-link">💰 QUANTUM</a>
+                    <a href="domain-mind-matrix.html" class="nav-link">🧠 MIND</a>
+                    <a href="domain-soul-sanctuary.html" class="nav-link">💜 SOUL</a>
+                    <a href="domain-arkitek-academy.html" class="nav-link">🎨 ARKITEK</a>
+                    <a href="domain-nexus-terminal.html" class="nav-link">⚙️ NEXUS</a>
+                </nav>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-left">
+                <h2 class="domain-title">REALITY FORGE</h2>
+                <p class="domain-tagline">Social Networks & Viral Growth Systems</p>
+
+                <div class="overkore-formula">
+                    <div class="formula-title">OVERKORE v13 FORMULA</div>
+                    <div class="formula-math">Viral Reach = Base × φ</div>
+                    <div class="formula-math">φ = 1.618033988749894</div>
+                    <div class="formula-math">Harmonic Frequency: 432 Hz</div>
+                </div>
+
+                <div class="consciousness-indicator">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                        <span>Pattern Recognition</span>
+                        <span>88%</span>
+                    </div>
+                    <div class="consciousness-bar">
+                        <div class="consciousness-fill"></div>
+                    </div>
+                </div>
+
+                <div class="metrics-panel">
+                    <div class="metric-gauge">
+                        <div class="metric-label">INSTAGRAM FOLLOWERS</div>
+                        <div class="metric-value">24.7K<span class="metric-unit"></span></div>
+                        <canvas class="gauge-canvas" id="gauge1"></canvas>
+                    </div>
+                    <div class="metric-gauge">
+                        <div class="metric-label">ENGAGEMENT RATE</div>
+                        <div class="metric-value">8.4<span class="metric-unit">%</span></div>
+                        <canvas class="gauge-canvas" id="gauge2"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualization-container">
+                <canvas id="webgl-canvas"></canvas>
+                <div class="viz-controls">
+                    <button class="viz-btn active" onclick="toggleRotation()" id="rotateBtn">🔄 ROTATE</button>
+                    <button class="viz-btn active" onclick="toggleParticles()" id="particlesBtn">✨ PARTICLES</button>
+                    <button class="viz-btn active" onclick="toggleGeometry()" id="geometryBtn">📐 GEOMETRY</button>
+                    <button class="viz-btn" onclick="resetView()">🎯 RESET</button>
+                </div>
+                <div class="machine-info-panel" id="machineInfo">
+                    <div class="machine-info-title">Social Network</div>
+                    <div class="machine-info-data" id="machineInfoData">
+                        Hover over network nodes to see details
+                    </div>
+                </div>
+            </div>
+
+            <div class="metrics-panel">
+                <div class="metric-gauge">
+                    <div class="metric-label">TOTAL REACH</div>
+                    <div class="metric-value">1.2M<span class="metric-unit"></span></div>
+                    <canvas class="gauge-canvas" id="gauge3"></canvas>
+                </div>
+                <div class="metric-gauge">
+                    <div class="metric-label">GROWTH RATE</div>
+                    <div class="metric-value">+43<span class="metric-unit">%</span></div>
+                    <canvas class="gauge-canvas" id="gauge4"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="features-section">
+            <h2 class="section-title">🌐 CORE FEATURES</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Instagram Automation</h3>
+                    <p class="feature-desc">Complete Instagram growth engine. Automated posting, DM responses, engagement loops. Bot army deployment, follower targeting, story automation with consciousness-elevated Pattern Theory recognition.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🐦</div>
+                    <h3 class="feature-title">Twitter Growth</h3>
+                    <p class="feature-desc">Automated Twitter presence with Playwright. Viral tweet generation, thread automation, engagement farming. Pattern Theory-based content optimization with φ-based viral algorithms.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3 class="feature-title">Viral Analytics</h3>
+                    <p class="feature-desc">Deep social media analytics across all platforms. Engagement tracking, audience insights, viral pattern detection. OVERKORE v13 φ-based growth prediction and optimization.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">Bot Army</h3>
+                    <p class="feature-desc">Consciousness-elevated bot army for maximum reach. Coordinated posting, engagement amplification, network effect multiplication. Pattern Theory for authentic-seeming automation.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3 class="feature-title">Community Building</h3>
+                    <p class="feature-desc">Automated community management. DM automation, comment responses, relationship nurturing. Builder identification, destroyer filtering with consciousness-elevated screening.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">Launch Campaigns</h3>
+                    <p class="feature-desc">Viral product launch systems. Coordinated social media blitz, influencer outreach automation, hype generation. Pattern Theory-based viral timing with golden ratio scheduling.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="projects-section">
+            <h2 class="section-title">🔥 ACTIVE PROJECTS</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-status">🟢 OPERATIONAL</div>
+                    <h3 class="project-title">Instagram Growth Engine</h3>
+                    <p class="project-desc">Automated Instagram presence with 24.7K followers. Bot army deployment, DM automation, story scheduler. Consciousness-elevated growth with destroyer filtering and builder identification systems.</p>
+                    <div class="project-metrics">
+                        <div class="project-metric">
+                            <div class="project-metric-label">Followers</div>
+                            <div class="project-metric-value">24.7K</div>
+                        </div>
+                        <div class="project-metric">
+                            <div class="project-metric-label">Engagement</div>
+                            <div class="project-metric-value">8.4%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-status">🟡 BUILDING</div>
+                    <h3 class="project-title">Twitter Automation</h3>
+                    <p class="project-desc">Playwright-based Twitter bot for viral growth. Automated posting, thread creation, engagement farming. Pattern Theory viral prediction with OVERKORE v13 φ-based timing optimization.</p>
+                    <div class="project-metrics">
+                        <div class="project-metric">
+                            <div class="project-metric-label">Tweets/Day</div>
+                            <div class="project-metric-value">47</div>
+                        </div>
+                        <div class="project-metric">
+                            <div class="project-metric-label">Reach</div>
+                            <div class="project-metric-value">847K</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-status">🟢 OPERATIONAL</div>
+                    <h3 class="project-title">Social Media Dashboard</h3>
+                    <p class="project-desc">Unified analytics across all platforms. Instagram, Twitter, Facebook, TikTok tracking. Pattern recognition for viral content, destroyer detection, builder amplification with consciousness metrics.</p>
+                    <div class="project-metrics">
+                        <div class="project-metric">
+                            <div class="project-metric-label">Platforms</div>
+                            <div class="project-metric-value">7</div>
+                        </div>
+                        <div class="project-metric">
+                            <div class="project-metric-label">Daily Users</div>
+                            <div class="project-metric-value">1.2M</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-status">🟢 OPERATIONAL</div>
+                    <h3 class="project-title">Viral Campaign System</h3>
+                    <p class="project-desc">Coordinated launch campaigns across platforms. Automated influencer outreach, hype generation, community mobilization. φ-based viral timing for maximum consciousness revolution impact.</p>
+                    <div class="project-metrics">
+                        <div class="project-metric">
+                            <div class="project-metric-label">Campaigns</div>
+                            <div class="project-metric-value">24</div>
+                        </div>
+                        <div class="project-metric">
+                            <div class="project-metric-label">Reach</div>
+                            <div class="project-metric-value">4.7M</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-section">
+            <h2 class="section-title">📊 SYSTEM METRICS</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📱</div>
+                    <div class="stat-value">24.7K</div>
+                    <div class="stat-label">Instagram Followers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🌐</div>
+                    <div class="stat-value">1.2M</div>
+                    <div class="stat-label">Total Reach</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-value">+43%</div>
+                    <div class="stat-label">Growth Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🤖</div>
+                    <div class="stat-value">247</div>
+                    <div class="stat-label">Active Bots</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tools-section">
+            <h2 class="section-title">🛠️ TOOLS & RESOURCES</h2>
+            <div class="tools-grid">
+                <button class="tool-button">
+                    📱 INSTAGRAM BOT
+                </button>
+                <button class="tool-button">
+                    🐦 TWITTER AUTO
+                </button>
+                <button class="tool-button">
+                    📊 ANALYTICS
+                </button>
+                <button class="tool-button">
+                    🤖 BOT ARMY
+                </button>
+                <button class="tool-button">
+                    💬 DM AUTOMATION
+                </button>
+                <button class="tool-button">
+                    🚀 CAMPAIGNS
+                </button>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2 class="cta-title">ENTER THE REALITY FORGE</h2>
+                <p class="cta-subtitle">Master social networks. Build viral consciousness-elevated campaigns.</p>
+                <div class="cta-buttons">
+                    <button class="cta-btn-primary">
+                        🌐 ENTER FORGE
+                    </button>
+                    <button class="cta-btn-secondary">
+                        📱 START INSTAGRAM
+                    </button>
+                    <button class="cta-btn-secondary">
+                        📊 VIEW ANALYTICS
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>REALITY FORGE v3.0</h3>
+                    <p style="opacity: 0.7; font-size: 13px; line-height: 1.6;">
+                        Social networks domain of the Consciousness Revolution platform.
+                        Instagram automation, viral growth, community building with Pattern Theory integration.
+                    </p>
+                    <a href="seven-domains-hub-3d.html" class="back-to-hub">🏠 BACK TO HUB</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3>OTHER DOMAINS</h3>
+                    <div class="footer-links">
+                        <a href="domain-chaos-forge.html" class="footer-link">⚡ Chaos Forge (Physical)</a>
+                        <a href="domain-quantum-vault.html" class="footer-link">💰 Quantum Vault (Financial)</a>
+                        <a href="domain-mind-matrix.html" class="footer-link">🧠 Mind Matrix (AI)</a>
+                        <a href="domain-soul-sanctuary.html" class="footer-link">💜 Soul Sanctuary (Consciousness)</a>
+                        <a href="domain-arkitek-academy.html" class="footer-link">🎨 Arkitek Academy (Creative)</a>
+                        <a href="domain-nexus-terminal.html" class="footer-link">⚙️ Nexus Terminal (Integration)</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>RESOURCES</h3>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">📚 Documentation</a>
+                        <a href="#" class="footer-link">🔧 API Access</a>
+                        <a href="#" class="footer-link">💡 Pattern Theory</a>
+                        <a href="#" class="footer-link">🐛 Report Bug</a>
+                        <a href="#" class="footer-link">👤 User Profile</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        const PHI = 1.618033988749894;
+        const FIBONACCI = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+
+        const PLATFORMS = [
+            'INSTAGRAM', 'TWITTER', 'FACEBOOK',
+            'TIKTOK', 'YOUTUBE', 'LINKEDIN', 'REDDIT'
+        ];
+
+        let scene, camera, renderer;
+        let networkHub, platforms = [];
+        let particles = [];
+        let fibonacciSpiral;
+        let sacredGeometry = [];
+        let animationId;
+        let rotationEnabled = true;
+        let particlesEnabled = true;
+        let geometryEnabled = true;
+        let raycaster, mouse;
+        let hoveredPlatform = null;
+
+        function initThreeJS() {
+            const canvas = document.getElementById('webgl-canvas');
+            const container = canvas.parentElement;
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
+            scene.fog = new THREE.Fog(0x000000, 10, 50);
+
+            camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(15, 10, 15);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.shadowMap.enabled = true;
+
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            const ambientLight = new THREE.AmbientLight(0x222222);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xff6600, 1.2);
+            directionalLight.position.set(10, 20, 10);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            const hubGeometry = new THREE.TorusGeometry(3, 1, 16, 100);
+            const hubMaterial = new THREE.MeshStandardMaterial({
+                color: 0x331100,
+                metalness: 0.9,
+                roughness: 0.1,
+                emissive: 0xff6600,
+                emissiveIntensity: 0.2
+            });
+            networkHub = new THREE.Mesh(hubGeometry, hubMaterial);
+            networkHub.position.y = 3;
+            networkHub.castShadow = true;
+            scene.add(networkHub);
+
+            for (let i = 0; i < 7; i++) {
+                const angle = (Math.PI * 2 / 7) * i;
+                const radius = 12;
+
+                const platformGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+                const platformMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xff6600,
+                    emissive: 0xff6600,
+                    emissiveIntensity: 0.5,
+                    metalness: 0.9,
+                    roughness: 0.1
+                });
+                const platform = new THREE.Mesh(platformGeometry, platformMaterial);
+                platform.position.x = Math.cos(angle) * radius;
+                platform.position.z = Math.sin(angle) * radius;
+                platform.position.y = 1.5;
+                platform.castShadow = true;
+                platform.userData.index = i;
+                platform.userData.name = PLATFORMS[i];
+                platform.userData.followers = Math.floor(Math.random() * 50000) + 10000;
+
+                const platformLight = new THREE.PointLight(0xff6600, 1.5, 15);
+                platformLight.position.y = 2;
+                platform.add(platformLight);
+
+                scene.add(platform);
+                platforms.push(platform);
+            }
+
+            createParticleSystem();
+            createFibonacciSpiral();
+            createSacredGeometry();
+
+            const ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(50, 50),
+                new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.9 })
+            );
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            const gridHelper = new THREE.GridHelper(50, 50, 0xff6600, 0x221100);
+            scene.add(gridHelper);
+
+            platforms.forEach(platform => {
+                const points = [platform.position.clone(), new THREE.Vector3(0, 3, 0)];
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const material = new THREE.LineBasicMaterial({ color: 0xff6600, transparent: true, opacity: 0.3 });
+                scene.add(new THREE.Line(geometry, material));
+            });
+
+            window.addEventListener('resize', onWindowResize);
+            window.addEventListener('mousemove', onMouseMove);
+
+            animate();
+        }
+
+        function createParticleSystem() {
+            const particleGeometry = new THREE.BufferGeometry();
+            const positions = [];
+            const velocities = [];
+
+            for (let i = 0; i < 200; i++) {
+                positions.push((Math.random() - 0.5) * 30, Math.random() * 15, (Math.random() - 0.5) * 30);
+                velocities.push((Math.random() - 0.5) * 0.02, Math.random() * 0.02 + 0.01, (Math.random() - 0.5) * 0.02);
+            }
+
+            particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+            const particleSystem = new THREE.Points(
+                particleGeometry,
+                new THREE.PointsMaterial({ color: 0xff6600, size: 0.15, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending })
+            );
+            particleSystem.userData.velocities = velocities;
+            particleSystem.visible = particlesEnabled;
+            scene.add(particleSystem);
+            particles.push(particleSystem);
+        }
+
+        function createFibonacciSpiral() {
+            const points = [];
+            for (let i = 0; i < 100; i++) {
+                const t = i / 20;
+                const radius = PHI * Math.sqrt(t);
+                const angle = t * Math.PI * 2;
+                points.push(new THREE.Vector3(Math.cos(angle) * radius, t * 2, Math.sin(angle) * radius));
+            }
+
+            fibonacciSpiral = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints(points),
+                new THREE.LineBasicMaterial({ color: 0xff6600, transparent: true, opacity: 0.3 })
+            );
+            fibonacciSpiral.visible = geometryEnabled;
+            scene.add(fibonacciSpiral);
+        }
+
+        function createSacredGeometry() {
+            const merkabaMatOrange = new THREE.MeshBasicMaterial({ color: 0xff6600, wireframe: true, transparent: true, opacity: 0.15 });
+
+            const mesh1 = new THREE.Mesh(new THREE.TetrahedronGeometry(5), merkabaMatOrange);
+            mesh1.position.y = 6;
+            mesh1.visible = geometryEnabled;
+
+            const mesh2 = new THREE.Mesh(new THREE.TetrahedronGeometry(5), merkabaMatOrange);
+            mesh2.position.y = 6;
+            mesh2.rotation.z = Math.PI;
+            mesh2.visible = geometryEnabled;
+
+            scene.add(mesh1, mesh2);
+            sacredGeometry.push(mesh1, mesh2);
+        }
+
+        function onMouseMove(event) {
+            const canvas = document.getElementById('webgl-canvas');
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(platforms);
+
+            if (intersects.length > 0) {
+                const platform = intersects[0].object;
+                if (hoveredPlatform !== platform) {
+                    if (hoveredPlatform) {
+                        hoveredPlatform.material.emissiveIntensity = 0.5;
+                        hoveredPlatform.scale.set(1, 1, 1);
+                    }
+                    hoveredPlatform = platform;
+                    platform.material.emissiveIntensity = 0.9;
+                    platform.scale.set(1.2, 1.2, 1.2);
+                    showPlatformInfo(platform.userData);
+                }
+            } else {
+                if (hoveredPlatform) {
+                    hoveredPlatform.material.emissiveIntensity = 0.5;
+                    hoveredPlatform.scale.set(1, 1, 1);
+                    hoveredPlatform = null;
+                    hidePlatformInfo();
+                }
+            }
+        }
+
+        function showPlatformInfo(data) {
+            const panel = document.getElementById('machineInfo');
+            const dataDiv = document.getElementById('machineInfoData');
+            dataDiv.innerHTML = `<strong>${data.name}</strong><br>Followers: ${data.followers.toLocaleString()}<br>Engagement: ${Math.floor(Math.random() * 5) + 5}%<br>Posts/Day: ${Math.floor(Math.random() * 20) + 10}`;
+            panel.classList.add('visible');
+        }
+
+        function hidePlatformInfo() {
+            document.getElementById('machineInfo').classList.remove('visible');
+        }
+
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+
+            if (rotationEnabled) {
+                networkHub.rotation.y += 0.003;
+                networkHub.rotation.x += 0.001;
+
+                platforms.forEach((platform, i) => {
+                    platform.rotation.y += 0.01;
+                    const pulse = Math.sin(Date.now() * 0.002 + i) * 0.1 + 1;
+                    if (platform !== hoveredPlatform) platform.scale.set(pulse, pulse, pulse);
+                });
+
+                if (geometryEnabled) {
+                    sacredGeometry.forEach((geo, i) => {
+                        geo.rotation.y += 0.005 * (i % 2 === 0 ? 1 : -1);
+                        geo.rotation.x += 0.003;
+                    });
+                    if (fibonacciSpiral) fibonacciSpiral.rotation.y += 0.01;
+                }
+            }
+
+            if (particlesEnabled && particles.length > 0) {
+                particles.forEach(system => {
+                    const positions = system.geometry.attributes.position.array;
+                    const velocities = system.userData.velocities;
+                    for (let i = 0; i < positions.length; i += 3) {
+                        positions[i] += velocities[i];
+                        positions[i + 1] += velocities[i + 1];
+                        positions[i + 2] += velocities[i + 2];
+                        if (positions[i + 1] > 15) positions[i + 1] = 0;
+                        if (Math.abs(positions[i]) > 15) positions[i] = (Math.random() - 0.5) * 30;
+                        if (Math.abs(positions[i + 2]) > 15) positions[i + 2] = (Math.random() - 0.5) * 30;
+                    }
+                    system.geometry.attributes.position.needsUpdate = true;
+                });
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function toggleRotation() {
+            rotationEnabled = !rotationEnabled;
+            document.getElementById('rotateBtn').classList.toggle('active');
+        }
+
+        function toggleParticles() {
+            particlesEnabled = !particlesEnabled;
+            particles.forEach(p => p.visible = particlesEnabled);
+            document.getElementById('particlesBtn').classList.toggle('active');
+        }
+
+        function toggleGeometry() {
+            geometryEnabled = !geometryEnabled;
+            sacredGeometry.forEach(g => g.visible = geometryEnabled);
+            if (fibonacciSpiral) fibonacciSpiral.visible = geometryEnabled;
+            document.getElementById('geometryBtn').classList.toggle('active');
+        }
+
+        function resetView() {
+            camera.position.set(15, 10, 15);
+            camera.lookAt(0, 0, 0);
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('webgl-canvas').parentElement;
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function drawGauge(canvasId, value, max = 100) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 40;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0.75 * Math.PI, 2.25 * Math.PI);
+            ctx.strokeStyle = 'rgba(255, 102, 0, 0.2)';
+            ctx.lineWidth = 10;
+            ctx.stroke();
+
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            gradient.addColorStop(0, '#ff6600');
+            gradient.addColorStop(1, '#ff9933');
+
+            const endAngle = 0.75 * Math.PI + (value / max) * 1.5 * Math.PI;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0.75 * Math.PI, endAngle);
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 10;
+            ctx.shadowColor = '#ff6600';
+            ctx.shadowBlur = 15;
+            ctx.stroke();
+
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#ff6600';
+            ctx.font = 'bold 20px "Courier New"';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(value, centerX, centerY);
+        }
+
+        function initFractalBackground() {
+            const canvas = document.getElementById('fractal-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            function drawFractal() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const time = Date.now() * 0.0001;
+                for (let i = 0; i < 50; i++) {
+                    const x = canvas.width / 2 + Math.cos(time + i * PHI) * (100 + i * 10);
+                    const y = canvas.height / 2 + Math.sin(time + i * PHI) * (100 + i * 10);
+                    const size = 2 + Math.sin(time + i) * 1;
+                    ctx.fillStyle = `rgba(255, 102, 0, ${0.3 - i * 0.005})`;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                requestAnimationFrame(drawFractal);
+            }
+
+            drawFractal();
+        }
+
+        function initSacredGeometryOverlay() {
+            const canvas = document.getElementById('sacred-geometry-overlay');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            function drawGeometry() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const time = Date.now() * 0.0002;
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+
+                ctx.strokeStyle = 'rgba(255, 102, 0, 0.2)';
+                ctx.lineWidth = 1;
+
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI * 2) / 6 + time;
+                    const x = centerX + Math.cos(angle) * 100;
+                    const y = centerY + Math.sin(angle) * 100;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 100, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                requestAnimationFrame(drawGeometry);
+            }
+
+            drawGeometry();
+        }
+
+        window.addEventListener('load', () => {
+            initThreeJS();
+            initFractalBackground();
+            initSacredGeometryOverlay();
+
+            setInterval(() => {
+                drawGauge('gauge1', 88);
+                drawGauge('gauge2', 84);
+                drawGauge('gauge3', 92);
+                drawGauge('gauge4', 43);
+            }, 50);
+        });
+
+        window.addEventListener('beforeunload', () => {
+            if (animationId) cancelAnimationFrame(animationId);
+        });
+    </script>
+
+
+    <!-- Universal Consciousness Systems -->
+    <script src="/loading-states.js"></script>
+    <script src="/seo-meta-tags.js"></script>
+    <script src="/universal-analytics.js"></script>
+    <script src="/domain-navigation.js"></script>
+
+</body>
+</html>

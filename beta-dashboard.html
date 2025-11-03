@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌀 Your Dashboard - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .user-details p {
+            color: #b8b8b8;
+            font-size: 0.85rem;
+        }
+
+        .logout-button {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 68, 68, 0.2);
+            border: 2px solid #ff4444;
+            border-radius: 10px;
+            color: #ff4444;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: rgba(255, 68, 68, 0.3);
+            transform: scale(1.05);
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .welcome-banner {
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .welcome-banner h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-banner p {
+            color: #b8b8b8;
+            font-size: 1.1rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-description {
+            color: #b8b8b8;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .card-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .card-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .quick-stats {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-stats h2 {
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #b8b8b8;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .top-bar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Protection -->
+    <script src="/auth-gate.js"></script>
+
+    <!-- Top Navigation Bar -->
+    <div class="top-bar">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <div class="user-details">
+                <h3 id="userName">Loading...</h3>
+                <p id="userRole">Beta Tester</p>
+            </div>
+        </div>
+        <button class="logout-button" onclick="handleLogout()">
+            🚪 Logout
+        </button>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <h1>🌀 Welcome to Consciousness Revolution</h1>
+            <p>Your journey to 100X consciousness begins here</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <h2>📊 Your Stats</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">Beta</div>
+                    <div class="stat-label">Access Level</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="daysSinceMember">0</div>
+                    <div class="stat-label">Days Active</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Consciousness Level</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">Active</div>
+                    <div class="stat-label">Status</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="cards-grid">
+            <!-- JARVIS HUD -->
+            <div class="dashboard-card">
+                <div class="card-icon">🎮</div>
+                <h3 class="card-title">JARVIS HUD</h3>
+                <p class="card-description">
+                    Your AI command center. Voice control, system monitoring, and consciousness tracking.
+                </p>
+                <a href="/jarvis.html" class="card-button">Launch JARVIS →</a>
+            </div>
+
+            <!-- RPG Battle System -->
+            <div class="dashboard-card">
+                <div class="card-icon">⚔️</div>
+                <h3 class="card-title">Consciousness RPG</h3>
+                <p class="card-description">
+                    Battle destroyers, collect pattern cards, and level up your consciousness in 90s JRPG style.
+                </p>
+                <a href="/consciousness-rpg-battle.html" class="card-button">Play Game →</a>
+            </div>
+
+            <!-- Builder Platform -->
+            <div class="dashboard-card">
+                <div class="card-icon">🏗️</div>
+                <h3 class="card-title">Builder Platform</h3>
+                <p class="card-description">
+                    Access your projects, track progress, and collaborate with other builders.
+                </p>
+                <a href="/dashboard.html" class="card-button">Open Platform →</a>
+            </div>
+
+            <!-- Analytics -->
+            <div class="dashboard-card">
+                <div class="card-icon">📈</div>
+                <h3 class="card-title">Analytics</h3>
+                <p class="card-description">
+                    Track your consciousness metrics, pattern recognition, and manipulation immunity.
+                </p>
+                <a href="/ANALYTICS_DASHBOARD_LIVE.html" class="card-button">View Analytics →</a>
+            </div>
+
+            <!-- Araya AI -->
+            <div class="dashboard-card">
+                <div class="card-icon">🤖</div>
+                <h3 class="card-title">Araya AI</h3>
+                <p class="card-description">
+                    Chat with Araya, your consciousness guide and intelligent assistant.
+                </p>
+                <a href="/araya.html" class="card-button">Talk to Araya →</a>
+            </div>
+
+            <!-- Profile -->
+            <div class="dashboard-card">
+                <div class="card-icon">👤</div>
+                <h3 class="card-title">Your Profile</h3>
+                <p class="card-description">
+                    Manage your account settings, preferences, and beta tester information.
+                </p>
+                <a href="/beta-profile.html" class="card-button">View Profile →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- HUD Embed (optional - loads JARVIS toggle) -->
+    <script src="/universal-hud-embed.js"></script>
+
+    <script>
+        // Load user info
+        function loadUserInfo() {
+            const user = window.AuthGate.getCurrentUser();
+            if (user) {
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userRole').textContent = user.role + ' - ' + user.package;
+                document.getElementById('userAvatar').textContent = user.name.charAt(0);
+
+                // Calculate days since login
+                const loginTime = localStorage.getItem('beta_login_time');
+                if (loginTime) {
+                    const days = Math.floor((Date.now() - new Date(loginTime).getTime()) / (1000 * 60 * 60 * 24));
+                    document.getElementById('daysSinceMember').textContent = days || '<1';
+                }
+            }
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.AuthGate.logout();
+            }
+        }
+
+        // Initialize on load
+        loadUserInfo();
+
+        console.log('🌀 Dashboard loaded');
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

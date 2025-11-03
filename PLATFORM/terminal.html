@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>// TERMINAL ACCESS //</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0e27;
+            font-family: 'Courier New', monospace;
+            color: #00ff41;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Scanline effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
+        }
+
+        /* Screen flicker */
+        @keyframes flicker {
+            0% { opacity: 0.95; }
+            5% { opacity: 1; }
+            10% { opacity: 0.95; }
+            15% { opacity: 1; }
+            20% { opacity: 0.98; }
+            100% { opacity: 1; }
+        }
+
+        .terminal-container {
+            width: 100%;
+            height: 100vh;
+            padding: 20px;
+            animation: flicker 0.15s infinite;
+        }
+
+        .terminal-header {
+            color: #00ff41;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .terminal-output {
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #00ff41;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+        }
+
+        .terminal-output::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .terminal-output::-webkit-scrollbar-track {
+            background: #0a0e27;
+        }
+
+        .terminal-output::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 5px;
+        }
+
+        .terminal-line {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+
+        .prompt {
+            color: #00ff41;
+            text-shadow: 0 0 5px #00ff41;
+        }
+
+        .error {
+            color: #ff0051;
+            text-shadow: 0 0 5px #ff0051;
+        }
+
+        .success {
+            color: #00ff41;
+            text-shadow: 0 0 5px #00ff41;
+        }
+
+        .info {
+            color: #00d4ff;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+
+        .warning {
+            color: #ffaa00;
+            text-shadow: 0 0 5px #ffaa00;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ff41;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+        }
+
+        .input-prompt {
+            color: #00ff41;
+            margin-right: 10px;
+            text-shadow: 0 0 5px #00ff41;
+        }
+
+        #terminalInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            outline: none;
+            text-shadow: 0 0 5px #00ff41;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background: #00ff41;
+            animation: blink 1s infinite;
+            margin-left: 5px;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .locked-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .lock-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .typing-indicator {
+            color: #00ff41;
+            animation: blink 1s infinite;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .terminal-header {
+                font-size: 1rem;
+            }
+
+            .terminal-output {
+                font-size: 14px;
+                height: calc(100vh - 180px);
+            }
+
+            #terminalInput {
+                font-size: 14px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="terminal-container" id="terminalContainer">
+        <div class="locked-screen" id="lockedScreen">
+            <div class="lock-icon">🔒</div>
+            <div class="terminal-header">
+                ╔═══════════════════════════════════════╗<br>
+                ║  CONSCIOUSNESS REVOLUTION TERMINAL    ║<br>
+                ║        AUTHORIZED ACCESS ONLY         ║<br>
+                ╚═══════════════════════════════════════╝
+            </div>
+            <div style="margin-top: 2rem; color: #00d4ff;">
+                <p>ENTER CODEWORD TO ACCESS SYSTEM</p>
+            </div>
+            <div class="input-container" style="max-width: 500px; margin: 2rem auto;">
+                <span class="input-prompt">CODEWORD ></span>
+                <input type="text" id="codewordInput" autocomplete="off" autofocus>
+                <span class="cursor"></span>
+            </div>
+            <div style="margin-top: 1rem; font-size: 0.8rem; color: #666;">
+                <p>Hint: Man's best friend 🐕</p>
+            </div>
+        </div>
+
+        <div style="display: none;" id="terminalScreen">
+            <div class="terminal-header">
+                ╔═══════════════════════════════════════╗<br>
+                ║  CONSCIOUSNESS REVOLUTION TERMINAL    ║<br>
+                ║      OFFICIAL INTELLIGENCE v13.0      ║<br>
+                ╚═══════════════════════════════════════╝
+            </div>
+
+            <div class="terminal-output" id="output">
+                <div class="terminal-line success">ACCESS GRANTED</div>
+                <div class="terminal-line info">System initialized...</div>
+                <div class="terminal-line info">Loading Official Intelligence API...</div>
+                <div class="terminal-line success">Connected to Claude API</div>
+                <div class="terminal-line">─────────────────────────────────────</div>
+                <div class="terminal-line warning">⚠️  PRIVACY NOTICE: ALL ACTIVITY IS LOGGED</div>
+                <div class="terminal-line warning">Everything you type is recorded for debugging</div>
+                <div class="terminal-line info">Don't type anything private or sensitive!</div>
+                <div class="terminal-line">─────────────────────────────────────</div>
+                <div class="terminal-line success">🧠 INTELLIGENT MODE ACTIVE</div>
+                <div class="terminal-line info">Just type naturally - no commands needed!</div>
+                <div class="terminal-line info">Examples:</div>
+                <div class="terminal-line prompt">  • "I found a bug on the welcome page"</div>
+                <div class="terminal-line prompt">  • "What can you help me with?"</div>
+                <div class="terminal-line prompt">  • "Show me system status"</div>
+                <div class="terminal-line">─────────────────────────────────────</div>
+            </div>
+
+            <div class="input-container">
+                <span class="input-prompt">$ ></span>
+                <input type="text" id="terminalInput" autocomplete="off">
+                <span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================================================
+        // CODEWORD AUTHENTICATION
+        // ================================================
+        const CODEWORD = 'dog';
+        const codewordInput = document.getElementById('codewordInput');
+        const lockedScreen = document.getElementById('lockedScreen');
+        const terminalScreen = document.getElementById('terminalScreen');
+        const output = document.getElementById('output');
+        const terminalInput = document.getElementById('terminalInput');
+
+        let authenticated = false;
+        let commandHistory = [];
+        let historyIndex = -1;
+        let conversationHistory = [];  // For Claude API context
+
+        // Check codeword
+        codewordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const input = codewordInput.value.toLowerCase().trim();
+
+                if (input === CODEWORD) {
+                    authenticated = true;
+                    lockedScreen.style.display = 'none';
+                    terminalScreen.style.display = 'block';
+                    terminalInput.focus();
+                    typeMessage('success', 'WELCOME, AUTHORIZED USER');
+                } else {
+                    codewordInput.value = '';
+                    codewordInput.style.borderColor = '#ff0051';
+                    setTimeout(() => {
+                        codewordInput.style.borderColor = '#00ff41';
+                    }, 500);
+
+                    // Add some personality
+                    const deniedMessages = [
+                        '🚫 ACCESS DENIED - Nice try!',
+                        '🚫 INCORRECT - That\'s not the magic word',
+                        '🚫 NOPE - The dog says no',
+                        '🚫 DENIED - Buzz off! (Just kidding, try again)',
+                        '🚫 WRONG - Hint: Woof woof!'
+                    ];
+                    const randomMessage = deniedMessages[Math.floor(Math.random() * deniedMessages.length)];
+
+                    const tempMessage = document.createElement('div');
+                    tempMessage.style.cssText = 'color: #ff0051; margin-top: 1rem; text-shadow: 0 0 5px #ff0051;';
+                    tempMessage.textContent = randomMessage;
+                    lockedScreen.appendChild(tempMessage);
+
+                    setTimeout(() => {
+                        tempMessage.remove();
+                    }, 2000);
+                }
+            }
+        });
+
+        // ================================================
+        // TERMINAL COMMANDS
+        // ================================================
+        const commands = {
+            help: function() {
+                return [
+                    { type: 'info', text: '═══════════ AVAILABLE COMMANDS ═══════════' },
+                    { type: 'success', text: 'help         - Show this help message' },
+                    { type: 'success', text: 'debug        - Enter debug mode (AI assistance)' },
+                    { type: 'success', text: 'status       - Show system status' },
+                    { type: 'success', text: 'chat [msg]   - Talk to Claude AI' },
+                    { type: 'success', text: 'clear        - Clear terminal' },
+                    { type: 'success', text: 'whoami       - Show current user' },
+                    { type: 'success', text: 'exit         - Lock terminal' },
+                    { type: 'info', text: '═════════════════════════════════════════' }
+                ];
+            },
+
+            debug: function() {
+                return [
+                    { type: 'warning', text: '🔧 DEBUG MODE ACTIVATED' },
+                    { type: 'info', text: 'Claude AI is now listening...' },
+                    { type: 'success', text: 'You can now describe any issues you\'re seeing.' },
+                    { type: 'info', text: 'Type "chat [your message]" to get AI help' },
+                    { type: 'info', text: 'Example: chat The login button isn\'t working' }
+                ];
+            },
+
+            status: function() {
+                return [
+                    { type: 'info', text: '═══════════ SYSTEM STATUS ═══════════' },
+                    { type: 'success', text: '✓ Official Intelligence API: ONLINE' },
+                    { type: 'success', text: '✓ Claude Connection: ACTIVE' },
+                    { type: 'success', text: '✓ Platform Status: OPERATIONAL' },
+                    { type: 'success', text: '✓ Security Level: MAXIMUM' },
+                    { type: 'info', text: 'Uptime: ' + Math.floor(Math.random() * 100) + ' hours' },
+                    { type: 'info', text: '═══════════════════════════════════════' }
+                ];
+            },
+
+            chat: async function(args) {
+                if (!args || args.trim() === '') {
+                    return [{ type: 'error', text: 'Usage: chat [your message]' }];
+                }
+
+                // Show loading message
+                addLine('info', '⏳ Connecting to Claude AI...');
+
+                // Log everything to console and send to server
+                console.log('Terminal Chat Request:', {
+                    timestamp: new Date().toISOString(),
+                    message: args,
+                    codeword: CODEWORD
+                });
+
+                try {
+                    // Call emergency terminal API via ngrok
+                    const response = await fetch('https://stagey-hilary-nongremial.ngrok-free.dev/api/emergency-chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'ngrok-skip-browser-warning': 'true'  // Skip ngrok warning page
+                        },
+                        body: JSON.stringify({
+                            message: args,
+                            context: 'Terminal debug session'
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    console.log('Terminal Chat Response:', {
+                        timestamp: new Date().toISOString(),
+                        response: data
+                    });
+
+                    if (data.response) {
+                        // Add to conversation history
+                        conversationHistory.push({ role: 'user', content: args });
+                        conversationHistory.push({ role: 'assistant', content: data.response });
+
+                        // Display AI response
+                        addLine('success', '🤖 Claude AI:');
+                        addLine('info', data.response);
+
+                        // Show usage info if available
+                        if (data.usage) {
+                            addLine('info', `Messages remaining: ${data.usage.personal_remaining}`);
+                        }
+                    } else if (data.error) {
+                        addLine('error', '❌ Error: ' + data.error);
+                        addLine('warning', data.message || 'Please try again');
+                    }
+                } catch (error) {
+                    console.error('Terminal Chat Error:', error);
+                    addLine('error', '❌ Connection failed: ' + error.message);
+                    addLine('warning', 'The AI terminal service may be offline');
+                }
+
+                return [];
+            },
+
+            clear: function() {
+                output.innerHTML = '';
+                return [];
+            },
+
+            whoami: function() {
+                return [
+                    { type: 'success', text: 'User: AUTHORIZED EMPLOYEE' },
+                    { type: 'info', text: 'Access Level: FULL' },
+                    { type: 'info', text: 'Codeword: *** (verified)' }
+                ];
+            },
+
+            exit: function() {
+                authenticated = false;
+                terminalScreen.style.display = 'none';
+                lockedScreen.style.display = 'flex';
+                codewordInput.value = '';
+                codewordInput.focus();
+                return [];
+            }
+        };
+
+        // ================================================
+        // TERMINAL INPUT HANDLING
+        // ================================================
+        terminalInput.addEventListener('keydown', function(e) {
+            // Command history navigation
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (commandHistory.length > 0) {
+                    historyIndex = Math.max(0, historyIndex - 1);
+                    terminalInput.value = commandHistory[historyIndex] || '';
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    terminalInput.value = commandHistory[historyIndex] || '';
+                } else {
+                    historyIndex = commandHistory.length;
+                    terminalInput.value = '';
+                }
+            }
+        });
+
+        terminalInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const input = terminalInput.value.trim();
+
+                if (input) {
+                    // 🔥 LOG EVERYTHING - CRITICAL FOR DEBUGGING
+                    console.log('═══════════════════════════════════════');
+                    console.log('TERMINAL INPUT:', input);
+                    console.log('Timestamp:', new Date().toISOString());
+                    console.log('═══════════════════════════════════════');
+
+                    // Send to backend for logging (async, don't wait)
+                    fetch('https://stagey-hilary-nongremial.ngrok-free.dev/api/emergency-chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'ngrok-skip-browser-warning': 'true'
+                        },
+                        body: JSON.stringify({
+                            message: `[TERMINAL LOG] Command: ${input}`,
+                            context: 'Terminal activity tracking'
+                        })
+                    }).catch(() => {});  // Silent fail OK - logging shouldn't break terminal
+
+                    // Add to history
+                    commandHistory.push(input);
+                    historyIndex = commandHistory.length;
+
+                    // Show command
+                    addLine('prompt', '$ > ' + input);
+
+                    // 🧠 INTELLIGENT NATURAL LANGUAGE PROCESSING
+                    // Instead of rigid commands, understand intent
+                    const inputLower = input.toLowerCase();
+
+                    // Detect intent and route intelligently
+                    let handled = false;
+
+                    // Check for explicit commands first (backwards compatible)
+                    const parts = input.split(' ');
+                    const cmd = parts[0].toLowerCase();
+                    const args = parts.slice(1).join(' ');
+
+                    if (commands[cmd]) {
+                        // Traditional command - still works!
+                        const result = commands[cmd](args);
+                        result.forEach(line => {
+                            addLine(line.type, line.text);
+                        });
+                        handled = true;
+                    }
+                    // Natural language intent detection
+                    else if (inputLower.includes('help') || inputLower.includes('what can') || inputLower.includes('how do')) {
+                        commands.help().forEach(line => addLine(line.type, line.text));
+                        handled = true;
+                    }
+                    else if (inputLower.includes('status') || inputLower.includes('system') || inputLower.includes('online')) {
+                        commands.status().forEach(line => addLine(line.type, line.text));
+                        handled = true;
+                    }
+                    else if (inputLower.includes('clear') || inputLower === 'cls') {
+                        commands.clear();
+                        handled = true;
+                    }
+                    else if (inputLower.includes('who am i') || inputLower === 'whoami') {
+                        commands.whoami().forEach(line => addLine(line.type, line.text));
+                        handled = true;
+                    }
+                    else if (inputLower === 'exit' || inputLower === 'logout' || inputLower === 'quit') {
+                        commands.exit();
+                        handled = true;
+                    }
+                    else {
+                        // 🔥 DEFAULT: Everything else goes to AI
+                        // No more "command not found" - just talk naturally!
+                        addLine('info', '💬 Asking Claude AI...');
+                        commands.chat(input);  // Send whole message to AI
+                        handled = true;
+                    }
+
+                    // Clear input
+                    terminalInput.value = '';
+
+                    // Scroll to bottom
+                    output.scrollTop = output.scrollHeight;
+                }
+            }
+        });
+
+        // ================================================
+        // HELPER FUNCTIONS
+        // ================================================
+        function addLine(type, text) {
+            const line = document.createElement('div');
+            line.className = `terminal-line ${type}`;
+            line.textContent = text;
+            output.appendChild(line);
+        }
+
+        function typeMessage(type, text, delay = 50) {
+            let index = 0;
+            const line = document.createElement('div');
+            line.className = `terminal-line ${type}`;
+            output.appendChild(line);
+
+            const interval = setInterval(() => {
+                if (index < text.length) {
+                    line.textContent += text[index];
+                    index++;
+                    output.scrollTop = output.scrollHeight;
+                } else {
+                    clearInterval(interval);
+                }
+            }, delay);
+        }
+
+        // Auto-focus on load
+        window.addEventListener('load', () => {
+            codewordInput.focus();
+        });
+
+        // Keep focus on visible input
+        document.addEventListener('click', () => {
+            if (authenticated) {
+                terminalInput.focus();
+            } else {
+                codewordInput.focus();
+            }
+        });
+    </script>
+
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

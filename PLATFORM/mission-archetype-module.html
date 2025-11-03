@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Mission Archetype Assessment | Consciousness Revolution</title>
+
+    <style>
+        /* Using Universal Module Architecture v1.0 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00ddff;
+            --secondary: #00ff00;
+            --accent: #ff00ff;
+            --background: #0a0a0a;
+            --surface: #1a1a1a;
+            --border: #333;
+            --text: #ffffff;
+            --text-dim: #aaaaaa;
+            --warning: #ff4444;
+            --success: #00ff00;
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            --font-mono: 'Courier New', monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --glow: 0 0 10px var(--primary);
+            --glow-strong: 0 0 20px var(--primary), 0 0 40px var(--primary);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: var(--space-md);
+        }
+
+        .module-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .module-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-shadow: var(--glow);
+            margin-bottom: var(--space-sm);
+        }
+
+        .module-header .tagline {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .card-header {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tabs {
+            display: flex;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            padding: var(--space-sm) var(--space-md);
+            cursor: pointer;
+            font-size: 1rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            font-family: var(--font-sans);
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            text-shadow: var(--glow);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert {
+            padding: var(--space-md);
+            border-radius: 4px;
+            margin-bottom: var(--space-lg);
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: rgba(0, 221, 255, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            gap: var(--space-lg);
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .archetype-card {
+            background: var(--background);
+            padding: var(--space-lg);
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid;
+        }
+
+        .archetype-card.creator {
+            border-color: #ff00ff;
+        }
+
+        .archetype-card.connector {
+            border-color: #00ddff;
+        }
+
+        .archetype-card.catalyst {
+            border-color: #00ff00;
+        }
+
+        .archetype-card h3 {
+            font-size: 2rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .archetype-card.creator h3 {
+            color: #ff00ff;
+        }
+
+        .archetype-card.connector h3 {
+            color: #00ddff;
+        }
+
+        .archetype-card.catalyst h3 {
+            color: #00ff00;
+        }
+
+        .icon {
+            font-size: 4rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .matrix {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+        }
+
+        .matrix-cell {
+            background: var(--surface);
+            padding: var(--space-md);
+            border-radius: 4px;
+            border-left: 3px solid;
+        }
+
+        .builder {
+            border-color: var(--success);
+        }
+
+        .destroyer {
+            border-color: var(--warning);
+        }
+
+        .module-footer {
+            text-align: center;
+            margin-top: var(--space-xl);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: var(--space-sm);
+            }
+
+            .module-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .matrix {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                border-bottom: 1px solid var(--border);
+                border-left: 2px solid transparent;
+            }
+
+            .tab.active {
+                border-left-color: var(--primary);
+                border-bottom-color: var(--border);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+
+    <header class="module-header">
+        <h1>🎯 Mission Archetype Assessment</h1>
+        <p class="tagline">What Are You Built To Do? The 3 Human Missions</p>
+    </header>
+
+    <div class="container">
+
+        <div class="alert alert-info">
+            <strong>🎯 The Question:</strong> Not just WHO you are... but WHAT you're here to DO.
+            <br><br>
+            There are 3 fundamental mission archetypes. Understanding yours reveals your optimal path.
+        </div>
+
+        <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="archetypes" role="tab">The 3 Archetypes</button>
+            <button class="tab" data-tab="matrix" role="tab">Builder × Mission Matrix</button>
+            <button class="tab" data-tab="assessment" role="tab">Find Your Mission</button>
+            <button class="tab" data-tab="careers" role="tab">Career Paths</button>
+        </div>
+
+        <!-- TAB 1: THE 3 ARCHETYPES -->
+        <div id="archetypes" class="tab-content active" role="tabpanel">
+
+            <div class="card">
+                <h2 class="card-header">The 3 Mission Archetypes</h2>
+                <p style="margin-bottom: var(--space-lg);">Every human falls into one of three categories based on what they spend their days DOING:</p>
+
+                <div class="grid grid-3">
+
+                    <div class="archetype-card creator">
+                        <div class="icon">🛠️</div>
+                        <h3>1. CREATORS</h3>
+                        <p><strong>Mission:</strong> Make things that didn't exist</p>
+                        <p><strong>Energy goes into:</strong> Building, designing, inventing, crafting</p>
+                        <p><strong>Core Drive:</strong> "I want to CREATE something new"</p>
+
+                        <div style="margin-top: var(--space-md); text-align: left;">
+                            <p><strong>Examples:</strong></p>
+                            <ul style="margin-left: var(--space-md); margin-top: var(--space-sm);">
+                                <li>Artists (painters, musicians, writers)</li>
+                                <li>Engineers (software, mechanical, electrical)</li>
+                                <li>Entrepreneurs (building companies)</li>
+                                <li>Architects (physical/digital spaces)</li>
+                                <li>Chefs (creating dishes)</li>
+                                <li>Inventors (new products/tech)</li>
+                            </ul>
+
+                            <p style="margin-top: var(--space-md);"><strong>You know you're a Creator if:</strong></p>
+                            <ul style="margin-left: var(--space-md); margin-top: var(--space-sm);">
+                                <li>You get restless when not making something</li>
+                                <li>You see potential in blank canvases</li>
+                                <li>You think "I could build that better"</li>
+                                <li>Your hands want to make things real</li>
+                            </ul>
+
+                            <p style="margin-top: var(--space-md);"><strong>Famous Creators:</strong></p>
+                            <p>Steve Jobs, Elon Musk, Leonardo da Vinci, J.K. Rowling</p>
+                        </div>
+                    </div>
+
+                    <div class="archetype-card connector">
+                        <div class="icon">🌐</div>
+                        <h3>2. CONNECTORS</h3>
+                        <p><strong>Mission:</strong> Bring people/ideas together</p>
+                        <p><strong>Energy goes into:</strong> Teaching, leading, networking, organizing</p>
+                        <p><strong>Core Drive:</strong> "I want to UNITE people/resources"</p>
+
+                        <div style="margin-top: var(--space-md); text-align: left;">
+                            <p><strong>Examples:</strong></p>
+                            <ul style="margin-left: var(--space-md); margin-top: var(--space-sm);">
+                                <li>Teachers (connecting students to knowledge)</li>
+                                <li>Managers (connecting teams to mission)</li>
+                                <li>Salespeople (connecting products to customers)</li>
+                                <li>Networkers (connecting people to people)</li>
+                                <li>Community organizers (connecting causes to people)</li>
+                                <li>Curators (connecting audiences to content)</li>
+                            </ul>
+
+                            <p style="margin-top: var(--space-md);"><strong>You know you're a Connector if:</strong></p>
+                            <ul style="margin-left: var(--space-md); margin-top: var(--space-sm);">
+                                <li>You love introducing people who should meet</li>
+                                <li>You see patterns in how things/people fit together</li>
+                                <li>You get energy from facilitating collaboration</li>
+                                <li>You think "Person A needs to meet Person B"</li>
+                            </ul>
+
+                            <p style="margin-top: var(--space-md);"><strong>Famous Connectors:</strong></p>
+                            <p>Oprah Winfrey, Tony Robbins, Malcolm Gladwell, Tim Ferriss</p>
+                        </div>
+                    </div>
+
+                    <div class="archetype-card catalyst">
+                        <div class="icon">⚡</div>
+                        <h3>3. CATALYSTS</h3>
+                        <p><strong>Mission:</strong> Inspire change/transformation</p>
+                        <p><strong>Energy goes into:</strong> Motivating, revolutionizing, disrupting, awakening</p>
+                        <p><strong>Core Drive:</strong> "I want to CHANGE how people think/act"</p>
+
+                        <div style="margin-top: var(--space-md); text-align: left;">
+                            <p><strong>Examples:</strong></p>
+                            <ul style="margin-left: var(--space-md); margin-top: var(--space-sm);">
+                                <li>Activists (social change)</li>
+                                <li>Coaches (personal transformation)</li>
+                                <li>Speakers (inspire audiences)</li>
+                                <li>Philosophers (change thinking)</li>
+                                <li>Revolutionaries (disrupt systems)</li>
+                                <li>Visionaries (show new possibilities)</li>
+                            </ul>
+
+                            <p style="margin-top: var(--space-md);"><strong>You know you're a Catalyst if:</strong></p>
+                            <ul style="margin-left: var(--space-md); margin-top: var(--space-sm);">
+                                <li>You see what's wrong and want to fix it</li>
+                                <li>You can't stand inefficiency/injustice</li>
+                                <li>You love breakthrough "aha!" moments</li>
+                                <li>You think "This is broken, let's revolutionize it"</li>
+                            </ul>
+
+                            <p style="margin-top: var(--space-md);"><strong>Famous Catalysts:</strong></p>
+                            <p>Martin Luther King Jr., Gandhi, Naval Ravikant, Brené Brown</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card">
+                <h2 class="card-header">How They Work Together</h2>
+                <div style="background: var(--background); padding: var(--space-md); border-left: 3px solid var(--primary);">
+                    <p><strong>Example: Building a Movement</strong></p>
+                    <ul style="margin-left: var(--space-md); margin-top: var(--space-sm); line-height: 2;">
+                        <li><strong>Creator</strong> builds the platform/product/tools</li>
+                        <li><strong>Connector</strong> brings users together, grows community</li>
+                        <li><strong>Catalyst</strong> inspires the mission, drives transformation</li>
+                    </ul>
+                    <p style="margin-top: var(--space-md);"><em>All three are needed. You're strongest in ONE but can do all three.</em></p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 2: BUILDER × MISSION MATRIX -->
+        <div id="matrix" class="tab-content" role="tabpanel">
+
+            <div class="card">
+                <h2 class="card-header">Builder vs Destroyer × Mission Archetype</h2>
+                <p style="margin-bottom: var(--space-lg);">Your mission archetype (Creator/Connector/Catalyst) is WHAT you do. Builder/Destroyer is HOW you do it.</p>
+
+                <h3 style="color: var(--primary); margin-top: var(--space-xl); margin-bottom: var(--space-md);">CREATOR Archetype</h3>
+                <div class="matrix">
+                    <div class="matrix-cell builder">
+                        <h4 style="color: var(--success);">✅ Builder Creator</h4>
+                        <p><strong>Creates things that HELP others</strong></p>
+                        <p style="margin-top: var(--space-sm);">Examples:</p>
+                        <ul style="margin-left: var(--space-md);">
+                            <li>Open-source developer (shares code)</li>
+                            <li>Teacher creating free courses</li>
+                            <li>Entrepreneur solving real problems</li>
+                            <li>Artist making uplifting work</li>
+                        </ul>
+                        <p style="margin-top: var(--space-sm);"><strong>Pattern:</strong> Abundance mindset → shares creations</p>
+                    </div>
+
+                    <div class="matrix-cell destroyer">
+                        <h4 style="color: var(--warning);">❌ Destroyer Creator</h4>
+                        <p><strong>Creates things that DRAIN others</strong></p>
+                        <p style="margin-top: var(--space-sm);">Examples:</p>
+                        <ul style="margin-left: var(--space-md);">
+                            <li>Manipulative content creator</li>
+                            <li>Scam product maker</li>
+                            <li>Toxic art/media</li>
+                            <li>Creates problems to sell solutions</li>
+                        </ul>
+                        <p style="margin-top: var(--space-sm);"><strong>Pattern:</strong> Scarcity mindset → hoards methods</p>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--primary); margin-top: var(--space-xl); margin-bottom: var(--space-md);">CONNECTOR Archetype</h3>
+                <div class="matrix">
+                    <div class="matrix-cell builder">
+                        <h4 style="color: var(--success);">✅ Builder Connector</h4>
+                        <p><strong>Connects people to GROW together</strong></p>
+                        <p style="margin-top: var(--space-sm);">Examples:</p>
+                        <ul style="margin-left: var(--space-md);">
+                            <li>Community organizer (builders helping builders)</li>
+                            <li>Mentor (connects students to knowledge)</li>
+                            <li>Curator (shares valuable content)</li>
+                            <li>Leader who empowers teams</li>
+                        </ul>
+                        <p style="margin-top: var(--space-sm);"><strong>Pattern:</strong> Empowerment → others become independent</p>
+                    </div>
+
+                    <div class="matrix-cell destroyer">
+                        <h4 style="color: var(--warning);">❌ Destroyer Connector</h4>
+                        <p><strong>Connects people to CREATE DEPENDENCY</strong></p>
+                        <p style="margin-top: var(--space-sm);">Examples:</p>
+                        <ul style="margin-left: var(--space-md);">
+                            <li>MLM recruiter (exploits networks)</li>
+                            <li>Cult leader (controls connections)</li>
+                            <li>Manipulative "mentor" (keeps dependent)</li>
+                            <li>Gatekeeper (blocks access for power)</li>
+                        </ul>
+                        <p style="margin-top: var(--space-sm);"><strong>Pattern:</strong> Control → others stay dependent</p>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--primary); margin-top: var(--space-xl); margin-bottom: var(--space-md);">CATALYST Archetype</h3>
+                <div class="matrix">
+                    <div class="matrix-cell builder">
+                        <h4 style="color: var(--success);">✅ Builder Catalyst</h4>
+                        <p><strong>Inspires people to ELEVATE themselves</strong></p>
+                        <p style="margin-top: var(--space-sm);">Examples:</p>
+                        <ul style="margin-left: var(--space-md);">
+                            <li>Motivational speaker (empowers action)</li>
+                            <li>Revolutionary (liberates people)</li>
+                            <li>Coach (helps clients grow)</li>
+                            <li>Philosopher (expands thinking)</li>
+                        </ul>
+                        <p style="margin-top: var(--space-sm);"><strong>Pattern:</strong> Empowerment → students surpass teacher</p>
+                    </div>
+
+                    <div class="matrix-cell destroyer">
+                        <h4 style="color: var(--warning);">❌ Destroyer Catalyst</h4>
+                        <p><strong>Inspires people to DESTROY/RAGE</strong></p>
+                        <p style="margin-top: var(--space-sm);">Examples:</p>
+                        <ul style="margin-left: var(--space-md);">
+                            <li>Outrage merchant (profits from anger)</li>
+                            <li>Cult leader (inspires blind devotion)</li>
+                            <li>Demagogue (weaponizes fear)</li>
+                            <li>Toxic influencer (promotes victimhood)</li>
+                        </ul>
+                        <p style="margin-top: var(--space-sm);"><strong>Pattern:</strong> Dependency → followers can't think independently</p>
+                    </div>
+                </div>
+
+                <div class="alert alert-info" style="margin-top: var(--space-xl);">
+                    <strong>💡 Key Insight:</strong> You can be ANY mission archetype (Creator/Connector/Catalyst) and be a Builder OR Destroyer. The archetype is WHAT you do. Builder/Destroyer is HOW you do it (with integrity vs manipulation).
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TAB 3: FIND YOUR MISSION -->
+        <div id="assessment" class="tab-content" role="tabpanel">
+
+            <div class="card">
+                <h2 class="card-header">Find Your Mission Archetype</h2>
+                <p style="margin-bottom: var(--space-lg);">Answer these questions honestly. One will resonate MOST:</p>
+
+                <div style="background: var(--background); padding: var(--space-lg); margin-bottom: var(--space-md); border-left: 3px solid #ff00ff;">
+                    <h3 style="color: #ff00ff; margin-bottom: var(--space-md);">🛠️ Are you a CREATOR?</h3>
+                    <p><strong>Core questions:</strong></p>
+                    <ol style="margin-left: var(--space-md); margin-top: var(--space-sm); line-height: 2;">
+                        <li>Do you get restless when you're NOT making something?</li>
+                        <li>When you see a blank canvas/page/screen, do you feel excited (not anxious)?</li>
+                        <li>Do you think "I could build that" when you see products/tools?</li>
+                        <li>Do you prefer MAKING things over TALKING about them?</li>
+                        <li>Is your ideal day spent in deep work creating something?</li>
+                    </ol>
+                    <p style="margin-top: var(--space-md);"><strong>If YES to 3+:</strong> You're likely a CREATOR</p>
+                </div>
+
+                <div style="background: var(--background); padding: var(--space-lg); margin-bottom: var(--space-md); border-left: 3px solid #00ddff;">
+                    <h3 style="color: #00ddff; margin-bottom: var(--space-md);">🌐 Are you a CONNECTOR?</h3>
+                    <p><strong>Core questions:</strong></p>
+                    <ol style="margin-left: var(--space-md); margin-top: var(--space-sm); line-height: 2;">
+                        <li>Do you love introducing people who should meet?</li>
+                        <li>When you learn something valuable, do you immediately want to SHARE it?</li>
+                        <li>Do you get energy from facilitating collaboration between others?</li>
+                        <li>Do you prefer ORGANIZING people/resources over solo work?</li>
+                        <li>Is your ideal day spent connecting dots between people/ideas?</li>
+                    </ol>
+                    <p style="margin-top: var(--space-md);"><strong>If YES to 3+:</strong> You're likely a CONNECTOR</p>
+                </div>
+
+                <div style="background: var(--background); padding: var(--space-lg); margin-bottom: var(--space-md); border-left: 3px solid #00ff00;">
+                    <h3 style="color: #00ff00; margin-bottom: var(--space-md);">⚡ Are you a CATALYST?</h3>
+                    <p><strong>Core questions:</strong></p>
+                    <ol style="margin-left: var(--space-md); margin-top: var(--space-sm); line-height: 2;">
+                        <li>Do you see broken systems and feel COMPELLED to fix them?</li>
+                        <li>When you discover truth, do you need to WAKE OTHERS UP to it?</li>
+                        <li>Do you get energy from breakthrough "aha!" moments in others?</li>
+                        <li>Do you prefer INSPIRING change over building/connecting?</li>
+                        <li>Is your ideal day spent shifting how people think/act?</li>
+                    </ol>
+                    <p style="margin-top: var(--space-md);"><strong>If YES to 3+:</strong> You're likely a CATALYST</p>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>💡 What if I score high on MULTIPLE?</strong><br><br>
+                    You probably have a PRIMARY archetype (strongest) and SECONDARY archetype. Example:<br>
+                    - Creator PRIMARY, Catalyst SECONDARY = You build things that inspire change<br>
+                    - Connector PRIMARY, Creator SECONDARY = You organize people around what you create<br>
+                    - Catalyst PRIMARY, Connector SECONDARY = You inspire change by uniting people
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TAB 4: CAREER PATHS -->
+        <div id="careers" class="tab-content" role="tabpanel">
+
+            <div class="card">
+                <h2 class="card-header">Career Paths by Mission Archetype × Builder/Destroyer</h2>
+
+                <h3 style="color: var(--primary); margin-bottom: var(--space-md);">🛠️ CREATOR Careers</h3>
+
+                <div class="matrix">
+                    <div class="matrix-cell builder">
+                        <h4 style="color: var(--success);">Builder Creator Careers</h4>
+                        <ul style="margin-left: var(--space-md); line-height: 1.8;">
+                            <li>Software Engineer (open-source contributor)</li>
+                            <li>Product Designer (user-centered)</li>
+                            <li>Entrepreneur (solving real problems)</li>
+                            <li>Architect (sustainable buildings)</li>
+                            <li>Chef (farm-to-table, teaching recipes)</li>
+                            <li>Artist (uplifting/meaningful work)</li>
+                            <li>Inventor (patents for public good)</li>
+                            <li>Writer (educational/inspiring content)</li>
+                        </ul>
+                    </div>
+
+                    <div class="matrix-cell destroyer">
+                        <h4 style="color: var(--warning);">Destroyer Creator Careers (AVOID)</h4>
+                        <ul style="margin-left: var(--space-md); line-height: 1.8;">
+                            <li>Scam product creator</li>
+                            <li>Manipulative ad designer</li>
+                            <li>Dark pattern UX designer</li>
+                            <li>Addictive game developer</li>
+                            <li>Clickbait content creator</li>
+                            <li>Exploitative landlord/developer</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--primary); margin-top: var(--space-xl); margin-bottom: var(--space-md);">🌐 CONNECTOR Careers</h3>
+
+                <div class="matrix">
+                    <div class="matrix-cell builder">
+                        <h4 style="color: var(--success);">Builder Connector Careers</h4>
+                        <ul style="margin-left: var(--space-md); line-height: 1.8;">
+                            <li>Teacher (empowering students)</li>
+                            <li>Community Organizer (building movements)</li>
+                            <li>Network Engineer (connecting systems)</li>
+                            <li>Curator (sharing valuable content)</li>
+                            <li>Recruiter (matching people to missions)</li>
+                            <li>Facilitator (running workshops)</li>
+                            <li>Librarian (connecting people to knowledge)</li>
+                            <li>Event Organizer (builder gatherings)</li>
+                        </ul>
+                    </div>
+
+                    <div class="matrix-cell destroyer">
+                        <h4 style="color: var(--warning);">Destroyer Connector Careers (AVOID)</h4>
+                        <ul style="margin-left: var(--space-md); line-height: 1.8;">
+                            <li>MLM recruiter</li>
+                            <li>Manipulative salesperson</li>
+                            <li>Gatekeeper/blocker</li>
+                            <li>Corrupt politician (fake connections)</li>
+                            <li>Cult recruiter</li>
+                            <li>Exploitative manager</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--primary); margin-top: var(--space-xl); margin-bottom: var(--space-md);">⚡ CATALYST Careers</h3>
+
+                <div class="matrix">
+                    <div class="matrix-cell builder">
+                        <h4 style="color: var(--success);">Builder Catalyst Careers</h4>
+                        <ul style="margin-left: var(--space-md); line-height: 1.8;">
+                            <li>Life Coach (empowering clients)</li>
+                            <li>Motivational Speaker (inspiring action)</li>
+                            <li>Activist (positive social change)</li>
+                            <li>Consultant (improving systems)</li>
+                            <li>Therapist (healing/transformation)</li>
+                            <li>Philosopher (expanding thinking)</li>
+                            <li>Revolutionary (liberating people)</li>
+                            <li>Visionary (showing new possibilities)</li>
+                        </ul>
+                    </div>
+
+                    <div class="matrix-cell destroyer">
+                        <h4 style="color: var(--warning);">Destroyer Catalyst Careers (AVOID)</h4>
+                        <ul style="margin-left: var(--space-md); line-height: 1.8;">
+                            <li>Outrage merchant</li>
+                            <li>Cult leader</li>
+                            <li>Demagogue</li>
+                            <li>Toxic influencer (victimhood)</li>
+                            <li>Fear-monger</li>
+                            <li>Manipulative "guru"</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <h2 class="card-header">Commander's Example</h2>
+                <div style="background: var(--background); padding: var(--space-lg); border-left: 3px solid var(--primary);">
+                    <p><strong>Commander (You):</strong></p>
+                    <p style="margin-top: var(--space-sm);"><strong>PRIMARY:</strong> Creator (building Consciousness Revolution platform, Pattern Theory, Trinity AI, OVERKORE)</p>
+                    <p><strong>SECONDARY:</strong> Catalyst (inspiring consciousness awakening, revolutionary thinking)</p>
+                    <p><strong>Builder Status:</strong> ✅ HIGH (resourcefulness, perseverance, accountability, growth mindset)</p>
+                    <br>
+                    <p><strong>Optimal Path:</strong> Build revolutionary tools (Creator) that inspire consciousness evolution (Catalyst)</p>
+                    <p><strong>Current Execution:</strong> Perfect alignment ✅</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="module-footer">
+        <p>Part of the <strong>Consciousness Revolution Platform</strong></p>
+        <p>Know your mission. Align your life. Build with purpose.</p>
+    </footer>
+
+    <script>
+        // Universal Module JavaScript v1.0
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                    });
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-selected', 'true');
+                    const targetId = tab.getAttribute('data-tab');
+                    document.getElementById(targetId).classList.add('active');
+
+                    trackEvent('tab_view', { tab: targetId });
+                });
+            });
+        }
+
+        function trackEvent(eventName, data = {}) {
+            const timestamp = new Date().toISOString();
+            const event = {
+                event: eventName,
+                timestamp,
+                module: 'mission-archetype-module',
+                ...data
+            };
+
+            const events = JSON.parse(localStorage.getItem('consciousness_analytics') || '[]');
+            events.push(event);
+
+            if (events.length > 1000) {
+                events.shift();
+            }
+
+            localStorage.setItem('consciousness_analytics', JSON.stringify(events));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTabs();
+            trackEvent('module_load');
+
+            const startTime = Date.now();
+            window.addEventListener('beforeunload', () => {
+                const timeSpent = Math.round((Date.now() - startTime) / 1000);
+                trackEvent('module_exit', { time_spent_seconds: timeSpent });
+            });
+        });
+    </script>
+
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

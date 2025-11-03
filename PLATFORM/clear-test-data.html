@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Clear Test Data | 100X Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(26, 26, 46, 0.95);
+            border: 3px solid #ff6b00;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(255, 107, 0, 0.4);
+        }
+
+        h1 {
+            color: #ff6b00;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+
+        .data-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .data-section h2 {
+            color: #ffd700;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .data-info {
+            color: #00ff88;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #ff6b00, #ffd700);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 0;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 0, 0.6);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff0000, #ff6b00);
+        }
+
+        .message {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .success {
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #00ff88;
+            color: #00ff88;
+        }
+
+        .warning {
+            background: rgba(255, 107, 0, 0.2);
+            border: 2px solid #ff6b00;
+            color: #ff6b00;
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Clear Test Data</h1>
+
+        <div class="message" id="message"></div>
+
+        <div class="data-section">
+            <h2>📊 Current Data Status</h2>
+            <div class="data-info">
+                <strong>Users:</strong> <span id="user-count">0</span> accounts
+            </div>
+            <div class="data-info">
+                <strong>Workspace Todos:</strong> <span id="todo-count">0</span> items
+            </div>
+            <div class="data-info">
+                <strong>Workspace Notes:</strong> <span id="notes-exist">No</span>
+            </div>
+            <div class="data-info">
+                <strong>Auth Tokens:</strong> <span id="token-exist">No</span>
+            </div>
+            <div class="data-info">
+                <strong>Module Data:</strong> <span id="module-exist">No</span>
+            </div>
+        </div>
+
+        <button class="btn" onclick="refreshData()">🔄 Refresh Data Count</button>
+        <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear ALL Test Data</button>
+        <button class="btn btn-danger" onclick="clearUsersOnly()">👥 Clear Users Only</button>
+        <button class="btn" onclick="window.location.href='./login.html'">← Back to Login</button>
+    </div>
+
+    <script>
+        function updateDataDisplay() {
+            const users = JSON.parse(localStorage.getItem('100x_users') || '[]');
+            const todos = JSON.parse(localStorage.getItem('workspace_todos') || '[]');
+            const notes = localStorage.getItem('workspace_notes');
+            const authToken = localStorage.getItem('auth_token');
+            const moduleUser = localStorage.getItem('module_user');
+
+            document.getElementById('user-count').textContent = users.length;
+            document.getElementById('todo-count').textContent = todos.length;
+            document.getElementById('notes-exist').textContent = notes ? 'Yes' : 'No';
+            document.getElementById('token-exist').textContent = authToken ? 'Yes' : 'No';
+            document.getElementById('module-exist').textContent = moduleUser ? 'Yes' : 'No';
+        }
+
+        function showMessage(text, type = 'success') {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = `message ${type}`;
+            message.style.display = 'block';
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 3000);
+        }
+
+        function clearAllData() {
+            if (!confirm('⚠️ This will delete ALL test data including users, todos, notes, and sessions. Continue?')) {
+                return;
+            }
+
+            // Clear all 100X platform data
+            localStorage.removeItem('100x_users');
+            localStorage.removeItem('workspace_todos');
+            localStorage.removeItem('workspace_notes');
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('module_user');
+            localStorage.removeItem('welcomeTourProgress');
+            localStorage.removeItem('welcomeTourCompleted');
+            localStorage.removeItem('oracleGift');
+            localStorage.removeItem('oracleGiftReceived');
+            localStorage.removeItem('arg_clue1_found');
+            localStorage.removeItem('arg_first_key');
+
+            showMessage('✅ All test data cleared successfully!', 'success');
+            updateDataDisplay();
+        }
+
+        function clearUsersOnly() {
+            if (!confirm('Clear all user accounts and sessions?')) {
+                return;
+            }
+
+            localStorage.removeItem('100x_users');
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('module_user');
+
+            showMessage('✅ User data cleared! Todos and notes preserved.', 'success');
+            updateDataDisplay();
+        }
+
+        function refreshData() {
+            updateDataDisplay();
+            showMessage('📊 Data refreshed!', 'success');
+        }
+
+        // Initialize on load
+        updateDataDisplay();
+    </script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

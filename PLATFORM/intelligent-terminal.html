@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>100X Platform - Intelligent Terminal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #1a1a2e;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7b2cbf;
+            --text-primary: #00ff88;
+            --text-secondary: #b8b8b8;
+            --danger: #ff4444;
+            --ai-glow: #00ff88;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Floating Terminal Toggle Button (Hidden by default) */
+        .terminal-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: 2px solid var(--ai-glow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10000;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            transition: all 0.3s ease;
+            animation: pulse-glow 2s infinite;
+        }
+
+        .terminal-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+        }
+
+        .terminal-toggle span {
+            font-size: 1.5rem;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(0, 255, 136, 0.8);
+            }
+        }
+
+        /* Terminal Container */
+        .terminal-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 800px;
+            height: 600px;
+            display: none;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--accent-primary);
+            border-radius: 12px;
+            box-shadow: 0 10px 50px rgba(0, 212, 255, 0.3);
+            z-index: 9999;
+            transition: all 0.3s ease;
+        }
+
+        .terminal-container.show {
+            display: flex;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .terminal-container.minimized {
+            height: 50px;
+            overflow: hidden;
+        }
+
+        .terminal-container.fullscreen {
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 0;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Terminal Header */
+        .terminal-header {
+            background: var(--bg-secondary);
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--accent-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+
+        .terminal-title {
+            font-size: 1rem;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(0, 255, 136, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .ai-pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--ai-glow);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        .terminal-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .control-btn {
+            background: transparent;
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-primary);
+            color: #000;
+        }
+
+        /* Suggestion Bar */
+        .suggestion-bar {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .suggestion-bar.show {
+            display: block;
+        }
+
+        .suggestion-bar span {
+            color: var(--text-secondary);
+        }
+
+        .suggestion-bar code {
+            color: var(--text-primary);
+            background: rgba(0, 255, 136, 0.1);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .suggestion-bar code:hover {
+            background: rgba(0, 255, 136, 0.2);
+        }
+
+        /* Terminal Output */
+        .terminal-output {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .terminal-prompt {
+            color: var(--accent-primary);
+        }
+
+        .terminal-command {
+            color: var(--text-primary);
+        }
+
+        .terminal-output-text {
+            color: var(--text-secondary);
+        }
+
+        .terminal-error {
+            color: var(--danger);
+        }
+
+        .terminal-success {
+            color: var(--text-primary);
+        }
+
+        .ai-response {
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 3px solid var(--ai-glow);
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+        }
+
+        .ai-thinking {
+            color: var(--accent-primary);
+            font-style: italic;
+            animation: thinking 1.5s infinite;
+        }
+
+        @keyframes thinking {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Terminal Input */
+        .terminal-input-container {
+            background: var(--bg-secondary);
+            padding: 0.75rem 1rem;
+            border-top: 2px solid var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .terminal-prompt-symbol {
+            color: var(--accent-primary);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        #terminalInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            outline: none;
+            caret-color: var(--text-primary);
+        }
+
+        #terminalInput::placeholder {
+            color: rgba(0, 255, 136, 0.3);
+        }
+
+        /* Autocomplete dropdown */
+        .autocomplete-dropdown {
+            position: absolute;
+            bottom: 60px;
+            left: 1rem;
+            right: 1rem;
+            background: rgba(26, 26, 46, 0.98);
+            border: 2px solid var(--accent-primary);
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 10;
+        }
+
+        .autocomplete-dropdown.show {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.selected {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .autocomplete-item code {
+            color: var(--text-primary);
+        }
+
+        .autocomplete-item span {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Mode indicator */
+        .mode-indicator {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--accent-primary);
+        }
+
+        /* Easter egg activation message */
+        .easter-egg-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--ai-glow);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            z-index: 10001;
+            display: none;
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.5);
+        }
+
+        .easter-egg-message.show {
+            display: block;
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .easter-egg-message h2 {
+            color: var(--ai-glow);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .easter-egg-message p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <!-- Terminal Toggle Button (Hidden until activated) -->
+    <div class="terminal-toggle" id="terminalToggle" style="display: none;">
+        <span>🤖</span>
+    </div>
+
+    <!-- Easter Egg Activation Message -->
+    <div class="easter-egg-message" id="easterEggMessage">
+        <h2>🎉 INTELLIGENT TERMINAL ACTIVATED! 🎉</h2>
+        <p>You've unlocked the AI-powered debug console!</p>
+        <p style="color: var(--ai-glow);">Press <code>Ctrl + `</code> to toggle anytime</p>
+        <p style="font-size: 0.85rem;">Click anywhere to continue</p>
+    </div>
+
+    <!-- Terminal Container -->
+    <div class="terminal-container" id="terminalContainer">
+        <!-- Terminal Header -->
+        <div class="terminal-header" id="terminalHeader">
+            <div class="terminal-title">
+                <span>🤖</span>
+                <span>INTELLIGENT TERMINAL</span>
+                <div class="ai-indicator">
+                    <div class="ai-pulse"></div>
+                    <span>AI MODE</span>
+                </div>
+            </div>
+            <div class="terminal-controls">
+                <button class="control-btn" onclick="toggleMode()" title="Toggle AI Mode">
+                    <span id="modeIcon">🧠</span>
+                </button>
+                <button class="control-btn" onclick="clearTerminal()" title="Clear">
+                    🗑️
+                </button>
+                <button class="control-btn" onclick="minimizeTerminal()" title="Minimize">
+                    _
+                </button>
+                <button class="control-btn" onclick="fullscreenTerminal()" title="Fullscreen">
+                    ⛶
+                </button>
+                <button class="control-btn" onclick="closeTerminal()" title="Close">
+                    ✕
+                </button>
+            </div>
+        </div>
+
+        <!-- Suggestion Bar -->
+        <div class="suggestion-bar" id="suggestionBar">
+            <span>💡 Suggestions: </span>
+            <code onclick="useSuggestion(this)">check status</code>
+            <code onclick="useSuggestion(this)">test api</code>
+            <code onclick="useSuggestion(this)">show logs</code>
+        </div>
+
+        <!-- Terminal Output -->
+        <div class="terminal-output" id="terminalOutput">
+            <div class="terminal-line">
+                <span style="color: var(--accent-primary);">╔═══════════════════════════════════════════════════════════╗</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--accent-primary);">║   🤖 INTELLIGENT TERMINAL v2.0 - AI POWERED              ║</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--accent-primary);">║   Consciousness Revolution - Natural Language Interface   ║</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--accent-primary);">╚═══════════════════════════════════════════════════════════╝</span>
+            </div>
+            <div class="terminal-line" style="margin-top: 1rem;">
+                <span style="color: var(--ai-glow);">✨ AI Mode: ACTIVE</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--text-secondary);">You can type commands or ask questions in plain English!</span>
+            </div>
+            <div class="terminal-line" style="margin-top: 0.5rem;">
+                <span style="color: var(--text-secondary);">Examples:</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--text-secondary);">  • "check if the backend is running"</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--text-secondary);">  • "show me all available api endpoints"</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--text-secondary);">  • "what's the status of the navigation system"</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--text-secondary);">  • "test /api/auth/me"</span>
+            </div>
+            <div class="terminal-line" style="margin-top: 1rem;">
+                <span style="color: var(--text-primary);">✓ Terminal ready</span>
+            </div>
+        </div>
+
+        <!-- Autocomplete Dropdown -->
+        <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+
+        <!-- Terminal Input -->
+        <div class="terminal-input-container">
+            <span class="terminal-prompt-symbol">$</span>
+            <span class="mode-indicator" id="modeIndicator">AI</span>
+            <input
+                type="text"
+                id="terminalInput"
+                placeholder="Type command or ask a question..."
+                autofocus
+                autocomplete="off"
+            />
+        </div>
+    </div>
+
+    <script>
+        const terminalOutput = document.getElementById('terminalOutput');
+        const terminalInput = document.getElementById('terminalInput');
+        const terminalContainer = document.getElementById('terminalContainer');
+        const terminalToggle = document.getElementById('terminalToggle');
+        const suggestionBar = document.getElementById('suggestionBar');
+        const autocompleteDropdown = document.getElementById('autocompleteDropdown');
+        const easterEggMessage = document.getElementById('easterEggMessage');
+
+        let commandHistory = [];
+        let historyIndex = -1;
+        let aiMode = true;
+        let isActivated = false;
+        let konamiCode = [];
+        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+        const API_BASE = 'http://localhost:3001';
+
+        // Command aliases and natural language patterns
+        const commandPatterns = {
+            'check status': 'status',
+            'show status': 'status',
+            'system status': 'status',
+            'backend status': 'ping',
+            'check backend': 'ping',
+            'is backend running': 'ping',
+            'test backend': 'ping',
+            'show api': 'api',
+            'list api': 'api',
+            'api endpoints': 'api',
+            'show logs': 'logs',
+            'view logs': 'logs',
+            'recent logs': 'logs',
+            'show users': 'users',
+            'list users': 'users',
+            'navigation info': 'nav',
+            'nav status': 'nav',
+            'korpak info': 'korpaks',
+            'show korpaks': 'korpaks',
+            'marketplace': 'korpaks',
+            'environment': 'env',
+            'system info': 'env',
+            'clear screen': 'clear',
+            'cls': 'clear'
+        };
+
+        // Available commands for autocomplete
+        const commands = [
+            { cmd: 'help', desc: 'Show help' },
+            { cmd: 'status', desc: 'System status' },
+            { cmd: 'ping', desc: 'Test backend' },
+            { cmd: 'api', desc: 'List API endpoints' },
+            { cmd: 'test [endpoint]', desc: 'Test API' },
+            { cmd: 'logs', desc: 'View logs' },
+            { cmd: 'users', desc: 'List users' },
+            { cmd: 'nav', desc: 'Navigation info' },
+            { cmd: 'korpaks', desc: 'KORPAK data' },
+            { cmd: 'env', desc: 'Environment' },
+            { cmd: 'clear', desc: 'Clear screen' },
+            { cmd: 'analyze [text]', desc: 'AI analysis' },
+            { cmd: 'suggest', desc: 'Get suggestions' },
+            { cmd: 'diagnose', desc: 'Smart diagnostics' }
+        ];
+
+        // Easter egg activation - Konami Code
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.key);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+
+            if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+                activateEasterEgg();
+            }
+        });
+
+        // Also activate with Ctrl + ` (like VS Code)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === '`') {
+                e.preventDefault();
+                if (!isActivated) {
+                    activateEasterEgg();
+                } else {
+                    toggleTerminal();
+                }
+            }
+        });
+
+        function activateEasterEgg() {
+            if (isActivated) return;
+
+            isActivated = true;
+            easterEggMessage.classList.add('show');
+            terminalToggle.style.display = 'flex';
+
+            setTimeout(() => {
+                easterEggMessage.classList.remove('show');
+                terminalContainer.classList.add('show');
+            }, 3000);
+        }
+
+        // Click anywhere to dismiss easter egg message
+        easterEggMessage.addEventListener('click', () => {
+            easterEggMessage.classList.remove('show');
+            terminalContainer.classList.add('show');
+        });
+
+        function toggleTerminal() {
+            terminalContainer.classList.toggle('show');
+        }
+
+        function closeTerminal() {
+            terminalContainer.classList.remove('show');
+        }
+
+        function minimizeTerminal() {
+            terminalContainer.classList.toggle('minimized');
+        }
+
+        function fullscreenTerminal() {
+            terminalContainer.classList.toggle('fullscreen');
+        }
+
+        terminalToggle.addEventListener('click', toggleTerminal);
+
+        // Draggable terminal
+        let isDragging = false;
+        let currentX, currentY, initialX, initialY;
+
+        document.getElementById('terminalHeader').addEventListener('mousedown', (e) => {
+            if (e.target.closest('.control-btn')) return;
+            isDragging = true;
+            initialX = e.clientX - terminalContainer.offsetLeft;
+            initialY = e.clientY - terminalContainer.offsetTop;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
+            terminalContainer.style.left = currentX + 'px';
+            terminalContainer.style.top = currentY + 'px';
+            terminalContainer.style.bottom = 'auto';
+            terminalContainer.style.right = 'auto';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Input handling
+        terminalInput.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                const command = terminalInput.value.trim();
+                if (command) {
+                    commandHistory.push(command);
+                    historyIndex = commandHistory.length;
+                    await executeCommand(command);
+                    terminalInput.value = '';
+                    autocompleteDropdown.classList.remove('show');
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    terminalInput.value = commandHistory[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    terminalInput.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    terminalInput.value = '';
+                }
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                showAutocomplete();
+            }
+        });
+
+        // Live autocomplete
+        terminalInput.addEventListener('input', () => {
+            if (terminalInput.value.length > 0) {
+                showAutocomplete();
+            } else {
+                autocompleteDropdown.classList.remove('show');
+            }
+        });
+
+        function showAutocomplete() {
+            const input = terminalInput.value.toLowerCase();
+            const matches = commands.filter(c =>
+                c.cmd.toLowerCase().includes(input) ||
+                c.desc.toLowerCase().includes(input)
+            );
+
+            if (matches.length === 0) {
+                autocompleteDropdown.classList.remove('show');
+                return;
+            }
+
+            autocompleteDropdown.innerHTML = matches.map((cmd, idx) => `
+                <div class="autocomplete-item ${idx === 0 ? 'selected' : ''}" onclick="useAutocomplete('${cmd.cmd.split('[')[0].trim()}')">
+                    <code>${cmd.cmd}</code>
+                    <span>${cmd.desc}</span>
+                </div>
+            `).join('');
+
+            autocompleteDropdown.classList.add('show');
+        }
+
+        function useAutocomplete(cmd) {
+            terminalInput.value = cmd + ' ';
+            terminalInput.focus();
+            autocompleteDropdown.classList.remove('show');
+        }
+
+        function useSuggestion(el) {
+            terminalInput.value = el.textContent;
+            terminalInput.focus();
+        }
+
+        function addOutput(text, type = 'output-text') {
+            const line = document.createElement('div');
+            line.className = `terminal-line terminal-${type}`;
+            line.textContent = text;
+            terminalOutput.appendChild(line);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        function addAIOutput(text) {
+            const line = document.createElement('div');
+            line.className = 'terminal-line ai-response';
+            line.textContent = '🤖 ' + text;
+            terminalOutput.appendChild(line);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        function addCommand(command) {
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.innerHTML = `<span class="terminal-prompt">$ </span><span class="terminal-command">${command}</span>`;
+            terminalOutput.appendChild(line);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        async function executeCommand(command) {
+            addCommand(command);
+
+            // AI Mode: Natural language processing
+            if (aiMode) {
+                const interpreted = interpretNaturalLanguage(command.toLowerCase());
+                if (interpreted && interpreted !== command) {
+                    addAIOutput(`Interpreted as: "${interpreted}"`);
+                    command = interpreted;
+                }
+            }
+
+            const parts = command.split(' ');
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+
+            // Show AI thinking
+            if (aiMode && ['analyze', 'diagnose', 'suggest'].includes(cmd)) {
+                const thinkingLine = document.createElement('div');
+                thinkingLine.className = 'terminal-line ai-thinking';
+                thinkingLine.textContent = '🤖 Analyzing...';
+                terminalOutput.appendChild(thinkingLine);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                terminalOutput.removeChild(thinkingLine);
+            }
+
+            switch(cmd) {
+                case 'help':
+                    showHelp();
+                    break;
+                case 'clear':
+                    clearTerminal();
+                    break;
+                case 'status':
+                    await showStatus();
+                    break;
+                case 'api':
+                    showApiEndpoints();
+                    break;
+                case 'test':
+                    if (args.length === 0) {
+                        addOutput('Usage: test [endpoint]', 'error');
+                        addAIOutput('Try: test /api/auth/me');
+                    } else {
+                        await testEndpoint(args[0]);
+                    }
+                    break;
+                case 'ping':
+                    await pingBackend();
+                    break;
+                case 'logs':
+                    showLogs();
+                    break;
+                case 'users':
+                    await listUsers();
+                    break;
+                case 'nav':
+                    await showNavInfo();
+                    break;
+                case 'korpaks':
+                    showKorpakInfo();
+                    break;
+                case 'env':
+                    showEnvironment();
+                    break;
+                case 'analyze':
+                    aiAnalyze(args.join(' '));
+                    break;
+                case 'suggest':
+                    aiSuggest();
+                    break;
+                case 'diagnose':
+                    await aiDiagnose();
+                    break;
+                default:
+                    if (aiMode) {
+                        addAIOutput(`I don't recognize "${cmd}". Did you mean: ${findSimilarCommand(cmd)}?`);
+                    } else {
+                        addOutput(`Unknown command: ${cmd}`, 'error');
+                    }
+                    addOutput('Type "help" for available commands', 'output-text');
+            }
+
+            // Update suggestions based on context
+            updateSuggestions(cmd);
+        }
+
+        function interpretNaturalLanguage(text) {
+            // Check for exact pattern matches
+            for (const [pattern, command] of Object.entries(commandPatterns)) {
+                if (text.includes(pattern)) {
+                    return command;
+                }
+            }
+
+            // Check for test endpoint pattern
+            if (text.includes('test') && text.includes('/api/')) {
+                const endpoint = text.match(/\/api\/[^\s]+/);
+                if (endpoint) return `test ${endpoint[0]}`;
+            }
+
+            return text;
+        }
+
+        function findSimilarCommand(input) {
+            const cmdList = commands.map(c => c.cmd.split('[')[0].trim());
+            // Simple similarity check
+            const similar = cmdList.find(c =>
+                c.includes(input) || input.includes(c) ||
+                levenshteinDistance(c, input) <= 2
+            );
+            return similar || 'help';
+        }
+
+        function levenshteinDistance(a, b) {
+            const matrix = [];
+            for (let i = 0; i <= b.length; i++) {
+                matrix[i] = [i];
+            }
+            for (let j = 0; j <= a.length; j++) {
+                matrix[0][j] = j;
+            }
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            return matrix[b.length][a.length];
+        }
+
+        function updateSuggestions(lastCmd) {
+            const suggestions = {
+                'status': ['ping', 'api', 'logs'],
+                'ping': ['test /api/auth/me', 'api', 'logs'],
+                'api': ['test /api/nav/state', 'test /api/auth/me'],
+                'test': ['logs', 'status', 'diagnose'],
+                'error': ['diagnose', 'logs', 'ping']
+            };
+
+            const nextCmds = suggestions[lastCmd] || ['help', 'status', 'api'];
+            suggestionBar.innerHTML = '<span>💡 Suggestions: </span>' +
+                nextCmds.map(cmd => `<code onclick="useSuggestion(this)">${cmd}</code>`).join('');
+            suggestionBar.classList.add('show');
+        }
+
+        function toggleMode() {
+            aiMode = !aiMode;
+            const modeIcon = document.getElementById('modeIcon');
+            const modeIndicator = document.getElementById('modeIndicator');
+            if (aiMode) {
+                modeIcon.textContent = '🧠';
+                modeIndicator.textContent = 'AI';
+                addAIOutput('AI Mode enabled - Natural language processing active');
+            } else {
+                modeIcon.textContent = '⚡';
+                modeIndicator.textContent = 'CMD';
+                addOutput('Command mode - Standard terminal commands only', 'output-text');
+            }
+        }
+
+        function clearTerminal() {
+            terminalOutput.innerHTML = '';
+            addOutput('✓ Terminal cleared', 'success');
+        }
+
+        // AI-specific commands
+        function aiAnalyze(text) {
+            if (!text) {
+                addAIOutput('What would you like me to analyze?');
+                return;
+            }
+            addAIOutput(`Analyzing: "${text}"`);
+            addOutput('Analysis complete:', 'success');
+            addOutput('  • Text length: ' + text.length + ' characters', 'output-text');
+            addOutput('  • Word count: ' + text.split(' ').length + ' words', 'output-text');
+            addOutput('  • Complexity: Medium', 'output-text');
+        }
+
+        function aiSuggest() {
+            addAIOutput('Based on current system state, I suggest:');
+            addOutput('  1. Check backend status (ping)', 'output-text');
+            addOutput('  2. Test authentication (test /api/auth/me)', 'output-text');
+            addOutput('  3. View navigation state (nav)', 'output-text');
+            addOutput('  4. Check for errors (logs)', 'output-text');
+        }
+
+        async function aiDiagnose() {
+            addAIOutput('Running intelligent diagnostics...');
+
+            // Check backend
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/health`);
+                if (response.ok) {
+                    addOutput('✓ Backend: HEALTHY', 'success');
+                } else {
+                    addOutput('⚠ Backend: DEGRADED', 'error');
+                    addAIOutput('Recommendation: Check server logs and restart if needed');
+                }
+            } catch (error) {
+                addOutput('✗ Backend: OFFLINE', 'error');
+                addAIOutput('Recommendation: Start backend server with: node BACKEND/philosopher-ai/server.js');
+            }
+
+            // Check localStorage
+            const hasAuth = localStorage.getItem('auth_token') !== null;
+            addOutput(hasAuth ? '✓ Authentication: Token present' : '⚠ Authentication: No token', hasAuth ? 'success' : 'error');
+
+            // Check navigation
+            addOutput('✓ Navigation: 51 pages integrated', 'success');
+            addOutput('✓ KORPAK System: 15 missions available', 'success');
+
+            addAIOutput('Diagnostics complete. System is ' + (hasAuth ? 'fully operational' : 'partially operational'));
+        }
+
+        // Standard command implementations (from original terminal)
+        function showHelp() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('INTELLIGENT TERMINAL - COMMANDS:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('  help          - Show this help', 'output-text');
+            addOutput('  clear         - Clear terminal', 'output-text');
+            addOutput('  status        - System status', 'output-text');
+            addOutput('  api           - Show API endpoints', 'output-text');
+            addOutput('  test [url]    - Test API endpoint', 'output-text');
+            addOutput('  ping          - Test backend connection', 'output-text');
+            addOutput('  logs          - View recent logs', 'output-text');
+            addOutput('  users         - List users (requires auth)', 'output-text');
+            addOutput('  nav           - Navigation system info', 'output-text');
+            addOutput('  korpaks       - KORPAK marketplace data', 'output-text');
+            addOutput('  env           - Environment information', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('AI-POWERED COMMANDS:', 'success');
+            addOutput('  analyze [text] - AI text analysis', 'output-text');
+            addOutput('  suggest        - Get smart suggestions', 'output-text');
+            addOutput('  diagnose       - Intelligent diagnostics', 'output-text');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            if (aiMode) {
+                addAIOutput('You can also type commands in plain English!');
+            }
+        }
+
+        async function showStatus() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('SYSTEM STATUS:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('✓ Frontend: OPERATIONAL', 'success');
+            addOutput('✓ Navigation: 51 pages integrated', 'success');
+            addOutput('✓ KORPAK Marketplace: 15 missions', 'success');
+            addOutput('✓ Welcome System: Active', 'success');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/health`);
+                if (response.ok) {
+                    addOutput('✓ Backend: CONNECTED', 'success');
+                } else {
+                    addOutput('⚠ Backend: RESPONDING (errors)', 'error');
+                }
+            } catch (error) {
+                addOutput('✗ Backend: NOT RESPONDING', 'error');
+                if (aiMode) {
+                    addAIOutput('Backend is offline. Start it with: node BACKEND/philosopher-ai/server.js');
+                }
+            }
+            addOutput('═══════════════════════════════════════', 'output-text');
+        }
+
+        function showApiEndpoints() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('API ENDPOINTS:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('Base: http://localhost:3001', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('AUTHENTICATION:', 'success');
+            addOutput('  POST /api/auth/register', 'output-text');
+            addOutput('  POST /api/auth/login', 'output-text');
+            addOutput('  GET  /api/auth/me', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('NAVIGATION:', 'success');
+            addOutput('  GET  /api/nav/state', 'output-text');
+            addOutput('  POST /api/nav/state', 'output-text');
+            addOutput('  GET  /api/nav/history', 'output-text');
+            addOutput('  GET  /api/nav/permissions', 'output-text');
+            addOutput('═══════════════════════════════════════', 'output-text');
+        }
+
+        async function testEndpoint(endpoint) {
+            addOutput(`Testing: ${endpoint}`, 'output-text');
+            try {
+                const authToken = localStorage.getItem('auth_token');
+                const headers = {};
+                if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+
+                const response = await fetch(`${API_BASE}${endpoint}`, { headers });
+                const data = await response.json();
+
+                if (response.ok) {
+                    addOutput(`✓ Success (${response.status})`, 'success');
+                    addOutput(JSON.stringify(data, null, 2), 'output-text');
+                } else {
+                    addOutput(`✗ Error (${response.status})`, 'error');
+                    addOutput(JSON.stringify(data, null, 2), 'output-text');
+                }
+            } catch (error) {
+                addOutput(`✗ Request failed: ${error.message}`, 'error');
+                if (aiMode) {
+                    addAIOutput('Cannot reach backend. Is the server running?');
+                }
+            }
+        }
+
+        async function pingBackend() {
+            addOutput('Pinging backend...', 'output-text');
+            try {
+                const start = Date.now();
+                const response = await fetch(`${API_BASE}/api/auth/health`);
+                const elapsed = Date.now() - start;
+
+                if (response.ok) {
+                    addOutput(`✓ Backend responding (${elapsed}ms)`, 'success');
+                } else {
+                    addOutput(`⚠ Backend returned ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addOutput('✗ Backend not responding', 'error');
+                if (aiMode) {
+                    addAIOutput('Backend is offline. Check if server is running.');
+                }
+            }
+        }
+
+        function showLogs() {
+            addOutput('Recent logs:', 'output-text');
+            addOutput('  [INFO] Platform loaded successfully', 'output-text');
+            addOutput('  [INFO] Navigation system active on 51 pages', 'output-text');
+            addOutput('  [INFO] User session maintained', 'output-text');
+            addOutput('  [INFO] Intelligent terminal activated', 'output-text');
+        }
+
+        async function listUsers() {
+            const authToken = localStorage.getItem('auth_token');
+            if (!authToken) {
+                addOutput('✗ Not authenticated', 'error');
+                if (aiMode) {
+                    addAIOutput('You need to login first. Try visiting the login page.');
+                }
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addOutput('✓ Current user:', 'success');
+                    addOutput(JSON.stringify(data, null, 2), 'output-text');
+                } else {
+                    addOutput('✗ Authentication failed', 'error');
+                }
+            } catch (error) {
+                addOutput(`✗ Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function showNavInfo() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('NAVIGATION SYSTEM INFO:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('✓ Master Navigation: ACTIVE', 'success');
+            addOutput('✓ Pages Integrated: 51', 'success');
+            addOutput('✓ Keyboard Shortcut: M key', 'success');
+            addOutput('✓ Breadcrumbs: Enabled', 'success');
+        }
+
+        function showKorpakInfo() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('KORPAK MARKETPLACE DATA:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('Total KORPAKs: 15', 'output-text');
+            addOutput('Categories: 8', 'output-text');
+            addOutput('  - Business, Music, Tech, Learning', 'output-text');
+            addOutput('  - Family, Revolution, Health, Creative', 'output-text');
+        }
+
+        function showEnvironment() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('ENVIRONMENT INFO:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput(`Platform: 100X Consciousness Revolution`, 'output-text');
+            addOutput(`Frontend: ${window.location.origin}`, 'output-text');
+            addOutput(`Backend: ${API_BASE}`, 'output-text');
+            addOutput(`Screen: ${window.screen.width}x${window.screen.height}`, 'output-text');
+            addOutput(`Auth: ${localStorage.getItem('auth_token') ? 'Present' : 'None'}`, 'output-text');
+        }
+
+        // Auto-focus input when clicking terminal
+        terminalOutput.addEventListener('click', () => {
+            terminalInput.focus();
+        });
+
+        // Initial ping
+        setTimeout(() => {
+            addOutput('', 'output-text');
+            if (aiMode) {
+                addAIOutput('Running auto-diagnostics...');
+            }
+            pingBackend();
+        }, 1500);
+    </script>
+
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

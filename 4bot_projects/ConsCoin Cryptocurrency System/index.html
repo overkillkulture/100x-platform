@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConsCoin Cryptocurrency Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>ConsCoin</h1>
+                <span class="version">v1.0</span>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" data-tab="dashboard">Dashboard</button>
+                <button class="nav-btn" data-tab="wallet">Wallet</button>
+                <button class="nav-btn" data-tab="mining">Mining</button>
+                <button class="nav-btn" data-tab="transactions">Transactions</button>
+                <button class="nav-btn" data-tab="blockchain">Blockchain</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Dashboard Tab -->
+            <section id="dashboard" class="tab-content active">
+                <div class="dashboard-grid">
+                    <!-- Balance Card -->
+                    <div class="card balance-card">
+                        <h2>Your Balance</h2>
+                        <div class="balance-amount">
+                            <span id="balance-display">0.00</span>
+                            <span class="currency">CC</span>
+                        </div>
+                        <div class="balance-usd">
+                            ≈ $<span id="balance-usd">0.00</span> USD
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card actions-card">
+                        <h2>Quick Actions</h2>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" id="send-coins-btn">Send Coins</button>
+                            <button class="btn btn-secondary" id="receive-coins-btn">Receive Coins</button>
+                            <button class="btn btn-success" id="start-mining-btn">Start Mining</button>
+                        </div>
+                    </div>
+
+                    <!-- Network Status -->
+                    <div class="card status-card">
+                        <h2>Network Status</h2>
+                        <div class="status-item">
+                            <span class="status-label">Block Height:</span>
+                            <span id="block-height">0</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Difficulty:</span>
+                            <span id="difficulty">1</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Hash Rate:</span>
+                            <span id="hash-rate">0 H/s</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Peers:</span>
+                            <span id="peer-count">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Recent Transactions -->
+                    <div class="card transactions-preview">
+                        <h2>Recent Transactions</h2>
+                        <div id="recent-transactions">
+                            <div class="no-transactions">No transactions yet</div>
+                        </div>
+                        <button class="btn btn-link" onclick="switchTab('transactions')">View All</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Wallet Tab -->
+            <section id="wallet" class="tab-content">
+                <div class="wallet-section">
+                    <div class="card">
+                        <h2>Wallet Management</h2>
+                        
+                        <!-- Wallet Info -->
+                        <div class="wallet-info">
+                            <div class="wallet-address">
+                                <label>Your Address:</label>
+                                <div class="address-container">
+                                    <input type="text" id="wallet-address" readonly>
+                                    <button class="btn btn-small" id="copy-address">Copy</button>
+                                </div>
+                            </div>
+                            
+                            <div class="wallet-balance">
+                                <label>Balance:</label>
+                                <span id="wallet-balance">0.00 CC</span>
+                            </div>
+                        </div>
+
+                        <!-- Send Transaction Form -->
+                        <div class="transaction-form">
+                            <h3>Send ConsCoin</h3>
+                            <form id="send-form">
+                                <div class="form-group">
+                                    <label for="recipient-address">Recipient Address:</label>
+                                    <input type="text" id="recipient-address" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="send-amount">Amount (CC):</label>
+                                    <input type="number" id="send-amount" step="0.01" min="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="transaction-fee">Fee (CC):</label>
+                                    <input type="number" id="transaction-fee" value="0.001" step="0.001" min="0.001" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Send Transaction</button>
+                            </form>
+                        </div>
+
+                        <!-- Wallet Actions -->
+                        <div class="wallet-actions">
+                            <button class="btn btn-secondary" id="generate-wallet">Generate New Wallet</button>
+                            <button class="btn btn-secondary" id="import-wallet">Import Wallet</button>
+                            <button class="btn btn-secondary" id="export-wallet">Export Wallet</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mining Tab -->
+            <section id="mining" class="tab-content">
+                <div class="mining-section">
+                    <div class="card">
+                        <h2>Mining Control</h2>
+                        
+                        <!-- Mining Status -->
+                        <div class="mining-status">
+                            <div class="status-indicator">
+                                <span class="status-dot" id="mining-status-dot"></span>
+                                <span id="mining-status-text">Stopped</span>
+                            </div>
+                        </div>
+
+                        <!-- Mining Controls -->
+                        <div class="mining-controls">
+                            <button class="btn btn-success" id="start-mining">Start Mining</button>
+                            <button class="btn btn-danger" id="stop-mining" disabled>Stop Mining</button>
+                        </div>
+
+                        <!-- Mining Stats -->
+                        <div class="mining-stats">
+                            <div class="stat-item">
+                                <label>Hash Rate:</label>
+                                <span id="mining-hashrate">0 H/s</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>Blocks Mined:</label>
+                                <span id="blocks-mined">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>Total Rewards:</label>
+                                <span id="mining-rewards">0.00 CC</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>Current Block:</label>
+                                <span id="current-mining-block">-</span>
+                            </div>
+                        </div>
+
+                        <!-- Mining Settings -->
+                        <div class="mining-settings">
+                            <h3>Settings</h3>
+                            <div class="form-group">
+                                <label for="mining-threads">Mining Threads:</label>
+                                <input type="number" id="mining-threads" value="1" min="1" max="8">
+                            </div>
+                            <div class="form-group">
+                                <label for="mining-intensity">Intensity:</label>
+                                <select id="mining-intensity">
+                                    <option value="low">Low</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transactions Tab -->
+            <section id="transactions" class="tab-content">
+                <div class="transactions-section">
+                    <div class="card">
+                        <div class="transactions-header">
+                            <h2>Transaction History</h2>
+                            <div class="transaction-filters">
+                                <select id="transaction-filter">
+                                    <option value="all">All Transactions</option>
+                                    <option value="sent">Sent</option>
+                                    <option value="received">Received</option>
+                                    <option value="mining">Mining Rewards</option>
+                                </select>
+                                <button class="btn btn-secondary" id="refresh-transactions">Refresh</button>
+                            </div>
+                        </div>
+                        
+                        <div class="transactions-list" id="transactions-list">
+                            <div class="no-transactions">No transactions found</div>
+                        </div>
+                        
+                        <div class="pagination" id="transaction-pagination">
+                            <button class="btn btn-small" id="prev-page" disabled>Previous</button>
+                            <span id="page-info">Page 1 of 1</span>
+                            <button class="btn btn-small" id="next-page" disabled>Next</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Blockchain Tab -->
+            <section id="blockchain" class="tab-content">
+                <div class="blockchain-section">
+                    <div class="card">
+                        <div class="blockchain-header">
+                            <h2>Blockchain Explorer</h2>
+                            <div class="blockchain-stats">
+                                <div class="stat">
+                                    <label>Total Blocks:</label>
+                                    <span id="total-blocks">0</span>
+                                </div>
+                                <div class="stat">
+                                    <label>Total Supply:</label>
+                                    <span id="total-supply">0.00 CC</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="block-search">
+                            <input type="text" id="block-search" placeholder="Search by block hash or height...">
+                            <button class="btn btn-primary" id="search-block">Search</button>
+                        </div>
+                        
+                        <div class="blocks-list" id="blocks-list">
+                            <div class="loading">Loading blockchain data...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Send Confirmation Modal -->
+    <div id="send-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Transaction</h3>
+                <span class="close" data-modal="send-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="transaction-details">
+                    <div class="detail-row">
+                        <span>To:</span>
+                        <span id="confirm-recipient"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Amount:</span>
+                        <span id="confirm-amount"></span>
+                    </div>

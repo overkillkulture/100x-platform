@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your AI Guide - Consciousness Revolution</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: clamp(2em, 5vw, 3em);
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: clamp(1em, 2.5vw, 1.2em);
+            margin-bottom: 50px;
+        }
+
+        .ai-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .ai-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .ai-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .ai-avatar {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .ai-card h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: #764ba2;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .use-cases {
+            text-align: left;
+            list-style: none;
+            margin: 20px 0;
+            padding: 0;
+        }
+
+        .use-cases li {
+            padding: 8px 0;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .use-cases li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .pricing {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+
+        .tip {
+            text-align: center;
+            color: white;
+            font-size: 0.9em;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .tip strong {
+            color: #ffeb3b;
+        }
+
+        @media (max-width: 768px) {
+            .ai-cards {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌀 Choose Your AI Guide</h1>
+        <p class="subtitle">Different AIs for different needs - pick the right one for you!</p>
+
+        <div class="ai-cards">
+            <!-- Philosopher AI Card -->
+            <div class="ai-card" onclick="goToPhilosopher()">
+                <div class="ai-avatar">👁️</div>
+                <h2>Philosopher AI</h2>
+                <p class="tagline">Deep Wisdom & Consciousness</p>
+                <ul class="use-cases">
+                    <li>Big life questions</li>
+                    <li>Philosophical debates</li>
+                    <li>Pattern Theory education</li>
+                    <li>Consciousness tracking</li>
+                    <li>Manipulation immunity</li>
+                </ul>
+                <button>Ask Philosopher</button>
+                <div class="pricing">Free: 3 questions/month<br>Premium: Unlimited wisdom</div>
+            </div>
+
+            <!-- Araya Card -->
+            <div class="ai-card" onclick="goToAraya()">
+                <div class="ai-avatar">💬</div>
+                <h2>Araya</h2>
+                <p class="tagline">Your Building Companion</p>
+                <ul class="use-cases">
+                    <li>Build features together</li>
+                    <li>Site navigation help</li>
+                    <li>Quick questions</li>
+                    <li>Remembers you!</li>
+                    <li>No login required</li>
+                </ul>
+                <button>Chat with Araya</button>
+                <div class="pricing">100% Free & Unlimited</div>
+            </div>
+        </div>
+
+        <div class="tip">
+            <p>💡 <strong>Tip:</strong> Araya can consult Philosopher for wisdom when you need deep insights!</p>
+            <p style="margin-top: 10px;">Both AIs work together as part of our consciousness network 🌀</p>
+        </div>
+    </div>
+
+    <script>
+        function goToPhilosopher() {
+            window.location.href = '/philosopher-ai.html';
+        }
+
+        function goToAraya() {
+            window.location.href = '/araya-chat.html';
+        }
+    </script>
+
+    <!-- Builder Pattern Tracking -->
+    <script src="/BUILDER_TRACKING_SCRIPT.js"></script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👤 Your Profile - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .profile-header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info p {
+            color: #b8b8b8;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-badge {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            color: #fff;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-label {
+            color: #b8b8b8;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #fff;
+        }
+
+        .permissions-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .permission-tag {
+            background: rgba(74, 222, 128, 0.2);
+            border: 2px solid #4ade80;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: #4ade80;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .primary-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .primary-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .secondary-button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .danger-button {
+            background: rgba(255, 68, 68, 0.2);
+            border: 2px solid #ff4444;
+            color: #ff4444;
+        }
+
+        .danger-button:hover {
+            background: rgba(255, 68, 68, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Protection -->
+    <script src="/auth-gate.js"></script>
+
+    <div class="profile-container">
+        <a href="/beta-dashboard.html" class="back-link">← Back to Dashboard</a>
+
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">?</div>
+            <div class="profile-info">
+                <h1 id="profileName">Loading...</h1>
+                <p id="profileEmail">email@example.com</p>
+                <p id="profileRole">Role</p>
+                <div class="profile-badge" id="profilePackage">Package</div>
+            </div>
+        </div>
+
+        <!-- Account Information -->
+        <div class="section">
+            <h2>📋 Account Information</h2>
+            <div class="info-grid">
+                <div class="info-label">User PIN:</div>
+                <div class="info-value" id="userPin">****</div>
+
+                <div class="info-label">Status:</div>
+                <div class="info-value" id="userStatus">Active</div>
+
+                <div class="info-label">Signup Date:</div>
+                <div class="info-value" id="signupDate">2025-10-17</div>
+
+                <div class="info-label">Login Time:</div>
+                <div class="info-value" id="loginTime">Just now</div>
+            </div>
+        </div>
+
+        <!-- Permissions -->
+        <div class="section">
+            <h2>🔑 Your Permissions</h2>
+            <p style="color: #b8b8b8; margin-bottom: 1rem;">
+                You have access to the following features:
+            </p>
+            <div class="permissions-list" id="permissionsList">
+                <div class="permission-tag">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="section" id="notesSection" style="display: none;">
+            <h2>📝 Notes</h2>
+            <p id="userNotes" style="color: #b8b8b8; line-height: 1.6;"></p>
+        </div>
+
+        <!-- Actions -->
+        <div class="section">
+            <h2>⚙️ Actions</h2>
+            <div class="action-buttons">
+                <button class="action-button primary-button" onclick="goToDashboard()">
+                    🏠 Back to Dashboard
+                </button>
+                <button class="action-button secondary-button" onclick="window.location.href='/forgot-pin.html'">
+                    🔑 View PIN Recovery
+                </button>
+                <button class="action-button danger-button" onclick="handleLogout()">
+                    🚪 Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadProfileData() {
+            const user = window.AuthGate.getCurrentUser();
+
+            if (user) {
+                // Header
+                document.getElementById('profileAvatar').textContent = user.name.charAt(0);
+                document.getElementById('profileName').textContent = user.name;
+                document.getElementById('profileEmail').textContent = user.email;
+                document.getElementById('profileRole').textContent = user.role;
+                document.getElementById('profilePackage').textContent = user.package || 'Standard';
+
+                // Account Info
+                document.getElementById('userPin').textContent = user.pin;
+                document.getElementById('userStatus').textContent = user.status || 'Active';
+
+                // Login time
+                const loginTime = localStorage.getItem('beta_login_time');
+                if (loginTime) {
+                    const date = new Date(loginTime);
+                    document.getElementById('loginTime').textContent = date.toLocaleString();
+                }
+
+                // Permissions (default if not specified)
+                const permissions = ['Dashboard Access', 'JARVIS HUD', 'Analytics', 'Araya AI', 'RPG Game', 'Beta Features'];
+                const permissionsList = document.getElementById('permissionsList');
+                permissionsList.innerHTML = permissions.map(perm =>
+                    `<div class="permission-tag">✓ ${perm}</div>`
+                ).join('');
+
+                // Notes (if available)
+                if (user.notes) {
+                    document.getElementById('notesSection').style.display = 'block';
+                    document.getElementById('userNotes').textContent = user.notes;
+                }
+            }
+        }
+
+        function goToDashboard() {
+            window.location.href = '/beta-dashboard.html';
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.AuthGate.logout();
+            }
+        }
+
+        // Load profile on page load
+        loadProfileData();
+
+        console.log('👤 Profile loaded');
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>KORPAK Wizard - Guided First Mission | 100X</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .wizard-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .wizard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .wizard-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .wizard-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 0 20px;
+        }
+
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            margin: 0 5px;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .progress-step.active {
+            background: white;
+        }
+
+        .wizard-content {
+            padding: 40px;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .step p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .option-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .option-card.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .option-card h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .option-card p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .wizard-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .mission-preview {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .mission-preview h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .mission-preview ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .mission-preview li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .mission-preview li:last-child {
+            border-bottom: none;
+        }
+
+        .mission-preview li::before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .completion-message {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .completion-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .completion-message h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .korpak-path {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .path-option {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            flex: 1;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .path-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .path-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .path-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="wizard-container">
+        <div class="wizard-header">
+            <h1>🚀 KORPAK Wizard</h1>
+            <p>Guided setup for your first mission</p>
+            <div class="wizard-progress">
+                <div class="progress-step active" id="progress-1"></div>
+                <div class="progress-step" id="progress-2"></div>
+                <div class="progress-step" id="progress-3"></div>
+                <div class="progress-step" id="progress-4"></div>
+                <div class="progress-step" id="progress-5"></div>
+            </div>
+        </div>
+
+        <div class="wizard-content">
+            <!-- Step 1: Welcome -->
+            <div class="step active" id="step-1">
+                <h2>Welcome to Your First KORPAK!</h2>
+                <p>A KORPAK is a time-limited mission that helps you build momentum and get quick wins.</p>
+                <p><strong>What makes KORPAKs special:</strong></p>
+                <ul style="list-style: none; padding: 0; margin: 20px 0;">
+                    <li style="padding: 10px 0;">⏰ <strong>Time-boxed:</strong> 7-day missions keep you focused</li>
+                    <li style="padding: 10px 0;">🎯 <strong>Clear goal:</strong> You know exactly what to build</li>
+                    <li style="padding: 10px 0;">🏆 <strong>Immediate results:</strong> Complete it and see progress</li>
+                </ul>
+                <div class="wizard-actions">
+                    <button class="btn btn-secondary" disabled>Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Let's Start →</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Choose Path -->
+            <div class="step" id="step-2">
+                <h2>What's your goal?</h2>
+                <p>Choose the path that matches what you want to accomplish:</p>
+
+                <div class="korpak-path">
+                    <div class="path-option" onclick="selectPath('builder')">
+                        <div class="path-icon">🛠️</div>
+                        <h3>Builder</h3>
+                        <p>Create tools & systems</p>
+                    </div>
+                    <div class="path-option" onclick="selectPath('creator')">
+                        <div class="path-icon">🎨</div>
+                        <h3>Creator</h3>
+                        <p>Content & media</p>
+                    </div>
+                    <div class="path-option" onclick="selectPath('founder')">
+                        <div class="path-icon">🚀</div>
+                        <h3>Founder</h3>
+                        <p>Launch a business</p>
+                    </div>
+                </div>
+
+                <div class="wizard-actions">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn btn-primary" id="path-next-btn" disabled onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Choose Mission Type -->
+            <div class="step" id="step-3">
+                <h2>Pick your first mission</h2>
+                <p id="mission-intro">Here are some beginner-friendly missions:</p>
+
+                <div id="mission-options">
+                    <!-- Dynamically populated -->
+                </div>
+
+                <div class="wizard-actions">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn btn-primary" id="mission-next-btn" disabled onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Mission Preview -->
+            <div class="step" id="step-4">
+                <h2>Your Mission Plan</h2>
+                <p>Here's what you'll accomplish in the next 7 days:</p>
+
+                <div class="mission-preview" id="mission-preview">
+                    <!-- Dynamically populated -->
+                </div>
+
+                <p><strong>Time commitment:</strong> <span id="time-commitment">~2 hours/day</span></p>
+                <p><strong>Difficulty:</strong> <span id="difficulty">Beginner</span></p>
+
+                <div class="wizard-actions">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Start Mission →</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Completion -->
+            <div class="step" id="step-5">
+                <div class="completion-message">
+                    <div class="completion-icon">🎉</div>
+                    <h2>Mission Activated!</h2>
+                    <p>Your KORPAK has been added to your dashboard.</p>
+                    <p style="margin-top: 30px;">
+                        <button class="btn btn-primary" onclick="window.location.href='kaizen-builder-board.html'">
+                            Go to Dashboard
+                        </button>
+                    </p>
+                    <p style="margin-top: 15px;">
+                        <button class="btn btn-secondary" onclick="window.location.href='module-library.html'">
+                            Browse More Modules
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedPath = null;
+        let selectedMission = null;
+
+        const missions = {
+            builder: [
+                {
+                    title: "Build Your First Automation",
+                    description: "Create a simple tool that saves you time",
+                    tasks: [
+                        "Identify a repetitive task you do daily",
+                        "Design the automation flow",
+                        "Build basic version using no-code tools",
+                        "Test and refine based on results",
+                        "Document what you learned"
+                    ],
+                    time: "~2 hours/day",
+                    difficulty: "Beginner"
+                },
+                {
+                    title: "Create a Landing Page",
+                    description: "Build a simple web page for your project",
+                    tasks: [
+                        "Define your page goal and message",
+                        "Design layout and content structure",
+                        "Build page using HTML/CSS or builder tool",
+                        "Add call-to-action buttons",
+                        "Publish and share with 3 people"
+                    ],
+                    time: "~1.5 hours/day",
+                    difficulty: "Beginner"
+                }
+            ],
+            creator: [
+                {
+                    title: "Launch 7-Day Content Series",
+                    description: "Create consistent content for one week",
+                    tasks: [
+                        "Choose your content topic and format",
+                        "Create content calendar (7 pieces)",
+                        "Produce content for days 1-3",
+                        "Publish and engage with audience",
+                        "Complete days 4-7 and analyze results"
+                    ],
+                    time: "~1.5 hours/day",
+                    difficulty: "Beginner"
+                },
+                {
+                    title: "Build Your Creator Stack",
+                    description: "Set up tools and workflows for creating",
+                    tasks: [
+                        "Audit your current creation process",
+                        "Research and test 3 new tools",
+                        "Set up templates for common content types",
+                        "Create one piece using new workflow",
+                        "Document your process for future use"
+                    ],
+                    time: "~2 hours/day",
+                    difficulty: "Beginner"
+                }
+            ],
+            founder: [
+                {
+                    title: "Validate Your First Idea",
+                    description: "Test if people want what you're building",
+                    tasks: [
+                        "Write clear problem statement",
+                        "Interview 10 potential customers",
+                        "Create simple MVP or mockup",
+                        "Get feedback from target audience",
+                        "Decide: pivot, proceed, or pause"
+                    ],
+                    time: "~2.5 hours/day",
+                    difficulty: "Beginner"
+                },
+                {
+                    title: "Set Up Business Foundation",
+                    description: "Get the basics in place to operate",
+                    tasks: [
+                        "Choose business structure and register",
+                        "Set up business bank account",
+                        "Create basic branding (name, logo, colors)",
+                        "Build simple website or landing page",
+                        "Set up payment processing"
+                    ],
+                    time: "~2 hours/day",
+                    difficulty: "Beginner"
+                }
+            ]
+        };
+
+        function nextStep() {
+            document.getElementById(`step-${currentStep}`).classList.remove('active');
+            document.getElementById(`progress-${currentStep}`).classList.remove('active');
+            currentStep++;
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            document.getElementById(`progress-${currentStep}`).classList.add('active');
+
+            // Load mission options when entering step 3
+            if (currentStep === 3 && selectedPath) {
+                loadMissionOptions();
+            }
+
+            // Load mission preview when entering step 4
+            if (currentStep === 4 && selectedMission) {
+                loadMissionPreview();
+            }
+        }
+
+        function prevStep() {
+            document.getElementById(`step-${currentStep}`).classList.remove('active');
+            document.getElementById(`progress-${currentStep}`).classList.remove('active');
+            currentStep--;
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            document.getElementById(`progress-${currentStep}`).classList.add('active');
+        }
+
+        function selectPath(path) {
+            // Remove previous selection
+            document.querySelectorAll('.path-option').forEach(el => el.classList.remove('selected'));
+
+            // Select new path
+            event.target.closest('.path-option').classList.add('selected');
+            selectedPath = path;
+
+            // Enable next button
+            document.getElementById('path-next-btn').disabled = false;
+        }
+
+        function loadMissionOptions() {
+            const container = document.getElementById('mission-options');
+            container.innerHTML = '';
+
+            missions[selectedPath].forEach((mission, index) => {
+                const card = document.createElement('div');
+                card.className = 'option-card';
+                card.onclick = () => selectMission(index);
+                card.innerHTML = `
+                    <h3>${mission.title}</h3>
+                    <p>${mission.description}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectMission(index) {
+            // Remove previous selection
+            document.querySelectorAll('#mission-options .option-card').forEach(el => el.classList.remove('selected'));
+
+            // Select new mission
+            event.target.closest('.option-card').classList.add('selected');
+            selectedMission = missions[selectedPath][index];
+
+            // Enable next button
+            document.getElementById('mission-next-btn').disabled = false;
+        }
+
+        function loadMissionPreview() {
+            const preview = document.getElementById('mission-preview');
+            preview.innerHTML = `
+                <h3>${selectedMission.title}</h3>
+                <ul>
+                    ${selectedMission.tasks.map(task => `<li>${task}</li>`).join('')}
+                </ul>
+            `;
+
+            document.getElementById('time-commitment').textContent = selectedMission.time;
+            document.getElementById('difficulty').textContent = selectedMission.difficulty;
+        }
+    </script>
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

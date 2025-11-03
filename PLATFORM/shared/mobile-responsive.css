@@ -1,0 +1,520 @@
+/**
+ * 🌀 UNIVERSAL MOBILE RESPONSIVENESS 🌀
+ * Auto-injected into all platform pages for mobile optimization
+ * Affects 50%+ of traffic - critical for user experience
+ */
+
+/* ========================================
+   BASE MOBILE OPTIMIZATIONS
+   ======================================== */
+
+/* Ensure viewport is set correctly */
+@viewport {
+    width: device-width;
+    zoom: 1.0;
+}
+
+/* Prevent horizontal scroll on mobile */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* Mobile Small (320px - 480px) */
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+        line-height: 1.2;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+
+    /* Make all containers fluid */
+    .container,
+    .content,
+    .main-content,
+    .dashboard-container,
+    .platform-container {
+        max-width: 100% !important;
+        padding: 1rem !important;
+        margin: 0 !important;
+    }
+
+    /* Stack all grid layouts */
+    .grid,
+    .card-grid,
+    .module-grid,
+    .feature-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    /* Make cards full width */
+    .card,
+    .module-card,
+    .feature-card,
+    .korpak-card {
+        width: 100% !important;
+        margin: 0.5rem 0 !important;
+    }
+
+    /* Responsive buttons */
+    button,
+    .btn,
+    .button {
+        width: 100% !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 1rem !important;
+    }
+
+    /* Fix navigation for mobile */
+    .master-nav {
+        width: 280px !important;
+    }
+
+    .breadcrumbs {
+        font-size: 0.75rem !important;
+        padding: 0.5rem 0.75rem !important;
+        max-width: calc(100vw - 80px) !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+
+    /* Mobile-friendly inputs */
+    input,
+    textarea,
+    select {
+        width: 100% !important;
+        font-size: 16px !important; /* Prevents iOS zoom */
+        padding: 0.75rem !important;
+    }
+
+    /* Fix tables */
+    table {
+        display: block !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+    }
+
+    /* Hide non-essential elements on small screens */
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+/* Tablet (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    body {
+        font-size: 15px;
+    }
+
+    .container {
+        max-width: 90%;
+        padding: 1.5rem;
+    }
+
+    .grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* 2-column layout for tablets */
+    .card-grid,
+    .module-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.5rem !important;
+    }
+}
+
+/* Landscape Mobile (orientation-specific) */
+@media (max-height: 500px) and (orientation: landscape) {
+    /* Reduce header heights in landscape */
+    header,
+    .header,
+    .page-header {
+        padding: 0.5rem !important;
+    }
+
+    h1 {
+        font-size: 1.5rem !important;
+    }
+
+    /* Make navigation less tall */
+    .master-nav {
+        font-size: 0.9rem !important;
+    }
+}
+
+/* ========================================
+   TOUCH-FRIENDLY INTERACTIONS
+   ======================================== */
+
+/* Larger tap targets for mobile */
+@media (max-width: 768px) {
+    a,
+    button,
+    .clickable,
+    .nav-link {
+        min-height: 44px; /* Apple's recommended tap target */
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Better spacing between interactive elements */
+    a + a,
+    button + button {
+        margin-top: 0.5rem;
+    }
+}
+
+/* ========================================
+   MOBILE-SPECIFIC COMPONENTS
+   ======================================== */
+
+/* Mobile-friendly modals */
+@media (max-width: 768px) {
+    .modal,
+    .dialog,
+    .popup {
+        width: 95% !important;
+        max-width: 95vw !important;
+        margin: 1rem auto !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+    }
+}
+
+/* Mobile-friendly store pages */
+@media (max-width: 768px) {
+    .product-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .product-card {
+        width: 100% !important;
+    }
+
+    .store-cart {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+    }
+}
+
+/* Mobile-friendly dashboards */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .stat-card,
+    .metric-card {
+        width: 100% !important;
+        margin-bottom: 1rem !important;
+    }
+
+    /* Stack charts vertically */
+    .chart-container {
+        width: 100% !important;
+        height: 250px !important;
+    }
+}
+
+/* Mobile-friendly forms */
+@media (max-width: 768px) {
+    .form-row,
+    .form-group {
+        flex-direction: column !important;
+    }
+
+    .form-row > * {
+        width: 100% !important;
+        margin-bottom: 1rem !important;
+    }
+
+    label {
+        margin-bottom: 0.5rem !important;
+        display: block !important;
+    }
+}
+
+/* ========================================
+   MOBILE-SPECIFIC UTILITIES
+   ======================================== */
+
+/* Show/hide based on device */
+.mobile-only {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .mobile-only {
+        display: block !important;
+    }
+
+    .mobile-hide {
+        display: none !important;
+    }
+}
+
+/* Mobile text alignment */
+@media (max-width: 768px) {
+    .mobile-center {
+        text-align: center !important;
+    }
+
+    .mobile-left {
+        text-align: left !important;
+    }
+}
+
+/* Mobile spacing utilities */
+@media (max-width: 768px) {
+    .mobile-p-1 {
+        padding: 0.5rem !important;
+    }
+
+    .mobile-p-2 {
+        padding: 1rem !important;
+    }
+
+    .mobile-m-1 {
+        margin: 0.5rem !important;
+    }
+
+    .mobile-m-2 {
+        margin: 1rem !important;
+    }
+}
+
+/* ========================================
+   MOBILE PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* Reduce animations on mobile for better performance */
+@media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+    * {
+        animation-duration: 0.3s !important;
+        transition-duration: 0.2s !important;
+    }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ========================================
+   MOBILE TYPOGRAPHY IMPROVEMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Prevent text from being too small */
+    p,
+    li,
+    td,
+    .text {
+        font-size: 1rem !important;
+        line-height: 1.6 !important;
+    }
+
+    /* Better readability */
+    .content,
+    .article,
+    .description {
+        max-width: 100% !important;
+        padding: 1rem !important;
+    }
+
+    /* Fix code blocks on mobile */
+    pre,
+    code {
+        font-size: 0.875rem !important;
+        overflow-x: auto !important;
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important;
+    }
+}
+
+/* ========================================
+   MOBILE IMAGE OPTIMIZATION
+   ======================================== */
+
+@media (max-width: 768px) {
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+        display: block !important;
+    }
+
+    /* Fix background images */
+    [style*="background-image"] {
+        background-size: cover !important;
+        background-position: center !important;
+    }
+}
+
+/* ========================================
+   MOBILE VIDEO OPTIMIZATION
+   ======================================== */
+
+@media (max-width: 768px) {
+    video,
+    iframe {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Responsive video containers */
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+    }
+
+    .video-container iframe,
+    .video-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
+
+/* ========================================
+   PLATFORM-SPECIFIC MOBILE FIXES
+   ======================================== */
+
+/* Fix KORPAK wizard on mobile */
+@media (max-width: 768px) {
+    .korpak-wizard {
+        padding: 1rem !important;
+    }
+
+    .korpak-step {
+        width: 100% !important;
+    }
+}
+
+/* Fix Trinity AI interface on mobile */
+@media (max-width: 768px) {
+    .trinity-panel {
+        width: 95% !important;
+        padding: 1rem !important;
+    }
+
+    .trinity-agent {
+        width: 100% !important;
+        margin-bottom: 1rem !important;
+    }
+}
+
+/* Fix consciousness boost on mobile */
+@media (max-width: 768px) {
+    .boost-meter {
+        width: 100% !important;
+        height: 200px !important;
+    }
+
+    .boost-controls {
+        flex-direction: column !important;
+    }
+}
+
+/* Fix analytics dashboard on mobile */
+@media (max-width: 768px) {
+    .analytics-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .analytics-chart {
+        height: 250px !important;
+    }
+}
+
+/* ========================================
+   MOBILE ACCESSIBILITY
+   ======================================== */
+
+/* Better contrast for mobile */
+@media (max-width: 768px) {
+    a {
+        text-decoration: underline !important;
+    }
+
+    button:focus,
+    a:focus,
+    input:focus {
+        outline: 3px solid var(--accent-primary, #00d4ff) !important;
+        outline-offset: 2px !important;
+    }
+}
+
+/* ========================================
+   MOBILE DARK MODE SUPPORT
+   ======================================== */
+
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+    /* Darker backgrounds save battery on OLED screens */
+    body {
+        background: #000 !important;
+    }
+
+    .card,
+    .panel {
+        background: #111 !important;
+    }
+}
+
+/* ========================================
+   MOBILE PRINT STYLES
+   ======================================== */
+
+@media print {
+    .nav-toggle,
+    .master-nav,
+    .breadcrumbs,
+    button,
+    .mobile-only {
+        display: none !important;
+    }
+
+    body {
+        font-size: 12pt !important;
+        color: #000 !important;
+        background: #fff !important;
+    }
+}

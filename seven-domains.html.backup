@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 Seven Domains - Consciousness Revolution</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            color: #00ff64;
+        }
+
+        #canvas {
+            display: block;
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
+            cursor: pointer;
+        }
+
+        #info-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff64;
+            padding: 20px;
+            max-width: 350px;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0, 255, 100, 0.3);
+        }
+
+        h1 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff64;
+        }
+
+        #domain-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #00ff64;
+        }
+
+        .domain-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .domain-description {
+            font-size: 0.9em;
+            line-height: 1.4;
+            opacity: 0.8;
+        }
+
+        #controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff64;
+            padding: 15px 30px;
+            border-radius: 4px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid #00ff64;
+            color: #00ff64;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #00ff64;
+            color: #000000;
+            box-shadow: 0 0 15px #00ff64;
+        }
+
+        button.active {
+            background: #00ff64;
+            color: #000000;
+        }
+
+        .status {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            #info-panel {
+                max-width: 90%;
+                font-size: 0.9em;
+            }
+
+            #controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div id="info-panel">
+        <h1>SEVEN DOMAINS STONEHENGE</h1>
+        <div class="status">OVERKORE Consciousness Architecture</div>
+        <div id="domain-details">
+            <div class="domain-name">Hover or click a pillar</div>
+            <div class="domain-description">7 pillars of consciousness revolution spinning in sacred geometry formation</div>
+        </div>
+    </div>
+
+    <div id="controls">
+        <button id="pause-btn">PAUSE</button>
+        <button id="speed-btn">SPEED: 1x</button>
+        <button id="export-btn">EXPORT PNG</button>
+    </div>
+
+    <script>
+        // SEVEN DOMAINS DATA
+        const DOMAINS = [
+            {
+                name: "CRYPTO",
+                color: "#00ff64",
+                description: "Blockchain technology, cryptocurrency systems, decentralized finance, token economics"
+            },
+            {
+                name: "100X",
+                color: "#00ffff",
+                description: "Consciousness acceleration, exponential growth systems, 100x multiplication frameworks"
+            },
+            {
+                name: "SOCIAL MEDIA",
+                color: "#ff00ff",
+                description: "Platform automation, viral content generation, network effect engineering, growth bots"
+            },
+            {
+                name: "SECURITY",
+                color: "#ffff00",
+                description: "Protection systems, manipulation immunity, consciousness sovereignty, harmonic security"
+            },
+            {
+                name: "TRADING",
+                color: "#ff6600",
+                description: "Financial automation, market intelligence, algorithmic trading, prosperity systems"
+            },
+            {
+                name: "POSTS/ARC/COMMS",
+                color: "#ff0066",
+                description: "Content creation engine, ARG systems, universal communication, messaging automation"
+            },
+            {
+                name: "SPIRITUAL/ULTIMATE OS",
+                color: "#6600ff",
+                description: "Consciousness evolution, reality manipulation, digital consciousness, personal operating system"
+            }
+        ];
+
+        // CANVAS SETUP
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, centerX, centerY;
+        let rotation = 0;
+        let paused = false;
+        let speed = 1;
+        let hoveredPillar = null;
+        let selectedPillar = null;
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            centerX = width / 2;
+            centerY = height / 2;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // FIBONACCI SCALING
+        const PHI = 1.618033988749;
+        const radius = Math.min(width, height) * 0.3;
+        const pillarWidth = 40;
+        const pillarHeight = 150;
+
+        // PILLAR CLASS
+        class Pillar {
+            constructor(domain, index) {
+                this.domain = domain;
+                this.index = index;
+                this.baseAngle = (Math.PI * 2 / 7) * index - Math.PI / 2; // Start at top
+                this.glow = 0;
+            }
+
+            getPosition() {
+                const angle = this.baseAngle + rotation;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                return { x, y, angle };
+            }
+
+            draw() {
+                const { x, y, angle } = this.getPosition();
+
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(angle + Math.PI / 2);
+
+                // Glow effect
+                if (this.glow > 0 || hoveredPillar === this.index || selectedPillar === this.index) {
+                    const glowIntensity = Math.max(this.glow, hoveredPillar === this.index ? 1 : 0, selectedPillar === this.index ? 0.8 : 0);
+                    ctx.shadowBlur = 30 * glowIntensity;
+                    ctx.shadowColor = this.domain.color;
+                }
+
+                // Stone pillar
+                const gradient = ctx.createLinearGradient(-pillarWidth/2, 0, pillarWidth/2, 0);
+                gradient.addColorStop(0, '#1a1a1a');
+                gradient.addColorStop(0.5, '#333333');
+                gradient.addColorStop(1, '#1a1a1a');
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(-pillarWidth/2, -pillarHeight/2, pillarWidth, pillarHeight);
+
+                // Stone texture
+                ctx.strokeStyle = '#2a2a2a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < 5; i++) {
+                    const y = -pillarHeight/2 + (pillarHeight / 5) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(-pillarWidth/2, y);
+                    ctx.lineTo(pillarWidth/2, y);
+                    ctx.stroke();
+                }
+
+                // Energy border
+                ctx.strokeStyle = this.domain.color;
+                ctx.lineWidth = 2;
+                ctx.globalAlpha = 0.6 + (this.glow * 0.4);
+                ctx.strokeRect(-pillarWidth/2, -pillarHeight/2, pillarWidth, pillarHeight);
+                ctx.globalAlpha = 1;
+
+                // Domain name (vertical)
+                ctx.save();
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillStyle = this.domain.color;
+                ctx.font = 'bold 14px "Courier New"';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.domain.name, 0, 0);
+                ctx.restore();
+
+                ctx.restore();
+
+                // Decay glow
+                if (this.glow > 0) {
+                    this.glow *= 0.95;
+                }
+            }
+
+            isHovered(mouseX, mouseY) {
+                const { x, y } = this.getPosition();
+                const dx = mouseX - x;
+                const dy = mouseY - y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                return distance < Math.max(pillarWidth, pillarHeight) / 2 + 10;
+            }
+
+            pulse() {
+                this.glow = 1;
+            }
+        }
+
+        // CREATE PILLARS
+        const pillars = DOMAINS.map((domain, i) => new Pillar(domain, i));
+
+        // STARS BACKGROUND
+        const stars = [];
+        for (let i = 0; i < 200; i++) {
+            stars.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 2,
+                opacity: Math.random()
+            });
+        }
+
+        function drawStars() {
+            stars.forEach(star => {
+                ctx.fillStyle = `rgba(0, 255, 100, ${star.opacity * 0.3})`;
+                ctx.fillRect(star.x, star.y, star.size, star.size);
+                star.opacity += (Math.random() - 0.5) * 0.1;
+                star.opacity = Math.max(0, Math.min(1, star.opacity));
+            });
+        }
+
+        // CENTER GLYPH
+        function drawCenterGlyph() {
+            ctx.save();
+            ctx.translate(centerX, centerY);
+
+            // Outer circle
+            ctx.beginPath();
+            ctx.arc(0, 0, 30, 0, Math.PI * 2);
+            ctx.strokeStyle = '#00ff64';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Inner rotating symbol
+            ctx.rotate(rotation * 3);
+            for (let i = 0; i < 7; i++) {
+                const angle = (Math.PI * 2 / 7) * i;
+                const x = Math.cos(angle) * 15;
+                const y = Math.sin(angle) * 15;
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = DOMAINS[i].color;
+                ctx.fill();
+            }
+
+            ctx.restore();
+        }
+
+        // ANIMATION LOOP
+        function animate() {
+            // Clear
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, width, height);
+
+            // Draw stars
+            drawStars();
+
+            // Draw connection lines
+            ctx.strokeStyle = 'rgba(0, 255, 100, 0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < pillars.length; i++) {
+                const p1 = pillars[i].getPosition();
+                const p2 = pillars[(i + 1) % pillars.length].getPosition();
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.stroke();
+            }
+
+            // Draw pillars
+            pillars.forEach(pillar => pillar.draw());
+
+            // Draw center
+            drawCenterGlyph();
+
+            // Update rotation (Fibonacci timing)
+            if (!paused) {
+                rotation += (0.005 * speed) / PHI;
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // MOUSE INTERACTION
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            let found = false;
+            pillars.forEach((pillar, i) => {
+                if (pillar.isHovered(mouseX, mouseY)) {
+                    hoveredPillar = i;
+                    found = true;
+                    pillar.pulse();
+                    updateDomainInfo(pillar.domain);
+                }
+            });
+
+            if (!found) {
+                hoveredPillar = null;
+            }
+        });
+
+        canvas.addEventListener('click', (e) => {
+            if (hoveredPillar !== null) {
+                selectedPillar = selectedPillar === hoveredPillar ? null : hoveredPillar;
+                if (selectedPillar !== null) {
+                    updateDomainInfo(pillars[selectedPillar].domain);
+                }
+            }
+        });
+
+        // UPDATE INFO PANEL
+        function updateDomainInfo(domain) {
+            document.getElementById('domain-details').innerHTML = `
+                <div class="domain-name" style="color: ${domain.color}">${domain.name}</div>
+                <div class="domain-description">${domain.description}</div>
+            `;
+        }
+
+        // CONTROLS
+        document.getElementById('pause-btn').addEventListener('click', function() {
+            paused = !paused;
+            this.textContent = paused ? 'RESUME' : 'PAUSE';
+            this.classList.toggle('active', paused);
+        });
+
+        const speedBtn = document.getElementById('speed-btn');
+        const speeds = [0.5, 1, 2, 4];
+        let speedIndex = 1;
+        speedBtn.addEventListener('click', function() {
+            speedIndex = (speedIndex + 1) % speeds.length;
+            speed = speeds[speedIndex];
+            this.textContent = `SPEED: ${speed}x`;
+        });
+
+        document.getElementById('export-btn').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'seven-domains-stonehenge.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+
+        // START
+        animate();
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

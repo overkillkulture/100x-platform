@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rogue Activity Monitor - OVERKORE Security</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            font-family: 'Courier New', monospace;
+            color: #00ff64;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 2px solid #00ff64;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            text-shadow: 0 0 20px #00ff64;
+            margin-bottom: 10px;
+        }
+
+        .header .status {
+            color: #00ffff;
+            font-size: 1.1em;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(0, 255, 100, 0.05);
+            border: 2px solid #00ff64;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .panel h2 {
+            color: #00ff64;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 1px solid #00ff64;
+            padding-bottom: 10px;
+        }
+
+        .user-list, .file-list, .timeline-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .user-item, .file-item, .timeline-item {
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 3px solid #00ff64;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .user-item.active {
+            border-left-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .user-item.suspicious {
+            border-left-color: #ff6600;
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+        }
+
+        .user-name {
+            font-weight: bold;
+            color: #00ffff;
+            font-size: 1.1em;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .stat {
+            opacity: 0.8;
+        }
+
+        .stat strong {
+            color: #00ff64;
+        }
+
+        .file-name {
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .file-meta {
+            font-size: 0.85em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .timestamp {
+            color: #ff6600;
+            font-size: 0.85em;
+        }
+
+        .alert {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff0000;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .alert-title {
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: transparent;
+            border: 2px solid #00ff64;
+            color: #00ff64;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #00ff64;
+            color: #000000;
+            box-shadow: 0 0 20px #00ff64;
+        }
+
+        button.danger {
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        button.danger:hover {
+            background: #ff0000;
+            color: #ffffff;
+        }
+
+        .search-box {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff64;
+            color: #00ff64;
+            padding: 10px;
+            width: 300px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .badge.new {
+            background: #00ff64;
+            color: #000000;
+        }
+
+        .badge.modified {
+            background: #ffff00;
+            color: #000000;
+        }
+
+        .badge.deleted {
+            background: #ff0000;
+            color: #ffffff;
+        }
+
+        .rollback-section {
+            background: rgba(255, 102, 0, 0.1);
+            border: 2px solid #ff6600;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .rollback-section h3 {
+            color: #ff6600;
+            margin-bottom: 15px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00ff64;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 ROGUE ACTIVITY MONITOR</h1>
+        <div class="status">Real-time surveillance of system changes</div>
+    </div>
+
+    <div class="controls">
+        <button onclick="refreshAll()">🔄 REFRESH ALL</button>
+        <button onclick="scanNewFiles()">📁 SCAN NEW FILES</button>
+        <button onclick="exportLog()">📥 EXPORT LOG</button>
+        <button onclick="showRollback()" class="danger">⏮️ ROLLBACK OPTIONS</button>
+        <input type="text" class="search-box" id="searchBox" placeholder="Search users/files..." onkeyup="filterResults()">
+    </div>
+
+    <div id="alerts"></div>
+
+    <div class="dashboard-grid">
+        <!-- WHO'S CREATING STUFF -->
+        <div class="panel">
+            <h2>👤 ACTIVE CREATORS (Last 24 Hours)</h2>
+            <div class="user-list" id="activeUsers">
+                <div class="user-item active">
+                    <div class="user-name">🐯 TESTOSTERONE TIGER (Unknown User)</div>
+                    <div class="user-stats">
+                        <div class="stat"><strong>Files Created:</strong> 47</div>
+                        <div class="stat"><strong>Last Active:</strong> 2 min ago</div>
+                        <div class="stat"><strong>Session Time:</strong> 6h 23m</div>
+                        <div class="stat"><strong>Suspicious:</strong> ⚠️ High activity</div>
+                    </div>
+                </div>
+
+                <div class="user-item">
+                    <div class="user-name">Joshua Serrano (PIN 1001)</div>
+                    <div class="user-stats">
+                        <div class="stat"><strong>Files Created:</strong> 12</div>
+                        <div class="stat"><strong>Last Active:</strong> 1h ago</div>
+                        <div class="stat"><strong>Session Time:</strong> 2h 15m</div>
+                        <div class="stat"><strong>Status:</strong> ✅ Normal</div>
+                    </div>
+                </div>
+
+                <div class="user-item">
+                    <div class="user-name">Toby Burrowes (PIN 1002)</div>
+                    <div class="user-stats">
+                        <div class="stat"><strong>Files Created:</strong> 8</div>
+                        <div class="stat"><strong>Last Active:</strong> 3h ago</div>
+                        <div class="stat"><strong>Session Time:</strong> 1h 45m</div>
+                        <div class="stat"><strong>Status:</strong> ✅ Normal</div>
+                    </div>
+                </div>
+
+                <div class="user-item suspicious">
+                    <div class="user-name">🤖 CLAUDE AI AGENT (Autonomous)</div>
+                    <div class="user-stats">
+                        <div class="stat"><strong>Files Created:</strong> 156</div>
+                        <div class="stat"><strong>Last Active:</strong> Now</div>
+                        <div class="stat"><strong>Session Time:</strong> 24h continuous</div>
+                        <div class="stat"><strong>Suspicious:</strong> ⚠️ Autonomous agent</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WHAT'S BEING CREATED -->
+        <div class="panel">
+            <h2>📁 NEW/MODIFIED FILES (Last 24 Hours)</h2>
+            <div class="file-list" id="newFiles">
+                <div class="file-item">
+                    <div class="file-name">SEVEN_DOMAINS_STONEHENGE_V4_MUSIC.html <span class="badge new">NEW</span></div>
+                    <div class="file-meta">
+                        <div class="timestamp">⏰ Created: 2 min ago</div>
+                        <div>👤 Creator: Claude AI Agent</div>
+                        <div>📏 Size: 45KB</div>
+                    </div>
+                </div>
+
+                <div class="file-item">
+                    <div class="file-name">BETA_USERS_DATABASE.json <span class="badge modified">MODIFIED</span></div>
+                    <div class="file-meta">
+                        <div class="timestamp">⏰ Modified: 5 min ago</div>
+                        <div>👤 Modifier: Claude AI Agent</div>
+                        <div>📝 Change: Added user 1009 (Alex Lancaster)</div>
+                    </div>
+                </div>
+
+                <div class="file-item">
+                    <div class="file-name">STONEHENGE_V3_ENHANCEMENT_COMPLETE.md <span class="badge new">NEW</span></div>
+                    <div class="file-meta">
+                        <div class="timestamp">⏰ Created: 10 min ago</div>
+                        <div>👤 Creator: Claude AI Agent</div>
+                        <div>📏 Size: 8KB</div>
+                    </div>
+                </div>
+
+                <div class="file-item">
+                    <div class="file-name">MYSTERY_FILE_FROM_TESTOSTERONE_TIGER.html <span class="badge new">NEW</span></div>
+                    <div class="file-meta">
+                        <div class="timestamp">⏰ Created: 1h ago</div>
+                        <div>👤 Creator: Unknown (Testosterone Tiger?)</div>
+                        <div>📏 Size: 127KB</div>
+                        <div style="color: #ff6600;">⚠️ Unverified source</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIMELINE OF CHANGES -->
+        <div class="panel">
+            <h2>⏱️ TIMELINE (Reverse Chronological)</h2>
+            <div class="timeline-list" id="timeline">
+                <div class="timeline-item">
+                    <div class="timestamp">⏰ 2025-10-26 09:15:23</div>
+                    <div>📝 <strong>File Created:</strong> SEVEN_DOMAINS_VISITOR_EXPERIENCE.html</div>
+                    <div>👤 Claude AI Agent</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timestamp">⏰ 2025-10-26 09:10:18</div>
+                    <div>📝 <strong>File Modified:</strong> BETA_USERS_DATABASE.json</div>
+                    <div>👤 Claude AI Agent (Added Alex Lancaster)</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timestamp">⏰ 2025-10-26 08:45:00</div>
+                    <div>📝 <strong>File Created:</strong> SEVEN_DOMAINS_STONEHENGE_3D.html</div>
+                    <div>👤 Claude AI Agent</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timestamp">⏰ 2025-10-26 07:30:12</div>
+                    <div>📝 <strong>File Created:</strong> MYSTERY_FILE_FROM_TESTOSTERONE_TIGER.html</div>
+                    <div>👤 Unknown User (Testosterone Tiger?)</div>
+                    <div style="color: #ff6600;">⚠️ Suspicious activity</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timestamp">⏰ 2025-10-25 23:15:44</div>
+                    <div>📝 <strong>System Backup Created</strong></div>
+                    <div>👤 Automatic System</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUSPICIOUS ACTIVITY -->
+        <div class="panel">
+            <h2>⚠️ SUSPICIOUS ACTIVITY</h2>
+            <div class="file-list" id="suspicious">
+                <div class="file-item" style="border-left-color: #ff0000;">
+                    <div class="file-name">🚨 Unknown Creator: 47 files in 6 hours</div>
+                    <div class="file-meta">
+                        <div>Pattern: Testosterone Tiger behavior</div>
+                        <div>Risk Level: <span style="color: #ff6600;">MEDIUM</span></div>
+                        <div>Action: Monitor and identify</div>
+                    </div>
+                </div>
+
+                <div class="file-item" style="border-left-color: #ff6600;">
+                    <div class="file-name">🤖 Autonomous Agent: 156 files created</div>
+                    <div class="file-meta">
+                        <div>Pattern: Claude AI continuous operation</div>
+                        <div>Risk Level: <span style="color: #00ff64;">LOW</span></div>
+                        <div>Action: Expected behavior</div>
+                    </div>
+                </div>
+
+                <div class="file-item" style="border-left-color: #ff0000;">
+                    <div class="file-name">🔓 Unauthorized Access Attempt</div>
+                    <div class="file-meta">
+                        <div>IP: 192.168.1.xxx</div>
+                        <div>Time: 2025-10-26 06:12:33</div>
+                        <div>Risk Level: <span style="color: #ff0000;">HIGH</span></div>
+                        <div>Action: <button class="danger" style="display: inline; padding: 5px 10px; font-size: 0.8em;">Block IP</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rollback-section" id="rollbackSection" style="display: none;">
+        <h3>⏮️ ROLLBACK TO PREVIOUS STATE</h3>
+        <p style="margin-bottom: 15px;">Select a restore point to roll back system to previous state:</p>
+
+        <div class="file-list">
+            <div class="file-item">
+                <div class="file-name">📅 Backup: 2025-10-26 00:00:00 (Today midnight)</div>
+                <div class="file-meta">
+                    <div>Files: 1,247 | Size: 287MB</div>
+                    <div><button onclick="rollbackTo('20251026_0000')">Restore This Point</button></div>
+                </div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-name">📅 Backup: 2025-10-25 12:00:00 (Yesterday noon)</div>
+                <div class="file-meta">
+                    <div>Files: 1,198 | Size: 265MB</div>
+                    <div><button onclick="rollbackTo('20251025_1200')">Restore This Point</button></div>
+                </div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-name">📅 Backup: 2025-10-24 18:00:00 (2 days ago)</div>
+                <div class="file-meta">
+                    <div>Files: 1,156 | Size: 248MB</div>
+                    <div><button onclick="rollbackTo('20251024_1800')">Restore This Point</button></div>
+                </div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-name">📅 Backup: 2025-10-23 14:30:00 (BEFORE TESTOSTERONE TIGER)</div>
+                <div class="file-meta">
+                    <div>Files: 1,089 | Size: 221MB</div>
+                    <div><button onclick="rollbackTo('20251023_1430')" class="danger">⚠️ Restore Clean State</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh every 30 seconds
+        let autoRefresh = setInterval(refreshAll, 30000);
+
+        function refreshAll() {
+            console.log('Refreshing dashboard...');
+            // In production, this would fetch real data from server
+            document.querySelector('.status').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+        }
+
+        function scanNewFiles() {
+            alert('Scanning for new files...\n\nThis would run a Python script to:\n1. Check all directories\n2. Find files created in last 24h\n3. Identify creators\n4. Flag suspicious patterns');
+        }
+
+        function exportLog() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                active_users: 4,
+                new_files: 156,
+                suspicious_activity: 3,
+                rollback_points: 4
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'activity_log_' + Date.now() + '.json';
+            a.click();
+        }
+
+        function showRollback() {
+            const section = document.getElementById('rollbackSection');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function rollbackTo(timestamp) {
+            if (confirm('⚠️ WARNING: This will restore the system to ' + timestamp + '\n\nAll changes after this point will be LOST.\n\nContinue?')) {
+                alert('ROLLBACK INITIATED\n\nThis would:\n1. Stop all services\n2. Restore files from backup: ' + timestamp + '\n3. Restart services\n4. Log rollback event\n\n(Not actually rolling back - safety feature)');
+            }
+        }
+
+        function filterResults() {
+            const query = document.getElementById('searchBox').value.toLowerCase();
+            const items = document.querySelectorAll('.user-item, .file-item, .timeline-item');
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        // Check for alerts on load
+        window.addEventListener('load', () => {
+            const alertsDiv = document.getElementById('alerts');
+
+            // Example alert for testosterone tiger
+            alertsDiv.innerHTML = `
+                <div class="alert">
+                    <div class="alert-title">🚨 ALERT: Unidentified High-Activity User</div>
+                    <div>A user nicknamed "Testosterone Tiger" has created 47 files in the last 6 hours.</div>
+                    <div style="margin-top: 10px;">
+                        <strong>Action Required:</strong> Identify this user and verify they're authorized.
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <button onclick="this.parentElement.parentElement.remove()">Dismiss</button>
+                        <button onclick="investigateUser('testosterone_tiger')">Investigate</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        function investigateUser(userId) {
+            alert('INVESTIGATION MODE\n\nTracking user: ' + userId + '\n\nWould show:\n• All files created\n• IP addresses used\n• Session timestamps\n• Content analysis\n• Correlation with known users');
+        }
+    </script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

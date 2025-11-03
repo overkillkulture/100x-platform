@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Voice Control - Consciousness OS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .voice-container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .voice-card {
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .voice-icon {
+            font-size: 8em;
+            margin-bottom: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .voice-icon.listening {
+            animation: listening 1s ease-in-out infinite;
+        }
+
+        @keyframes listening {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            font-size: 1.2em;
+            color: #718096;
+            margin-bottom: 30px;
+        }
+
+        .status.listening {
+            color: #48bb78;
+            font-weight: bold;
+        }
+
+        .status.processing {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .microphone-btn {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .microphone-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .microphone-btn.active {
+            background: #48bb78;
+            animation: glow 1s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 10px 30px rgba(72, 187, 120, 0.4); }
+            50% { box-shadow: 0 15px 50px rgba(72, 187, 120, 0.8); }
+        }
+
+        .transcript {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            min-height: 100px;
+            font-size: 1.1em;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        .transcript.empty {
+            color: #cbd5e0;
+            font-style: italic;
+        }
+
+        .commands-list {
+            margin-top: 40px;
+            text-align: left;
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .commands-list h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .command-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .command-name {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .command-description {
+            color: #718096;
+            font-size: 0.9em;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border: 2px solid white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .voice-card {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .voice-icon {
+                font-size: 5em;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <button class="back-button" onclick="window.location.href='welcome.html'">← Back</button>
+
+    <div class="voice-container">
+        <div class="voice-card">
+            <div class="voice-icon" id="voiceIcon">🎤</div>
+            <h1>Voice Control</h1>
+            <div class="status" id="status">Click the microphone to start</div>
+
+            <button class="microphone-btn" id="micBtn" onclick="toggleVoice()">
+                🎤
+            </button>
+
+            <div class="transcript empty" id="transcript">
+                Your voice commands will appear here...
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="commands-list">
+                <h3>📋 Available Commands</h3>
+                <div class="command-item">
+                    <div>
+                        <div class="command-name">"Open [App Name]"</div>
+                        <div class="command-description">Launch any installed app</div>
+                    </div>
+                </div>
+                <div class="command-item">
+                    <div>
+                        <div class="command-name">"Go to Settings"</div>
+                        <div class="command-description">Open Settings Panel</div>
+                    </div>
+                </div>
+                <div class="command-item">
+                    <div>
+                        <div class="command-name">"Show App Store"</div>
+                        <div class="command-description">Browse available apps</div>
+                    </div>
+                </div>
+                <div class="command-item">
+                    <div>
+                        <div class="command-name">"Switch Apps"</div>
+                        <div class="command-description">Open multitasking view</div>
+                    </div>
+                </div>
+                <div class="command-item">
+                    <div>
+                        <div class="command-name">"Go Home"</div>
+                        <div class="command-description">Return to home screen</div>
+                    </div>
+                </div>
+                <div class="command-item">
+                    <div>
+                        <div class="command-name">"Dark Mode"</div>
+                        <div class="command-description">Toggle dark theme</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let recognition = null;
+        let isListening = false;
+
+        // Initialize Speech Recognition
+        function initVoiceRecognition() {
+            // Check for browser support
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                showError('Voice recognition is not supported in your browser. Please use Chrome or Edge.');
+                return false;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                console.log('Voice recognition started');
+                isListening = true;
+                updateUI('listening');
+            };
+
+            recognition.onresult = (event) => {
+                const last = event.results.length - 1;
+                const transcript = event.results[last][0].transcript;
+                const isFinal = event.results[last].isFinal;
+
+                // Update transcript display
+                document.getElementById('transcript').textContent = transcript;
+                document.getElementById('transcript').classList.remove('empty');
+
+                if (isFinal) {
+                    processCommand(transcript);
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Voice recognition error:', event.error);
+                if (event.error === 'not-allowed') {
+                    showError('Microphone access denied. Please allow microphone access in your browser settings.');
+                } else {
+                    showError('Error: ' + event.error);
+                }
+                stopVoice();
+            };
+
+            recognition.onend = () => {
+                if (isListening) {
+                    // Restart if still supposed to be listening
+                    recognition.start();
+                }
+            };
+
+            return true;
+        }
+
+        function toggleVoice() {
+            if (!recognition) {
+                if (!initVoiceRecognition()) {
+                    return;
+                }
+            }
+
+            if (isListening) {
+                stopVoice();
+            } else {
+                startVoice();
+            }
+        }
+
+        function startVoice() {
+            try {
+                recognition.start();
+            } catch (e) {
+                console.log('Recognition already started');
+            }
+        }
+
+        function stopVoice() {
+            isListening = false;
+            if (recognition) {
+                recognition.stop();
+            }
+            updateUI('idle');
+        }
+
+        function updateUI(state) {
+            const icon = document.getElementById('voiceIcon');
+            const status = document.getElementById('status');
+            const btn = document.getElementById('micBtn');
+
+            if (state === 'listening') {
+                icon.classList.add('listening');
+                status.textContent = 'Listening... Speak now';
+                status.classList.add('listening');
+                btn.classList.add('active');
+            } else if (state === 'processing') {
+                status.textContent = 'Processing command...';
+                status.classList.add('processing');
+            } else {
+                icon.classList.remove('listening');
+                status.textContent = 'Click the microphone to start';
+                status.classList.remove('listening', 'processing');
+                btn.classList.remove('active');
+            }
+        }
+
+        function processCommand(command) {
+            console.log('Processing command:', command);
+            updateUI('processing');
+
+            const lowerCommand = command.toLowerCase();
+
+            // Command matching
+            if (lowerCommand.includes('open') || lowerCommand.includes('launch')) {
+                // Extract app name
+                if (lowerCommand.includes('settings')) {
+                    speak('Opening Settings');
+                    setTimeout(() => window.location.href = 'settings-panel.html', 1000);
+                } else if (lowerCommand.includes('app store')) {
+                    speak('Opening App Store');
+                    setTimeout(() => window.location.href = 'app-store.html', 1000);
+                } else if (lowerCommand.includes('music')) {
+                    speak('Opening Music Player');
+                    setTimeout(() => window.location.href = '../CLIENT_FACING_CONSCIOUSNESS_MANIFESTOCHART.html', 1000);
+                } else if (lowerCommand.includes('jarvis')) {
+                    speak('Opening JARVIS Control');
+                    setTimeout(() => window.location.href = '../JARVIS_COMMANDER_DASHBOARD.html', 1000);
+                }
+            } else if (lowerCommand.includes('go to settings') || lowerCommand.includes('settings')) {
+                speak('Opening Settings');
+                setTimeout(() => window.location.href = 'settings-panel.html', 1000);
+            } else if (lowerCommand.includes('app store') || lowerCommand.includes('show apps')) {
+                speak('Opening App Store');
+                setTimeout(() => window.location.href = 'app-store.html', 1000);
+            } else if (lowerCommand.includes('switch apps') || lowerCommand.includes('multitask')) {
+                speak('Opening App Switcher');
+                // Trigger multitasking if available
+                if (window.consciousnessMultitasking) {
+                    window.consciousnessMultitasking.openSwitcher();
+                }
+            } else if (lowerCommand.includes('go home') || lowerCommand.includes('home screen')) {
+                speak('Going Home');
+                setTimeout(() => window.location.href = 'welcome.html', 1000);
+            } else if (lowerCommand.includes('dark mode') || lowerCommand.includes('dark theme')) {
+                speak('Toggling Dark Mode');
+                const darkMode = localStorage.getItem('darkMode') === 'true';
+                localStorage.setItem('darkMode', !darkMode);
+                if (!darkMode) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
+            } else if (lowerCommand.includes('help') || lowerCommand.includes('what can you do')) {
+                speak('You can say: Open Settings, Show App Store, Switch Apps, Go Home, or Dark Mode');
+            } else {
+                speak('Command not recognized. Try saying Open Settings or Show App Store');
+            }
+
+            setTimeout(() => updateUI('listening'), 2000);
+        }
+
+        function speak(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            speechSynthesis.speak(utterance);
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 5000);
+        }
+
+        // Check microphone permission on load
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(track => track.stop());
+                console.log('Microphone access granted');
+            } catch (e) {
+                showError('Please allow microphone access to use voice control.');
+            }
+        });
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

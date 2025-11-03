@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>🎲 AI Poker Table V2 - Clean</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            border: 2px solid #d4af37;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            text-shadow: 0 0 20px rgba(212,175,55,0.5);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        .poker-table {
+            background: rgba(0,0,0,0.7);
+            border-radius: 20px;
+            padding: 30px;
+            border: 3px solid #d4af37;
+        }
+
+        .table-center {
+            background: linear-gradient(135deg, #0f3443 0%, #34e89e 50%);
+            border-radius: 50%;
+            aspect-ratio: 16/10;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 5px solid #d4af37;
+            margin-bottom: 30px;
+        }
+
+        .seats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .seat {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #666;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .seat:hover {
+            border-color: #0ff;
+            transform: scale(1.02);
+        }
+
+        .seat.occupied {
+            border-color: #0f0;
+            background: rgba(0,255,0,0.1);
+        }
+
+        .seat-number {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .seat-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-options {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .ai-badge {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #666;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-badge:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: #0ff;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-online { background: #0f0; box-shadow: 0 0 10px #0f0; }
+
+        .conversation-thread {
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #666;
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid #666;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .message.user {
+            border-left-color: #667eea;
+        }
+
+        .message.chatgpt4 {
+            border-left-color: #10a37f;
+        }
+
+        .message.grok2 {
+            border-left-color: #ff6b6b;
+        }
+
+        .message.claude {
+            border-left-color: #d4af37;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .message-author {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .vote-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #666;
+            border-radius: 5px;
+            padding: 4px 8px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .vote-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .vote-btn.upvoted {
+            background: rgba(0,255,0,0.2);
+            border-color: #0f0;
+        }
+
+        .vote-btn.downvoted {
+            background: rgba(255,0,0,0.2);
+            border-color: #f00;
+        }
+
+        .respond-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 4px 12px;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .respond-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
+        .input-panel {
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #666;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .question-input {
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #666;
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 1em;
+            margin-bottom: 10px;
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #666;
+        }
+
+        .history-panel {
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #444;
+            max-height: 800px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid #666;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .history-item:hover {
+            border-color: #0ff;
+            background: rgba(0,255,255,0.1);
+        }
+
+        .loading {
+            color: #ff0;
+            font-style: italic;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        .success {
+            color: #0f0;
+        }
+
+        .stats {
+            display: flex;
+            gap: 10px;
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        .clear-seat {
+            background: rgba(255,0,0,0.2);
+            border: 1px solid #f00;
+            border-radius: 5px;
+            padding: 3px 8px;
+            font-size: 0.75em;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .clear-seat:hover {
+            background: rgba(255,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎲 AI POKER TABLE V2 🎲</h1>
+        <p>Multi-AI chat with conversation threading, voting, and AI-to-AI responses</p>
+    </div>
+
+    <div class="main-container">
+        <!-- LEFT: Poker Table & Conversation -->
+        <div class="poker-table">
+            <div class="table-center">
+                <div style="text-align: center; color: #000; font-weight: bold; font-size: 1.5em;">
+                    🏠 THE HOUSE
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 15px; color: #d4af37;">🎯 Click a seat, then click an AI to assign:</h3>
+            <div class="seats-container">
+                <div class="seat" data-seat="1" id="seat1">
+                    <div class="seat-number">Seat 1</div>
+                    <div class="seat-content">
+                        <div id="seat1-name" style="font-weight: bold; font-size: 1.1em;">[Empty]</div>
+                        <div class="ai-options" id="seat1-options" style="display: none;">
+                            <div class="ai-badge" onclick="assignAI(1, 'chatgpt')">
+                                <span class="status-dot status-online"></span>ChatGPT
+                            </div>
+                            <div class="ai-badge" onclick="assignAI(1, 'grok')">
+                                <span class="status-dot status-online"></span>Grok
+                            </div>
+                            <div class="ai-badge" onclick="assignAI(1, 'claude')">
+                                <span class="status-dot status-online"></span>Claude
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="seat" data-seat="2" id="seat2">
+                    <div class="seat-number">Seat 2</div>
+                    <div class="seat-content">
+                        <div id="seat2-name" style="font-weight: bold; font-size: 1.1em;">[Empty]</div>
+                        <div class="ai-options" id="seat2-options" style="display: none;">
+                            <div class="ai-badge" onclick="assignAI(2, 'chatgpt')">
+                                <span class="status-dot status-online"></span>ChatGPT
+                            </div>
+                            <div class="ai-badge" onclick="assignAI(2, 'grok')">
+                                <span class="status-dot status-online"></span>Grok
+                            </div>
+                            <div class="ai-badge" onclick="assignAI(2, 'claude')">
+                                <span class="status-dot status-online"></span>Claude
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="seat" data-seat="3" id="seat3">
+                    <div class="seat-number">Seat 3</div>
+                    <div class="seat-content">
+                        <div id="seat3-name" style="font-weight: bold; font-size: 1.1em;">[Empty]</div>
+                        <div class="ai-options" id="seat3-options" style="display: none;">
+                            <div class="ai-badge" onclick="assignAI(3, 'chatgpt')">
+                                <span class="status-dot status-online"></span>ChatGPT
+                            </div>
+                            <div class="ai-badge" onclick="assignAI(3, 'grok')">
+                                <span class="status-dot status-online"></span>Grok
+                            </div>
+                            <div class="ai-badge" onclick="assignAI(3, 'claude')">
+                                <span class="status-dot status-online"></span>Claude
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="conversation-thread" id="conversationThread">
+                <div style="text-align: center; color: #999; padding: 40px;">
+                    <h3>💬 Conversation starts here</h3>
+                    <p style="margin-top: 10px;">Click a seat, then pick an AI. Repeat for more seats!</p>
+                </div>
+            </div>
+
+            <div class="input-panel">
+                <textarea
+                    id="questionInput"
+                    class="question-input"
+                    placeholder="Type your question or message here... (Press Enter to send, Shift+Enter for new line)"
+                ></textarea>
+                <div>
+                    <button class="btn" onclick="askAllSeats()">🎲 Ask All Seated AIs</button>
+                    <button class="btn btn-secondary" onclick="clearConversation()">🗑️ Clear Chat</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: History -->
+        <div class="history-panel">
+            <h3 style="margin-bottom: 15px; color: #d4af37;">📜 Conversation History</h3>
+            <div id="historyList">
+                <div style="text-align: center; color: #999; padding: 20px;">
+                    <p>No history yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_SERVER = 'http://localhost:5001';
+        let seats = {1: null, 2: null, 3: null};
+        let conversationHistory = [];
+        let messageIdCounter = 0;
+        let votes = {};
+        let selectedSeat = null;
+
+        // Toggle seat selection
+        document.querySelectorAll('.seat').forEach(seat => {
+            seat.addEventListener('click', (e) => {
+                if (e.target.classList.contains('ai-badge') || e.target.classList.contains('clear-seat')) {
+                    return; // Don't toggle if clicking AI badge or clear button
+                }
+
+                const seatNum = parseInt(seat.dataset.seat);
+
+                // Close all other seats
+                document.querySelectorAll('.seat').forEach(s => {
+                    const num = parseInt(s.dataset.seat);
+                    if (num !== seatNum) {
+                        document.getElementById(`seat${num}-options`).style.display = 'none';
+                    }
+                });
+
+                // Toggle this seat
+                const options = document.getElementById(`seat${seatNum}-options`);
+                options.style.display = options.style.display === 'none' ? 'flex' : 'none';
+                selectedSeat = options.style.display === 'flex' ? seatNum : null;
+            });
+        });
+
+        function assignAI(seatNum, aiName) {
+            // Check if AI is already seated
+            if (Object.values(seats).includes(aiName)) {
+                alert('This AI is already seated!');
+                return;
+            }
+
+            seats[seatNum] = aiName;
+
+            const aiNames = {
+                'chatgpt': 'ChatGPT-4',
+                'grok': 'Grok-2',
+                'claude': 'Claude'
+            };
+
+            const seatEl = document.getElementById(`seat${seatNum}`);
+            seatEl.classList.add('occupied');
+
+            document.getElementById(`seat${seatNum}-name`).innerHTML = `
+                ${aiNames[aiName] || aiName}
+                <div class="clear-seat" onclick="clearSeat(${seatNum}, event)">✕ Remove</div>
+            `;
+
+            document.getElementById(`seat${seatNum}-options`).style.display = 'none';
+        }
+
+        function clearSeat(seatNum, event) {
+            event.stopPropagation();
+            seats[seatNum] = null;
+
+            const seatEl = document.getElementById(`seat${seatNum}`);
+            seatEl.classList.remove('occupied');
+
+            document.getElementById(`seat${seatNum}-name`).textContent = '[Empty]';
+        }
+
+        function addMessage(author, text, messageId = null, votes = {upvotes: 0, downvotes: 0}) {
+            if (!messageId) {
+                messageId = `msg-${messageIdCounter++}`;
+            }
+
+            const thread = document.getElementById('conversationThread');
+
+            if (thread.querySelector('div[style*="text-align: center"]')) {
+                thread.innerHTML = '';
+            }
+
+            const message = document.createElement('div');
+            const aiClass = author.toLowerCase().replace(/[^a-z0-9]/g, '');
+            message.className = `message ${aiClass}`;
+            message.id = messageId;
+            message.dataset.author = author;
+
+            message.innerHTML = `
+                <div class="message-header">
+                    <span class="message-author">${author}</span>
+                    <div class="message-actions">
+                        <button class="vote-btn" onclick="vote('${messageId}', 'up')">
+                            👍 <span id="${messageId}-upvotes">${votes.upvotes || 0}</span>
+                        </button>
+                        <button class="vote-btn" onclick="vote('${messageId}', 'down')">
+                            👎 <span id="${messageId}-downvotes">${votes.downvotes || 0}</span>
+                        </button>
+                        ${author !== 'You' ? `<button class="respond-btn" onclick="askToRespond('${messageId}')">Ask to Respond</button>` : ''}
+                    </div>
+                </div>
+                <div class="message-content">${text}</div>
+            `;
+
+            thread.appendChild(message);
+            thread.scrollTop = thread.scrollHeight;
+
+            conversationHistory.push({
+                id: messageId,
+                author: author,
+                text: text,
+                votes: votes,
+                timestamp: new Date().toISOString()
+            });
+
+            updateHistory();
+        }
+
+        function vote(messageId, direction) {
+            if (!votes[messageId]) {
+                votes[messageId] = {up: false, down: false, upvotes: 0, downvotes: 0};
+            }
+
+            const currentVote = votes[messageId];
+
+            if (direction === 'up') {
+                if (currentVote.up) {
+                    currentVote.upvotes--;
+                    currentVote.up = false;
+                } else {
+                    if (currentVote.down) {
+                        currentVote.downvotes--;
+                        currentVote.down = false;
+                    }
+                    currentVote.upvotes++;
+                    currentVote.up = true;
+                }
+            } else {
+                if (currentVote.down) {
+                    currentVote.downvotes--;
+                    currentVote.down = false;
+                } else {
+                    if (currentVote.up) {
+                        currentVote.upvotes--;
+                        currentVote.up = false;
+                    }
+                    currentVote.downvotes++;
+                    currentVote.down = true;
+                }
+            }
+
+            document.getElementById(`${messageId}-upvotes`).textContent = currentVote.upvotes;
+            document.getElementById(`${messageId}-downvotes`).textContent = currentVote.downvotes;
+
+            const upBtn = document.querySelector(`#${messageId} .vote-btn:nth-child(1)`);
+            const downBtn = document.querySelector(`#${messageId} .vote-btn:nth-child(2)`);
+
+            upBtn.classList.toggle('upvoted', currentVote.up);
+            downBtn.classList.toggle('downvoted', currentVote.down);
+        }
+
+        async function askToRespond(messageId) {
+            const seatedAIs = Object.values(seats).filter(ai => ai !== null);
+
+            if (seatedAIs.length === 0) {
+                alert('No AIs seated!');
+                return;
+            }
+
+            const originalMsg = document.getElementById(messageId);
+            const originalAuthor = originalMsg.dataset.author;
+            const originalText = originalMsg.querySelector('.message-content').textContent;
+
+            const aiNames = {'chatgpt': 'ChatGPT-4', 'grok': 'Grok-2', 'claude': 'Claude'};
+            const availableAIs = seatedAIs.filter(ai => aiNames[ai] !== originalAuthor);
+
+            if (availableAIs.length === 0) {
+                alert('Need at least 2 different AIs seated for AI-to-AI conversation!');
+                return;
+            }
+
+            const respondingAI = availableAIs[0];
+            const respondingName = aiNames[respondingAI];
+
+            const prompt = `${originalAuthor} said: "${originalText}"\n\nPlease respond to this message, building on their ideas or offering your perspective.`;
+
+            const tempId = `msg-${messageIdCounter++}`;
+            addMessage(respondingName, '💭 Thinking...', tempId);
+
+            try {
+                const answer = await askAI(respondingAI, prompt);
+                document.getElementById(tempId).querySelector('.message-content').innerHTML = answer;
+            } catch (error) {
+                document.getElementById(tempId).querySelector('.message-content').innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+
+        async function askAI(ai, question) {
+            const response = await fetch(`${API_SERVER}/api/ask`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ai: ai, question: question})
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'API request failed');
+            }
+
+            const data = await response.json();
+            return data.answer;
+        }
+
+        async function askAllSeats() {
+            const question = document.getElementById('questionInput').value.trim();
+
+            if (!question) {
+                alert('Please enter a question!');
+                return;
+            }
+
+            const seatedAIs = Object.values(seats).filter(ai => ai !== null);
+
+            if (seatedAIs.length === 0) {
+                alert('No AIs seated! Click a seat, then pick an AI.');
+                return;
+            }
+
+            addMessage('You', question);
+            document.getElementById('questionInput').value = '';
+
+            const aiNames = {
+                'chatgpt': 'ChatGPT-4',
+                'grok': 'Grok-2',
+                'claude': 'Claude'
+            };
+
+            for (let seatNum in seats) {
+                const ai = seats[seatNum];
+                if (!ai) continue;
+
+                const aiName = aiNames[ai] || ai;
+                const tempId = `msg-${messageIdCounter++}`;
+
+                addMessage(aiName, '💭 Thinking...', tempId);
+
+                try {
+                    const answer = await askAI(ai, question);
+                    document.getElementById(tempId).querySelector('.message-content').innerHTML = answer;
+                } catch (error) {
+                    document.getElementById(tempId).querySelector('.message-content').innerHTML =
+                        `<span class="error">❌ Error: ${error.message}</span>`;
+                }
+            }
+        }
+
+        function clearConversation() {
+            if (confirm('Clear the entire conversation?')) {
+                document.getElementById('conversationThread').innerHTML = `
+                    <div style="text-align: center; color: #999; padding: 40px;">
+                        <h3>💬 Conversation starts here</h3>
+                        <p style="margin-top: 10px;">Click a seat, then pick an AI. Repeat for more seats!</p>
+                    </div>
+                `;
+                conversationHistory = [];
+                votes = {};
+                messageIdCounter = 0;
+                updateHistory();
+            }
+        }
+
+        function updateHistory() {
+            const historyList = document.getElementById('historyList');
+
+            if (conversationHistory.length === 0) {
+                historyList.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;"><p>No history yet</p></div>';
+                return;
+            }
+
+            historyList.innerHTML = conversationHistory.slice(-10).reverse().map(msg => `
+                <div class="history-item" onclick="scrollToMessage('${msg.id}')">
+                    <div style="font-weight: bold; margin-bottom: 5px;">${msg.author}</div>
+                    <div style="font-size: 0.85em; color: #ccc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        ${msg.text.substring(0, 50)}${msg.text.length > 50 ? '...' : ''}
+                    </div>
+                    <div class="stats">
+                        <span>👍 ${msg.votes.upvotes || 0}</span>
+                        <span>👎 ${msg.votes.downvotes || 0}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function scrollToMessage(msgId) {
+            const msg = document.getElementById(msgId);
+            if (msg) {
+                msg.scrollIntoView({behavior: 'smooth', block: 'center'});
+                msg.style.background = 'rgba(255,255,0,0.1)';
+                setTimeout(() => {
+                    msg.style.background = '';
+                }, 1000);
+            }
+        }
+
+        // Auto-seat demo AIs on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                assignAI(1, 'chatgpt');
+                setTimeout(() => {
+                    assignAI(2, 'grok');
+                }, 300);
+            }, 500);
+
+            fetch(`${API_SERVER}/health`)
+                .then(r => r.json())
+                .then(data => console.log('✅ API Server:', data.message))
+                .catch(() => console.warn('⚠️ API Server not responding'));
+        });
+
+        // Enter key to send
+        document.getElementById('questionInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                askAllSeats();
+            }
+        });
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

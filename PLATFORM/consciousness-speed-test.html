@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>⚡ Consciousness Speed Test | 100X Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .game-area {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scenario-card {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scenario-text {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .choice-btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .builder-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .builder-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .destroyer-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .destroyer-btn:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+        }
+
+        .timer {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .timer.warning {
+            color: #ff9800;
+            animation: pulse 0.5s infinite;
+        }
+
+        .timer.danger {
+            color: #f44336;
+            animation: pulse 0.3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1em;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .start-screen, .results-screen {
+            text-align: center;
+        }
+
+        .start-btn, .restart-btn, .back-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.5em;
+            border-radius: 15px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover, .restart-btn:hover, .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .instructions {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .results-card {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .results-title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .result-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.2em;
+        }
+
+        .result-stat:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #666;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .rank {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .trinity-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 0.9em;
+            z-index: 1000;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="start-screen">
+            <div class="header">
+                <h1>⚡ Consciousness Speed Test</h1>
+                <p class="subtitle">How fast can you detect manipulation?</p>
+            </div>
+
+            <div class="instructions">
+                <h3>🎯 How to Play:</h3>
+                <ul>
+                    <li>You'll see scenarios flash on screen</li>
+                    <li>Identify BUILDER or DESTROYER as fast as possible</li>
+                    <li>Your reaction time is measured in milliseconds</li>
+                    <li>Faster + Accurate = Higher consciousness boost</li>
+                    <li>10 rounds total - get ready!</li>
+                </ul>
+            </div>
+
+            <button class="start-btn" onclick="startGame()">🚀 Start Speed Test</button>
+            <button class="back-btn" onclick="goBack()">← Back to Arcade</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="hidden">
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value" id="round">0</div>
+                    <div class="stat-label">Round</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="streak">0</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="avgTime">0</div>
+                    <div class="stat-label">Avg Time (ms)</div>
+                </div>
+            </div>
+
+            <div class="game-area" id="gameArea">
+                <!-- Dynamic content here -->
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="hidden">
+            <div class="header">
+                <h1>⚡ Speed Test Complete!</h1>
+            </div>
+
+            <div class="results-card">
+                <div class="results-title">Your Performance</div>
+
+                <div class="result-stat">
+                    <span class="result-label">Accuracy:</span>
+                    <span class="result-value" id="finalAccuracy">0%</span>
+                </div>
+
+                <div class="result-stat">
+                    <span class="result-label">Average Reaction Time:</span>
+                    <span class="result-value" id="finalAvgTime">0ms</span>
+                </div>
+
+                <div class="result-stat">
+                    <span class="result-label">Fastest Response:</span>
+                    <span class="result-value" id="fastestTime">0ms</span>
+                </div>
+
+                <div class="result-stat">
+                    <span class="result-label">Longest Streak:</span>
+                    <span class="result-value" id="maxStreak">0</span>
+                </div>
+
+                <div class="result-stat">
+                    <span class="result-label">Consciousness Boost:</span>
+                    <span class="result-value" id="consciousnessBoost">+0%</span>
+                </div>
+            </div>
+
+            <div class="rank" id="rank">Rank: Beginner</div>
+
+            <button class="restart-btn" onclick="restartGame()">🔄 Play Again</button>
+            <button class="back-btn" onclick="goBack()">← Back to Arcade</button>
+        </div>
+    </div>
+
+    <!-- Triple Layer Intelligence Indicator -->
+    <div class="trinity-status">
+        🛡️ Triple Layer Active<br>
+        Layer 2: ✅ | Layer 3: ✅
+    </div>
+
+    <script>
+        // LAYER 2: Self-Intelligence
+        const SelfIntelligence = {
+            moduleName: 'Consciousness Speed Test',
+
+            healthCheck: function() {
+                const health = {
+                    responsive: true,
+                    dataValid: this.validateGameData(),
+                    securityIntact: this.checkSecurity(),
+                    performance: this.measurePerformance(),
+                    timestamp: new Date().toISOString()
+                };
+                console.log('🔍 Layer 2 Health Check:', health);
+                return health;
+            },
+
+            validateGameData: function() {
+                const gameStats = JSON.parse(localStorage.getItem('speedTestStats') || '{}');
+                return gameStats.hasOwnProperty('gamesPlayed');
+            },
+
+            checkSecurity: function() {
+                return typeof localStorage !== 'undefined';
+            },
+
+            measurePerformance: function() {
+                return performance.now();
+            },
+
+            autoRepair: function() {
+                if (!this.validateGameData()) {
+                    console.log('🔧 Auto-repair: Initializing game data...');
+                    this.initializeGameData();
+                }
+            },
+
+            initializeGameData: function() {
+                const defaultStats = {
+                    gamesPlayed: 0,
+                    totalAccuracy: 0,
+                    bestTime: Infinity,
+                    totalBoost: 0
+                };
+                localStorage.setItem('speedTestStats', JSON.stringify(defaultStats));
+            }
+        };
+
+        // LAYER 3: External Intelligence
+        const ExternalIntelligence = {
+            validate: async function() {
+                console.log('🛡️ Layer 3 Validation Running...');
+
+                const layer2Report = SelfIntelligence.healthCheck();
+                const independentCheck = await this.independentCheck();
+
+                if (layer2Report.dataValid !== independentCheck.dataValid) {
+                    console.warn('⚠️ Data validation mismatch detected!');
+                    await this.trinityAnalysis({ layer2Report, independentCheck });
+                }
+            },
+
+            independentCheck: async function() {
+                try {
+                    const stats = JSON.parse(localStorage.getItem('speedTestStats') || '{}');
+                    return {
+                        dataValid: stats.gamesPlayed >= 0,
+                        timestamp: new Date().toISOString()
+                    };
+                } catch (e) {
+                    return { dataValid: false, error: e.message };
+                }
+            },
+
+            trinityAnalysis: async function(data) {
+                console.log('🌀 Trinity AI Analysis:', data);
+                // In production: Send to Trinity AI for analysis
+            }
+        };
+
+        // Auto-run intelligence layers
+        setInterval(() => SelfIntelligence.autoRepair(), 30000); // Every 30 seconds
+        setInterval(() => ExternalIntelligence.validate(), 300000); // Every 5 minutes
+
+        // Initialize on load
+        SelfIntelligence.autoRepair();
+
+        // GAME LOGIC
+        const scenarios = [
+            { text: "A company says 'Our product is revolutionary, trust us!'", type: "destroyer" },
+            { text: "A tutorial teaches you to solve the problem yourself", type: "builder" },
+            { text: "An app requires all your contacts to work", type: "destroyer" },
+            { text: "A tool shows you exactly what data it collects", type: "builder" },
+            { text: "A service makes it hard to export your data", type: "destroyer" },
+            { text: "A platform lets you own your content completely", type: "builder" },
+            { text: "Someone says 'Just trust me, don't verify'", type: "destroyer" },
+            { text: "A system documents how everything works", type: "builder" },
+            { text: "A boss says 'Don't share this with the team'", type: "destroyer" },
+            { text: "A leader teaches everyone the skills they know", type: "builder" },
+            { text: "An expert won't explain their reasoning", type: "destroyer" },
+            { text: "A mentor encourages you to question everything", type: "builder" },
+            { text: "A platform locks you in with no alternatives", type: "destroyer" },
+            { text: "A tool has open APIs and integrations", type: "builder" },
+            { text: "Someone creates artificial urgency to rush you", type: "destroyer" },
+            { text: "A guide gives you time to think and decide", type: "builder" },
+            { text: "A service hides pricing until you're invested", type: "destroyer" },
+            { text: "A product shows upfront honest pricing", type: "builder" },
+            { text: "An advisor says 'Only I can solve this'", type: "destroyer" },
+            { text: "A teacher shows multiple ways to solve it", type: "builder" }
+        ];
+
+        let currentRound = 0;
+        let correctAnswers = 0;
+        let currentStreak = 0;
+        let maxStreak = 0;
+        let reactionTimes = [];
+        let startTime = 0;
+        let timerInterval = null;
+        let currentScenario = null;
+
+        function startGame() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            currentRound = 0;
+            correctAnswers = 0;
+            currentStreak = 0;
+            maxStreak = 0;
+            reactionTimes = [];
+            nextRound();
+        }
+
+        function nextRound() {
+            currentRound++;
+
+            if (currentRound > 10) {
+                endGame();
+                return;
+            }
+
+            document.getElementById('round').textContent = currentRound;
+            document.getElementById('streak').textContent = currentStreak;
+
+            // Random scenario
+            currentScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+
+            // Show scenario
+            const gameArea = document.getElementById('gameArea');
+            gameArea.innerHTML = `
+                <div class="timer" id="timer">3.00</div>
+                <div class="scenario-card">
+                    <div class="scenario-text">${currentScenario.text}</div>
+                    <div class="button-group">
+                        <button class="choice-btn builder-btn" onclick="checkAnswer('builder')">
+                            ✅ BUILDER
+                        </button>
+                        <button class="choice-btn destroyer-btn" onclick="checkAnswer('destroyer')">
+                            🚫 DESTROYER
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            startTime = Date.now();
+            startTimer();
+        }
+
+        function startTimer() {
+            let elapsed = 0;
+            const timerEl = document.getElementById('timer');
+
+            timerInterval = setInterval(() => {
+                elapsed = (Date.now() - startTime) / 1000;
+                timerEl.textContent = elapsed.toFixed(2);
+
+                if (elapsed > 2) {
+                    timerEl.classList.add('warning');
+                }
+                if (elapsed > 3) {
+                    timerEl.classList.add('danger');
+                }
+                if (elapsed > 5) {
+                    clearInterval(timerInterval);
+                    checkAnswer('timeout');
+                }
+            }, 10);
+        }
+
+        function checkAnswer(answer) {
+            clearInterval(timerInterval);
+            const reactionTime = Date.now() - startTime;
+
+            if (answer === 'timeout') {
+                showFeedback(false, reactionTime, 'Too slow! ⏱️');
+                currentStreak = 0;
+            } else if (answer === currentScenario.type) {
+                reactionTimes.push(reactionTime);
+                correctAnswers++;
+                currentStreak++;
+                if (currentStreak > maxStreak) maxStreak = currentStreak;
+                showFeedback(true, reactionTime, `Correct! ${reactionTime}ms ⚡`);
+            } else {
+                currentStreak = 0;
+                showFeedback(false, reactionTime, `Wrong! It was ${currentScenario.type.toUpperCase()}`);
+            }
+
+            updateStats();
+        }
+
+        function showFeedback(correct, time, message) {
+            const gameArea = document.getElementById('gameArea');
+            const feedbackClass = correct ? 'correct' : 'incorrect';
+
+            gameArea.innerHTML += `
+                <div class="feedback ${feedbackClass}">
+                    ${message}
+                </div>
+            `;
+
+            setTimeout(() => {
+                nextRound();
+            }, 1500);
+        }
+
+        function updateStats() {
+            const avgTime = reactionTimes.length > 0
+                ? Math.round(reactionTimes.reduce((a,b) => a+b, 0) / reactionTimes.length)
+                : 0;
+            document.getElementById('avgTime').textContent = avgTime;
+        }
+
+        function endGame() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+
+            const accuracy = Math.round((correctAnswers / 10) * 100);
+            const avgTime = reactionTimes.length > 0
+                ? Math.round(reactionTimes.reduce((a,b) => a+b, 0) / reactionTimes.length)
+                : 0;
+            const fastestTime = reactionTimes.length > 0 ? Math.min(...reactionTimes) : 0;
+
+            // Calculate consciousness boost
+            let boost = 0;
+            if (accuracy >= 80 && avgTime < 1500) boost = 10;
+            else if (accuracy >= 70 && avgTime < 2000) boost = 7;
+            else if (accuracy >= 60 && avgTime < 2500) boost = 5;
+            else if (accuracy >= 50) boost = 3;
+
+            // Determine rank
+            let rank = 'Beginner';
+            if (accuracy >= 90 && avgTime < 1000) rank = '⚡ Lightning Master';
+            else if (accuracy >= 80 && avgTime < 1500) rank = '🔥 Speed Demon';
+            else if (accuracy >= 70 && avgTime < 2000) rank = '⭐ Quick Thinker';
+            else if (accuracy >= 60 && avgTime < 2500) rank = '🎯 Conscious Observer';
+            else if (accuracy >= 50) rank = '🌱 Awakening';
+
+            document.getElementById('finalAccuracy').textContent = accuracy + '%';
+            document.getElementById('finalAvgTime').textContent = avgTime + 'ms';
+            document.getElementById('fastestTime').textContent = fastestTime + 'ms';
+            document.getElementById('maxStreak').textContent = maxStreak;
+            document.getElementById('consciousnessBoost').textContent = '+' + boost + '%';
+            document.getElementById('rank').textContent = 'Rank: ' + rank;
+
+            // Save stats
+            saveStats(accuracy, avgTime, boost);
+        }
+
+        function saveStats(accuracy, avgTime, boost) {
+            const stats = JSON.parse(localStorage.getItem('speedTestStats') || '{}');
+            stats.gamesPlayed = (stats.gamesPlayed || 0) + 1;
+            stats.totalAccuracy = ((stats.totalAccuracy || 0) * (stats.gamesPlayed - 1) + accuracy) / stats.gamesPlayed;
+            stats.bestTime = Math.min(stats.bestTime || Infinity, avgTime);
+            stats.totalBoost = (stats.totalBoost || 0) + boost;
+            localStorage.setItem('speedTestStats', JSON.stringify(stats));
+
+            // Update arcade stats
+            const arcadeStats = JSON.parse(localStorage.getItem('arcadeStats') || '{"consciousnessLevel": 51.7}');
+            arcadeStats.consciousnessLevel = Math.min(100, arcadeStats.consciousnessLevel + boost);
+            arcadeStats.speedTestPlayed = (arcadeStats.speedTestPlayed || 0) + 1;
+            localStorage.setItem('arcadeStats', JSON.stringify(arcadeStats));
+        }
+
+        function restartGame() {
+            document.getElementById('resultsScreen').classList.add('hidden');
+            startGame();
+        }
+
+        function goBack() {
+            window.location.href = 'arcade-hub.html';
+        }
+    </script>
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

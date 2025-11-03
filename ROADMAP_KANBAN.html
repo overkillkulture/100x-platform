@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X Platform Roadmap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e8e8e8;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #00ffff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+        }
+
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .kanban-column {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .kanban-column.backlog { border-color: rgba(128, 128, 128, 0.4); }
+        .kanban-column.todo { border-color: rgba(255, 165, 0, 0.4); }
+        .kanban-column.in-progress { border-color: rgba(0, 255, 255, 0.4); }
+        .kanban-column.done { border-color: rgba(0, 255, 136, 0.4); }
+
+        .column-header {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .column-header .count {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        .backlog .column-header { color: #888888; }
+        .todo .column-header { color: #ffa500; }
+        .in-progress .column-header { color: #00ffff; }
+        .done .column-header { color: #00ff88; }
+
+        .task-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid rgba(0, 255, 255, 0.5);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .task-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .backlog .task-card { border-left-color: #888888; }
+        .todo .task-card { border-left-color: #ffa500; }
+        .in-progress .task-card { border-left-color: #00ffff; }
+        .done .task-card { border-left-color: #00ff88; opacity: 0.7; }
+
+        .task-title {
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .task-badge {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+        }
+
+        .task-badge.priority-high { background: rgba(255, 0, 0, 0.2); color: #ff6666; }
+        .task-badge.priority-medium { background: rgba(255, 165, 0, 0.2); color: #ffaa66; }
+        .task-badge.priority-low { background: rgba(0, 255, 136, 0.2); color: #66ffaa; }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.2rem;
+        }
+
+        .error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid rgba(255, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗺️ 100X Platform Roadmap</h1>
+        <p>High-Level Strategic Direction</p>
+    </div>
+
+    <div id="loading" class="loading">
+        Loading roadmap from Airtable...
+    </div>
+
+    <div id="kanban-board" class="kanban-board" style="display: none;">
+        <div class="kanban-column backlog">
+            <div class="column-header">
+                <span>📋 Backlog</span>
+                <span class="count" id="count-backlog">0</span>
+            </div>
+            <div id="tasks-backlog"></div>
+        </div>
+
+        <div class="kanban-column todo">
+            <div class="column-header">
+                <span>📝 To Do</span>
+                <span class="count" id="count-todo">0</span>
+            </div>
+            <div id="tasks-todo"></div>
+        </div>
+
+        <div class="kanban-column in-progress">
+            <div class="column-header">
+                <span>⚡ In Progress</span>
+                <span class="count" id="count-in-progress">0</span>
+            </div>
+            <div id="tasks-in-progress"></div>
+        </div>
+
+        <div class="kanban-column done">
+            <div class="column-header">
+                <span>✅ Done</span>
+                <span class="count" id="count-done">0</span>
+            </div>
+            <div id="tasks-done"></div>
+        </div>
+    </div>
+
+    <div id="error" class="error" style="display: none;">
+        <h3>⚠️ Connection Error</h3>
+        <p id="error-message"></p>
+    </div>
+
+    <script>
+        // High-level strategic items - these represent the major phases/domains
+        // In production, this would pull from Airtable All_Todos filtered by priority
+        const STRATEGIC_ITEMS = [
+            {
+                id: '1',
+                title: 'Complete Spreadsheet Brain System (Information Leak Sealed)',
+                status: 'Done',
+                priority: 'High',
+                domain: 'Infrastructure'
+            },
+            {
+                id: '2',
+                title: 'Build Investor Tour & Navigation System',
+                status: 'Done',
+                priority: 'High',
+                domain: 'Platform'
+            },
+            {
+                id: '3',
+                title: 'Integrate Araya HUD with Live AI',
+                status: 'Done',
+                priority: 'High',
+                domain: 'AI Systems'
+            },
+            {
+                id: '4',
+                title: 'Launch Beta Testing Program (Bug Reporter Live)',
+                status: 'In Progress',
+                priority: 'High',
+                domain: 'Platform'
+            },
+            {
+                id: '5',
+                title: 'Deploy Public Command Center with Kanban Roadmap',
+                status: 'In Progress',
+                priority: 'High',
+                domain: 'Platform'
+            },
+            {
+                id: '6',
+                title: 'Build Unified User Onboarding Experience',
+                status: 'To Do',
+                priority: 'High',
+                domain: 'UX'
+            },
+            {
+                id: '7',
+                title: 'Complete 7-Website Ecosystem Deployment',
+                status: 'To Do',
+                priority: 'Medium',
+                domain: 'Business'
+            },
+            {
+                id: '8',
+                title: 'Launch Consciousness Marketplace',
+                status: 'Backlog',
+                priority: 'Medium',
+                domain: 'Revenue'
+            },
+            {
+                id: '9',
+                title: 'Build Multi-Brain Network (Team Collaboration)',
+                status: 'Backlog',
+                priority: 'Medium',
+                domain: 'AI Systems'
+            },
+            {
+                id: '10',
+                title: 'Release The Spreadsheet Consciousness Book',
+                status: 'Backlog',
+                priority: 'Low',
+                domain: 'Content'
+            }
+        ];
+
+        function renderKanban() {
+            const statusMap = {
+                'Backlog': 'backlog',
+                'To Do': 'todo',
+                'In Progress': 'in-progress',
+                'Done': 'done'
+            };
+
+            // Clear existing tasks
+            Object.values(statusMap).forEach(status => {
+                document.getElementById(`tasks-${status}`).innerHTML = '';
+            });
+
+            // Group tasks by status
+            const grouped = {};
+            Object.keys(statusMap).forEach(status => {
+                grouped[status] = STRATEGIC_ITEMS.filter(item => item.status === status);
+            });
+
+            // Render each group
+            Object.entries(grouped).forEach(([status, tasks]) => {
+                const containerId = `tasks-${statusMap[status]}`;
+                const countId = `count-${statusMap[status]}`;
+                const container = document.getElementById(containerId);
+
+                document.getElementById(countId).textContent = tasks.length;
+
+                tasks.forEach(task => {
+                    const card = document.createElement('div');
+                    card.className = 'task-card';
+                    card.innerHTML = `
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-meta">
+                            <span class="task-badge priority-${task.priority.toLowerCase()}">${task.priority}</span>
+                            <span class="task-badge">${task.domain}</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+
+            // Show the board
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('kanban-board').style.display = 'grid';
+        }
+
+        // Initialize
+        setTimeout(() => {
+            renderKanban();
+        }, 500); // Simulate loading delay
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

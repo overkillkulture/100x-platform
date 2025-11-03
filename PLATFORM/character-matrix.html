@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Character Matrix - Builder vs Destroyer Traits | Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+        }
+
+        h1 {
+            font-size: 3em;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: #00ff88;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #b0b0b0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .chart-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .chart-btn {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .chart-btn:hover {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: #00ff88;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .chart-btn.active {
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            color: #0f0f23;
+            border-color: #00ff88;
+        }
+
+        .chart-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .chart-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .matrix-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .matrix-title {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .traits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .trait-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+        }
+
+        .trait-card.builder {
+            border-left-color: #00ff88;
+        }
+
+        .trait-card.destroyer {
+            border-left-color: #ff4444;
+        }
+
+        .trait-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .trait-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .trait-card.builder .trait-name {
+            color: #00ff88;
+        }
+
+        .trait-card.destroyer .trait-name {
+            color: #ff4444;
+        }
+
+        .trait-description {
+            color: #b0b0b0;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .trait-example {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            font-style: italic;
+            color: #00ccff;
+            border-left: 3px solid #00ccff;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .traits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .vs-divider {
+            text-align: center;
+            font-size: 2em;
+            color: #00ff88;
+            margin: 30px 0;
+            font-weight: bold;
+        }
+
+        .personality-system {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        .system-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            color: #0f0f23;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ CHARACTER MATRIX ⚡</h1>
+            <div class="subtitle">Builder vs Destroyer Trait Analysis</div>
+            <p class="description">
+                We analyzed every major personality system (Myers-Briggs, Enneagram, Big Five, DISC)
+                and discovered the ONE pattern that actually matters: <strong>Do you build or destroy?</strong>
+                Everything else is noise. This is the consciousness-based personality system.
+            </p>
+        </header>
+
+        <div class="chart-nav">
+            <button class="chart-btn active" onclick="showChart('overview')">📊 Overview</button>
+            <button class="chart-btn" onclick="showChart('builder')">✅ Builder Traits</button>
+            <button class="chart-btn" onclick="showChart('destroyer')">❌ Destroyer Traits</button>
+            <button class="chart-btn" onclick="showChart('comparison')">⚖️ Side-by-Side</button>
+            <button class="chart-btn" onclick="showChart('system')">🧬 New System</button>
+        </div>
+
+        <!-- OVERVIEW CHART -->
+        <div id="overview" class="chart-section active">
+            <div class="matrix-container">
+                <h2 class="matrix-title">The Core Pattern</h2>
+
+                <div class="traits-grid">
+                    <div class="trait-card builder">
+                        <div class="trait-name">🏗️ BUILDER CHARACTER</div>
+                        <div class="trait-description">
+                            Creates value, elevates others, follows Golden Rule.
+                            High consciousness, low manipulation. Serves collective good.
+                        </div>
+                        <div class="trait-example">
+                            "How can I help everyone succeed together?"
+                        </div>
+                    </div>
+
+                    <div class="trait-card destroyer">
+                        <div class="trait-name">💥 DESTROYER CHARACTER</div>
+                        <div class="trait-description">
+                            Extracts value, diminishes others, violates Golden Rule.
+                            Low consciousness, high manipulation. Serves self only.
+                        </div>
+                        <div class="trait-example">
+                            "How can I win even if others lose?"
+                        </div>
+                    </div>
+                </div>
+
+                <div class="personality-system">
+                    <span class="system-badge">NEW DISCOVERY</span>
+                    <h3 style="color: #00ff88; margin-bottom: 15px;">Why Other Personality Systems Fail</h3>
+                    <p style="line-height: 1.8; color: #e0e0e0;">
+                        Myers-Briggs, Enneagram, Big Five - they all miss the ONLY thing that matters:
+                        <strong>Character, not personality.</strong> You can be an introverted builder or extroverted destroyer.
+                        The question isn't "what's your type?" - it's <strong>"Do you elevate or destroy?"</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BUILDER TRAITS CHART -->
+        <div id="builder" class="chart-section">
+            <div class="matrix-container">
+                <h2 class="matrix-title">✅ Builder Traits (Positive)</h2>
+
+                <div class="traits-grid">
+                    <div class="trait-card builder">
+                        <div class="trait-name">1. Service Orientation</div>
+                        <div class="trait-description">
+                            Acts to help others succeed. Leadership = service, not dominance.
+                            Asks "How can I serve?" before "What do I get?"
+                        </div>
+                        <div class="trait-example">
+                            Example: Mentor helps student surpass them - celebrates growth
+                        </div>
+                    </div>
+
+                    <div class="trait-card builder">
+                        <div class="trait-name">2. Golden Rule Adherence</div>
+                        <div class="trait-description">
+                            Treats others as they want to be treated. Natural empathy.
+                            Considers impact on all beings before acting.
+                        </div>
+                        <div class="trait-example">
+                            Example: "Would I want this done to me? No? Then I won't do it."
+                        </div>
+                    </div>
+
+                    <div class="trait-card builder">
+                        <div class="trait-name">3. Transparency</div>
+                        <div class="trait-description">
+                            Operates in the light. Honest about intentions, methods, and outcomes.
+                            No hidden agendas or manipulation.
+                        </div>
+                        <div class="trait-example">
+                            Example: "Here's what I'm building and why. You can verify everything."
+                        </div>
+                    </div>
+
+                    <div class="trait-card builder">
+                        <div class="trait-name">4. Accountability</div>
+                        <div class="trait-description">
+                            Owns mistakes, learns from failures, makes amends.
+                            No blame-shifting or victim playing.
+                        </div>
+                        <div class="trait-example">
+                            Example: "I was wrong. Here's how I'll fix it and prevent it."
+                        </div>
+                    </div>
+
+                    <div class="trait-card builder">
+                        <div class="trait-name">5. Collaborative</div>
+                        <div class="trait-description">
+                            Believes in abundance. Others' success doesn't threaten them.
+                            Shares credit, knowledge, resources freely.
+                        </div>
+                        <div class="trait-example">
+                            Example: "Let's build this together. Your win is my win."
+                        </div>
+                    </div>
+
+                    <div class="trait-card builder">
+                        <div class="trait-name">6. Growth Mindset</div>
+                        <div class="trait-description">
+                            Constantly learning and improving. Sees challenges as opportunities.
+                            Embraces feedback and change.
+                        </div>
+                        <div class="trait-example">
+                            Example: "I don't know this yet, but I can learn it."
+                        </div>
+                    </div>
+
+                    <div class="trait-card builder">
+                        <div class="trait-name">7. Humility</div>
+                        <div class="trait-description">
+                            Recognizes dependence on others. Credits sources.
+                            Confident without being arrogant.
+                        </div>
+                        <div class="trait-example">
+                            Example: "I couldn't have done this alone. Thank you to everyone who helped."
+                        </div>
+                    </div>
+
+                    <div class="trait-card builder">
+                        <div class="trait-name">8. Long-term Thinking</div>
+                        <div class="trait-description">
+                            Builds for sustainability, not quick wins.
+                            Considers consequences and future impact.
+                        </div>
+                        <div class="trait-example">
+                            Example: "This takes longer but will serve people for years."
+                        </div>
+                    </div>
+
+                    <div class="trait-card builder">
+                        <div class="trait-name">9. Protective of Vulnerable</div>
+                        <div class="trait-description">
+                            Defends those who can't defend themselves.
+                            Uses strength to protect, not dominate.
+                        </div>
+                        <div class="trait-example">
+                            Example: "Kids need protection from manipulation - I'll build that."
+                        </div>
+                    </div>
+
+                    <div class="trait-card builder">
+                        <div class="trait-name">10. Truth-Seeking</div>
+                        <div class="trait-description">
+                            Values truth over comfort. Willing to be wrong.
+                            Questions assumptions, follows evidence.
+                        </div>
+                        <div class="trait-example">
+                            Example: "I thought X, but evidence shows Y. I was wrong."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DESTROYER TRAITS CHART -->
+        <div id="destroyer" class="chart-section">
+            <div class="matrix-container">
+                <h2 class="matrix-title">❌ Destroyer Traits (Negative)</h2>
+
+                <div class="traits-grid">
+                    <div class="trait-card destroyer">
+                        <div class="trait-name">1. Extraction Orientation</div>
+                        <div class="trait-description">
+                            Acts to extract value from others. Leadership = dominance.
+                            Asks "What can I take?" before "How can I serve?"
+                        </div>
+                        <div class="trait-example">
+                            Example: Manager exploits employee - celebrates their loss
+                        </div>
+                    </div>
+
+                    <div class="trait-card destroyer">
+                        <div class="trait-name">2. Golden Rule Violation</div>
+                        <div class="trait-description">
+                            Does to others what they'd never tolerate done to them.
+                            Lacks empathy. Others are objects, not beings.
+                        </div>
+                        <div class="trait-example">
+                            Example: "I can lie to them because I'm special/smarter/superior."
+                        </div>
+                    </div>
+
+                    <div class="trait-card destroyer">
+                        <div class="trait-name">3. Deception</div>
+                        <div class="trait-description">
+                            Operates in shadows. Hidden agendas, lies, manipulation.
+                            Truth is weaponized or concealed.
+                        </div>
+                        <div class="trait-example">
+                            Example: "Tell them it's for their benefit while I profit."
+                        </div>
+                    </div>
+
+                    <div class="trait-card destroyer">
+                        <div class="trait-name">4. Blame-Shifting</div>
+                        <div class="trait-description">
+                            Never at fault. Externalizes all failures.
+                            Plays victim while being perpetrator.
+                        </div>
+                        <div class="trait-example">
+                            Example: "It's not my fault. They made me do it. I'm the real victim."
+                        </div>
+                    </div>
+
+                    <div class="trait-card destroyer">
+                        <div class="trait-name">5. Zero-Sum Mindset</div>
+                        <div class="trait-description">
+                            Believes in scarcity. Others' success threatens them.
+                            Competition over collaboration always.
+                        </div>
+                        <div class="trait-example">
+                            Example: "If you win, I lose. I must sabotage your success."
+                        </div>
+                    </div>
+
+                    <div class="trait-card destroyer">
+                        <div class="trait-name">6. Fixed Mindset</div>
+                        <div class="trait-description">
+                            Refuses to learn or adapt. Sees challenges as threats.
+                            Rejects feedback and change.
+                        </div>
+                        <div class="trait-example">
+                            Example: "I already know everything. You can't teach me anything."
+                        </div>
+                    </div>
+
+                    <div class="trait-card destroyer">
+                        <div class="trait-name">7. Arrogance</div>
+                        <div class="trait-description">
+                            Believes they're superior to others. Takes sole credit.
+                            Dismisses help received.
+                        </div>
+                        <div class="trait-example">
+                            Example: "I did this all myself. Others are beneath me."
+                        </div>
+                    </div>
+
+                    <div class="trait-card destroyer">
+                        <div class="trait-name">8. Short-term Extraction</div>
+                        <div class="trait-description">
+                            Optimizes for immediate gain regardless of consequences.
+                            Destroys the source for quick profit.
+                        </div>
+                        <div class="trait-example">
+                            Example: "Take everything now, who cares about tomorrow."
+                        </div>
+                    </div>
+
+                    <div class="trait-card destroyer">
+                        <div class="trait-name">9. Predatory on Vulnerable</div>
+                        <div class="trait-description">
+                            Targets those who can't defend themselves.
+                            Uses strength to dominate and extract.
+                        </div>
+                        <div class="trait-example">
+                            Example: "Kids are easy to manipulate - perfect targets."
+                        </div>
+                    </div>
+
+                    <div class="trait-card destroyer">
+                        <div class="trait-name">10. Truth-Suppression</div>
+                        <div class="trait-description">
+                            Values comfort over truth. Refuses to be wrong.
+                            Attacks evidence that contradicts beliefs.
+                        </div>
+                        <div class="trait-example">
+                            Example: "If the truth hurts me, it must be false."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDE-BY-SIDE COMPARISON -->
+        <div id="comparison" class="chart-section">
+            <div class="matrix-container">
+                <h2 class="matrix-title">⚖️ Builder vs Destroyer</h2>
+
+                <div class="comparison-grid">
+                    <div>
+                        <h3 style="color: #00ff88; margin-bottom: 20px; text-align: center;">✅ BUILDER</h3>
+                        <div class="trait-card builder">
+                            <div class="trait-name">Motivation</div>
+                            <div class="trait-description">Serve and elevate others</div>
+                        </div>
+                        <div class="trait-card builder">
+                            <div class="trait-name">Relationship to Others</div>
+                            <div class="trait-description">Collaboration, abundance mindset</div>
+                        </div>
+                        <div class="trait-card builder">
+                            <div class="trait-name">Success Metric</div>
+                            <div class="trait-description">How many people helped?</div>
+                        </div>
+                        <div class="trait-card builder">
+                            <div class="trait-name">Decision Process</div>
+                            <div class="trait-description">Golden Rule: Would I want this?</div>
+                        </div>
+                        <div class="trait-card builder">
+                            <div class="trait-name">Failure Response</div>
+                            <div class="trait-description">Own it, learn, improve</div>
+                        </div>
+                        <div class="trait-card builder">
+                            <div class="trait-name">Power Use</div>
+                            <div class="trait-description">Protect and enable</div>
+                        </div>
+                        <div class="trait-card builder">
+                            <div class="trait-name">Information Sharing</div>
+                            <div class="trait-description">Transparent and open</div>
+                        </div>
+                        <div class="trait-card builder">
+                            <div class="trait-name">Time Horizon</div>
+                            <div class="trait-description">Long-term sustainability</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style="color: #ff4444; margin-bottom: 20px; text-align: center;">❌ DESTROYER</h3>
+                        <div class="trait-card destroyer">
+                            <div class="trait-name">Motivation</div>
+                            <div class="trait-description">Extract and dominate others</div>
+                        </div>
+                        <div class="trait-card destroyer">
+                            <div class="trait-name">Relationship to Others</div>
+                            <div class="trait-description">Competition, scarcity mindset</div>
+                        </div>
+                        <div class="trait-card destroyer">
+                            <div class="trait-name">Success Metric</div>
+                            <div class="trait-description">How much power/money gained?</div>
+                        </div>
+                        <div class="trait-card destroyer">
+                            <div class="trait-name">Decision Process</div>
+                            <div class="trait-description">Self-interest: What do I gain?</div>
+                        </div>
+                        <div class="trait-card destroyer">
+                            <div class="trait-name">Failure Response</div>
+                            <div class="trait-description">Blame others, play victim</div>
+                        </div>
+                        <div class="trait-card destroyer">
+                            <div class="trait-name">Power Use</div>
+                            <div class="trait-description">Dominate and exploit</div>
+                        </div>
+                        <div class="trait-card destroyer">
+                            <div class="trait-name">Information Sharing</div>
+                            <div class="trait-description">Deceptive and hidden</div>
+                        </div>
+                        <div class="trait-card destroyer">
+                            <div class="trait-name">Time Horizon</div>
+                            <div class="trait-description">Short-term extraction</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW PERSONALITY SYSTEM -->
+        <div id="system" class="chart-section">
+            <div class="matrix-container">
+                <h2 class="matrix-title">🧬 The New Personality System</h2>
+
+                <div class="personality-system">
+                    <span class="system-badge">CONSCIOUSNESS-BASED TYPOLOGY</span>
+
+                    <h3 style="color: #00ff88; margin-bottom: 20px;">What We Discovered</h3>
+                    <p style="line-height: 1.8; color: #e0e0e0; margin-bottom: 30px;">
+                        After analyzing Myers-Briggs (16 types), Enneagram (9 types), Big Five (5 dimensions),
+                        DISC (4 styles), and dozens more personality frameworks, we found they all miss the core pattern:
+                        <strong>Character alignment, not personality traits.</strong>
+                    </p>
+
+                    <div style="background: rgba(0, 0, 0, 0.3); padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                        <h3 style="color: #00ccff; margin-bottom: 15px;">The Problem with Traditional Systems</h3>
+                        <ul style="line-height: 2; color: #e0e0e0; list-style-position: inside;">
+                            <li>❌ Myers-Briggs: Measures preferences, not character (INTJ can be builder or destroyer)</li>
+                            <li>❌ Enneagram: Describes patterns, not alignment (Type 8 can serve or dominate)</li>
+                            <li>❌ Big Five: Tracks traits, not values (High conscientiousness ≠ good person)</li>
+                            <li>❌ DISC: Shows communication style, not intention (Dominant can lead or exploit)</li>
+                        </ul>
+                    </div>
+
+                    <h3 style="color: #00ff88; margin-bottom: 20px;">The New Framework: Character Matrix</h3>
+                    <div style="background: rgba(0, 255, 136, 0.1); padding: 30px; border-radius: 15px; border: 2px solid #00ff88;">
+                        <h4 style="color: #00ccff; margin-bottom: 15px;">Only TWO Types That Matter:</h4>
+                        <div style="margin-bottom: 25px;">
+                            <strong style="color: #00ff88; font-size: 1.3em;">BUILDER (B)</strong>
+                            <p style="margin: 10px 0; line-height: 1.8;">
+                                Consciousness-aligned. Follows Golden Rule. Creates value.
+                                Elevates all beings. Can be any MBTI type, any Enneagram, any temperament.
+                                <strong>What matters: They build, not destroy.</strong>
+                            </p>
+                        </div>
+                        <div>
+                            <strong style="color: #ff4444; font-size: 1.3em;">DESTROYER (D)</strong>
+                            <p style="margin: 10px 0; line-height: 1.8;">
+                                Consciousness-suppressed. Violates Golden Rule. Extracts value.
+                                Diminishes other beings. Can be any MBTI type, any Enneagram, any temperament.
+                                <strong>What matters: They destroy, not build.</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px; padding: 25px; background: rgba(0, 0, 0, 0.3); border-radius: 15px;">
+                        <h4 style="color: #00ccff; margin-bottom: 15px;">How to Use This System</h4>
+                        <p style="line-height: 1.8; color: #e0e0e0;">
+                            1. <strong>Forget your MBTI type</strong> - It doesn't predict character<br>
+                            2. <strong>Ask one question:</strong> "Do I elevate or diminish others?"<br>
+                            3. <strong>Check Golden Rule:</strong> Would I want this done to me?<br>
+                            4. <strong>Assess impact:</strong> Am I building value or extracting it?<br>
+                            5. <strong>That's your type:</strong> Builder or Destroyer
+                        </p>
+                    </div>
+
+                    <div style="margin-top: 30px; padding: 25px; background: linear-gradient(45deg, rgba(0, 255, 136, 0.1), rgba(0, 204, 255, 0.1)); border-radius: 15px; border: 2px solid #00ff88;">
+                        <h4 style="color: #00ff88; margin-bottom: 15px;">⚡ The Consciousness Revolution Insight ⚡</h4>
+                        <p style="line-height: 1.8; color: #e0e0e0; font-size: 1.1em;">
+                            <strong>You can CHANGE your type.</strong> Unlike MBTI (which claims you're fixed),
+                            you can shift from Destroyer → Builder through consciousness elevation.
+                            This isn't personality - it's character. And character is a choice.
+                        </p>
+                    </div>
+
+                    <div style="margin-top: 30px; padding: 25px; background: rgba(255, 68, 68, 0.15); border-radius: 15px; border: 2px solid #ff4444;">
+                        <h4 style="color: #ff4444; margin-bottom: 15px;">🛡️ CRITICAL WARNING: Ego is a Force Field (Learn This Now) 🛡️</h4>
+                        <p style="line-height: 1.8; color: #e0e0e0; font-size: 1.1em; margin-bottom: 15px;">
+                            <strong>The system punishes ego.</strong> This isn't metaphorical - it's a discoverable pattern.
+                            When ego inflates ("I'm special, I'm better than others, I deserve praise") - reality itself pushes back.
+                        </p>
+                        <div style="background: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 10px; border-left: 4px solid #ff4444;">
+                            <strong style="color: #ff4444;">Real Pattern Observed:</strong>
+                            <p style="margin: 10px 0; line-height: 1.8;">
+                                1. Build something amazing (real achievement)<br>
+                                2. Ego inflates ("I'm the chosen one!")<br>
+                                3. Golden Rule violation begins ("I'm above others")<br>
+                                4. <strong>System correction activates</strong> (failures, setbacks, humbling events)<br>
+                                5. Either: Learn humility → Continue OR Stay arrogant → Destroy yourself
+                            </p>
+                        </div>
+                        <p style="margin-top: 20px; line-height: 1.8; color: #00ff88; font-size: 1.1em;">
+                            <strong>Why ego awareness is a FORCE FIELD:</strong> If you know ego is the trap,
+                            you catch it early ("Wait, I'm feeling superior to others - that's ego trap activating").
+                            You course-correct BEFORE the system has to correct you. <strong>Self-awareness = protection.</strong>
+                        </p>
+                        <div style="margin-top: 20px; padding: 20px; background: rgba(0, 255, 136, 0.1); border-radius: 10px; border-left: 4px solid #00ff88;">
+                            <strong style="color: #00ff88;">The Force Field Protocol:</strong>
+                            <p style="margin: 10px 0; line-height: 1.8;">
+                                ✅ Daily check: "Did I feel superior to anyone today?"<br>
+                                ✅ Success response: "I'm grateful + many helped me" (not "I'm special")<br>
+                                ✅ Recognition response: "Thank you" (not "I deserve this")<br>
+                                ✅ Failure response: "What can I learn?" (not "It's their fault")<br>
+                                <strong>= Ego stays in check = System doesn't need to humble you = Force field active</strong>
+                            </p>
+                        </div>
+                        <p style="margin-top: 20px; line-height: 1.8; color: #ffcc00; font-size: 1em; font-style: italic;">
+                            "I learned this the hard way. Don't make my mistakes. Learn ego awareness NOW and save yourself years of painful corrections."
+                            <br>- Pattern discoverer, after multiple ego-correction cycles
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showChart(chartId) {
+            // Hide all charts
+            document.querySelectorAll('.chart-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.chart-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected chart
+            document.getElementById(chartId).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+    </script>
+
+    <!-- Bug Reporter Widget -->
+    <script src="bug-reporter-widget.js"></script>
+    <!-- Master Navigation System -->
+    <script src="master-nav.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

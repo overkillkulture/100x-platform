@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Mobile Debug - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            color: #333;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-btn {
+            display: block;
+            padding: 12px 20px;
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-btn:hover {
+            background: #e8e8e8;
+            border-color: #667eea;
+        }
+
+        .file-upload-btn.has-file {
+            background: #e8f5e9;
+            border-color: #4caf50;
+            border-style: solid;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .voice-record-btn {
+            width: 100%;
+            padding: 15px;
+            background: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .voice-record-btn:hover {
+            background: #e64a19;
+        }
+
+        .voice-record-btn.recording {
+            background: #4caf50;
+            animation: pulse 1.5s infinite;
+        }
+
+        .device-info {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .device-info p {
+            margin: 5px 0;
+        }
+
+        .success-message {
+            background: #4caf50;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .success-message h2 {
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+            }
+        }
+
+        .recording-status {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #4caf50;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐛 Mobile Debug Center</h1>
+            <p>Help us improve! Report bugs and share feedback</p>
+        </div>
+
+        <div class="card" id="form-card">
+            <!-- Device Info -->
+            <div class="device-info" id="device-info">
+                <strong>📱 Device Info (auto-captured):</strong>
+                <p id="device-type">Loading...</p>
+                <p id="browser-info">Loading...</p>
+                <p id="screen-size">Loading...</p>
+            </div>
+
+            <!-- Bug Report Form -->
+            <form id="bug-report-form">
+                <div class="form-group">
+                    <label for="email">Your Email:</label>
+                    <input type="email" id="email" name="email" placeholder="beta@tester.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bug-type">Report Type:</label>
+                    <select id="bug-type" name="bug-type" required>
+                        <option value="">Select type...</option>
+                        <option value="bug">🐛 Bug Report</option>
+                        <option value="feedback">💡 Feedback</option>
+                        <option value="feature">✨ Feature Request</option>
+                        <option value="question">❓ Question</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Quick Summary:</label>
+                    <input type="text" id="title" name="title" placeholder="What's the issue?" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Full Description:</label>
+                    <textarea id="description" name="description" placeholder="Tell us what happened, what you expected, and any steps to reproduce..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>📸 Screenshot (optional):</label>
+                    <div class="file-upload">
+                        <input type="file" id="screenshot" name="screenshot" accept="image/*" capture="environment">
+                        <label for="screenshot" class="file-upload-btn" id="screenshot-label">
+                            📷 Take/Upload Screenshot
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>🎤 Voice Report (optional):</label>
+                    <button type="button" class="voice-record-btn" id="voice-record-btn">
+                        🎤 Tap to Record Voice
+                    </button>
+                    <div class="recording-status" id="recording-status">● Recording... Tap to stop</div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-btn">
+                    🚀 Submit Report
+                </button>
+            </form>
+        </div>
+
+        <!-- Success Message -->
+        <div class="success-message" id="success-message">
+            <h2>✅ Thank You!</h2>
+            <p>Your report has been submitted successfully.</p>
+            <p style="margin-top: 10px;">We'll review it and get back to you soon!</p>
+        </div>
+    </div>
+
+    <script>
+        // Capture device information
+        function captureDeviceInfo() {
+            const deviceType = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+                ? 'Mobile Device'
+                : 'Desktop';
+
+            const browserInfo = navigator.userAgent.match(/(Chrome|Firefox|Safari|Edge|Opera)\/[\d.]+/)?.[0] || 'Unknown Browser';
+
+            const screenSize = `${window.screen.width}×${window.screen.height} (${window.innerWidth}×${window.innerHeight} viewport)`;
+
+            document.getElementById('device-type').textContent = `Device: ${deviceType}`;
+            document.getElementById('browser-info').textContent = `Browser: ${browserInfo}`;
+            document.getElementById('screen-size').textContent = `Screen: ${screenSize}`;
+
+            return {
+                deviceType,
+                browserInfo,
+                screenSize,
+                userAgent: navigator.userAgent,
+                timestamp: new Date().toISOString(),
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            };
+        }
+
+        // Screenshot handling
+        const screenshotInput = document.getElementById('screenshot');
+        const screenshotLabel = document.getElementById('screenshot-label');
+
+        screenshotInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                screenshotLabel.textContent = `✅ ${this.files[0].name}`;
+                screenshotLabel.classList.add('has-file');
+            }
+        });
+
+        // Voice recording
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        let voiceBlob = null;
+
+        const voiceBtn = document.getElementById('voice-record-btn');
+        const recordingStatus = document.getElementById('recording-status');
+
+        voiceBtn.addEventListener('click', async function() {
+            if (!isRecording) {
+                // Start recording
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener('stop', () => {
+                        voiceBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        voiceBtn.textContent = '✅ Voice Recorded (Tap to re-record)';
+                        voiceBtn.classList.remove('recording');
+                        recordingStatus.style.display = 'none';
+                    });
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    voiceBtn.classList.add('recording');
+                    voiceBtn.textContent = '⏹️ Stop Recording';
+                    recordingStatus.style.display = 'block';
+                } catch (err) {
+                    alert('Could not access microphone. Please check permissions.');
+                    console.error('Error accessing microphone:', err);
+                }
+            } else {
+                // Stop recording
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                isRecording = false;
+            }
+        });
+
+        // Form submission
+        const form = document.getElementById('bug-report-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '📤 Submitting...';
+
+            // Gather all form data
+            const formData = new FormData();
+            formData.append('email', document.getElementById('email').value);
+            formData.append('bugType', document.getElementById('bug-type').value);
+            formData.append('title', document.getElementById('title').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('deviceInfo', JSON.stringify(captureDeviceInfo()));
+
+            // Add screenshot if provided
+            if (screenshotInput.files[0]) {
+                formData.append('screenshot', screenshotInput.files[0]);
+            }
+
+            // Add voice recording if provided
+            if (voiceBlob) {
+                formData.append('voice', voiceBlob, 'voice-report.webm');
+            }
+
+            try {
+                // For now, save to localStorage and show success
+                // TODO: Send to actual backend when ready
+                const reports = JSON.parse(localStorage.getItem('bugReports') || '[]');
+                reports.push({
+                    email: document.getElementById('email').value,
+                    bugType: document.getElementById('bug-type').value,
+                    title: document.getElementById('title').value,
+                    description: document.getElementById('description').value,
+                    deviceInfo: captureDeviceInfo(),
+                    hasScreenshot: !!screenshotInput.files[0],
+                    hasVoice: !!voiceBlob,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('bugReports', JSON.stringify(reports));
+
+                // Show success message
+                document.getElementById('form-card').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+
+                // Reset form after 3 seconds
+                setTimeout(() => {
+                    form.reset();
+                    screenshotLabel.textContent = '📷 Take/Upload Screenshot';
+                    screenshotLabel.classList.remove('has-file');
+                    voiceBtn.textContent = '🎤 Tap to Record Voice';
+                    voiceBlob = null;
+                    document.getElementById('form-card').style.display = 'block';
+                    document.getElementById('success-message').style.display = 'none';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '🚀 Submit Report';
+                }, 3000);
+
+            } catch (error) {
+                alert('Error submitting report. Please try again.');
+                console.error('Submission error:', error);
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Submit Report';
+            }
+        });
+
+        // Initialize device info on load
+        captureDeviceInfo();
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

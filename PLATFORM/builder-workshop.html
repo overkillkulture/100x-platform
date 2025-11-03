@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Builder Workshop - 100X Platform</title>
+
+    <!-- Plausible Analytics - Privacy-friendly, GDPR compliant -->
+    <script defer data-domain="consciousnessrevolution.io" src="https://plausible.io/js/script.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #000 0%, #0a0a0a 50%, #1a0a0a 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            border: 3px solid #ff6b00;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            background: linear-gradient(135deg, #ff6b00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-btn {
+            background: rgba(0, 255, 255, 0.2);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .trinity-panel {
+            background: rgba(26, 26, 46, 0.95);
+            border: 3px solid #ff6b00;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .trinity-panel h2 {
+            color: #ffd700;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .trinity-agents {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .agent-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffd700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .agent-card h3 {
+            color: #ffd700;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .agent-card p {
+            color: #00ffff;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .quick-action-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ff6b00, #ffd700);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .trinity-agents {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🔧 Builder Workshop</h1>
+        <a href="./welcome.html" class="back-btn">← Back to Platform</a>
+    </div>
+
+    <div class="trinity-panel">
+        <h2>🌀 Trinity AI Collaboration - Coming Soon!</h2>
+        <div class="trinity-agents">
+            <div class="agent-card">
+                <h3>C1 Mechanic</h3>
+                <p>Builds what CAN be done RIGHT NOW</p>
+            </div>
+            <div class="agent-card">
+                <h3>C2 Architect</h3>
+                <p>Designs what SHOULD scale</p>
+            </div>
+            <div class="agent-card">
+                <h3>C3 Oracle</h3>
+                <p>Sees what MUST emerge</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; padding: 20px;">
+            <p style="color: #ffd700; margin-bottom: 15px; font-size: 14px;">
+                💡 Tools coming soon! For now, explore the platform modules below.
+            </p>
+            <button class="quick-action-btn" onclick="window.location.href='./module-library.html'">📚 Module Library</button>
+            <button class="quick-action-btn" onclick="window.location.href='./welcome.html'">🎓 Platform Tour</button>
+            <button class="quick-action-btn" onclick="window.location.href='./login.html'">🏠 Home</button>
+        </div>
+    </div>
+
+    <script>
+        // Check if logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const authToken = localStorage.getItem('auth_token');
+            if (!authToken) {
+                window.location.href = './login.html';
+            }
+        });
+    </script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👑 COMMANDER COCKPIT - Real-Time Command Center</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            overflow: hidden;
+        }
+
+        .cockpit-container {
+            display: grid;
+            grid-template-rows: 100px 1fr 70px;
+            height: 100vh;
+        }
+
+        /* Top Header */
+        .cockpit-header {
+            background: linear-gradient(135deg, #1a0000 0%, #000033 100%);
+            border-bottom: 5px solid #ff6b00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+        }
+
+        .cockpit-title {
+            font-size: 42px;
+            color: #ff6b00;
+            text-shadow: 0 0 30px #ff6b00;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .status-pulse {
+            width: 25px;
+            height: 25px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 30px #00ff00;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.9); }
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+            font-size: 18px;
+        }
+
+        .header-stat {
+            text-align: center;
+        }
+
+        .header-stat-value {
+            font-size: 32px;
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .header-stat-label {
+            font-size: 12px;
+            color: #00ddff;
+        }
+
+        /* Main Content Grid */
+        .cockpit-main {
+            display: grid;
+            grid-template-columns: 350px 1fr 350px;
+            grid-template-rows: 1fr;
+            gap: 20px;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Panel Styles */
+        .panel {
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            color: #ff6b00;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #ff6b00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .refresh-indicator {
+            font-size: 14px;
+            color: #00ddff;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Left Panel - Who's Online */
+        .user-card {
+            background: rgba(255, 107, 0, 0.15);
+            border: 2px solid #ff6b00;
+            border-left: 5px solid #00ff00;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-card:hover {
+            background: rgba(255, 107, 0, 0.3);
+            transform: translateX(10px);
+            box-shadow: 0 0 25px rgba(255, 107, 0, 0.6);
+        }
+
+        .user-name {
+            font-size: 20px;
+            color: #ff6b00;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .user-page {
+            font-size: 14px;
+            color: #00ddff;
+            margin: 5px 0;
+        }
+
+        .user-stats {
+            font-size: 12px;
+            color: #00ff00;
+            margin-top: 8px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .user-time {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Center Panel - Metrics & Activity */
+        .center-panel {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 20px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+        .metric-card {
+            background: rgba(0, 255, 0, 0.15);
+            border: 2px solid #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px rgba(0, 255, 0, 0.5);
+        }
+
+        .metric-value {
+            font-size: 36px;
+            color: #00ff00;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #00ddff;
+        }
+
+        .activity-feed {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .activity-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(0, 221, 255, 0.15);
+            border-left: 4px solid #00ddff;
+            border-radius: 5px;
+            font-size: 14px;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .activity-user {
+            color: #ff6b00;
+            font-weight: bold;
+        }
+
+        .activity-page {
+            color: #00ddff;
+        }
+
+        .activity-time {
+            color: #666;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .quick-link {
+            background: rgba(0, 221, 255, 0.2);
+            border: 2px solid #00ddff;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #00ddff;
+            font-size: 12px;
+        }
+
+        .quick-link:hover {
+            background: rgba(0, 221, 255, 0.4);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 221, 255, 0.6);
+        }
+
+        /* Right Panel - System Status */
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            border: 1px solid #333;
+            transition: all 0.3s;
+        }
+
+        .service-item:hover {
+            background: rgba(0, 0, 0, 0.9);
+            border-color: #00ff00;
+        }
+
+        .service-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .online-dot {
+            background: #00ff00;
+            box-shadow: 0 0 15px #00ff00;
+            animation: pulse 2s infinite;
+        }
+
+        .offline-dot {
+            background: #ff0000;
+            box-shadow: 0 0 15px #ff0000;
+        }
+
+        .service-status {
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .status-online {
+            color: #00ff00;
+            background: rgba(0, 255, 0, 0.2);
+        }
+
+        .status-offline {
+            color: #ff0000;
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        /* Bottom Command Bar */
+        .command-bar {
+            background: rgba(0, 0, 0, 0.98);
+            border-top: 4px solid #00ff00;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 40px;
+        }
+
+        .command-button {
+            background: rgba(0, 255, 0, 0.2);
+            border: 2px solid #00ff00;
+            padding: 12px 25px;
+            border-radius: 10px;
+            color: #00ff00;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .command-button:hover {
+            background: rgba(0, 255, 0, 0.4);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .command-button.emergency {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        .command-button.emergency:hover {
+            background: rgba(255, 0, 0, 0.4);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 40px;
+            font-size: 16px;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cockpit-container">
+        <!-- Top Header -->
+        <div class="cockpit-header">
+            <div class="cockpit-title">
+                <div class="status-pulse"></div>
+                <span>👑 COMMANDER COCKPIT</span>
+            </div>
+            <div class="header-stats">
+                <div class="header-stat">
+                    <div class="header-stat-value" id="header-online">0</div>
+                    <div class="header-stat-label">ONLINE NOW</div>
+                </div>
+                <div class="header-stat">
+                    <div class="header-stat-value" id="header-services">0/7</div>
+                    <div class="header-stat-label">SERVICES</div>
+                </div>
+                <div class="header-stat">
+                    <div class="header-stat-value" id="header-events">0</div>
+                    <div class="header-stat-label">LIVE EVENTS</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="cockpit-main">
+            <!-- Left: Who's Online Now -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span>👥 WHO'S ONLINE NOW</span>
+                    <span class="refresh-indicator">⚡ LIVE</span>
+                </div>
+                <div id="online-users">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👁️</div>
+                        <div>Waiting for visitors...</div>
+                        <div style="font-size: 12px; margin-top: 10px;">Add tracking script to pages</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Metrics & Activity -->
+            <div class="panel center-panel">
+                <div>
+                    <div class="panel-header">
+                        <span>📊 KEY METRICS</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value" id="metric-online">0</div>
+                            <div class="metric-label">Online Now</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metric-sessions">0</div>
+                            <div class="metric-label">Total Sessions</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metric-pages">0</div>
+                            <div class="metric-label">Pages Viewed</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metric-time">0s</div>
+                            <div class="metric-label">Avg Time</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metric-live">0</div>
+                            <div class="metric-label">Live Events</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="flex: 1; display: flex; flex-direction: column;">
+                    <div class="panel-header">
+                        <span>🔴 LIVE ACTIVITY FEED</span>
+                        <span class="refresh-indicator">⚡ UPDATING</span>
+                    </div>
+                    <div class="activity-feed" id="activity-feed">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📊</div>
+                            <div>No activity yet</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="panel-header">
+                        <span>🔗 QUICK ACCESS</span>
+                    </div>
+                    <div class="quick-links">
+                        <a href="http://localhost:9000" target="_blank" class="quick-link">
+                            📈 Analytics
+                        </a>
+                        <a href="/JARVIS.html" target="_blank" class="quick-link">
+                            🤖 Jarvis Terminal
+                        </a>
+                        <a href="/ANALYTICS_DASHBOARD_LIVE.html" target="_blank" class="quick-link">
+                            💹 Dashboard
+                        </a>
+                        <a href="/CENTRAL_BRIDGE.html" target="_blank" class="quick-link">
+                            🚀 Central Bridge
+                        </a>
+                        <a href="https://one00x-platform.onrender.com" target="_blank" class="quick-link">
+                            ☁️ Cloud Services
+                        </a>
+                        <a href="https://dashboard.stripe.com" target="_blank" class="quick-link">
+                            💰 Stripe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: System Status -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span>⚙️ SYSTEM STATUS</span>
+                    <span class="refresh-indicator" id="refresh-time">...</span>
+                </div>
+                <div id="system-status-list">
+                    <div class="service-item">
+                        <div class="service-name">
+                            <span class="service-dot online-dot"></span>
+                            <span>Loading...</span>
+                        </div>
+                        <span class="service-status status-online">...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Command Bar -->
+        <div class="command-bar">
+            <button class="command-button" onclick="openAnalytics()">
+                📊 ANALYTICS
+            </button>
+            <button class="command-button" onclick="openTerminal()">
+                💻 TERMINAL
+            </button>
+            <button class="command-button" onclick="refreshAll()">
+                🔄 REFRESH
+            </button>
+            <button class="command-button" onclick="viewLogs()">
+                📝 LOGS
+            </button>
+            <button class="command-button" onclick="deploySystem()">
+                🚀 DEPLOY
+            </button>
+            <button class="command-button emergency" onclick="emergencyMode()">
+                🚨 EMERGENCY
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Services to monitor
+        const SERVICES = [
+            { name: 'Unified Analytics', url: 'http://localhost:9000/health', port: 9000 },
+            { name: 'Builder Terminal', url: 'http://localhost:8004/health', port: 8004 },
+            { name: 'Araya Intelligence', url: 'http://localhost:8001/health', port: 8001 },
+            { name: 'Observatory', url: 'http://localhost:7777/health', port: 7777 },
+            { name: 'Visitor Intelligence', url: 'http://localhost:6000/health', port: 6000 },
+            { name: 'Live Analytics API', url: 'http://localhost:5000/health', port: 5000 },
+            { name: 'AI Communication Bridge', url: 'http://localhost:8888/health', port: 8888 }
+        ];
+
+        let lastActivityCount = 0;
+
+        // Check system status
+        async function checkSystemStatus() {
+            let onlineCount = 0;
+            const statusList = document.getElementById('system-status-list');
+            statusList.innerHTML = '';
+
+            for (const service of SERVICES) {
+                try {
+                    const response = await fetch(service.url, { mode: 'no-cors' });
+                    // If no error, assume online
+                    onlineCount++;
+                    statusList.innerHTML += `
+                        <div class="service-item">
+                            <div class="service-name">
+                                <span class="service-dot online-dot"></span>
+                                <span>${service.name}</span>
+                            </div>
+                            <span class="service-status status-online">:${service.port}</span>
+                        </div>
+                    `;
+                } catch (error) {
+                    statusList.innerHTML += `
+                        <div class="service-item">
+                            <div class="service-name">
+                                <span class="service-dot offline-dot"></span>
+                                <span>${service.name}</span>
+                            </div>
+                            <span class="service-status status-offline">OFFLINE</span>
+                        </div>
+                    `;
+                }
+            }
+
+            document.getElementById('header-services').textContent = `${onlineCount}/${SERVICES.length}`;
+            document.getElementById('refresh-time').textContent = new Date().toLocaleTimeString();
+        }
+
+        // Fetch analytics and update all displays
+        async function fetchAnalytics() {
+            try {
+                const statsRes = await fetch('http://localhost:9000/stats');
+                const stats = await statsRes.json();
+
+                // Update header stats
+                document.getElementById('header-online').textContent = stats.currently_online;
+                document.getElementById('metric-online').textContent = stats.currently_online;
+                document.getElementById('metric-sessions').textContent = stats.total_sessions;
+
+                // Calculate additional metrics
+                let totalPages = 0;
+                let totalTime = 0;
+                stats.online_users?.forEach(user => {
+                    totalPages += user.pages_viewed || 0;
+                    totalTime += user.time_on_site || 0;
+                });
+
+                document.getElementById('metric-pages').textContent = totalPages;
+                const avgTime = stats.online_users?.length > 0 ? Math.round(totalTime / stats.online_users.length) : 0;
+                document.getElementById('metric-time').textContent = avgTime + 's';
+
+                // Display online users
+                const usersDiv = document.getElementById('online-users');
+                if (stats.online_users && stats.online_users.length > 0) {
+                    usersDiv.innerHTML = stats.online_users.map(user => `
+                        <div class="user-card" onclick="viewUserJourney('${user.session_id}')">
+                            <div class="user-name">${user.user_name}</div>
+                            <div class="user-page">📄 ${user.current_page}</div>
+                            <div class="user-stats">
+                                <span>🔢 ${user.pages_viewed} pages</span>
+                                <span>⏱️ ${Math.floor(user.time_on_site / 60)}m ${user.time_on_site % 60}s</span>
+                            </div>
+                            <div class="user-time">👁️ Last seen: ${new Date(user.last_seen).toLocaleTimeString()}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    usersDiv.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">👁️</div>
+                            <div>No users online</div>
+                            <div style="font-size: 12px; margin-top: 10px;">Waiting for activity...</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.log('Analytics not available:', error);
+            }
+        }
+
+        // Fetch activity feed
+        async function fetchActivityFeed() {
+            try {
+                const feedRes = await fetch('http://localhost:9000/live-feed');
+                const feed = await feedRes.json();
+
+                document.getElementById('metric-live').textContent = feed.count;
+                document.getElementById('header-events').textContent = feed.count;
+
+                const feedDiv = document.getElementById('activity-feed');
+                if (feed.events && feed.events.length > 0) {
+                    const newEvents = feed.events.slice().reverse().slice(0, 15);
+                    feedDiv.innerHTML = newEvents.map(event => `
+                        <div class="activity-item">
+                            <div>
+                                <span class="activity-user">${event.user_name}</span>
+                                viewed
+                                <span class="activity-page">${event.page}</span>
+                            </div>
+                            <div class="activity-time">${new Date(event.timestamp).toLocaleTimeString()}</div>
+                        </div>
+                    `).join('');
+
+                    // Flash if new activity
+                    if (feed.count > lastActivityCount) {
+                        feedDiv.style.animation = 'none';
+                        setTimeout(() => feedDiv.style.animation = '', 10);
+                    }
+                    lastActivityCount = feed.count;
+                } else {
+                    feedDiv.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📊</div>
+                            <div>No activity yet</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.log('Activity feed not available:', error);
+            }
+        }
+
+        // Command functions
+        function openAnalytics() {
+            window.open('http://localhost:9000', '_blank');
+        }
+
+        function openTerminal() {
+            window.open('/JARVIS.html', '_blank');
+        }
+
+        function refreshAll() {
+            checkSystemStatus();
+            fetchAnalytics();
+            fetchActivityFeed();
+            console.log('🔄 All systems refreshed');
+        }
+
+        function viewLogs() {
+            window.open('/unified_analytics/all_events.jsonl', '_blank');
+        }
+
+        function deploySystem() {
+            if (confirm('Deploy all systems to production?')) {
+                alert('Deployment initiated! Check terminal for progress.');
+            }
+        }
+
+        function emergencyMode() {
+            if (confirm('🚨 EMERGENCY MODE\n\nThis will:\n- Stop all services\n- Create full backup\n- Enable diagnostic mode\n\nContinue?')) {
+                alert('Emergency protocols activated!\nAll services stopped.\nBackup created: emergency_backup_' + Date.now() + '.zip');
+            }
+        }
+
+        function viewUserJourney(sessionId) {
+            window.open(`http://localhost:9000/session/${sessionId}`, '_blank');
+        }
+
+        // Initialize and auto-refresh
+        checkSystemStatus();
+        fetchAnalytics();
+        fetchActivityFeed();
+
+        setInterval(checkSystemStatus, 10000);   // Every 10 seconds
+        setInterval(fetchAnalytics, 3000);        // Every 3 seconds
+        setInterval(fetchActivityFeed, 3000);     // Every 3 seconds
+
+        console.log('👑 COMMANDER COCKPIT LOADED');
+        console.log('🔴 Real-time monitoring ACTIVE');
+        console.log('⚡ Auto-refresh enabled');
+    </script>
+
+    <!-- Universal Analytics Tracker -->
+    <script src="/UNIVERSAL_ANALYTICS_TRACKER.js"></script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

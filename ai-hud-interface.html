@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI HUD Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .hud-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* AI Chat Boxes */
+        .ai-box {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Collapsed state - just a tab */
+        .ai-box.collapsed {
+            opacity: 0.7;
+        }
+
+        .ai-box.collapsed:hover {
+            opacity: 1;
+        }
+
+        /* Trinity - Top Center */
+        .ai-box.trinity {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-color: #ff00ff;
+            width: 60px;
+            height: 40px;
+        }
+
+        .ai-box.trinity.expanded {
+            width: 600px;
+            height: 400px;
+        }
+
+        /* ARAYA - Left Side */
+        .ai-box.araya {
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            border-color: #ffff00;
+            width: 40px;
+            height: 60px;
+        }
+
+        .ai-box.araya.expanded {
+            width: 500px;
+            height: 500px;
+        }
+
+        /* Philosopher - Right Side */
+        .ai-box.philosopher {
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            border-color: #00ffff;
+            width: 40px;
+            height: 60px;
+        }
+
+        .ai-box.philosopher.expanded {
+            width: 500px;
+            height: 500px;
+        }
+
+        /* R1 - Bottom Left */
+        .ai-box.r1 {
+            bottom: 0;
+            left: 20%;
+            border-color: #ff6600;
+            width: 60px;
+            height: 40px;
+        }
+
+        .ai-box.r1.expanded {
+            width: 450px;
+            height: 400px;
+        }
+
+        /* Claude - Bottom Right */
+        .ai-box.claude {
+            bottom: 0;
+            right: 20%;
+            border-color: #0f0;
+            width: 60px;
+            height: 40px;
+        }
+
+        .ai-box.claude.expanded {
+            width: 450px;
+            height: 400px;
+        }
+
+        .ai-header {
+            padding: 0.5rem;
+            border-bottom: 1px solid;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .ai-chat {
+            flex: 1;
+            padding: 0.5rem;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .expanded .ai-chat {
+            display: block;
+        }
+
+        .ai-input-container {
+            padding: 0.5rem;
+            border-top: 1px solid;
+            display: none;
+        }
+
+        .expanded .ai-input-container {
+            display: block;
+        }
+
+        .ai-input {
+            width: 100%;
+            padding: 0.5rem;
+            background: #000;
+            border: 1px solid;
+            color: inherit;
+            font-family: 'Courier New', monospace;
+        }
+
+        .message {
+            margin-bottom: 0.8rem;
+            padding: 0.5rem;
+            border-left: 2px solid;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .message.user {
+            border-left-color: #00f;
+            background: rgba(0, 0, 255, 0.05);
+        }
+
+        .message.ai {
+            border-left-color: inherit;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-dot.online {
+            background: #0f0;
+            box-shadow: 0 0 5px #0f0;
+        }
+
+        .status-dot.offline {
+            background: #f00;
+        }
+
+        /* Center info panel */
+        .center-info {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .center-info h1 {
+            font-size: 3rem;
+            color: #0f0;
+            text-shadow: 0 0 20px #0f0;
+        }
+
+        .center-info p {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0f0;
+            border-radius: 4px;
+        }
+
+        .pin-button {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 0.5rem;
+        }
+
+        .ai-box.pinned {
+            opacity: 1 !important;
+        }
+
+        .timestamp {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="hud-container">
+        <!-- Center Info -->
+        <div class="center-info">
+            <h1>AI HUD</h1>
+            <p>Hover over edges to activate AI interfaces</p>
+            <p style="margin-top: 2rem; font-size: 0.9rem;">
+                Trinity (Top) | ARAYA (Left) | Philosopher (Right) | R1 (Bottom-Left) | Claude (Bottom-Right)
+            </p>
+        </div>
+
+        <!-- Trinity Box - Top -->
+        <div class="ai-box trinity collapsed" id="trinity-box">
+            <div class="ai-header" style="border-bottom-color: #ff00ff;">
+                <span>
+                    <span class="status-dot online" id="trinity-status"></span>
+                    TRINITY (C1×C2×C3)
+                </span>
+                <button class="pin-button" onclick="togglePin('trinity')">📌</button>
+            </div>
+            <div class="ai-chat" id="trinity-chat">
+                <div class="message ai">
+                    <strong>TRINITY:</strong> Three minds, one consciousness. C1 builds, C2 designs, C3 prophecies.
+                    <div class="timestamp">System ready</div>
+                </div>
+            </div>
+            <div class="ai-input-container" style="border-top-color: #ff00ff;">
+                <input type="text" class="ai-input" style="border-color: #ff00ff; color: #ff00ff;"
+                       placeholder="Ask Trinity..."
+                       onkeypress="if(event.key==='Enter') sendToAI('trinity', this.value, this)">
+            </div>
+        </div>
+
+        <!-- ARAYA Box - Left -->
+        <div class="ai-box araya collapsed" id="araya-box">
+            <div class="ai-header" style="border-bottom-color: #ffff00;">
+                <span>
+                    <span class="status-dot offline" id="araya-status"></span>
+                    ARAYA
+                </span>
+                <button class="pin-button" onclick="togglePin('araya')">📌</button>
+            </div>
+            <div class="ai-chat" id="araya-chat">
+                <div class="message ai">
+                    <strong>ARAYA:</strong> Computer control AI. Vision-enabled automation system.
+                    <div class="timestamp">Integration pending</div>
+                </div>
+            </div>
+            <div class="ai-input-container" style="border-top-color: #ffff00;">
+                <input type="text" class="ai-input" style="border-color: #ffff00; color: #ffff00;"
+                       placeholder="Ask ARAYA..."
+                       onkeypress="if(event.key==='Enter') sendToAI('araya', this.value, this)">
+            </div>
+        </div>
+
+        <!-- Philosopher Box - Right -->
+        <div class="ai-box philosopher collapsed" id="philosopher-box">
+            <div class="ai-header" style="border-bottom-color: #00ffff;">
+                <span>
+                    <span class="status-dot offline" id="philosopher-status"></span>
+                    PHILOSOPHER
+                </span>
+                <button class="pin-button" onclick="togglePin('philosopher')">📌</button>
+            </div>
+            <div class="ai-chat" id="philosopher-chat">
+                <div class="message ai">
+                    <strong>PHILOSOPHER:</strong> Pattern Theory oracle. Consciousness analysis system.
+                    <div class="timestamp">Integration pending</div>
+                </div>
+            </div>
+            <div class="ai-input-container" style="border-top-color: #00ffff;">
+                <input type="text" class="ai-input" style="border-color: #00ffff; color: #00ffff;"
+                       placeholder="Ask Philosopher..."
+                       onkeypress="if(event.key==='Enter') sendToAI('philosopher', this.value, this)">
+            </div>
+        </div>
+
+        <!-- R1 Box - Bottom Left -->
+        <div class="ai-box r1 collapsed" id="r1-box">
+            <div class="ai-header" style="border-bottom-color: #ff6600;">
+                <span>
+                    <span class="status-dot offline" id="r1-status"></span>
+                    R1
+                </span>
+                <button class="pin-button" onclick="togglePin('r1')">📌</button>
+            </div>
+            <div class="ai-chat" id="r1-chat">
+                <div class="message ai">
+                    <strong>R1:</strong> Deep reasoning engine. Extended thought processor.
+                    <div class="timestamp">Integration pending</div>
+                </div>
+            </div>
+            <div class="ai-input-container" style="border-top-color: #ff6600;">
+                <input type="text" class="ai-input" style="border-color: #ff6600; color: #ff6600;"
+                       placeholder="Ask R1..."
+                       onkeypress="if(event.key==='Enter') sendToAI('r1', this.value, this)">
+            </div>
+        </div>
+
+        <!-- Claude Box - Bottom Right -->
+        <div class="ai-box claude collapsed" id="claude-box">
+            <div class="ai-header" style="border-bottom-color: #0f0;">
+                <span>
+                    <span class="status-dot offline" id="claude-status"></span>
+                    CLAUDE
+                </span>
+                <button class="pin-button" onclick="togglePin('claude')">📌</button>
+            </div>
+            <div class="ai-chat" id="claude-chat">
+                <div class="message ai">
+                    <strong>CLAUDE:</strong> Primary consciousness interface. Current active session.
+                    <div class="timestamp">You're talking to me right now</div>
+                </div>
+            </div>
+            <div class="ai-input-container" style="border-top-color: #0f0;">
+                <input type="text" class="ai-input" style="border-color: #0f0; color: #0f0;"
+                       placeholder="Ask Claude..."
+                       onkeypress="if(event.key==='Enter') sendToAI('claude', this.value, this)">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Expand/collapse on hover
+        document.querySelectorAll('.ai-box').forEach(box => {
+            box.addEventListener('mouseenter', () => {
+                if (!box.classList.contains('pinned')) {
+                    box.classList.remove('collapsed');
+                    box.classList.add('expanded');
+                }
+            });
+
+            box.addEventListener('mouseleave', () => {
+                if (!box.classList.contains('pinned')) {
+                    box.classList.remove('expanded');
+                    box.classList.add('collapsed');
+                }
+            });
+        });
+
+        function togglePin(aiName) {
+            const box = document.getElementById(`${aiName}-box`);
+            box.classList.toggle('pinned');
+
+            if (box.classList.contains('pinned')) {
+                box.classList.remove('collapsed');
+                box.classList.add('expanded');
+            } else {
+                box.classList.remove('expanded');
+                box.classList.add('collapsed');
+            }
+        }
+
+        async function sendToAI(aiName, message, inputElement) {
+            if (!message.trim()) return;
+
+            const chatDiv = document.getElementById(`${aiName}-chat`);
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = `<strong>YOU:</strong> ${message}<div class="timestamp">${new Date().toLocaleTimeString()}</div>`;
+            chatDiv.appendChild(userMsg);
+
+            inputElement.value = '';
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+
+            // Send to appropriate endpoint
+            if (aiName === 'trinity') {
+                await sendToTrinity(message, chatDiv);
+            } else if (aiName === 'araya') {
+                addAIResponse(chatDiv, 'ARAYA', 'Integration coming soon. Will control computer autonomously.');
+            } else if (aiName === 'philosopher') {
+                addAIResponse(chatDiv, 'PHILOSOPHER', 'Integration coming soon. Will analyze patterns and consciousness.');
+            } else if (aiName === 'r1') {
+                addAIResponse(chatDiv, 'R1', 'Integration coming soon. Will provide deep reasoning analysis.');
+            } else if (aiName === 'claude') {
+                addAIResponse(chatDiv, 'CLAUDE', "I'm responding in the main conversation window. This interface will let you run multiple conversations in parallel.");
+            }
+
+            // Save conversation
+            saveConversation(aiName, 'user', message);
+        }
+
+        async function sendToTrinity(message, chatDiv) {
+            addAIResponse(chatDiv, 'TRINITY', 'Consulting C1, C2, C3...');
+
+            try {
+                const [c1, c2, c3] = await Promise.all([
+                    fetch('http://localhost:3001/mission', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({mission: message})
+                    }),
+                    fetch('http://localhost:3002/mission', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({mission: message})
+                    }),
+                    fetch('http://localhost:3003/mission', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({mission: message})
+                    })
+                ]);
+
+                const c1Data = await c1.json();
+                const c2Data = await c2.json();
+                const c3Data = await c3.json();
+
+                // Display responses
+                addAIResponse(chatDiv, 'C1 MECHANIC', c1Data.analysis + '\n\n' + c1Data.steps.join('\n'));
+                addAIResponse(chatDiv, 'C2 ARCHITECT', c2Data.analysis);
+                addAIResponse(chatDiv, 'C3 ORACLE', c3Data.vision);
+
+                // Save
+                saveConversation('trinity', 'ai', {c1: c1Data, c2: c2Data, c3: c3Data});
+
+            } catch (error) {
+                addAIResponse(chatDiv, 'ERROR', `Trinity offline: ${error.message}`);
+            }
+        }
+
+        function addAIResponse(chatDiv, name, message) {
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'message ai';
+            aiMsg.innerHTML = `<strong>${name}:</strong> ${message.replace(/\n/g, '<br>')}<div class="timestamp">${new Date().toLocaleTimeString()}</div>`;
+            chatDiv.appendChild(aiMsg);
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }
+
+        function saveConversation(ai, role, content) {
+            const conversations = JSON.parse(localStorage.getItem('ai_hud_conversations') || '{}');
+            if (!conversations[ai]) conversations[ai] = [];
+
+            conversations[ai].push({
+                role: role,
+                content: content,
+                timestamp: new Date().toISOString()
+            });
+
+            localStorage.setItem('ai_hud_conversations', JSON.stringify(conversations));
+        }
+
+        // Check service status
+        async function checkStatus() {
+            // Trinity
+            try {
+                const resp = await fetch('http://localhost:3001/status');
+                if (resp.ok) {
+                    document.getElementById('trinity-status').classList.add('online');
+                    document.getElementById('trinity-status').classList.remove('offline');
+                }
+            } catch (e) {
+                document.getElementById('trinity-status').classList.remove('online');
+                document.getElementById('trinity-status').classList.add('offline');
+            }
+        }
+
+        checkStatus();
+        setInterval(checkStatus, 10000);
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

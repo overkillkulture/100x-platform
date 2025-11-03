@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>🎯 SOFTWARE BLUEPRINTER - Manifestochart Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px solid rgba(100, 255, 218, 0.3);
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #64ffda, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(100, 255, 218, 0.3);
+        }
+
+        .tagline {
+            font-size: 1.3em;
+            color: #64ffda;
+            margin-top: 10px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .input-panel {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(100, 255, 218, 0.2);
+        }
+
+        .input-panel h2 {
+            color: #64ffda;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #64ffda;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(100, 255, 218, 0.3);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #64ffda;
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #64ffda, #00bcd4);
+            border: none;
+            border-radius: 10px;
+            color: #0a0e27;
+            font-weight: 700;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.5);
+        }
+
+        .blueprint-canvas {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid rgba(100, 255, 218, 0.2);
+            min-height: 600px;
+            position: relative;
+        }
+
+        .feature-block {
+            background: rgba(100, 255, 218, 0.1);
+            border: 2px solid rgba(100, 255, 218, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .feature-block:hover {
+            transform: translateX(10px);
+            background: rgba(100, 255, 218, 0.15);
+            box-shadow: 0 0 30px rgba(100, 255, 218, 0.3);
+        }
+
+        .feature-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.3em;
+            color: #64ffda;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status-complete {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+
+        .status-progress {
+            background: rgba(255, 193, 7, 0.3);
+            color: #ffc107;
+            border: 1px solid #ffc107;
+        }
+
+        .status-planned {
+            background: rgba(33, 150, 243, 0.3);
+            color: #2196f3;
+            border: 1px solid #2196f3;
+        }
+
+        .feature-description {
+            color: #b0b0b0;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .feature-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .timeline-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .timeline-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #64ffda, #00bcd4);
+            transition: width 0.5s;
+        }
+
+        .pattern-math {
+            background: rgba(138, 43, 226, 0.1);
+            border: 2px solid rgba(138, 43, 226, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .pattern-math h3 {
+            color: #9370db;
+            margin-bottom: 15px;
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            color: #64ffda;
+            font-size: 1.2em;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .export-section {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .export-btn {
+            flex: 1;
+            padding: 12px;
+            background: rgba(100, 255, 218, 0.1);
+            border: 2px solid rgba(100, 255, 218, 0.3);
+            border-radius: 8px;
+            color: #64ffda;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-btn:hover {
+            background: rgba(100, 255, 218, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .manifestochart-title {
+            text-align: center;
+            font-size: 2em;
+            color: #64ffda;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(100, 255, 218, 0.3);
+        }
+
+        .phase-container {
+            margin-bottom: 40px;
+        }
+
+        .phase-header {
+            font-size: 1.5em;
+            color: #ffc107;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 5px solid #ffc107;
+            border-radius: 8px;
+        }
+
+        .connection-line {
+            height: 40px;
+            width: 3px;
+            background: linear-gradient(180deg, rgba(100, 255, 218, 0.5), rgba(100, 255, 218, 0.1));
+            margin: 0 auto;
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 SOFTWARE BLUEPRINTER</h1>
+            <div class="tagline">Manifestochart Generator - Show The Vision Before The Code</div>
+            <p style="margin-top: 15px; color: #888;">
+                Transform software architecture into visual manifestocharts that people can SEE and UNDERSTAND
+            </p>
+        </div>
+
+        <div class="main-grid">
+            <!-- INPUT PANEL -->
+            <div class="input-panel">
+                <h2>📝 Project Input</h2>
+
+                <div class="form-group">
+                    <label>Project Name</label>
+                    <input type="text" id="projectName" placeholder="e.g., Consciousness Revolution Platform">
+                </div>
+
+                <div class="form-group">
+                    <label>Project Vision</label>
+                    <textarea id="projectVision" placeholder="What is this software trying to achieve?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Add Feature</label>
+                    <input type="text" id="featureName" placeholder="Feature name">
+                    <textarea id="featureDesc" placeholder="Feature description" style="margin-top: 10px;"></textarea>
+
+                    <select id="featureStatus" style="margin-top: 10px;">
+                        <option value="complete">✅ Complete</option>
+                        <option value="progress">⚠️ In Progress</option>
+                        <option value="planned">❌ Planned</option>
+                    </select>
+
+                    <input type="text" id="featureTime" placeholder="Time to build (e.g., 1 week)" style="margin-top: 10px;">
+
+                    <select id="featurePhase" style="margin-top: 10px;">
+                        <option value="phase1">Phase 1 (Foundation)</option>
+                        <option value="phase2">Phase 2 (Growth)</option>
+                        <option value="phase3">Phase 3 (Scale)</option>
+                        <option value="phase4">Phase 4 (Evolution)</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="addFeature()">➕ Add Feature</button>
+                <button class="btn" onclick="generateBlueprint()" style="background: linear-gradient(135deg, #9370db, #8a2be2); margin-top: 10px;">
+                    🎯 Generate Manifestochart
+                </button>
+
+                <div class="export-section">
+                    <button class="export-btn" onclick="exportHTML()">📄 Export HTML</button>
+                    <button class="export-btn" onclick="exportJSON()">💾 Export JSON</button>
+                    <button class="export-btn" onclick="exportImage()">🖼️ Export PNG</button>
+                </div>
+            </div>
+
+            <!-- BLUEPRINT CANVAS -->
+            <div class="blueprint-canvas" id="blueprintCanvas">
+                <div class="manifestochart-title" id="chartTitle">
+                    Your Manifestochart Will Appear Here
+                </div>
+                <p style="text-align: center; color: #888; margin-top: 50px;">
+                    Start by adding your project details and features →
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store project data
+        let projectData = {
+            name: '',
+            vision: '',
+            features: []
+        };
+
+        // Load example data on startup
+        window.onload = function() {
+            loadExampleData();
+        };
+
+        function loadExampleData() {
+            projectData = {
+                name: 'Consciousness Revolution Platform',
+                vision: 'A platform for builders to collaborate, share projects, and elevate consciousness through Pattern Theory and AI collaboration',
+                features: [
+                    {
+                        name: 'User Authentication System',
+                        description: 'Secure login with PocketBase backend, JWT tokens, session management',
+                        status: 'complete',
+                        time: '2 weeks',
+                        phase: 'phase1',
+                        progress: 100
+                    },
+                    {
+                        name: 'Builder Dashboard',
+                        description: 'Personal workspace for builders with project management, XP tracking, and consciousness level display',
+                        status: 'complete',
+                        time: '1 week',
+                        phase: 'phase1',
+                        progress: 100
+                    },
+                    {
+                        name: 'Truth Coins & XP System',
+                        description: 'Gamification system with earning mechanisms, spending features, and achievement tracking',
+                        status: 'planned',
+                        time: '1 week',
+                        phase: 'phase2',
+                        progress: 0
+                    },
+                    {
+                        name: 'Real-Time Activity Feed',
+                        description: 'WebSocket-powered live feed showing builder activities, project launches, and community updates',
+                        status: 'planned',
+                        time: '4 days',
+                        phase: 'phase2',
+                        progress: 0
+                    },
+                    {
+                        name: 'Social Media Integration',
+                        description: 'JARVIS-powered automation for X/Twitter, Discord, Instagram with content generation and scheduling',
+                        status: 'planned',
+                        time: '1 week',
+                        phase: 'phase2',
+                        progress: 0
+                    },
+                    {
+                        name: 'Messaging & Chat System',
+                        description: 'Direct messages, group chats, file sharing, and real-time communication between builders',
+                        status: 'planned',
+                        time: '2 weeks',
+                        phase: 'phase3',
+                        progress: 0
+                    },
+                    {
+                        name: 'Project Showcase Gallery',
+                        description: 'Beautiful portfolio system for builders to display projects with images, demos, and case studies',
+                        status: 'planned',
+                        time: '1 week',
+                        phase: 'phase3',
+                        progress: 0
+                    },
+                    {
+                        name: 'Global Search Engine',
+                        description: 'Elasticsearch-powered search across builders, projects, posts, and documentation',
+                        status: 'planned',
+                        time: '1 week',
+                        phase: 'phase4',
+                        progress: 0
+                    }
+                ]
+            };
+
+            // Update form fields
+            document.getElementById('projectName').value = projectData.name;
+            document.getElementById('projectVision').value = projectData.vision;
+
+            // Generate blueprint
+            generateBlueprint();
+        }
+
+        function addFeature() {
+            const name = document.getElementById('featureName').value;
+            const desc = document.getElementById('featureDesc').value;
+            const status = document.getElementById('featureStatus').value;
+            const time = document.getElementById('featureTime').value;
+            const phase = document.getElementById('featurePhase').value;
+
+            if (!name || !desc) {
+                alert('Please enter feature name and description');
+                return;
+            }
+
+            projectData.features.push({
+                name: name,
+                description: desc,
+                status: status,
+                time: time,
+                phase: phase,
+                progress: status === 'complete' ? 100 : status === 'progress' ? 50 : 0
+            });
+
+            // Clear form
+            document.getElementById('featureName').value = '';
+            document.getElementById('featureDesc').value = '';
+            document.getElementById('featureTime').value = '';
+
+            generateBlueprint();
+        }
+
+        function generateBlueprint() {
+            // Update project data from form
+            projectData.name = document.getElementById('projectName').value || 'Untitled Project';
+            projectData.vision = document.getElementById('projectVision').value || 'No vision provided';
+
+            const canvas = document.getElementById('blueprintCanvas');
+
+            // Group features by phase
+            const phases = {
+                phase1: [],
+                phase2: [],
+                phase3: [],
+                phase4: []
+            };
+
+            projectData.features.forEach(feature => {
+                phases[feature.phase].push(feature);
+            });
+
+            // Build HTML
+            let html = `
+                <div class="manifestochart-title">${projectData.name}</div>
+                <div style="text-align: center; color: #888; margin-bottom: 40px; line-height: 1.8;">
+                    ${projectData.vision}
+                </div>
+            `;
+
+            // Add phases
+            const phaseNames = {
+                phase1: '🌱 Phase 1: Foundation',
+                phase2: '🌿 Phase 2: Growth',
+                phase3: '⚡ Phase 3: Scale',
+                phase4: '♾️ Phase 4: Evolution'
+            };
+
+            Object.keys(phases).forEach(phaseKey => {
+                if (phases[phaseKey].length > 0) {
+                    html += `
+                        <div class="phase-container">
+                            <div class="phase-header">${phaseNames[phaseKey]}</div>
+                    `;
+
+                    phases[phaseKey].forEach(feature => {
+                        const statusClass = feature.status === 'complete' ? 'status-complete' :
+                                          feature.status === 'progress' ? 'status-progress' : 'status-planned';
+                        const statusText = feature.status === 'complete' ? '✅ Complete' :
+                                         feature.status === 'progress' ? '⚠️ In Progress' : '❌ Planned';
+
+                        html += `
+                            <div class="feature-block">
+                                <div class="feature-header">
+                                    <div class="feature-title">${feature.name}</div>
+                                    <div class="status-badge ${statusClass}">${statusText}</div>
+                                </div>
+                                <div class="feature-description">${feature.description}</div>
+                                <div class="feature-meta">
+                                    <div class="meta-item">
+                                        <span>⏱️</span>
+                                        <span>${feature.time}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📊</span>
+                                        <span>${feature.progress}% Complete</span>
+                                    </div>
+                                </div>
+                                <div class="timeline-bar">
+                                    <div class="timeline-progress" style="width: ${feature.progress}%"></div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    html += `
+                        </div>
+                        <div class="connection-line"></div>
+                    `;
+                }
+            });
+
+            // Add Pattern Theory math
+            const completedFeatures = projectData.features.filter(f => f.status === 'complete').length;
+            const totalFeatures = projectData.features.length;
+            const completionPercentage = totalFeatures > 0 ? ((completedFeatures / totalFeatures) * 100).toFixed(1) : 0;
+
+            html += `
+                <div class="pattern-math">
+                    <h3>🌀 Pattern Theory Mathematics</h3>
+                    <div class="formula">
+                        Completion = (Completed ÷ Total) × 100<br>
+                        Completion = (${completedFeatures} ÷ ${totalFeatures}) × 100 = ${completionPercentage}%
+                    </div>
+                    <div class="formula">
+                        Trinity Power = C1 × C2 × C3 = ∞<br>
+                        Project Power = Vision × Architecture × Implementation = Success
+                    </div>
+                    <div class="formula">
+                        93% Threshold = Auto-Completion Trigger<br>
+                        Current: ${completionPercentage}% ${completionPercentage >= 93 ? '✅ THRESHOLD REACHED!' : '→ Keep building!'}
+                    </div>
+                </div>
+            `;
+
+            canvas.innerHTML = html;
+        }
+
+        function exportHTML() {
+            const fullHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>${projectData.name} - Manifestochart</title>
+    <style>${document.querySelector('style').textContent}</style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>${projectData.name}</h1>
+            <div class="tagline">Software Architecture Manifestochart</div>
+        </div>
+        <div class="blueprint-canvas">
+            ${document.getElementById('blueprintCanvas').innerHTML}
+        </div>
+    </div>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>`;
+
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${projectData.name.replace(/\s+/g, '_')}_manifestochart.html`;
+            a.click();
+        }
+
+        function exportJSON() {
+            const json = JSON.stringify(projectData, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${projectData.name.replace(/\s+/g, '_')}_data.json`;
+            a.click();
+        }
+
+        function exportImage() {
+            alert('PNG export requires html2canvas library. For now, use browser\'s built-in screenshot (Win+Shift+S or Cmd+Shift+4)');
+        }
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

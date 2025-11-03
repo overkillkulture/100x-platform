@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Page Notes - Simple Form</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .instructions {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .page-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .page-section h2 {
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+
+        .page-url {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .page-section label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .page-section textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: 'Arial', sans-serif;
+            resize: vertical;
+            transition: border 0.3s;
+        }
+
+        .page-section textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .char-count {
+            text-align: right;
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            display: none;
+            background: #4caf50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .progress-bar {
+            height: 5px;
+            background: #ddd;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .helper-text {
+            font-size: 13px;
+            color: #888;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Page Notes Form</h1>
+        <div class="instructions">
+            <strong>Go through each page on the website and type your notes/observations.</strong><br>
+            What do you see? What's working? What's broken? Any bugs or issues?<br>
+            <em>Just type naturally - we'll review everything when you're done!</em>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <form id="pageNotesForm">
+
+            <!-- Homepage -->
+            <div class="page-section">
+                <h2>🏠 Homepage</h2>
+                <div class="page-url">https://conciousnessrevolution.io/</div>
+                <label for="homepage">What do you see on the homepage?</label>
+                <textarea id="homepage" name="homepage" placeholder="Type your notes here... What's on the page? Does everything work? Any broken links or buttons?"></textarea>
+                <div class="char-count"><span id="homepage_count">0</span> characters</div>
+                <div class="helper-text">Example: "Header looks good, main CTA button is broken, footer links work..."</div>
+            </div>
+
+            <!-- Dashboard -->
+            <div class="page-section">
+                <h2>📊 Dashboard</h2>
+                <div class="page-url">https://conciousnessrevolution.io/dashboard.html</div>
+                <label for="dashboard">What's on the dashboard?</label>
+                <textarea id="dashboard" name="dashboard" placeholder="What do you see? Navigation working? Any issues?"></textarea>
+                <div class="char-count"><span id="dashboard_count">0</span> characters</div>
+            </div>
+
+            <!-- Debug Terminal -->
+            <div class="page-section">
+                <h2>💻 Debug Terminal</h2>
+                <div class="page-url">https://conciousnessrevolution.io/debug-terminal.html</div>
+                <label for="debug_terminal">Test the debug terminal</label>
+                <textarea id="debug_terminal" name="debug_terminal" placeholder="Try typing 'help' and 'chat'. Does it work? What happens?"></textarea>
+                <div class="char-count"><span id="debug_terminal_count">0</span> characters</div>
+            </div>
+
+            <!-- Debugger Leaderboard -->
+            <div class="page-section">
+                <h2>🏆 Debugger Leaderboard</h2>
+                <div class="page-url">https://conciousnessrevolution.io/debugger-leaderboard.html</div>
+                <label for="leaderboard">What's on the leaderboard?</label>
+                <textarea id="leaderboard" name="leaderboard" placeholder="Do you see rankings? Points? Achievements? Confetti button work?"></textarea>
+                <div class="char-count"><span id="leaderboard_count">0</span> characters</div>
+            </div>
+
+            <!-- Bug Report -->
+            <div class="page-section">
+                <h2>🐛 Bug Report Page</h2>
+                <div class="page-url">https://conciousnessrevolution.io/bug-report-public.html</div>
+                <label for="bug_report">Test the bug report form</label>
+                <textarea id="bug_report" name="bug_report" placeholder="Can you access it with code 'dog'? Does the form work?"></textarea>
+                <div class="char-count"><span id="bug_report_count">0</span> characters</div>
+            </div>
+
+            <!-- TODO Master -->
+            <div class="page-section">
+                <h2>📋 TODO Master</h2>
+                <div class="page-url">https://conciousnessrevolution.io/PLATFORM/todo-master.html</div>
+                <label for="todo_master">What's on the TODO Master page?</label>
+                <textarea id="todo_master" name="todo_master" placeholder="Does it load? Can you add tasks? What do you see?"></textarea>
+                <div class="char-count"><span id="todo_master_count">0</span> characters</div>
+            </div>
+
+            <!-- Pattern Filter -->
+            <div class="page-section">
+                <h2>🔍 Pattern Filter</h2>
+                <div class="page-url">https://conciousnessrevolution.io/PUBLIC/pattern-filter.html</div>
+                <label for="pattern_filter">Pattern filter working?</label>
+                <textarea id="pattern_filter" name="pattern_filter" placeholder="Does it load? Can you try filtering something?"></textarea>
+                <div class="char-count"><span id="pattern_filter_count">0</span> characters</div>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div class="page-section">
+                <h2>📈 Analytics Dashboard</h2>
+                <div class="page-url">https://conciousnessrevolution.io/ANALYTICS_DASHBOARD_LIVE.html</div>
+                <label for="analytics">Analytics page status?</label>
+                <textarea id="analytics" name="analytics" placeholder="Does it load? Any data showing? Charts working?"></textarea>
+                <div class="char-count"><span id="analytics_count">0</span> characters</div>
+            </div>
+
+            <!-- General Issues -->
+            <div class="page-section">
+                <h2>⚠️ Other Issues or Notes</h2>
+                <label for="general">Anything else you noticed?</label>
+                <textarea id="general" name="general" placeholder="Any other bugs, broken pages, weird behavior, or suggestions?"></textarea>
+                <div class="char-count"><span id="general_count">0</span> characters</div>
+            </div>
+
+            <!-- Your Info -->
+            <div class="page-section">
+                <h2>👤 Your Info (Optional)</h2>
+                <label for="name">Your name or email (so we know who submitted this)</label>
+                <textarea id="name" name="name" rows="2" placeholder="Your name or email"></textarea>
+            </div>
+
+            <div class="submit-section">
+                <button type="submit" class="submit-btn">📤 Submit All Notes</button>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                ✅ <strong>Notes Submitted Successfully!</strong><br>
+                Thank you! Your notes have been saved.
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Character counters
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            const countSpan = document.getElementById(textarea.id + '_count');
+            if (countSpan) {
+                textarea.addEventListener('input', () => {
+                    countSpan.textContent = textarea.value.length;
+                    updateProgress();
+                });
+            }
+        });
+
+        // Progress bar
+        function updateProgress() {
+            const allTextareas = Array.from(textareas);
+            const filledTextareas = allTextareas.filter(t => t.value.trim().length > 0);
+            const progress = (filledTextareas.length / allTextareas.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Form submission
+        document.getElementById('pageNotesForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Collect all data
+            const formData = {};
+            textareas.forEach(textarea => {
+                formData[textarea.name] = textarea.value;
+            });
+
+            // Add timestamp
+            formData.timestamp = new Date().toISOString();
+
+            // Save to localStorage
+            const allNotes = JSON.parse(localStorage.getItem('pageNotes') || '[]');
+            allNotes.push(formData);
+            localStorage.setItem('pageNotes', JSON.stringify(allNotes));
+
+            // Also save as downloadable file
+            const dataStr = JSON.stringify(formData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+            const exportFileDefaultName = `page-notes-${new Date().toISOString().slice(0,10)}.json`;
+
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+
+            // Show success message
+            document.getElementById('successMessage').style.display = 'block';
+
+            // Scroll to success message
+            document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+
+            // Optional: Reset form after 3 seconds
+            // setTimeout(() => {
+            //     this.reset();
+            //     updateProgress();
+            // }, 3000);
+        });
+
+        // Auto-save to localStorage every 30 seconds
+        setInterval(() => {
+            const formData = {};
+            textareas.forEach(textarea => {
+                if (textarea.value.trim()) {
+                    formData[textarea.name] = textarea.value;
+                }
+            });
+
+            if (Object.keys(formData).length > 0) {
+                localStorage.setItem('pageNotesDraft', JSON.stringify(formData));
+                console.log('✅ Auto-saved draft');
+            }
+        }, 30000);
+
+        // Restore draft on load
+        window.addEventListener('load', () => {
+            const draft = localStorage.getItem('pageNotesDraft');
+            if (draft) {
+                const formData = JSON.parse(draft);
+                Object.keys(formData).forEach(key => {
+                    const textarea = document.querySelector(`[name="${key}"]`);
+                    if (textarea) {
+                        textarea.value = formData[key];
+                        const countSpan = document.getElementById(key + '_count');
+                        if (countSpan) {
+                            countSpan.textContent = textarea.value.length;
+                        }
+                    }
+                });
+                updateProgress();
+                console.log('✅ Restored draft');
+            }
+        });
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

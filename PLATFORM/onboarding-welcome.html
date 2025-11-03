@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>🌟 WELCOME TO YOUR LIFE REVOLUTION 🌟</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e27;
+            color: #00ff41;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, #00ff41, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 60px 70px, #ff0080, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 50px 50px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 130px 80px, #00ff41, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 10px, #ff0080, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: sparkle 5s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes sparkle {
+            from { transform: translateY(0); }
+            to { transform: translateY(-200px); }
+        }
+
+        .container {
+            max-width: 900px;
+            padding: 40px;
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(90deg, #00ff41, #ff0080, #00ff41);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.5); }
+        }
+
+        .question {
+            font-size: 2.5rem;
+            margin: 40px 0;
+            line-height: 1.4;
+            text-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            line-height: 1.8;
+            margin: 30px 0;
+        }
+
+        .highlight {
+            color: #ff0080;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: rgba(0, 255, 65, 0.2);
+            border: 3px solid #00ff41;
+            color: #00ff41;
+            padding: 25px 50px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin: 20px 10px;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: rgba(0, 255, 65, 0.4);
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.8);
+            transform: scale(1.05);
+        }
+
+        .btn.primary {
+            background: rgba(255, 0, 128, 0.2);
+            border-color: #ff0080;
+            color: #ff0080;
+            font-size: 1.8rem;
+            padding: 30px 60px;
+        }
+
+        .btn.primary:hover {
+            background: rgba(255, 0, 128, 0.4);
+            box-shadow: 0 0 40px rgba(255, 0, 128, 0.8);
+        }
+
+        .info-box {
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #00ff41;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .info-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #ff0080;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .process-flow {
+            display: flex;
+            justify-content: space-around;
+            margin: 50px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .process-step {
+            flex: 1;
+            min-width: 150px;
+            background: rgba(0, 255, 65, 0.05);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .process-step:after {
+            content: "→";
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: #ff0080;
+        }
+
+        .process-step:last-child:after {
+            content: "";
+        }
+
+        .step-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff0080;
+            margin-bottom: 10px;
+        }
+
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .wake-up-call {
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.2), rgba(0, 255, 65, 0.2));
+            border: 3px solid #ff0080;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 50px 0;
+            box-shadow: 0 0 30px rgba(255, 0, 128, 0.3);
+        }
+
+        .wake-up-call h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ff0080;
+        }
+
+        .wake-up-call p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="stars"></div>
+
+    <div class="container">
+        <h1>🌟 WELCOME TO THE CONSCIOUSNESS REVOLUTION 🌟</h1>
+
+        <div class="question">
+            What's <span class="highlight">YOUR</span> mission?
+        </div>
+
+        <div class="subtitle">
+            Not your parents' mission.<br>
+            Not your school's mission.<br>
+            Not your employer's mission.<br>
+            <br>
+            <span class="highlight">YOUR mission. YOUR life. YOUR rules.</span>
+        </div>
+
+        <div class="wake-up-call">
+            <h2>🚨 THE WAKE-UP CALL</h2>
+            <p>
+                You've spent your entire life being told WHAT to do, WHERE to go, WHO to become.
+            </p>
+            <p>
+                School taught you to follow orders. Work taught you to serve someone else's dream.
+                Society taught you to stay small, stay quiet, stay controlled.
+            </p>
+            <p>
+                <strong>When was the last time someone asked you: "What do YOU want?"</strong>
+            </p>
+            <p>
+                Today, that changes. Today, YOU become the CEO of your own life.
+            </p>
+        </div>
+
+        <div class="info-box">
+            <h3>📋 WHAT WE'RE BUILDING TOGETHER:</h3>
+            <ul>
+                <li>A complete business plan for YOUR life (not someone else's)</li>
+                <li>Your mission statement, values, and moral code</li>
+                <li>A clear trajectory from where you are to where you want to be</li>
+                <li>The pattern recognition to see who's helping vs hurting you</li>
+                <li>Tools to document manipulation and build accountability</li>
+                <li>A consciousness-based operating system for reality itself</li>
+            </ul>
+        </div>
+
+        <div class="process-flow">
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <div class="step-title">DUMP</div>
+                <div class="step-desc">Tell your story (voice → text)</div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <div class="step-title">ANALYZE</div>
+                <div class="step-desc">AI finds patterns & strengths</div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <div class="step-title">PLAN</div>
+                <div class="step-desc">Life business plan created</div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <div class="step-title">BUILD</div>
+                <div class="step-desc">Execute your mission</div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">5</div>
+                <div class="step-title">WIN</div>
+                <div class="step-desc">Live YOUR life</div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>💡 WHAT MAKES THIS DIFFERENT:</h3>
+            <ul>
+                <li><strong>Voice-first:</strong> Just talk. AI transcribes everything.</li>
+                <li><strong>Your computer:</strong> All data saved locally. No cloud. Complete privacy.</li>
+                <li><strong>Trauma-safe:</strong> We understand the difference between past and present.</li>
+                <li><strong>Pattern recognition:</strong> AI spots manipulation, strengths, opportunities.</li>
+                <li><strong>Actionable roadmap:</strong> Not just inspiration - actual steps to freedom.</li>
+                <li><strong>Built by builders:</strong> Not corporations. Not destroyers. People like you.</li>
+            </ul>
+        </div>
+
+        <div class="subtitle" style="margin-top: 60px;">
+            <strong>This will take 30-60 minutes.</strong><br>
+            Grab coffee. Get comfortable. Close the door.<br>
+            This is the most important business meeting you'll ever have.<br>
+            <br>
+            <span class="highlight">The business meeting with yourself.</span>
+        </div>
+
+        <a href="consciousness-profile-dump.html" class="btn primary">
+            🎤 START YOUR REVOLUTION
+        </a>
+
+        <br><br>
+
+        <a href="#" class="btn" onclick="alert('Quick tour feature coming soon!')">
+            📺 WATCH 2-MINUTE TOUR
+        </a>
+
+        <a href="#" class="btn" onclick="alert('Examples gallery coming soon!')">
+            👥 SEE EXAMPLES
+        </a>
+
+        <div style="margin-top: 80px; opacity: 0.7; font-size: 0.9rem;">
+            <p>
+                🛡️ <strong>Privacy Notice:</strong> Everything stays on YOUR computer.
+                No servers. No cloud. No tracking. Your consciousness, your data, your control.
+            </p>
+        </div>
+    </div>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

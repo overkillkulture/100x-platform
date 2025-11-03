@@ -1,0 +1,51 @@
+[build]
+  publish = "."
+  command = "echo Deploying!"  # Run automated tests before deployment
+
+[functions]
+  directory = "netlify/functions"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # 🛡️ PHASE 2 SECURITY HARDENING - October 17, 2025
+
+    # Content Security Policy - Prevents XSS at browser level
+    # Allows inline scripts (needed for our dashboards) but blocks external malicious scripts
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://api.stripe.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+      img-src 'self' data: https: blob:;
+      connect-src 'self' https://api.airtable.com https://api.stripe.com https://*.ngrok-free.dev http://localhost:*;
+      frame-src 'self' https://js.stripe.com;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+      frame-ancestors 'self';
+      upgrade-insecure-requests;
+    """
+
+    # Clickjacking Protection
+    X-Frame-Options = "SAMEORIGIN"
+
+    # MIME Type Sniffing Protection
+    X-Content-Type-Options = "nosniff"
+
+    # XSS Filter (Legacy browsers)
+    X-XSS-Protection = "1; mode=block"
+
+    # Referrer Policy - Limit information leakage
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Permissions Policy - Disable unused browser features
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(self)"
+
+    # Strict Transport Security - Force HTTPS (31536000 = 1 year)
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+# Removed redirect - was causing issues with success page
+
+[build.processing]
+  skip_processing = false

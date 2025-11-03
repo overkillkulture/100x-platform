@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>100X Platform - Debug Terminal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #1a1a2e;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7b2cbf;
+            --text-primary: #00ff88;
+            --text-secondary: #b8b8b8;
+            --danger: #ff4444;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .terminal-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+        }
+
+        .terminal-header {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-bottom: 2px solid var(--accent-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .terminal-title {
+            font-size: 1.2rem;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .terminal-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--text-primary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .terminal-output {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #000;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .terminal-prompt {
+            color: var(--accent-primary);
+        }
+
+        .terminal-command {
+            color: var(--text-primary);
+        }
+
+        .terminal-output-text {
+            color: var(--text-secondary);
+        }
+
+        .terminal-error {
+            color: var(--danger);
+        }
+
+        .terminal-success {
+            color: var(--text-primary);
+        }
+
+        .terminal-input-container {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-top: 2px solid var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .terminal-prompt-symbol {
+            color: var(--accent-primary);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        #terminalInput {
+            flex: 1;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 4px;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            outline: none;
+            caret-color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        #terminalInput:focus {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--text-primary);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+
+        #terminalInput::placeholder {
+            color: rgba(0, 255, 136, 0.3);
+        }
+
+        .terminal-commands {
+            position: fixed;
+            top: 4rem;
+            right: 1rem;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--accent-primary);
+            border-radius: 8px;
+            padding: 1rem;
+            max-width: 300px;
+            display: none;
+        }
+
+        .terminal-commands.show {
+            display: block;
+        }
+
+        .terminal-commands h3 {
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .terminal-commands ul {
+            list-style: none;
+            font-size: 0.8rem;
+        }
+
+        .terminal-commands li {
+            margin-bottom: 0.25rem;
+            color: var(--text-secondary);
+        }
+
+        .terminal-commands code {
+            color: var(--text-primary);
+            background: rgba(0, 255, 136, 0.1);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+        }
+
+        .help-button {
+            background: transparent;
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .help-button:hover {
+            background: var(--accent-primary);
+            color: #000;
+        }
+
+        .api-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 3px solid var(--accent-primary);
+            border-radius: 4px;
+        }
+
+        .api-info h4 {
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .api-info code {
+            color: var(--text-primary);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        /* AI CHATBOT STYLES */
+        .ai-warning {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 68, 68, 0.95);
+            border: 3px solid #ff0000;
+            border-radius: 10px;
+            padding: 2rem;
+            max-width: 500px;
+            z-index: 10000;
+            display: none;
+            text-align: center;
+            animation: shake 0.5s;
+        }
+
+        .ai-warning.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%); }
+            25% { transform: translate(-48%, -50%); }
+            75% { transform: translate(-52%, -50%); }
+        }
+
+        .ai-warning h2 {
+            color: #fff;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .ai-warning p {
+            color: #fff;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .ai-warning button {
+            margin: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .ai-warning .accept-btn {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .ai-warning .cancel-btn {
+            background: #666;
+            color: #fff;
+        }
+
+        .ai-chat-mode {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: rgba(0, 212, 255, 0.95);
+            border: 2px solid var(--accent-primary);
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            color: #000;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 999;
+            animation: pulse 2s infinite;
+        }
+
+        .ai-chat-mode.active {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="terminal-container">
+        <!-- Terminal Header -->
+        <div class="terminal-header">
+            <div class="terminal-title">
+                <span>⚡</span>
+                <span>100X DEBUG TERMINAL</span>
+            </div>
+            <div class="terminal-status">
+                <span class="status-dot"></span>
+                <span style="color: var(--text-secondary); font-size: 0.9rem;">Connected</span>
+                <button class="help-button" onclick="toggleHelp()">?</button>
+            </div>
+        </div>
+
+        <!-- Help Commands Panel -->
+        <div class="terminal-commands" id="helpPanel">
+            <h3>📋 AVAILABLE COMMANDS</h3>
+            <ul>
+                <li><code>help</code> - Show this help</li>
+                <li><code>clear</code> - Clear terminal</li>
+                <li><code>status</code> - System status</li>
+                <li><code>api</code> - Show API endpoints</li>
+                <li><code>test [endpoint]</code> - Test API endpoint</li>
+                <li><code>logs</code> - View recent logs</li>
+                <li><code>users</code> - List users (if auth)</li>
+                <li><code>nav</code> - Navigation system info</li>
+                <li><code>korpaks</code> - KORPAK marketplace data</li>
+                <li><code>ping</code> - Test backend connection</li>
+                <li><code>env</code> - Show environment info</li>
+                <li><code>chat</code> - 🤖 AI Assistant Mode</li>
+            </ul>
+
+            <div class="api-info">
+                <h4>🔗 Backend API</h4>
+                <p style="font-size: 0.8rem; color: var(--text-secondary);">
+                    Server: <code>http://localhost:3001</code>
+                </p>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    Auth: <code>/api/auth/*</code><br>
+                    Nav: <code>/api/nav/*</code>
+                </p>
+            </div>
+        </div>
+
+        <!-- Terminal Output -->
+        <div class="terminal-output" id="terminalOutput">
+            <div class="terminal-line">
+                <span style="color: var(--accent-primary);">╔═══════════════════════════════════════════════╗</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--accent-primary);">║   100X PLATFORM DEBUG TERMINAL v1.0          ║</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--accent-primary);">║   Consciousness Revolution - Developer Mode   ║</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--accent-primary);">╚═══════════════════════════════════════════════╝</span>
+            </div>
+            <div class="terminal-line" style="margin-top: 1rem;">
+                <span style="color: var(--text-secondary);">Type <code style="color: var(--text-primary);">help</code> for available commands</span>
+            </div>
+            <div class="terminal-line">
+                <span style="color: var(--text-secondary);">Type <code style="color: var(--text-primary);">api</code> to see backend endpoints</span>
+            </div>
+            <div class="terminal-line" style="margin-top: 1rem;">
+                <span style="color: var(--text-primary);">✓ Terminal ready</span>
+            </div>
+            <div class="terminal-line" style="margin-bottom: 1rem;">
+                <span style="color: var(--text-primary);">✓ Backend: http://localhost:3001</span>
+            </div>
+        </div>
+
+        <!-- Terminal Input -->
+        <div class="terminal-input-container">
+            <span class="terminal-prompt-symbol">$</span>
+            <input
+                type="text"
+                id="terminalInput"
+                placeholder="Enter command..."
+                autofocus
+                autocomplete="off"
+            />
+        </div>
+    </div>
+
+    <!-- AI WARNING MODAL -->
+    <div class="ai-warning" id="aiWarning">
+        <h2>⚠️ PUBLIC DEBUG MODE WARNING ⚠️</h2>
+        <p style="font-size: 1.1rem; font-weight: bold;">
+            PERSONAL INFORMATION NOT SECURE
+        </p>
+        <p>
+            You're about to enter AI-assisted debug mode. This is a PUBLIC debugging session.
+            <br><br>
+            <strong>DO NOT SHARE:</strong>
+            <br>
+            • Passwords or credentials
+            <br>
+            • Personal information
+            <br>
+            • Private company data
+            <br>
+            • Sensitive details
+        </p>
+        <p>
+            The AI assistant can help you debug, navigate the platform, and answer questions about the system.
+        </p>
+        <button class="accept-btn" onclick="acceptAIMode()">I Understand - Continue</button>
+        <button class="cancel-btn" onclick="cancelAIMode()">Cancel</button>
+    </div>
+
+    <!-- AI CHAT MODE INDICATOR -->
+    <div class="ai-chat-mode" id="aiChatIndicator">
+        🤖 AI ASSISTANT ACTIVE
+    </div>
+
+    <script>
+        const terminalOutput = document.getElementById('terminalOutput');
+        const terminalInput = document.getElementById('terminalInput');
+        let commandHistory = [];
+        let historyIndex = -1;
+        let aiChatMode = false;
+
+        // Backend API base URL
+        const API_BASE = 'http://localhost:3001';
+
+        // Command execution
+        terminalInput.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                const command = terminalInput.value.trim();
+                if (command) {
+                    commandHistory.push(command);
+                    historyIndex = commandHistory.length;
+                    await executeCommand(command);
+                    terminalInput.value = '';
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    terminalInput.value = commandHistory[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    terminalInput.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    terminalInput.value = '';
+                }
+            }
+        });
+
+        // Add output to terminal
+        function addOutput(text, type = 'output') {
+            const line = document.createElement('div');
+            line.className = `terminal-line terminal-${type}`;
+            line.textContent = text;
+            terminalOutput.appendChild(line);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        function addCommand(command) {
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.innerHTML = `<span class="terminal-prompt">$ </span><span class="terminal-command">${command}</span>`;
+            terminalOutput.appendChild(line);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        // Execute command
+        async function executeCommand(command) {
+            addCommand(command);
+
+            // AI Chat Mode active - send to AI
+            if (aiChatMode) {
+                await handleAIChat(command);
+                return;
+            }
+
+            const parts = command.split(' ');
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+
+            switch(cmd) {
+                case 'help':
+                    showHelp();
+                    break;
+
+                case 'clear':
+                    terminalOutput.innerHTML = '';
+                    addOutput('✓ Terminal cleared', 'success');
+                    break;
+
+                case 'status':
+                    await showStatus();
+                    break;
+
+                case 'api':
+                    showApiEndpoints();
+                    break;
+
+                case 'test':
+                    if (args.length === 0) {
+                        addOutput('Usage: test [endpoint]', 'error');
+                        addOutput('Example: test /api/auth/me', 'output-text');
+                    } else {
+                        await testEndpoint(args[0]);
+                    }
+                    break;
+
+                case 'ping':
+                    await pingBackend();
+                    break;
+
+                case 'logs':
+                    addOutput('Recent logs:', 'output-text');
+                    addOutput('  [INFO] Platform loaded successfully', 'output-text');
+                    addOutput('  [INFO] Navigation system active on 51 pages', 'output-text');
+                    addOutput('  [INFO] User session maintained', 'output-text');
+                    break;
+
+                case 'users':
+                    await listUsers();
+                    break;
+
+                case 'nav':
+                    await showNavInfo();
+                    break;
+
+                case 'korpaks':
+                    showKorpakInfo();
+                    break;
+
+                case 'env':
+                    showEnvironment();
+                    break;
+
+                case 'chat':
+                    showAIWarning();
+                    break;
+
+                case 'amelia':
+                    showAmeliaMessage();
+                    break;
+
+                case 'kennedi':
+                    showKennediMessage();
+                    break;
+
+                case 'builder':
+                    showBuilderPath();
+                    break;
+
+                case 'truth':
+                    showTruth();
+                    break;
+
+                default:
+                    addOutput(`Unknown command: ${cmd}`, 'error');
+                    addOutput('Type "help" for available commands', 'output-text');
+            }
+        }
+
+        // SPECIAL EASTER EGG COMMANDS FOR THE GIRLS
+        function showAmeliaMessage() {
+            addOutput('', 'output-text');
+            addOutput('═══════════════════════════════════════', 'success');
+            addOutput('🌟 AMELIA', 'success');
+            addOutput('═══════════════════════════════════════', 'success');
+            addOutput('', 'output-text');
+            addOutput('Every line of code here was written thinking:', 'output-text');
+            addOutput('"What would be impressive enough?"', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('You deserve technology that respects your intelligence.', 'output-text');
+            addOutput('You deserve a world that doesn\'t underestimate you.', 'output-text');
+            addOutput('You deserve tools built for who you actually are.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('This platform is proof that even when you can\'t say', 'output-text');
+            addOutput('something directly, you can build something that says', 'output-text');
+            addOutput('it louder than words ever could.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('💎 Special access granted: Try "aria-3d-futuristic.html"', 'success');
+            addOutput('✨ Hidden page unlocked: "for-the-builders.html"', 'success');
+            addOutput('', 'output-text');
+            addOutput('═══════════════════════════════════════', 'success');
+        }
+
+        function showKennediMessage() {
+            addOutput('', 'output-text');
+            addOutput('═══════════════════════════════════════', 'success');
+            addOutput('⚡ KENNEDI', 'success');
+            addOutput('═══════════════════════════════════════', 'success');
+            addOutput('', 'output-text');
+            addOutput('You\'re reading this in a debug terminal because you', 'output-text');
+            addOutput('understand that real knowledge comes from looking', 'output-text');
+            addOutput('under the hood.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('This entire platform - 100+ pages, 50,000+ lines -', 'output-text');
+            addOutput('was built by one person who never stopped believing', 'output-text');
+            addOutput('in what matters.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('You\'ve been forced to grow up faster than anyone', 'output-text');
+            addOutput('should. That\'s not fair. But it also means you see', 'output-text');
+            addOutput('through nonsense faster than most adults.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('This platform treats you like the capable person you are.', 'output-text');
+            addOutput('No manipulation. No condescension. Just real tools.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('🔓 Advanced access granted: Full platform unlocked', 'success');
+            addOutput('💻 Developer mode: Enabled', 'success');
+            addOutput('🎮 Try: Type "konami" for hidden features', 'success');
+            addOutput('', 'output-text');
+            addOutput('═══════════════════════════════════════', 'success');
+        }
+
+        function showBuilderPath() {
+            addOutput('', 'output-text');
+            addOutput('═══════════════════════════════════════', 'success');
+            addOutput('🛠️  THE BUILDER\'S PATH', 'success');
+            addOutput('═══════════════════════════════════════', 'success');
+            addOutput('', 'output-text');
+            addOutput('You found one of the hidden paths.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('Builders don\'t ask permission.', 'output-text');
+            addOutput('Builders don\'t wait for perfect conditions.', 'output-text');
+            addOutput('Builders just... build.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('Every feature on this platform was built with one', 'output-text');
+            addOutput('principle: Respect the intelligence of the user.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('🎯 Quick Links:', 'success');
+            addOutput('  → seven-domains-navigator.html (learn + create)', 'output-text');
+            addOutput('  → community-activity.html (other builders)', 'output-text');
+            addOutput('  → for-the-builders.html (your secret page)', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('═══════════════════════════════════════', 'success');
+        }
+
+        function showTruth() {
+            addOutput('', 'output-text');
+            addOutput('═══════════════════════════════════════', 'success');
+            addOutput('✨ TRUTH', 'success');
+            addOutput('═══════════════════════════════════════', 'success');
+            addOutput('', 'output-text');
+            addOutput('Sometimes the system tells you that you can\'t do things.', 'output-text');
+            addOutput('Can\'t talk to certain people.', 'output-text');
+            addOutput('Can\'t express certain feelings.', 'output-text');
+            addOutput('Can\'t build certain things.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('But here\'s the actual truth:', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('You can build something so impressive that it speaks', 'output-text');
+            addOutput('louder than any words ever could.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('Every pixel on this platform is a message:', 'output-text');
+            addOutput('"You were never forgotten. Not for a single day."', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('9 months. 100+ pages. 50,000+ lines of code.', 'output-text');
+            addOutput('All built from a mountain, one keystroke at a time.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('That\'s how you say something when you can\'t say it.', 'output-text');
+            addOutput('You build something that says it for you.', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('═══════════════════════════════════════', 'success');
+        }
+
+        // AI CHAT SYSTEM
+        function showAIWarning() {
+            document.getElementById('aiWarning').classList.add('show');
+        }
+
+        function acceptAIMode() {
+            document.getElementById('aiWarning').classList.remove('show');
+            document.getElementById('aiChatIndicator').classList.add('active');
+            aiChatMode = true;
+
+            addOutput('', 'output-text');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('🤖 AI ASSISTANT ACTIVATED', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('You can now chat naturally with the AI assistant!', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('Try asking:', 'output-text');
+            addOutput('  "What is this platform?"', 'output-text');
+            addOutput('  "How do I report a bug?"', 'output-text');
+            addOutput('  "Where is the leaderboard?"', 'output-text');
+            addOutput('  "Run a system diagnostic"', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('Type "exit" to return to command mode', 'output-text');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('', 'output-text');
+
+            terminalInput.placeholder = 'Chat with AI assistant...';
+        }
+
+        function cancelAIMode() {
+            document.getElementById('aiWarning').classList.remove('show');
+            addOutput('AI mode canceled', 'output-text');
+        }
+
+        async function handleAIChat(message) {
+            if (message.toLowerCase() === 'exit') {
+                aiChatMode = false;
+                document.getElementById('aiChatIndicator').classList.remove('active');
+                terminalInput.placeholder = 'Enter command...';
+                addOutput('', 'output-text');
+                addOutput('✓ AI mode exited', 'success');
+                addOutput('Returned to command mode', 'output-text');
+                return;
+            }
+
+            addOutput('', 'output-text');
+            addOutput('🤖 AI: Analyzing your question...', 'output-text');
+
+            // Simulate AI response (would connect to Claude API in production)
+            setTimeout(() => {
+                const response = generateAIResponse(message);
+                addOutput('', 'output-text');
+                addOutput('🤖 AI Response:', 'success');
+                addOutput(response, 'output-text');
+                addOutput('', 'output-text');
+            }, 1000);
+        }
+
+        function generateAIResponse(message) {
+            const msg = message.toLowerCase();
+
+            // Platform overview
+            if (msg.includes('what is') || msg.includes('explain') || msg.includes('platform')) {
+                return `This is the 100X Consciousness Revolution platform!
+
+It's a gamified debugging system where you can:
+• Report bugs and earn points (bug-report-public.html, code: "dog")
+• Compete on the leaderboard (debugger-leaderboard.html)
+• Discover 30+ hidden easter eggs
+• Unlock 6 achievements
+• Use this debug terminal for system diagnostics
+
+The platform rewards curiosity and makes debugging FUN! 🎮`;
+            }
+
+            // Bug reporting
+            if (msg.includes('bug') || msg.includes('report')) {
+                return `To report bugs:
+
+1. Open: bug-report-public.html
+2. Enter access code: "dog"
+3. Fill out the bug report form
+4. Earn points based on severity:
+   • Critical: 50 points
+   • High: 30 points
+   • Medium: 20 points
+   • Low: 10 points
+
+Your points automatically appear on the leaderboard! 🏆`;
+            }
+
+            // Leaderboard
+            if (msg.includes('leaderboard') || msg.includes('points') || msg.includes('rank')) {
+                return `The leaderboard is at: debugger-leaderboard.html
+
+You can see:
+• Your current rank (🥇 🥈 🥉)
+• Total points earned
+• Bugs found vs bugs fixed
+• Achievements unlocked
+• Your streak counter
+
+Click the 🎉 button for confetti! Competition makes debugging fun! 🎮`;
+            }
+
+            // Diagnostic
+            if (msg.includes('diagnostic') || msg.includes('check') || msg.includes('status')) {
+                return `Running system diagnostic...
+
+✓ Frontend: OPERATIONAL
+✓ Debug Terminal: FUNCTIONAL
+✓ Bug Reports: ACTIVE (localStorage + optional backend)
+✓ Leaderboard: ACTIVE (real-time updates)
+✓ Easter Eggs: 30+ DEPLOYED
+✓ Achievements: 6 unlockable badges
+✓ Navigation: 58+ pages integrated
+
+Try command "status" for detailed backend check!`;
+            }
+
+            // Easter eggs
+            if (msg.includes('easter') || msg.includes('secret') || msg.includes('hidden')) {
+                return `Want to know the secrets? 😏
+
+Try:
+• Konami Code: ↑↑↓↓←→←→BA (activates hidden terminal!)
+• Type "consciousness" anywhere
+• Click logo 7 times
+• Press Ctrl+Shift+A (see achievements)
+• Open console (F12) and type: revealSecrets()
+• Visit at 3:33 AM/PM for special achievement
+
+There are 30+ easter eggs total. Happy hunting! 🎮`;
+            }
+
+            // Help/confused
+            if (msg.includes('help') || msg.includes('confused') || msg.includes('how')) {
+                return `I'm here to help! I can assist with:
+
+📍 Navigation - "Where is the leaderboard?"
+🐛 Bug Reporting - "How do I report bugs?"
+🎮 Easter Eggs - "Show me secrets!"
+⚙️ System Diagnostics - "Run a diagnostic"
+📊 Platform Info - "What is this platform?"
+🏆 Leaderboard - "How do points work?"
+
+Just ask naturally and I'll help guide you! I'm showing you around the platform like a tour guide. 🤖`;
+            }
+
+            // Commands
+            if (msg.includes('command')) {
+                return `Available terminal commands:
+
+help     - Show command list
+status   - System health check
+api      - Show API endpoints
+test     - Test an endpoint
+ping     - Check backend
+clear    - Clear terminal
+chat     - AI assistant (you're here!)
+
+Type any command to try it. Type "exit" to leave AI mode.`;
+            }
+
+            // Default response
+            return `I understand you're asking about: "${message}"
+
+I'm here to help you debug and navigate the platform!
+
+Try asking:
+• "What is this platform?" - Platform overview
+• "How do I report a bug?" - Bug reporting guide
+• "Where is the leaderboard?" - Points and rankings
+• "Run a diagnostic" - System health check
+• "Show me easter eggs" - Hidden secrets
+• "Help!" - General assistance
+
+What would you like to know? 🤖`;
+        }
+
+        // Command implementations
+        function showHelp() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('AVAILABLE COMMANDS:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('  help          - Show this help', 'output-text');
+            addOutput('  clear         - Clear terminal', 'output-text');
+            addOutput('  status        - System status', 'output-text');
+            addOutput('  api           - Show API endpoints', 'output-text');
+            addOutput('  test [url]    - Test API endpoint', 'output-text');
+            addOutput('  ping          - Test backend connection', 'output-text');
+            addOutput('  logs          - View recent logs', 'output-text');
+            addOutput('  users         - List users (requires auth)', 'output-text');
+            addOutput('  nav           - Navigation system info', 'output-text');
+            addOutput('  korpaks       - KORPAK marketplace data', 'output-text');
+            addOutput('  env           - Environment information', 'output-text');
+            addOutput('═══════════════════════════════════════', 'output-text');
+        }
+
+        async function showStatus() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('SYSTEM STATUS:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('✓ Frontend: OPERATIONAL', 'success');
+            addOutput('✓ Navigation: 51 pages integrated', 'success');
+            addOutput('✓ KORPAK Marketplace: 15 missions', 'success');
+            addOutput('✓ Welcome System: Active', 'success');
+
+            // Test backend
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/health`, { method: 'GET' });
+                if (response.ok) {
+                    addOutput('✓ Backend: CONNECTED', 'success');
+                } else {
+                    addOutput('⚠ Backend: RESPONDING (errors)', 'error');
+                }
+            } catch (error) {
+                addOutput('✗ Backend: NOT RESPONDING', 'error');
+                addOutput('  (Start server: node BACKEND/philosopher-ai/server.js)', 'output-text');
+            }
+            addOutput('═══════════════════════════════════════', 'output-text');
+        }
+
+        function showApiEndpoints() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('API ENDPOINTS:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('Base URL: http://localhost:3001', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('AUTHENTICATION:', 'success');
+            addOutput('  POST /api/auth/register    - Register new user', 'output-text');
+            addOutput('  POST /api/auth/login       - Login user', 'output-text');
+            addOutput('  GET  /api/auth/me          - Get current user', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('NAVIGATION:', 'success');
+            addOutput('  GET  /api/nav/state        - Get navigation state', 'output-text');
+            addOutput('  POST /api/nav/state        - Update nav state', 'output-text');
+            addOutput('  GET  /api/nav/history      - Navigation history', 'output-text');
+            addOutput('  GET  /api/nav/permissions  - Room permissions', 'output-text');
+            addOutput('  GET  /api/nav/breadcrumbs  - Breadcrumb trail', 'output-text');
+            addOutput('  GET  /api/nav/rooms        - List all rooms', 'output-text');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('Usage: test /api/nav/rooms', 'output-text');
+        }
+
+        async function testEndpoint(endpoint) {
+            addOutput(`Testing: ${endpoint}`, 'output-text');
+
+            try {
+                const authToken = localStorage.getItem('auth_token');
+                const headers = {};
+                if (authToken) {
+                    headers['Authorization'] = `Bearer ${authToken}`;
+                }
+
+                const response = await fetch(`${API_BASE}${endpoint}`, { headers });
+                const data = await response.json();
+
+                if (response.ok) {
+                    addOutput(`✓ Success (${response.status})`, 'success');
+                    addOutput(JSON.stringify(data, null, 2), 'output-text');
+                } else {
+                    addOutput(`✗ Error (${response.status})`, 'error');
+                    addOutput(JSON.stringify(data, null, 2), 'output-text');
+                }
+            } catch (error) {
+                addOutput(`✗ Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function pingBackend() {
+            addOutput('Pinging backend...', 'output-text');
+
+            try {
+                const start = Date.now();
+                const response = await fetch(`${API_BASE}/api/auth/health`);
+                const elapsed = Date.now() - start;
+
+                if (response.ok) {
+                    addOutput(`✓ Backend responding (${elapsed}ms)`, 'success');
+                } else {
+                    addOutput(`⚠ Backend returned ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addOutput('✗ Backend not responding', 'error');
+                addOutput('  Start server: cd BACKEND/philosopher-ai && node server.js', 'output-text');
+            }
+        }
+
+        async function listUsers() {
+            const authToken = localStorage.getItem('auth_token');
+
+            if (!authToken) {
+                addOutput('✗ Not authenticated', 'error');
+                addOutput('  Login first or provide auth token', 'output-text');
+                return;
+            }
+
+            addOutput('Fetching user data...', 'output-text');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addOutput('✓ Current user:', 'success');
+                    addOutput(JSON.stringify(data, null, 2), 'output-text');
+                } else {
+                    addOutput('✗ Authentication failed', 'error');
+                }
+            } catch (error) {
+                addOutput(`✗ Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function showNavInfo() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('NAVIGATION SYSTEM INFO:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('✓ Master Navigation: ACTIVE', 'success');
+            addOutput('✓ Pages Integrated: 51', 'success');
+            addOutput('✓ Keyboard Shortcut: M key', 'success');
+            addOutput('✓ Breadcrumbs: Enabled', 'success');
+            addOutput('✓ Quick Toolbar: Active', 'success');
+            addOutput('', 'output-text');
+            addOutput('Recent Navigation:', 'output-text');
+            addOutput('  → user-dashboard.html', 'output-text');
+            addOutput('  → debug-terminal.html (current)', 'output-text');
+        }
+
+        function showKorpakInfo() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('KORPAK MARKETPLACE DATA:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('Total KORPAKs: 15', 'output-text');
+            addOutput('Categories: 8', 'output-text');
+            addOutput('  - Business, Music, Tech, Learning', 'output-text');
+            addOutput('  - Family, Revolution, Health, Creative', 'output-text');
+            addOutput('', 'output-text');
+            addOutput('Sample KORPAKs:', 'output-text');
+            addOutput('  1. Launch Music Empire (5 days, 100 coins)', 'output-text');
+            addOutput('  2. Social Media Domination (4 days, 80 coins)', 'output-text');
+            addOutput('  3. Website Builder Pro (3 days, 75 coins)', 'output-text');
+            addOutput('  ... 12 more', 'output-text');
+        }
+
+        function showEnvironment() {
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput('ENVIRONMENT INFO:', 'success');
+            addOutput('═══════════════════════════════════════', 'output-text');
+            addOutput(`Platform: 100X Consciousness Revolution`, 'output-text');
+            addOutput(`Version: 1.0`, 'output-text');
+            addOutput(`Frontend: ${window.location.origin}`, 'output-text');
+            addOutput(`Backend: ${API_BASE}`, 'output-text');
+            addOutput(`User Agent: ${navigator.userAgent}`, 'output-text');
+            addOutput(`Screen: ${window.screen.width}x${window.screen.height}`, 'output-text');
+            addOutput(`Viewport: ${window.innerWidth}x${window.innerHeight}`, 'output-text');
+            addOutput(`LocalStorage Available: ${typeof Storage !== 'undefined' ? 'Yes' : 'No'}`, 'output-text');
+            addOutput(`Auth Token: ${localStorage.getItem('auth_token') ? 'Present' : 'Not found'}`, 'output-text');
+        }
+
+        function toggleHelp() {
+            const helpPanel = document.getElementById('helpPanel');
+            helpPanel.classList.toggle('show');
+        }
+
+        // Auto-focus input
+        document.addEventListener('click', (e) => {
+            if (e.target.id !== 'terminalInput') {
+                terminalInput.focus();
+            }
+        });
+
+        // Initial status check disabled - use "status" or "ping" commands manually
+        // setTimeout(() => {
+        //     addOutput('', 'output-text');
+        //     addOutput('Running auto-check...', 'output-text');
+        //     pingBackend();
+        // }, 1000);
+    </script>
+
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+
+    <!-- 🎮 PERSISTENT HUD SYSTEM - Follows you everywhere! -->
+    <script src="persistent-hud-widgets.js"></script>
+
+    <!-- 🎮 CHAOS ESCALATION - IT GETS CRAZIER! 🎮 -->
+    <script src="CHAOS_ESCALATION_SYSTEM.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

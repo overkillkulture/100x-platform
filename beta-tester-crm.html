@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta Tester CRM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e8e8e8;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-width: 200px;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #4ade80;
+        }
+
+        .stat-label {
+            color: #b8b8b8;
+            margin-top: 0.5rem;
+        }
+
+        .add-tester-section {
+            background: rgba(74, 222, 128, 0.1);
+            border: 2px solid #4ade80;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #b8b8b8;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .add-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .add-button:hover {
+            transform: scale(1.02);
+        }
+
+        .testers-table {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(74, 222, 128, 0.2);
+            padding: 1rem;
+            text-align: left;
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+            border: 1px solid #4ade80;
+        }
+
+        .status-pending {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid #fbbf24;
+        }
+
+        .status-responded {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-email {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+
+        .btn-instagram {
+            background: rgba(236, 72, 153, 0.2);
+            color: #ec4899;
+            border: 1px solid #ec4899;
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .export-section {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .export-btn {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .export-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .instagram-link {
+            color: #ec4899;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .instagram-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Beta Tester CRM</h1>
+        <p style="color: #b8b8b8; margin-bottom: 2rem;">
+            Manage beta testers with Instagram + Email tracking
+        </p>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTesters">0</div>
+                <div class="stat-label">Total Beta Testers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="activeTesters">0</div>
+                <div class="stat-label">Active</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="respondedTesters">0</div>
+                <div class="stat-label">Responded</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pendingTesters">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+
+        <!-- Add New Tester -->
+        <div class="add-tester-section">
+            <h2 style="color: #4ade80; margin-bottom: 1.5rem;">➕ Add New Beta Tester</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="name" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="john@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Instagram Handle</label>
+                    <input type="text" id="instagram" placeholder="@username">
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="status">
+                        <option value="pending">Pending</option>
+                        <option value="active">Active</option>
+                        <option value="responded">Responded</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea id="notes" rows="3" placeholder="Additional information..."></textarea>
+            </div>
+            <button class="add-button" onclick="addTester()">➕ Add Beta Tester</button>
+        </div>
+
+        <!-- Testers Table -->
+        <div class="testers-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Instagram</th>
+                        <th>Status</th>
+                        <th>Added</th>
+                        <th>Notes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="testersTableBody">
+                    <!-- Testers loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Export Options -->
+        <div class="export-section">
+            <button class="export-btn" onclick="exportCSV()">📥 Export CSV</button>
+            <button class="export-btn" onclick="exportEmails()">📧 Copy All Emails</button>
+            <button class="export-btn" onclick="exportInstagram()">📸 Copy Instagram Handles</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize with existing testers
+        const defaultTesters = [
+            {
+                name: "Joshua Serrano",
+                email: "joshua.serrano2022@gmail.com",
+                instagram: "@joshua_serrano",
+                status: "active",
+                notes: "First external beta tester - Package re-sent Oct 16",
+                added: "2025-10-16"
+            },
+            {
+                name: "Toby Burrowes",
+                email: "tobyburrowes@hotmail.com",
+                instagram: "@toby_burrowes",
+                status: "responded",
+                notes: "Security-conscious professional. Wants repo/signed build. Has 100X access.",
+                added: "2025-10-16"
+            },
+            {
+                name: "WD Brotherton",
+                email: "wdbrotherton@gmail.com",
+                instagram: "@youths_against_corruption_usa",
+                status: "pending",
+                notes: "New beta tester - needs JARVIS package",
+                added: "2025-10-18"
+            },
+            {
+                name: "Dean Sabr",
+                email: "deansabrwork@gmail.com",
+                instagram: "@47.ind",
+                status: "pending",
+                notes: "New beta tester - needs JARVIS package",
+                added: "2025-10-18"
+            },
+            {
+                name: "Bill (William Varni)",
+                email: "varniwilliam@gmail.com",
+                instagram: "@bill_varni",
+                status: "pending",
+                notes: "J10 moment guy - team member for Mission Control",
+                added: "2025-10-18"
+            }
+        ];
+
+        // Load or initialize testers
+        let testers = JSON.parse(localStorage.getItem('beta_testers') || 'null');
+        if (!testers) {
+            testers = defaultTesters;
+            localStorage.setItem('beta_testers', JSON.stringify(testers));
+        }
+
+        function renderTesters() {
+            const tbody = document.getElementById('testersTableBody');
+            tbody.innerHTML = '';
+
+            if (testers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #888;">No beta testers yet. Add one above!</td></tr>';
+                return;
+            }
+
+            testers.forEach((tester, index) => {
+                const row = document.createElement('tr');
+
+                const statusClass = `status-${tester.status}`;
+
+                row.innerHTML = `
+                    <td><strong>${tester.name}</strong></td>
+                    <td><a href="mailto:${tester.email}" style="color: #4ade80;">${tester.email}</a></td>
+                    <td><a href="https://instagram.com/${tester.instagram.replace('@', '')}" target="_blank" class="instagram-link">${tester.instagram}</a></td>
+                    <td><span class="status-badge ${statusClass}">${tester.status.toUpperCase()}</span></td>
+                    <td style="color: #888;">${tester.added}</td>
+                    <td style="color: #b8b8b8; font-size: 0.9rem;">${tester.notes}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn btn-email" onclick="emailTester(${index})" title="Email">📧</button>
+                            <button class="action-btn btn-instagram" onclick="instagramTester(${index})" title="Instagram">📸</button>
+                            <button class="action-btn btn-delete" onclick="deleteTester(${index})" title="Delete">🗑️</button>
+                        </div>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('totalTesters').textContent = testers.length;
+            document.getElementById('activeTesters').textContent = testers.filter(t => t.status === 'active').length;
+            document.getElementById('respondedTesters').textContent = testers.filter(t => t.status === 'responded').length;
+            document.getElementById('pendingTesters').textContent = testers.filter(t => t.status === 'pending').length;
+        }
+
+        function addTester() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const instagram = document.getElementById('instagram').value.trim();
+            const status = document.getElementById('status').value;
+            const notes = document.getElementById('notes').value.trim();
+
+            if (!name || !email) {
+                alert('⚠️ Name and email are required');
+                return;
+            }
+
+            const newTester = {
+                name: name,
+                email: email,
+                instagram: instagram || '@unknown',
+                status: status,
+                notes: notes,
+                added: new Date().toISOString().split('T')[0]
+            };
+
+            testers.push(newTester);
+            localStorage.setItem('beta_testers', JSON.stringify(testers));
+
+            // Clear form
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('instagram').value = '';
+            document.getElementById('notes').value = '';
+
+            renderTesters();
+            alert('✅ Beta tester added!');
+        }
+
+        function emailTester(index) {
+            const tester = testers[index];
+            const mailto = `mailto:${tester.email}?subject=JARVIS Beta Access&body=Hi ${tester.name},%0D%0A%0D%0AYour JARVIS download is ready:%0D%0Ahttps://conciousnessrevolution.io/downloads.html`;
+            window.location.href = mailto;
+        }
+
+        function instagramTester(index) {
+            const tester = testers[index];
+            const instagramUrl = `https://instagram.com/${tester.instagram.replace('@', '')}`;
+            window.open(instagramUrl, '_blank');
+        }
+
+        function deleteTester(index) {
+            if (confirm(`Delete ${testers[index].name}?`)) {
+                testers.splice(index, 1);
+                localStorage.setItem('beta_testers', JSON.stringify(testers));
+                renderTesters();
+            }
+        }
+
+        function exportCSV() {
+            let csv = 'Name,Email,Instagram,Status,Added,Notes\n';
+            testers.forEach(t => {
+                csv += `"${t.name}","${t.email}","${t.instagram}","${t.status}","${t.added}","${t.notes}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `beta_testers_${Date.now()}.csv`;
+            a.click();
+
+            alert(`✅ Exported ${testers.length} testers to CSV!`);
+        }
+
+        function exportEmails() {
+            const emails = testers.map(t => t.email).join(', ');
+            navigator.clipboard.writeText(emails).then(() => {
+                alert(`✅ Copied ${testers.length} emails to clipboard!`);
+            });
+        }
+
+        function exportInstagram() {
+            const handles = testers.map(t => t.instagram).join(', ');
+            navigator.clipboard.writeText(handles).then(() => {
+                alert(`✅ Copied ${testers.length} Instagram handles to clipboard!`);
+            });
+        }
+
+        // Load on page load
+        renderTesters();
+    </script>
+
+    <!-- Bug Notepad -->
+    <script src="/UNIVERSAL_BUG_NOTEPAD_V2.js"></script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

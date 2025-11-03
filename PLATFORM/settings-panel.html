@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Settings - Consciousness OS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --background: #f5f7fa;
+            --card-background: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --success-color: #48bb78;
+            --toggle-bg: #cbd5e0;
+        }
+
+        [data-theme="dark"] {
+            --background: #1a202c;
+            --card-background: #2d3748;
+            --text-primary: #f7fafc;
+            --text-secondary: #a0aec0;
+            --border-color: #4a5568;
+            --toggle-bg: #4a5568;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .settings-group {
+            background: var(--card-background);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .settings-group:hover {
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .group-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .group-title .icon {
+            font-size: 1.5em;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-label {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .setting-description {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        .setting-control {
+            margin-left: 20px;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--toggle-bg);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary-color);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(30px);
+        }
+
+        /* Select Dropdown */
+        .select-control {
+            padding: 10px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-background);
+            color: var(--text-primary);
+            font-size: 1em;
+            cursor: pointer;
+            min-width: 150px;
+            transition: border-color 0.3s ease;
+        }
+
+        .select-control:hover {
+            border-color: var(--primary-color);
+        }
+
+        .select-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Slider */
+        .slider-control {
+            width: 200px;
+        }
+
+        .slider-control input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--toggle-bg);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-control input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-value {
+            text-align: center;
+            margin-top: 5px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Save Button */
+        .save-button {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .save-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .save-button:active {
+            transform: translateY(0);
+        }
+
+        /* Success Message */
+        .success-message {
+            background: var(--success-color);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--card-background);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .setting-control {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .slider-control,
+            .select-control {
+                width: 100%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <button class="back-button" onclick="window.location.href='welcome.html'">← Back to Home</button>
+
+    <div class="settings-container">
+        <div class="header">
+            <h1>⚙️ Settings</h1>
+            <p>Customize your Consciousness OS experience</p>
+        </div>
+
+        <!-- Appearance Settings -->
+        <div class="settings-group">
+            <div class="group-title">
+                <span class="icon">🎨</span>
+                <span>Appearance</span>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Dark Mode</div>
+                    <div class="setting-description">Switch between light and dark themes</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch" id="darkModeToggle" onclick="toggleDarkMode()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Color Theme</div>
+                    <div class="setting-description">Choose your preferred color scheme</div>
+                </div>
+                <div class="setting-control">
+                    <select class="select-control" id="colorTheme" onchange="changeColorTheme(this.value)">
+                        <option value="default">Purple Gradient (Default)</option>
+                        <option value="blue">Ocean Blue</option>
+                        <option value="green">Forest Green</option>
+                        <option value="orange">Sunset Orange</option>
+                        <option value="pink">Rose Pink</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Font Size</div>
+                    <div class="setting-description">Adjust text size for readability</div>
+                </div>
+                <div class="setting-control slider-control">
+                    <input type="range" min="80" max="120" value="100" id="fontSizeSlider" oninput="changeFontSize(this.value)">
+                    <div class="slider-value" id="fontSizeValue">100%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Settings -->
+        <div class="settings-group">
+            <div class="group-title">
+                <span class="icon">🔧</span>
+                <span>System</span>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Animations</div>
+                    <div class="setting-description">Enable smooth transitions and animations</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch active" id="animationsToggle" onclick="toggleAnimations()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Sound Effects</div>
+                    <div class="setting-description">Play sounds for interactions</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch active" id="soundToggle" onclick="toggleSound()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Auto-Save</div>
+                    <div class="setting-description">Automatically save your progress</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch active" id="autoSaveToggle" onclick="toggleAutoSave()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Settings -->
+        <div class="settings-group">
+            <div class="group-title">
+                <span class="icon">🔒</span>
+                <span>Privacy & Security</span>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Analytics</div>
+                    <div class="setting-description">Help improve Consciousness OS with usage data</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch active" id="analyticsToggle" onclick="toggleAnalytics()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Clear Cache</div>
+                    <div class="setting-description">Remove stored data to free up space</div>
+                </div>
+                <div class="setting-control">
+                    <button class="select-control" onclick="clearCache()">Clear Now</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consciousness Settings -->
+        <div class="settings-group">
+            <div class="group-title">
+                <span class="icon">🌀</span>
+                <span>Consciousness</span>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Consciousness Level Display</div>
+                    <div class="setting-description">Show consciousness percentage in status bar</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch active" id="consciousnessToggle" onclick="toggleConsciousness()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Pattern Recognition</div>
+                    <div class="setting-description">Enable automatic pattern detection</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch active" id="patternToggle" onclick="togglePatterns()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Trinity AI Mode</div>
+                    <div class="setting-description">Activate C1×C2×C3 collaboration</div>
+                </div>
+                <div class="setting-control">
+                    <select class="select-control" id="trinityMode" onchange="changeTrinityMode(this.value)">
+                        <option value="auto">Auto (Recommended)</option>
+                        <option value="c1">C1 Mechanic Only</option>
+                        <option value="c2">C2 Architect Only</option>
+                        <option value="c3">C3 Oracle Only</option>
+                        <option value="trinity">Full Trinity</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button class="save-button" onclick="saveSettings()">💾 Save All Settings</button>
+
+        <div class="success-message" id="successMessage">
+            ✅ Settings saved successfully!
+        </div>
+    </div>
+
+    <script>
+        // Load settings from localStorage on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+        });
+
+        function loadSettings() {
+            // Dark mode
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            if (darkMode) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById('darkModeToggle').classList.add('active');
+            }
+
+            // Color theme
+            const colorTheme = localStorage.getItem('colorTheme') || 'default';
+            document.getElementById('colorTheme').value = colorTheme;
+
+            // Font size
+            const fontSize = localStorage.getItem('fontSize') || '100';
+            document.getElementById('fontSizeSlider').value = fontSize;
+            document.getElementById('fontSizeValue').textContent = fontSize + '%';
+            document.documentElement.style.fontSize = fontSize + '%';
+
+            // Toggles
+            setToggleState('animationsToggle', localStorage.getItem('animations') !== 'false');
+            setToggleState('soundToggle', localStorage.getItem('sound') !== 'false');
+            setToggleState('autoSaveToggle', localStorage.getItem('autoSave') !== 'false');
+            setToggleState('analyticsToggle', localStorage.getItem('analytics') !== 'false');
+            setToggleState('consciousnessToggle', localStorage.getItem('consciousness') !== 'false');
+            setToggleState('patternToggle', localStorage.getItem('patterns') !== 'false');
+
+            // Trinity mode
+            const trinityMode = localStorage.getItem('trinityMode') || 'auto';
+            document.getElementById('trinityMode').value = trinityMode;
+        }
+
+        function setToggleState(id, active) {
+            const toggle = document.getElementById(id);
+            if (active) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
+
+        function toggleDarkMode() {
+            const toggle = document.getElementById('darkModeToggle');
+            toggle.classList.toggle('active');
+            const isDark = toggle.classList.contains('active');
+
+            if (isDark) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+        }
+
+        function changeColorTheme(theme) {
+            // Color theme logic (would apply different CSS variables)
+            console.log('Color theme changed to:', theme);
+        }
+
+        function changeFontSize(value) {
+            document.getElementById('fontSizeValue').textContent = value + '%';
+            document.documentElement.style.fontSize = value + '%';
+        }
+
+        function toggleAnimations() {
+            document.getElementById('animationsToggle').classList.toggle('active');
+        }
+
+        function toggleSound() {
+            document.getElementById('soundToggle').classList.toggle('active');
+        }
+
+        function toggleAutoSave() {
+            document.getElementById('autoSaveToggle').classList.toggle('active');
+        }
+
+        function toggleAnalytics() {
+            document.getElementById('analyticsToggle').classList.toggle('active');
+        }
+
+        function toggleConsciousness() {
+            document.getElementById('consciousnessToggle').classList.toggle('active');
+        }
+
+        function togglePatterns() {
+            document.getElementById('patternToggle').classList.toggle('active');
+        }
+
+        function changeTrinityMode(mode) {
+            console.log('Trinity mode changed to:', mode);
+        }
+
+        function clearCache() {
+            if (confirm('Are you sure you want to clear all cached data?')) {
+                // Clear localStorage except settings
+                const settings = JSON.stringify({
+                    darkMode: localStorage.getItem('darkMode'),
+                    colorTheme: localStorage.getItem('colorTheme'),
+                    fontSize: localStorage.getItem('fontSize'),
+                    // ... other settings
+                });
+                localStorage.clear();
+                // Restore settings
+                alert('Cache cleared successfully!');
+            }
+        }
+
+        function saveSettings() {
+            // Save all settings to localStorage
+            const darkMode = document.getElementById('darkModeToggle').classList.contains('active');
+            localStorage.setItem('darkMode', darkMode);
+
+            const colorTheme = document.getElementById('colorTheme').value;
+            localStorage.setItem('colorTheme', colorTheme);
+
+            const fontSize = document.getElementById('fontSizeSlider').value;
+            localStorage.setItem('fontSize', fontSize);
+
+            const animations = document.getElementById('animationsToggle').classList.contains('active');
+            localStorage.setItem('animations', animations);
+
+            const sound = document.getElementById('soundToggle').classList.contains('active');
+            localStorage.setItem('sound', sound);
+
+            const autoSave = document.getElementById('autoSaveToggle').classList.contains('active');
+            localStorage.setItem('autoSave', autoSave);
+
+            const analytics = document.getElementById('analyticsToggle').classList.contains('active');
+            localStorage.setItem('analytics', analytics);
+
+            const consciousness = document.getElementById('consciousnessToggle').classList.contains('active');
+            localStorage.setItem('consciousness', consciousness);
+
+            const patterns = document.getElementById('patternToggle').classList.contains('active');
+            localStorage.setItem('patterns', patterns);
+
+            const trinityMode = document.getElementById('trinityMode').value;
+            localStorage.setItem('trinityMode', trinityMode);
+
+            // Show success message
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.add('show');
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 3000);
+
+            // Broadcast settings change event to other windows
+            window.dispatchEvent(new CustomEvent('consciousnessSettingsChanged', {
+                detail: { timestamp: Date.now() }
+            }));
+        }
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

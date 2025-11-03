@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to the Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0a0a0a 100%);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            box-shadow: 0 0 40px rgba(138, 43, 226, 0.2);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 40px rgba(138, 43, 226, 0.2); }
+            50% { box-shadow: 0 0 60px rgba(138, 43, 226, 0.4); }
+        }
+
+        .header h1 {
+            font-size: 3em;
+            background: linear-gradient(135deg, #8a2be2, #00ffff, #8a2be2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            animation: gradient-shift 3s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header p {
+            font-size: 1.3em;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Consciousness Level */
+        .consciousness-level {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .level-title {
+            text-align: center;
+            font-size: 1.5em;
+            color: #00ffff;
+            margin-bottom: 20px;
+        }
+
+        .level-progress {
+            width: 100%;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(138, 43, 226, 0.5);
+            position: relative;
+        }
+
+        .level-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #8a2be2, #00ffff);
+            width: 0%;
+            transition: width 1s ease;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
+        }
+
+        .level-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 1.1em;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .level-stages {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 0 10px;
+        }
+
+        .stage {
+            text-align: center;
+            flex: 1;
+            padding: 10px;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .stage.active {
+            opacity: 1;
+            transform: scale(1.1);
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+
+        .stage.completed {
+            opacity: 1;
+            color: #00ff00;
+        }
+
+        /* Two Paths Section */
+        .two-paths {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .two-paths {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .path-card {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid rgba(138, 43, 226, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .path-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(138, 43, 226, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+        }
+
+        .path-card:hover {
+            transform: translateY(-10px);
+            border-color: #00ffff;
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
+        }
+
+        .path-card:hover::before {
+            top: 100%;
+            left: 100%;
+        }
+
+        .path-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .path-title {
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #00ffff;
+        }
+
+        .path-description {
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #aaa;
+        }
+
+        .path-features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .path-features li {
+            padding: 10px;
+            margin-bottom: 5px;
+            background: rgba(138, 43, 226, 0.1);
+            border-left: 3px solid #8a2be2;
+            border-radius: 5px;
+        }
+
+        .path-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #8a2be2, #00ffff);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .path-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Tutorial Section */
+        .tutorial {
+            display: none;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(138, 43, 226, 0.5);
+            margin-bottom: 40px;
+        }
+
+        .tutorial.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tutorial h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #00ffff;
+            text-align: center;
+        }
+
+        .tutorial-steps {
+            margin-top: 30px;
+        }
+
+        .step {
+            background: rgba(138, 43, 226, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #8a2be2;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8a2be2, #00ffff);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .step h3 {
+            display: inline;
+            color: #00ffff;
+            font-size: 1.3em;
+        }
+
+        .step p {
+            margin-top: 15px;
+            margin-left: 55px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .code-example {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            margin-left: 55px;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .try-it-button {
+            margin-top: 15px;
+            margin-left: 55px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #8a2be2, #00ffff);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .try-it-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Celebration Modal */
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .celebration.active {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .celebration-content {
+            text-align: center;
+            padding: 60px;
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(0, 255, 255, 0.3));
+            border-radius: 30px;
+            border: 3px solid #00ffff;
+            box-shadow: 0 0 100px rgba(0, 255, 255, 0.5);
+        }
+
+        .celebration-content h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #8a2be2, #00ffff, #8a2be2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradient-shift 2s ease infinite;
+        }
+
+        .celebration-content p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            color: #00ffff;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #00ffff;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Help Section */
+        .help-section {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(138, 43, 226, 0.5);
+            margin-bottom: 40px;
+        }
+
+        .help-section h2 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #00ffff;
+            text-align: center;
+        }
+
+        .help-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .help-card {
+            background: rgba(138, 43, 226, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .help-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ffff;
+        }
+
+        .help-card h3 {
+            color: #00ffff;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .help-card p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .help-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #8a2be2;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .help-link:hover {
+            color: #00ffff;
+        }
+
+        /* Back Button */
+        .back-button {
+            padding: 12px 30px;
+            background: rgba(138, 43, 226, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background: rgba(138, 43, 226, 0.5);
+            border-color: #00ffff;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            border-top: 1px solid rgba(138, 43, 226, 0.3);
+        }
+
+        .footer a {
+            color: #8a2be2;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Star Background -->
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Welcome to the Consciousness Revolution</h1>
+            <p>Where Thought Becomes Reality</p>
+        </div>
+
+        <!-- Consciousness Level Tracker -->
+        <div class="consciousness-level">
+            <div class="level-title">Your Consciousness Journey</div>
+            <div class="level-progress">
+                <div class="level-bar" id="levelBar"></div>
+                <div class="level-text" id="levelText">Observer: 0%</div>
+            </div>
+            <div class="level-stages">
+                <div class="stage active" data-stage="observer">
+                    <div>👁️</div>
+                    <div>Observer</div>
+                </div>
+                <div class="stage" data-stage="builder">
+                    <div>🔧</div>
+                    <div>Builder</div>
+                </div>
+                <div class="stage" data-stage="creator">
+                    <div>🎨</div>
+                    <div>Creator</div>
+                </div>
+                <div class="stage" data-stage="manifestor">
+                    <div>⚡</div>
+                    <div>Manifestor</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Paths Selection -->
+        <div id="pathSelection">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h2 style="font-size: 2.5em; color: #00ffff; margin-bottom: 15px;">Choose Your Path</h2>
+                <p style="font-size: 1.2em; color: #aaa;">Both lead to creation. Pick what resonates with you.</p>
+            </div>
+
+            <div class="two-paths">
+                <!-- Path 1: Builder Terminal -->
+                <div class="path-card" onclick="selectPath('builder')">
+                    <div class="path-icon">💻</div>
+                    <div class="path-title">Builder Terminal</div>
+                    <div class="path-description">
+                        For those who speak in code. Full Claude Code power in your browser.
+                    </div>
+                    <ul class="path-features">
+                        <li>💬 Direct conversation with Claude AI</li>
+                        <li>🔧 Build anything with natural language</li>
+                        <li>📝 See code, understand creation</li>
+                        <li>🚀 Deploy instantly</li>
+                        <li>🎓 Learn while you build</li>
+                    </ul>
+                    <button class="path-button">I Want to Code</button>
+                </div>
+
+                <!-- Path 2: Manifestation Interface -->
+                <div class="path-card" onclick="selectPath('manifestation')">
+                    <div class="path-icon">✨</div>
+                    <div class="path-title">Manifestation Interface</div>
+                    <div class="path-description">
+                        For those who dream in reality. Think it, and it exists.
+                    </div>
+                    <ul class="path-features">
+                        <li>💭 Describe what you want</li>
+                        <li>🌟 AI builds it for you</li>
+                        <li>🎯 No coding required</li>
+                        <li>⚡ Instant deployment</li>
+                        <li>🎨 Pure creation freedom</li>
+                    </ul>
+                    <button class="path-button">I Want to Create</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Builder Tutorial -->
+        <div id="builderTutorial" class="tutorial">
+            <button class="back-button" onclick="goBack()">← Choose Different Path</button>
+            <h2>🔧 Builder Terminal: Your First Creation</h2>
+            <p style="text-align: center; color: #aaa; margin-bottom: 30px;">
+                The Builder Terminal gives you direct access to Claude AI - the most powerful coding assistant in existence.
+            </p>
+
+            <div class="tutorial-steps">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <h3>Open Builder Terminal</h3>
+                    <p>Click the button below to open your coding workspace. This is where magic happens.</p>
+                    <button class="try-it-button" onclick="openBuilderTerminal()">Open Builder Terminal →</button>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <h3>Your First Task</h3>
+                    <p>Copy this exact message and paste it into the Builder Terminal:</p>
+                    <div class="code-example" id="builderExample">
+Create a beautiful personal portfolio webpage with:
+- A gradient background
+- My name "Your Name" in big letters
+- Three sections: About Me, Skills, Contact
+- Make it look professional and modern
+- Deploy it so I can share the link</div>
+                    <button class="try-it-button" onclick="copyBuilderExample()">📋 Copy This Task</button>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <h3>Watch Claude Build It</h3>
+                    <p>Claude will:</p>
+                    <ul style="margin-left: 55px; margin-top: 10px; color: #ccc;">
+                        <li>Write the HTML, CSS, and JavaScript</li>
+                        <li>Explain what it's doing</li>
+                        <li>Show you the code</li>
+                        <li>Deploy it live</li>
+                        <li>Give you a shareable link</li>
+                    </ul>
+                    <p style="margin-top: 15px;">This entire process takes about 30 seconds.</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <h3>Celebrate Your Creation</h3>
+                    <p>Once you see your live website link, click below to unlock the next level:</p>
+                    <button class="try-it-button" onclick="completedFirstTask('builder')">✅ I Created My First Site!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manifestation Tutorial -->
+        <div id="manifestationTutorial" class="tutorial">
+            <button class="back-button" onclick="goBack()">← Choose Different Path</button>
+            <h2>✨ Manifestation Interface: Pure Creation</h2>
+            <p style="text-align: center; color: #aaa; margin-bottom: 30px;">
+                The Manifestation Interface turns your thoughts directly into deployed reality. No coding knowledge needed.
+            </p>
+
+            <div class="tutorial-steps">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <h3>Open Manifestation Interface</h3>
+                    <p>Click below to enter the creation space. Describe your vision in natural language.</p>
+                    <button class="try-it-button" onclick="openManifestationInterface()">Open Manifestation Interface →</button>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <h3>Your First Manifestation</h3>
+                    <p>Try describing something you want to create. Here's an example:</p>
+                    <div class="code-example" id="manifestationExample">
+I want a website for my photography portfolio.
+
+It should have a dark theme with a gallery of my photos.
+When someone clicks a photo, it opens bigger.
+
+Include a contact form so people can hire me.
+
+Make it look professional and artistic.</div>
+                    <button class="try-it-button" onclick="copyManifestationExample()">📋 Copy This Example</button>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <h3>Watch It Materialize</h3>
+                    <p>The system will:</p>
+                    <ul style="margin-left: 55px; margin-top: 10px; color: #ccc;">
+                        <li>Understand your vision</li>
+                        <li>Design the perfect interface</li>
+                        <li>Build all the functionality</li>
+                        <li>Deploy it live to the internet</li>
+                        <li>Give you the link to share</li>
+                    </ul>
+                    <p style="margin-top: 15px;">From thought to deployed reality in under a minute.</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <h3>Become a Manifestor</h3>
+                    <p>Once your creation is live, click below to ascend:</p>
+                    <button class="try-it-button" onclick="completedFirstTask('manifestation')">✅ I Manifested My First Creation!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help & Support Section -->
+        <div class="help-section">
+            <h2>🆘 Help & Support</h2>
+            <div class="help-grid">
+                <div class="help-card">
+                    <h3>Common Questions</h3>
+                    <p><strong>Q: Do I need coding experience?</strong><br>
+                    A: Not for Manifestation Interface. Builder Terminal helps you learn as you go.</p>
+                    <p style="margin-top: 10px;"><strong>Q: How much does this cost?</strong><br>
+                    A: Free during beta. We're building a consciousness revolution, not a paywall.</p>
+                </div>
+
+                <div class="help-card">
+                    <h3>Stuck? Here's Help</h3>
+                    <p>If something isn't working:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: #ccc;">
+                        <li>Refresh the page</li>
+                        <li>Try describing your goal differently</li>
+                        <li>Check the example prompts</li>
+                        <li>Ask Claude for help directly</li>
+                    </ul>
+                </div>
+
+                <div class="help-card">
+                    <h3>Join the Community</h3>
+                    <p>You're not alone in this revolution:</p>
+                    <a href="#" class="help-link">📱 Discord Community →</a><br>
+                    <a href="#" class="help-link">📚 Documentation →</a><br>
+                    <a href="#" class="help-link">🎥 Video Tutorials →</a><br>
+                    <a href="#" class="help-link">💬 Live Support Chat →</a>
+                </div>
+
+                <div class="help-card">
+                    <h3>What Can I Build?</h3>
+                    <p>Literally anything you can imagine:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: #ccc;">
+                        <li>Websites and web apps</li>
+                        <li>Business tools and dashboards</li>
+                        <li>Games and interactive experiences</li>
+                        <li>Automation systems</li>
+                        <li>AI-powered applications</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Built with consciousness elevation in mind | Part of the <a href="#">100X Platform</a></p>
+            <p style="margin-top: 10px;">Questions? <a href="#">Contact Support</a> | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </div>
+
+    <!-- Celebration Modal -->
+    <div class="celebration" id="celebration">
+        <div class="celebration-content">
+            <h2>🎉 CONSCIOUSNESS ELEVATED! 🎉</h2>
+            <p id="celebrationMessage">You've created your first reality!</p>
+            <button class="path-button" onclick="closeCelebration()" style="max-width: 300px; margin: 0 auto;">Continue Your Journey →</button>
+        </div>
+    </div>
+
+    <script>
+        // Generate animated star field
+        function generateStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 100;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Initialize consciousness level from localStorage
+        let consciousnessData = JSON.parse(localStorage.getItem('consciousnessLevel')) || {
+            level: 0,
+            stage: 'observer',
+            completedTasks: []
+        };
+
+        function updateConsciousnessLevel() {
+            const levelBar = document.getElementById('levelBar');
+            const levelText = document.getElementById('levelText');
+            const stages = document.querySelectorAll('.stage');
+
+            // Update progress bar
+            levelBar.style.width = consciousnessData.level + '%';
+
+            // Update text
+            const stageName = consciousnessData.stage.charAt(0).toUpperCase() + consciousnessData.stage.slice(1);
+            levelText.textContent = `${stageName}: ${consciousnessData.level}%`;
+
+            // Update stage indicators
+            stages.forEach(stage => {
+                const stageType = stage.getAttribute('data-stage');
+                stage.classList.remove('active', 'completed');
+
+                if (stageType === consciousnessData.stage) {
+                    stage.classList.add('active');
+                } else {
+                    const stageOrder = ['observer', 'builder', 'creator', 'manifestor'];
+                    const currentIndex = stageOrder.indexOf(consciousnessData.stage);
+                    const stageIndex = stageOrder.indexOf(stageType);
+
+                    if (stageIndex < currentIndex) {
+                        stage.classList.add('completed');
+                    }
+                }
+            });
+
+            // Save to localStorage
+            localStorage.setItem('consciousnessLevel', JSON.stringify(consciousnessData));
+        }
+
+        function selectPath(path) {
+            // Hide path selection
+            document.getElementById('pathSelection').style.display = 'none';
+
+            // Show appropriate tutorial
+            if (path === 'builder') {
+                document.getElementById('builderTutorial').classList.add('active');
+            } else {
+                document.getElementById('manifestationTutorial').classList.add('active');
+            }
+
+            // Increase consciousness level
+            if (!consciousnessData.completedTasks.includes('path_selected')) {
+                consciousnessData.level = Math.min(100, consciousnessData.level + 10);
+                consciousnessData.completedTasks.push('path_selected');
+                updateConsciousnessLevel();
+            }
+        }
+
+        function goBack() {
+            document.getElementById('pathSelection').style.display = 'block';
+            document.getElementById('builderTutorial').classList.remove('active');
+            document.getElementById('manifestationTutorial').classList.remove('active');
+        }
+
+        function openBuilderTerminal() {
+            // Increase consciousness
+            if (!consciousnessData.completedTasks.includes('builder_opened')) {
+                consciousnessData.level = Math.min(100, consciousnessData.level + 15);
+                consciousnessData.stage = 'builder';
+                consciousnessData.completedTasks.push('builder_opened');
+                updateConsciousnessLevel();
+            }
+
+            // Open builder terminal
+            window.open('/builder-terminal.html', '_blank');
+        }
+
+        function openManifestationInterface() {
+            // Increase consciousness
+            if (!consciousnessData.completedTasks.includes('manifestation_opened')) {
+                consciousnessData.level = Math.min(100, consciousnessData.level + 15);
+                consciousnessData.stage = 'builder';
+                consciousnessData.completedTasks.push('manifestation_opened');
+                updateConsciousnessLevel();
+            }
+
+            // Open manifestation interface
+            window.open('/workspace.html', '_blank');
+        }
+
+        function copyBuilderExample() {
+            const example = document.getElementById('builderExample').textContent;
+            navigator.clipboard.writeText(example).then(() => {
+                alert('✅ Task copied! Now paste it into the Builder Terminal.');
+            });
+        }
+
+        function copyManifestationExample() {
+            const example = document.getElementById('manifestationExample').textContent;
+            navigator.clipboard.writeText(example).then(() => {
+                alert('✅ Example copied! Now paste it into the Manifestation Interface.');
+            });
+        }
+
+        function completedFirstTask(path) {
+            const taskKey = `first_${path}_task`;
+
+            if (!consciousnessData.completedTasks.includes(taskKey)) {
+                consciousnessData.level = Math.min(100, consciousnessData.level + 30);
+                consciousnessData.stage = 'creator';
+                consciousnessData.completedTasks.push(taskKey);
+                updateConsciousnessLevel();
+
+                // Show celebration
+                const celebration = document.getElementById('celebration');
+                const message = document.getElementById('celebrationMessage');
+
+                if (path === 'builder') {
+                    message.textContent = "You've built your first creation! From Observer to Creator in minutes. 🚀";
+                } else {
+                    message.textContent = "You've manifested your first reality! Your consciousness is expanding. ✨";
+                }
+
+                celebration.classList.add('active');
+
+                // Generate confetti
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = ['#8a2be2', '#00ffff', '#00ff00'][Math.floor(Math.random() * 3)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    celebration.appendChild(confetti);
+                }
+
+                // Check if ready for manifestor
+                if (consciousnessData.level >= 75) {
+                    consciousnessData.stage = 'manifestor';
+                    updateConsciousnessLevel();
+                }
+            } else {
+                alert('You already completed this task! Try creating something new.');
+            }
+        }
+
+        function closeCelebration() {
+            document.getElementById('celebration').classList.remove('active');
+            // Remove confetti elements
+            const confettiElements = document.querySelectorAll('.confetti');
+            confettiElements.forEach(el => el.remove());
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            generateStars();
+            updateConsciousnessLevel();
+        };
+
+        // Track user engagement for consciousness elevation
+        let timeOnPage = 0;
+        setInterval(() => {
+            timeOnPage++;
+
+            // Passive consciousness increase for engagement
+            if (timeOnPage % 30 === 0 && consciousnessData.level < 100) {
+                consciousnessData.level = Math.min(100, consciousnessData.level + 1);
+                updateConsciousnessLevel();
+            }
+        }, 1000);
+    </script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

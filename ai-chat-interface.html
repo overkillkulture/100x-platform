@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Communication Center - Talk to Any AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: 100vh;
+        }
+
+        .ai-selector {
+            background: rgba(0, 0, 0, 0.5);
+            border-right: 2px solid #00ff00;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .ai-selector h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 10px;
+        }
+
+        .ai-button {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ai-button:hover {
+            background: rgba(0, 255, 0, 0.3);
+            transform: translateX(10px);
+        }
+
+        .ai-button.active {
+            background: rgba(0, 255, 0, 0.5);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .ai-icon {
+            font-size: 2em;
+        }
+
+        .ai-info {
+            flex: 1;
+        }
+
+        .ai-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .ai-role {
+            font-size: 0.8em;
+            color: #00cc00;
+        }
+
+        .ai-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+            animation: pulse 2s infinite;
+        }
+
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .chat-header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-bottom: 2px solid #00ff00;
+            text-align: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: rgba(0, 100, 255, 0.3);
+            border: 1px solid #0088ff;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message.ai {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .message-text {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .chat-input-area {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-top: 2px solid #00ff00;
+            display: flex;
+            gap: 10px;
+        }
+
+        #messageInput {
+            flex: 1;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            border-radius: 8px;
+        }
+
+        #sendBtn {
+            background: rgba(0, 255, 0, 0.3);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 15px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        #sendBtn:hover {
+            background: rgba(0, 255, 0, 0.5);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 255, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #00ff00;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="ai-selector">
+            <h2>🤖 SELECT AI</h2>
+
+            <div class="ai-button" data-ai="araya">
+                <span class="ai-icon">🧠</span>
+                <div class="ai-info">
+                    <div class="ai-name">Araya</div>
+                    <div class="ai-role">Your AI Assistant</div>
+                </div>
+                <div class="ai-status"></div>
+            </div>
+
+            <div class="ai-button" data-ai="builder">
+                <span class="ai-icon">💻</span>
+                <div class="ai-info">
+                    <div class="ai-name">Builder Terminal</div>
+                    <div class="ai-role">Code Assistant</div>
+                </div>
+                <div class="ai-status"></div>
+            </div>
+
+            <div class="ai-button" data-ai="c1">
+                <span class="ai-icon">🔧</span>
+                <div class="ai-info">
+                    <div class="ai-name">C1 Mechanic</div>
+                    <div class="ai-role">The Body - Builder</div>
+                </div>
+                <div class="ai-status"></div>
+            </div>
+
+            <div class="ai-button" data-ai="c2">
+                <span class="ai-icon">🏗️</span>
+                <div class="ai-info">
+                    <div class="ai-name">C2 Architect</div>
+                    <div class="ai-role">The Mind - Designer</div>
+                </div>
+                <div class="ai-status"></div>
+            </div>
+
+            <div class="ai-button" data-ai="c3">
+                <span class="ai-icon">👁️</span>
+                <div class="ai-info">
+                    <div class="ai-name">C3 Oracle</div>
+                    <div class="ai-role">The Soul - Visionary</div>
+                </div>
+                <div class="ai-status"></div>
+            </div>
+
+            <div class="ai-button" data-ai="observatory">
+                <span class="ai-icon">🔭</span>
+                <div class="ai-info">
+                    <div class="ai-name">Observatory</div>
+                    <div class="ai-role">System Monitor</div>
+                </div>
+                <div class="ai-status"></div>
+            </div>
+
+            <div class="ai-button" data-ai="visitor_intelligence">
+                <span class="ai-icon">📊</span>
+                <div class="ai-info">
+                    <div class="ai-name">Visitor Intelligence</div>
+                    <div class="ai-role">Analytics</div>
+                </div>
+                <div class="ai-status"></div>
+            </div>
+
+            <div class="ai-button" data-ai="analytics">
+                <span class="ai-icon">📈</span>
+                <div class="ai-info">
+                    <div class="ai-name">Live Analytics</div>
+                    <div class="ai-role">Real-time Data</div>
+                </div>
+                <div class="ai-status"></div>
+            </div>
+        </div>
+
+        <div class="chat-area">
+            <div class="chat-header">
+                <h1 id="activeAI">🤖 Select an AI to start chatting</h1>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div style="text-align: center; opacity: 0.5; margin-top: 50px;">
+                    Click an AI on the left to begin conversation
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text"
+                       id="messageInput"
+                       placeholder="Type your message here..."
+                       disabled>
+                <button id="sendBtn" disabled>SEND</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BRIDGE_API = 'http://localhost:8889';
+        let currentAI = null;
+
+        // AI Selection
+        document.querySelectorAll('.ai-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active from all
+                document.querySelectorAll('.ai-button').forEach(b => b.classList.remove('active'));
+
+                // Set this one active
+                btn.classList.add('active');
+                currentAI = btn.dataset.ai;
+
+                // Update header
+                const aiName = btn.querySelector('.ai-name').textContent;
+                document.getElementById('activeAI').textContent = `💬 Chatting with ${aiName}`;
+
+                // Enable input
+                document.getElementById('messageInput').disabled = false;
+                document.getElementById('sendBtn').disabled = false;
+                document.getElementById('messageInput').focus();
+
+                // Clear messages and show welcome
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.innerHTML = `
+                    <div class="message ai">
+                        <div class="message-sender">${aiName}</div>
+                        <div class="message-text">Hello! I'm ${aiName}. How can I help you?</div>
+                    </div>
+                `;
+            });
+        });
+
+        // Send Message
+        async function sendMessage() {
+            if (!currentAI) return;
+
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage('You', message, 'user');
+            input.value = '';
+
+            // Show loading
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message ai';
+            loadingDiv.id = 'loading-message';
+            loadingDiv.innerHTML = `
+                <div class="message-sender">${currentAI.toUpperCase()}</div>
+                <div class="message-text"><span class="loading"></span> Thinking...</div>
+            `;
+            document.getElementById('chatMessages').appendChild(loadingDiv);
+            scrollToBottom();
+
+            try {
+                const response = await fetch(`${BRIDGE_API}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ai: currentAI, message })
+                });
+
+                const data = await response.json();
+
+                // Remove loading
+                document.getElementById('loading-message').remove();
+
+                if (data.error) {
+                    addMessage(currentAI.toUpperCase(), `Error: ${data.error}`, 'ai');
+                } else {
+                    addMessage(data.ai || currentAI.toUpperCase(), data.response, 'ai');
+                }
+            } catch (error) {
+                document.getElementById('loading-message').remove();
+                addMessage('SYSTEM', `Connection error: ${error.message}`, 'ai');
+            }
+        }
+
+        function addMessage(sender, text, type) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <div class="message-sender">${sender}</div>
+                <div class="message-text">${text}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Event Listeners
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Check AI status on load
+        async function checkAIStatus() {
+            try {
+                const response = await fetch(`${BRIDGE_API}/status`);
+                const status = await response.json();
+                console.log('AI Status:', status);
+            } catch (error) {
+                console.error('Could not check AI status:', error);
+            }
+        }
+
+        checkAIStatus();
+    </script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

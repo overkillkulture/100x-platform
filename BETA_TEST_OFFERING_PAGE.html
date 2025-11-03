@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X Phone Service - Beta Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ff00;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 0 0 20px #00ff00;
+        }
+
+        .tagline {
+            text-align: center;
+            color: #00ddff;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 50, 0, 0.3);
+            border-left: 4px solid #00ff00;
+            border-radius: 5px;
+        }
+
+        .section h2 {
+            color: #00ddff;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .feature {
+            margin: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .feature:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .pricing {
+            text-align: center;
+            font-size: 2em;
+            color: #00ff00;
+            margin: 20px 0;
+            text-shadow: 0 0 15px #00ff00;
+        }
+
+        .pricing-note {
+            text-align: center;
+            color: #00ddff;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            color: #00ddff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            color: #00ff00;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #00ddff;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #00ff00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: #00ddff;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .warning {
+            background: rgba(255, 100, 0, 0.2);
+            border-left: 4px solid #ff6600;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #ffaa00;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 255, 0, 0.2);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .success-message h2 {
+            color: #00ff00;
+            margin-bottom: 15px;
+        }
+
+        .note {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 100X Phone Service</h1>
+        <p class="tagline">Phone service that doesn't suck</p>
+
+        <div class="section">
+            <h2>🚀 What You Get (Beta):</h2>
+            <div class="feature">Your own phone number (SMS + Voice)</div>
+            <div class="feature">60-second activation (no waiting)</div>
+            <div class="feature">Full automation via Python API</div>
+            <div class="feature">WiFi optimization (minimize data costs)</div>
+            <div class="feature">Magic link login (pre-configured)</div>
+            <div class="feature">Direct support from the builder</div>
+        </div>
+
+        <div class="pricing">$10/month</div>
+        <div class="pricing-note">Beta pricing - First 50 users only</div>
+
+        <div class="warning">
+            <strong>⚠️ Beta Program Notice:</strong> This is cutting-edge tech. Expect some rough edges. You'll help shape the product. Not for mission-critical use yet!
+        </div>
+
+        <div class="section">
+            <h2>📝 Join Beta Testing:</h2>
+
+            <form id="betaForm">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="name" required placeholder="John Smith">
+                </div>
+
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" required placeholder="john@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Current Phone Provider</label>
+                    <select id="provider">
+                        <option value="">Select provider</option>
+                        <option value="verizon">Verizon</option>
+                        <option value="att">AT&T</option>
+                        <option value="tmobile">T-Mobile</option>
+                        <option value="visible">Visible</option>
+                        <option value="cricket">Cricket</option>
+                        <option value="mint">Mint Mobile</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Monthly Phone Bill</label>
+                    <select id="bill">
+                        <option value="">Select range</option>
+                        <option value="0-25">$0-25</option>
+                        <option value="25-50">$25-50</option>
+                        <option value="50-100">$50-100</option>
+                        <option value="100+">$100+</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Why do you want to try 100X Phone?</label>
+                    <textarea id="reason" placeholder="Tell us what interests you..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Technical Level</label>
+                    <select id="technical">
+                        <option value="beginner">Beginner - Just want it to work</option>
+                        <option value="intermediate">Intermediate - Can follow instructions</option>
+                        <option value="advanced">Advanced - I code/automate things</option>
+                    </select>
+                </div>
+
+                <button type="submit">🚀 Request Beta Access</button>
+            </form>
+
+            <p class="note">* We'll review applications and send invitations within 48 hours</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <h2>✅ Application Received!</h2>
+            <p>Thanks for your interest! We'll review your application and send an invitation within 48 hours.</p>
+            <p style="margin-top: 15px; color: #00ddff;">Check your email for next steps.</p>
+        </div>
+
+        <div class="section">
+            <h2>❓ FAQ:</h2>
+            <p><strong>Q: Do I need special equipment?</strong><br>
+            A: Nope! Works on any smartphone with internet. No SIM cards needed.</p>
+
+            <p style="margin-top: 15px;"><strong>Q: Can I keep my current number?</strong><br>
+            A: Not yet (coming soon). You'll get a new number for now.</p>
+
+            <p style="margin-top: 15px;"><strong>Q: What if I need help?</strong><br>
+            A: Direct access to the builder via email/chat. Fast support guaranteed.</p>
+
+            <p style="margin-top: 15px;"><strong>Q: When does beta start?</strong><br>
+            A: Rolling invitations starting this week. First 50 users get in.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('betaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                provider: document.getElementById('provider').value,
+                bill: document.getElementById('bill').value,
+                reason: document.getElementById('reason').value,
+                technical: document.getElementById('technical').value,
+                timestamp: new Date().toISOString()
+            };
+
+            // For now, save to localStorage (later: send to backend)
+            const betaApplications = JSON.parse(localStorage.getItem('betaApplications') || '[]');
+            betaApplications.push(formData);
+            localStorage.setItem('betaApplications', JSON.stringify(betaApplications));
+
+            // Show success message
+            document.querySelector('form').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+
+            // TODO: Send to actual backend when ready
+            console.log('Beta application:', formData);
+        });
+    </script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

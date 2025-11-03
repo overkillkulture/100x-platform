@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X Platform - Sign Up (3-Tier Help System)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .gate-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.2);
+            position: relative;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* TIER 1: Guided Walkthrough */
+        .walkthrough-tip {
+            background: rgba(0, 255, 255, 0.1);
+            border-left: 4px solid #00ffff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            animation: fadeIn 0.5s;
+        }
+
+        .walkthrough-tip strong {
+            color: #00ffff;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, #00ffff, #00ff88);
+            transform: scale(1.2);
+        }
+
+        .step.completed {
+            background: rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #00ff88;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        input.has-error {
+            border-color: #ff0088;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .field-help {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .toggle-link a {
+            color: #00ffff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+        }
+
+        .error {
+            background: rgba(255, 0, 136, 0.2);
+            border: 1px solid #ff0088;
+            color: #ff0088;
+        }
+
+        /* TIER 2: Araya Help Widget */
+        .araya-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            max-height: 500px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 10px 50px rgba(0, 255, 255, 0.3);
+            z-index: 1000;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .araya-widget.show {
+            display: flex;
+        }
+
+        .araya-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .araya-title {
+            color: #00ffff;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+        }
+
+        .araya-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .araya-message {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #00ffff;
+        }
+
+        .quick-helps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .quick-help-btn {
+            padding: 10px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .quick-help-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+        /* TIER 3: Emergency Help Button */
+        .emergency-help {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 999;
+        }
+
+        .emergency-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff0088, #ff6600);
+            border: 3px solid #fff;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 0, 136, 0.5);
+            animation: pulse 2s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .emergency-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 40px rgba(255, 0, 136, 0.8);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 10px 30px rgba(255, 0, 136, 0.5);
+            }
+            50% {
+                box-shadow: 0 10px 50px rgba(255, 0, 136, 0.9);
+            }
+        }
+
+        .emergency-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .emergency-modal.show {
+            display: flex;
+        }
+
+        .emergency-content {
+            background: linear-gradient(135deg, #1a1a2e, #0a0a0a);
+            border: 3px solid #ff0088;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .emergency-content h2 {
+            color: #ff0088;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .help-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 2rem;
+        }
+
+        .help-option {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .help-option:hover {
+            border-color: #00ffff;
+            transform: translateY(-5px);
+        }
+
+        .help-option h3 {
+            color: #00ffff;
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .araya-widget {
+                width: calc(100% - 40px);
+                bottom: 10px;
+                right: 10px;
+            }
+
+            .emergency-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .help-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Sign Up Form -->
+    <div class="gate-container">
+        <div class="logo">🌀</div>
+        <h1>Join 100X Platform</h1>
+        <p class="tagline">Consciousness-driven builder workspace</p>
+
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step active" id="step1">1</div>
+            <div class="step" id="step2">2</div>
+            <div class="step" id="step3">3</div>
+        </div>
+
+        <!-- Tier 1: Guided Walkthrough -->
+        <div class="walkthrough-tip" id="walkthrough">
+            <strong>Step 1:</strong> Choose a username you'll remember
+        </div>
+
+        <div class="message success" id="successMessage"></div>
+        <div class="message error" id="errorMessage"></div>
+
+        <form id="signupForm" onsubmit="handleSignup(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    required
+                    oninput="handleUsernameInput()"
+                    placeholder="Choose your username">
+                <div class="field-help">This is how others will see you</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    required
+                    oninput="handlePasswordInput()"
+                    placeholder="At least 4 characters">
+                <div class="field-help">Keep it simple but secure</div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    required
+                    oninput="handleConfirmInput()"
+                    placeholder="Type password again">
+                <div class="field-help">Make sure they match!</div>
+            </div>
+
+            <button type="submit">Create My Account 🚀</button>
+        </form>
+
+        <div class="toggle-link">
+            Already have an account? <a href="simple-gate.html">Log in</a>
+        </div>
+    </div>
+
+    <!-- TIER 2: Araya Help Widget -->
+    <div class="araya-widget" id="arayaWidget">
+        <div class="araya-header">
+            <span class="araya-title">🌀 Araya Help</span>
+            <button class="close-btn" onclick="closeAraya()">×</button>
+        </div>
+        <div class="araya-messages" id="arayaMessages">
+            <div class="araya-message">
+                Hi! I'm Araya, your AI guide. Having trouble? I'm here to help!
+            </div>
+        </div>
+        <div class="quick-helps">
+            <button class="quick-help-btn" onclick="showHelp('username')">
+                What username should I choose?
+            </button>
+            <button class="quick-help-btn" onclick="showHelp('password')">
+                How do I create a good password?
+            </button>
+            <button class="quick-help-btn" onclick="showHelp('forgot')">
+                What if I forget my password?
+            </button>
+            <button class="quick-help-btn" onclick="openArayaChat()">
+                💬 Chat with Araya
+            </button>
+        </div>
+    </div>
+
+    <!-- TIER 3: Emergency Help Button -->
+    <div class="emergency-help">
+        <button class="emergency-btn" onclick="showEmergencyHelp()" title="Need immediate help?">
+            🆘
+        </button>
+    </div>
+
+    <!-- Emergency Help Modal -->
+    <div class="emergency-modal" id="emergencyModal">
+        <div class="emergency-content">
+            <h2>🆘 We're Here to Help!</h2>
+            <p>Having trouble signing up? No worries - we have backup options:</p>
+
+            <div class="help-options">
+                <div class="help-option" onclick="watchVideoTutorial()">
+                    <h3>📹 Watch Video</h3>
+                    <p>2-minute walkthrough showing exactly how to sign up</p>
+                </div>
+
+                <div class="help-option" onclick="openArayaChat()">
+                    <h3>🤖 Ask Araya</h3>
+                    <p>Chat with AI guide who can answer any questions</p>
+                </div>
+
+                <div class="help-option" onclick="simplifiedSignup()">
+                    <h3>⚡ Super Simple Mode</h3>
+                    <p>Ultra-easy signup with just one field</p>
+                </div>
+
+                <div class="help-option" onclick="contactSupport()">
+                    <h3>📞 Live Support</h3>
+                    <p>Send us a message and we'll help you personally</p>
+                </div>
+            </div>
+
+            <button onclick="closeEmergency()" style="margin-top: 2rem; background: rgba(255,255,255,0.1);">
+                Back to Signup
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let inactivityTimer;
+        let fieldAttempts = { username: 0, password: 0, confirm: 0 };
+
+        // TIER 1: Walkthrough System
+        const walkthroughSteps = {
+            1: "Choose a username you'll remember - it can be anything!",
+            2: "Create a password with at least 4 characters",
+            3: "Type your password again to make sure it's correct"
+        };
+
+        function updateWalkthrough(step) {
+            currentStep = step;
+            document.getElementById('walkthrough').innerHTML =
+                `<strong>Step ${step}:</strong> ${walkthroughSteps[step]}`;
+
+            // Update step indicators
+            for (let i = 1; i <= 3; i++) {
+                const stepEl = document.getElementById(`step${i}`);
+                stepEl.classList.remove('active', 'completed');
+                if (i < step) {
+                    stepEl.classList.add('completed');
+                } else if (i === step) {
+                    stepEl.classList.add('active');
+                }
+            }
+        }
+
+        function handleUsernameInput() {
+            const input = document.getElementById('username');
+            input.classList.remove('has-error');
+
+            if (input.value.length >= 3 && currentStep === 1) {
+                updateWalkthrough(2);
+                document.getElementById('password').focus();
+            }
+
+            fieldAttempts.username++;
+            checkForStruggling();
+        }
+
+        function handlePasswordInput() {
+            const input = document.getElementById('password');
+            input.classList.remove('has-error');
+
+            if (input.value.length >= 4 && currentStep === 2) {
+                updateWalkthrough(3);
+                document.getElementById('confirmPassword').focus();
+            }
+
+            fieldAttempts.password++;
+            checkForStruggling();
+        }
+
+        function handleConfirmInput() {
+            const input = document.getElementById('confirmPassword');
+            input.classList.remove('has-error');
+
+            fieldAttempts.confirm++;
+            checkForStruggling();
+        }
+
+        // TIER 2: Auto-trigger Araya if user is struggling
+        function checkForStruggling() {
+            const totalAttempts = Object.values(fieldAttempts).reduce((a, b) => a + b, 0);
+
+            // Show Araya widget after 5 attempts across fields
+            if (totalAttempts >= 5 && !document.getElementById('arayaWidget').classList.contains('show')) {
+                showArayaWidget();
+            }
+        }
+
+        function showArayaWidget() {
+            document.getElementById('arayaWidget').classList.add('show');
+            addArayaMessage("I noticed you might need some help. What can I assist you with?");
+        }
+
+        function closeAraya() {
+            document.getElementById('arayaWidget').classList.remove('show');
+        }
+
+        function addArayaMessage(text) {
+            const messagesDiv = document.getElementById('arayaMessages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'araya-message';
+            msgDiv.textContent = text;
+            messagesDiv.appendChild(msgDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function showHelp(topic) {
+            const helpTexts = {
+                username: "Choose any username you like! It can be your name, a nickname, or anything memorable. Examples: john, builder123, codemaster",
+                password: "Make it at least 4 characters. A good password might be: MyPass123, SecureMe, Build2025. Write it down so you don't forget!",
+                forgot: "Your password is stored locally on this device. If you forget it, you'll need to create a new account. That's why writing it down is important!"
+            };
+
+            addArayaMessage(helpTexts[topic]);
+        }
+
+        function openArayaChat() {
+            window.open('/araya-chat.html', 'ArayaChat', 'width=500,height=700');
+            closeEmergency();
+        }
+
+        // TIER 3: Emergency Help System
+        function showEmergencyHelp() {
+            document.getElementById('emergencyModal').classList.add('show');
+        }
+
+        function closeEmergency() {
+            document.getElementById('emergencyModal').classList.remove('show');
+        }
+
+        function watchVideoTutorial() {
+            alert('🎥 Opening video tutorial... (Video tutorial would open here)');
+            // In production: window.open('https://youtube.com/your-tutorial-video');
+            closeEmergency();
+        }
+
+        function simplifiedSignup() {
+            const simpleUsername = prompt("Super Simple Mode: Just tell us what to call you:");
+            if (simpleUsername) {
+                const simplePassword = 'simple' + Math.random().toString(36).slice(2, 6);
+
+                // Auto-create account
+                const users = getUsers();
+                users[simpleUsername] = {
+                    username: simpleUsername,
+                    password: simplePassword,
+                    name: simpleUsername,
+                    created_at: new Date().toISOString()
+                };
+                saveUsers(users);
+
+                alert(`Account created!\n\nUsername: ${simpleUsername}\nPassword: ${simplePassword}\n\n⚠️ WRITE THIS DOWN!`);
+
+                // Auto-login
+                localStorage.setItem('workspace_user_id', simpleUsername);
+                localStorage.setItem('workspace_user_name', simpleUsername);
+                window.location.href = 'workspace-v3.html';
+            }
+            closeEmergency();
+        }
+
+        function contactSupport() {
+            alert('📞 Support Contact:\n\nEmail: support@consciousness.io\nOr open the Araya chat for instant help!');
+            openArayaChat();
+        }
+
+        // Main Signup Function
+        function handleSignup(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!username || !password || !confirmPassword) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                document.getElementById('confirmPassword').classList.add('has-error');
+                return;
+            }
+
+            if (password.length < 4) {
+                showError('Password must be at least 4 characters');
+                document.getElementById('password').classList.add('has-error');
+                return;
+            }
+
+            const users = getUsers();
+
+            if (users[username]) {
+                showError('Username already exists. Please choose another.');
+                document.getElementById('username').classList.add('has-error');
+                return;
+            }
+
+            // Create account
+            users[username] = {
+                username: username,
+                password: password,
+                name: username,
+                created_at: new Date().toISOString()
+            };
+
+            saveUsers(users);
+            localStorage.setItem('workspace_user_id', username);
+            localStorage.setItem('workspace_user_name', username);
+
+            showSuccess('🎉 Account created! Redirecting to workspace...');
+
+            setTimeout(() => {
+                window.location.href = 'workspace-v3.html';
+            }, 1500);
+        }
+
+        function getUsers() {
+            const users = localStorage.getItem('100x_users');
+            return users ? JSON.parse(users) : {};
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('100x_users', JSON.stringify(users));
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateWalkthrough(1);
+        });
+    </script>
+
+<script src="/UNIVERSAL_HELP_SYSTEM.js"></script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

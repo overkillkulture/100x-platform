@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Nervous System Analytics - LIVE NERVES</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            height: 100vh;
+            gap: 2px;
+            background: #0f0;
+        }
+
+        .quadrant {
+            background: #000;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .quadrant h2 {
+            color: #0f0;
+            text-shadow: 0 0 10px #0f0;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #0f0;
+            padding-bottom: 10px;
+        }
+
+        /* TOP LEFT: LIVE HEARTBEATS */
+        #heartbeats {
+            background: radial-gradient(circle at center, #001100 0%, #000 100%);
+        }
+
+        .heartbeat {
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 3px solid #0f0;
+            background: rgba(0, 255, 0, 0.05);
+            animation: pulse 1s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: translateX(-10px); }
+            50% { opacity: 1; transform: translateX(0); }
+        }
+
+        .heartbeat.active {
+            border-left-color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .heartbeat.idle {
+            border-left-color: #555;
+            opacity: 0.5;
+        }
+
+        /* TOP RIGHT: NERVE MAP (PAGES) */
+        #nerveMap {
+            background: radial-gradient(circle at center, #110000 0%, #000 100%);
+        }
+
+        .nerve-node {
+            padding: 8px;
+            margin: 5px 0;
+            border-left: 3px solid #ff0000;
+            background: rgba(255, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nerve-node:hover {
+            background: rgba(255, 0, 0, 0.15);
+            transform: translateX(5px);
+        }
+
+        .nerve-node.hot {
+            border-left-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            animation: nerveFire 0.5s infinite;
+        }
+
+        @keyframes nerveFire {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* BOTTOM LEFT: LIVE STATS */
+        #liveStats {
+            background: radial-gradient(circle at center, #000011 0%, #000 100%);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 3px solid #00ffff;
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        /* BOTTOM RIGHT: SIGNAL STRENGTH */
+        #signalStrength {
+            background: radial-gradient(circle at center, #110011 0%, #000 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .signal-bars {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .signal-bar {
+            width: 40px;
+            background: #333;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .signal-bar.active {
+            background: linear-gradient(to top, #0f0 0%, #0f0 100%);
+            box-shadow: 0 0 20px #0f0;
+        }
+
+        .signal-bar:nth-child(1) { height: 50px; }
+        .signal-bar:nth-child(2) { height: 80px; }
+        .signal-bar:nth-child(3) { height: 110px; }
+        .signal-bar:nth-child(4) { height: 140px; }
+        .signal-bar:nth-child(5) { height: 170px; }
+
+        .signal-status {
+            font-size: 2rem;
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
+            margin-top: 20px;
+        }
+
+        /* Connection pulse */
+        .connection-pulse {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #0f0;
+            box-shadow: 0 0 10px #0f0;
+            animation: connectionPulse 2s infinite;
+        }
+
+        @keyframes connectionPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.3); }
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-left: 10px;
+        }
+
+        .page-path {
+            color: #ff00ff;
+            font-weight: bold;
+        }
+
+        .user-pin {
+            color: #ffff00;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- TOP LEFT: LIVE HEARTBEATS -->
+        <div class="quadrant" id="heartbeats">
+            <div class="connection-pulse"></div>
+            <h2>💓 LIVE HEARTBEATS</h2>
+            <div id="heartbeatList">
+                <div class="heartbeat idle">
+                    <div><span class="user-pin">System</span>: Waiting for visitors...</div>
+                    <div class="timestamp">Monitoring active</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOP RIGHT: NERVE MAP (PAGES) -->
+        <div class="quadrant" id="nerveMap">
+            <div class="connection-pulse"></div>
+            <h2>🧠 NERVE MAP (Pages)</h2>
+            <div id="nerveList">
+                <div class="nerve-node">
+                    <div><span class="page-path">/index</span></div>
+                    <div class="timestamp">0 visitors</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM LEFT: LIVE STATS -->
+        <div class="quadrant" id="liveStats">
+            <div class="connection-pulse"></div>
+            <h2>📊 LIVE STATISTICS</h2>
+            <div id="statsList">
+                <div class="stat-row">
+                    <span>Active Visitors:</span>
+                    <span class="stat-value" id="activeCount">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Total Today:</span>
+                    <span class="stat-value" id="totalToday">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Heartbeats/Min:</span>
+                    <span class="stat-value" id="heartbeatRate">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Hot Pages:</span>
+                    <span class="stat-value" id="hotPages">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Avg Time/Page:</span>
+                    <span class="stat-value" id="avgTime">0s</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM RIGHT: SIGNAL STRENGTH -->
+        <div class="quadrant" id="signalStrength">
+            <div class="connection-pulse"></div>
+            <h2>📡 SYSTEM PULSE</h2>
+            <div class="signal-bars">
+                <div class="signal-bar"></div>
+                <div class="signal-bar"></div>
+                <div class="signal-bar"></div>
+                <div class="signal-bar"></div>
+                <div class="signal-bar"></div>
+            </div>
+            <div class="signal-status" id="signalStatus">MONITORING</div>
+        </div>
+    </div>
+
+    <script>
+        // NERVOUS SYSTEM ANALYTICS ENGINE
+        const visitors = new Map();
+        const pageHits = new Map();
+        let heartbeatCount = 0;
+        let lastMinuteBeats = 0;
+
+        // Connect to local visitor data
+        async function fetchLocalVisitorData() {
+            try {
+                const response = await fetch('/visitor_data/daily_report_2025-10-23.json');
+                const data = await response.json();
+                updateStats(data);
+            } catch (err) {
+                console.log('Local data fetch:', err.message);
+            }
+        }
+
+        // Connect to LOCAL nerve collector for live data (IN-HOUSE)
+        async function fetchLiveVisitors() {
+            try {
+                // Try LOCAL first (port 6000)
+                const response = await fetch('http://localhost:6000/api/visitor/active');
+                const data = await response.json();
+                processLiveVisitors(data);
+                console.log('💓 LOCAL NERVES: Connected');
+            } catch (err) {
+                console.log('Local nerves offline, trying cloud...');
+                // Fallback to Railway if local is down
+                try {
+                    const response = await fetch('https://builder-pattern-api-production.up.railway.app/api/visitor/active');
+                    const data = await response.json();
+                    processLiveVisitors(data);
+                    console.log('☁️  CLOUD NERVES: Connected');
+                } catch (err2) {
+                    console.log('All nerves offline');
+                }
+            }
+        }
+
+        function updateStats(data) {
+            if (!data.summary) return;
+
+            document.getElementById('activeCount').textContent = data.summary.active_sessions || 0;
+            document.getElementById('totalToday').textContent = data.summary.total_visitors || 0;
+            document.getElementById('hotPages').textContent = Object.keys(data.patterns_detected || {}).length;
+
+            updateSignalStrength(data.summary.active_sessions || 0);
+        }
+
+        function processLiveVisitors(visitors) {
+            const heartbeatList = document.getElementById('heartbeatList');
+            heartbeatList.innerHTML = '';
+
+            if (!visitors || visitors.length === 0) {
+                heartbeatList.innerHTML = `
+                    <div class="heartbeat idle">
+                        <div><span class="user-pin">System</span>: No active visitors</div>
+                        <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+                    </div>
+                `;
+                return;
+            }
+
+            visitors.forEach(visitor => {
+                const heartbeat = document.createElement('div');
+                heartbeat.className = `heartbeat ${visitor.isActive ? 'active' : 'idle'}`;
+                heartbeat.innerHTML = `
+                    <div>
+                        <span class="user-pin">${visitor.pin}</span> on
+                        <span class="page-path">${visitor.page}</span>
+                    </div>
+                    <div class="timestamp">${visitor.timeOnPage}s | ${new Date(visitor.timestamp).toLocaleTimeString()}</div>
+                `;
+                heartbeatList.appendChild(heartbeat);
+
+                // Track page hits
+                pageHits.set(visitor.page, (pageHits.get(visitor.page) || 0) + 1);
+                heartbeatCount++;
+            });
+
+            updateNerveMap();
+            updateHeartbeatRate();
+        }
+
+        function updateNerveMap() {
+            const nerveList = document.getElementById('nerveList');
+            nerveList.innerHTML = '';
+
+            if (pageHits.size === 0) {
+                nerveList.innerHTML = `
+                    <div class="nerve-node">
+                        <div><span class="page-path">No pages active</span></div>
+                        <div class="timestamp">Waiting for traffic...</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by hits (hottest first)
+            const sorted = Array.from(pageHits.entries()).sort((a, b) => b[1] - a[1]);
+
+            sorted.forEach(([page, hits]) => {
+                const node = document.createElement('div');
+                node.className = `nerve-node ${hits > 2 ? 'hot' : ''}`;
+                node.innerHTML = `
+                    <div><span class="page-path">${page}</span></div>
+                    <div class="timestamp">${hits} ${hits === 1 ? 'visitor' : 'visitors'}</div>
+                `;
+                nerveList.appendChild(node);
+            });
+        }
+
+        function updateSignalStrength(activeCount) {
+            const bars = document.querySelectorAll('.signal-bar');
+            const activeBars = Math.min(activeCount, 5);
+
+            bars.forEach((bar, index) => {
+                if (index < activeBars) {
+                    bar.classList.add('active');
+                } else {
+                    bar.classList.remove('active');
+                }
+            });
+
+            const status = document.getElementById('signalStatus');
+            if (activeCount === 0) {
+                status.textContent = 'MONITORING';
+                status.style.color = '#888';
+            } else if (activeCount < 3) {
+                status.textContent = 'ACTIVE';
+                status.style.color = '#0f0';
+            } else if (activeCount < 10) {
+                status.textContent = 'BUSY';
+                status.style.color = '#ff0';
+            } else {
+                status.textContent = 'HOT!';
+                status.style.color = '#f00';
+            }
+        }
+
+        function updateHeartbeatRate() {
+            lastMinuteBeats++;
+            document.getElementById('heartbeatRate').textContent = lastMinuteBeats;
+        }
+
+        // Simulate live data for demo (REMOVE when real data flows)
+        function simulateLiveData() {
+            const testVisitor = {
+                pin: 'test_001',
+                page: '/workspace',
+                isActive: true,
+                timeOnPage: Math.floor(Math.random() * 300),
+                timestamp: new Date().toISOString()
+            };
+
+            processLiveVisitors([testVisitor]);
+        }
+
+        // MAIN LOOP: Poll for updates
+        setInterval(() => {
+            fetchLocalVisitorData();
+            fetchLiveVisitors();
+            // simulateLiveData(); // UNCOMMENT to see it work with test data
+        }, 5000); // Update every 5 seconds
+
+        // Reset heartbeat counter every minute
+        setInterval(() => {
+            lastMinuteBeats = 0;
+        }, 60000);
+
+        // Initial load
+        fetchLocalVisitorData();
+        fetchLiveVisitors();
+
+        console.log('🧠 Nervous System Analytics ONLINE');
+        console.log('💓 Monitoring heartbeats every 5 seconds');
+        console.log('🌐 Connected to local + Railway data');
+    </script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

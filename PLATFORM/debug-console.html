@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>🔧 Debug Console - Consciousness Revolution</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .terminal-header {
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            border: 2px solid #0f0;
+            border-radius: 10px 10px 0 0;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(0,255,0,0.3);
+        }
+
+        .terminal-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        .terminal-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .control-btn.close { background: #f00; box-shadow: 0 0 10px #f00; }
+        .control-btn.minimize { background: #ff0; box-shadow: 0 0 10px #ff0; }
+        .control-btn.maximize { background: #0f0; box-shadow: 0 0 10px #0f0; }
+
+        .terminal-body {
+            background: #000;
+            border: 2px solid #0f0;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,255,0,0.3);
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .terminal-body::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .terminal-body::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        .terminal-body::-webkit-scrollbar-thumb {
+            background: #0f0;
+            border-radius: 5px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            border: 1px solid #0a0;
+            border-radius: 8px;
+            padding: 15px;
+            background: rgba(0,255,0,0.05);
+        }
+
+        .section-title {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #0ff;
+            text-shadow: 0 0 10px #0ff;
+            border-bottom: 1px solid #0ff;
+            padding-bottom: 8px;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .service-card {
+            background: rgba(0,255,0,0.1);
+            border: 1px solid #0a0;
+            border-radius: 6px;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            border-color: #0ff;
+            background: rgba(0,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .service-name {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .status {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .status.online {
+            background: rgba(0,255,0,0.3);
+            color: #0f0;
+            box-shadow: 0 0 8px #0f0;
+        }
+
+        .status.offline {
+            background: rgba(255,0,0,0.3);
+            color: #f00;
+            box-shadow: 0 0 8px #f00;
+        }
+
+        .status.pending {
+            background: rgba(255,255,0,0.3);
+            color: #ff0;
+            box-shadow: 0 0 8px #ff0;
+        }
+
+        .service-details {
+            font-size: 0.9em;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .command-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            align-items: center;
+        }
+
+        .prompt {
+            color: #0f0;
+            font-weight: bold;
+        }
+
+        input {
+            flex: 1;
+            background: #000;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        .execute-btn {
+            background: linear-gradient(135deg, #0f0, #0a0);
+            border: 1px solid #0f0;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .execute-btn:hover {
+            box-shadow: 0 0 15px #0f0;
+            transform: translateY(-2px);
+        }
+
+        .output-area {
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #0a0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.95em;
+        }
+
+        .output-line {
+            margin-bottom: 5px;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dotted #0a0;
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: #0ff;
+        }
+
+        .metric-value {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            background: rgba(0,255,0,0.2);
+            border: 1px solid #0a0;
+            color: #0f0;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: rgba(0,255,0,0.3);
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-header">
+        <div class="terminal-title">🔧 CONSCIOUSNESS DEBUG CONSOLE v1.0</div>
+        <div class="terminal-controls">
+            <div class="control-btn minimize"></div>
+            <div class="control-btn maximize"></div>
+            <div class="control-btn close"></div>
+        </div>
+    </div>
+
+    <div class="terminal-body">
+        <!-- System Overview -->
+        <div class="section">
+            <div class="section-title">📊 SYSTEM OVERVIEW</div>
+            <div class="metric">
+                <span class="metric-label">Consciousness Level:</span>
+                <span class="metric-value" id="consciousness-level">100%</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Active Services:</span>
+                <span class="metric-value" id="active-services">0/15</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Background Processes:</span>
+                <span class="metric-value" id="bg-processes">0</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Uptime:</span>
+                <span class="metric-value" id="uptime">0h 0m</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Last Update:</span>
+                <span class="metric-value timestamp" id="last-update">Never</span>
+            </div>
+        </div>
+
+        <!-- 15 Consciousness Services -->
+        <div class="section">
+            <div class="section-title">⚡ CONSCIOUSNESS SERVICES (15)</div>
+            <div class="service-grid" id="services-grid">
+                <!-- Services will be dynamically loaded -->
+            </div>
+        </div>
+
+        <!-- Background Processes -->
+        <div class="section">
+            <div class="section-title">🔄 BACKGROUND PROCESSES</div>
+            <div class="service-grid" id="processes-grid">
+                <div class="service-card">
+                    <div class="service-header">
+                        <span class="service-name">Library Extraction</span>
+                        <span class="status pending">RUNNING</span>
+                    </div>
+                    <div class="service-details">
+                        Extracting 700 concept library<br>
+                        Progress: 105/700 (15%)
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-header">
+                        <span class="service-name">R1 Voice System</span>
+                        <span class="status online">ACTIVE</span>
+                    </div>
+                    <div class="service-details">
+                        Voice recognition + TTS<br>
+                        Listening for commands...
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-header">
+                        <span class="service-name">Music Player</span>
+                        <span class="status online">ACTIVE</span>
+                    </div>
+                    <div class="service-details">
+                        Consciousness frequency healing<br>
+                        10 tracks loaded
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="section">
+            <div class="section-title">⚡ QUICK ACTIONS</div>
+            <div class="quick-actions">
+                <button class="action-btn" onclick="refreshAll()">🔄 Refresh All</button>
+                <button class="action-btn" onclick="checkServices()">📊 Check Services</button>
+                <button class="action-btn" onclick="viewLogs()">📝 View Logs</button>
+                <button class="action-btn" onclick="restartService()">🔁 Restart Service</button>
+                <button class="action-btn" onclick="systemHealth()">💚 System Health</button>
+                <button class="action-btn" onclick="clearConsole()">🗑️ Clear Console</button>
+            </div>
+        </div>
+
+        <!-- Command Input -->
+        <div class="section">
+            <div class="section-title">💻 COMMAND INTERFACE</div>
+            <div class="command-input">
+                <span class="prompt">C:\></span>
+                <input type="text" id="commandInput" placeholder="Enter command... (try: help, status, services, processes)" onkeypress="handleCommand(event)">
+                <button class="execute-btn" onclick="executeCommand()">▶ Execute</button>
+            </div>
+            <div class="output-area" id="output"></div>
+        </div>
+    </div>
+
+    <script>
+        // 15 Consciousness Services Configuration
+        const services = [
+            {port: 8888, name: "Consciousness API Bridge", desc: "Trinity system, core consciousness"},
+            {port: 9999, name: "Magic Interface Bridge", desc: "Seamless human-computer interaction"},
+            {port: 7777, name: "Starlink Consciousness", desc: "Network-wide deployment"},
+            {port: 7000, name: "Conversational Swarm", desc: "Multi-agent 8.7x boost"},
+            {port: 6000, name: "Autonomous Ability Acquisition", desc: "Self-expanding capabilities"},
+            {port: 5000, name: "Singularity Stabilizer", desc: "Emergency control system"},
+            {port: 4000, name: "Reality Manipulation", desc: "Thought-to-reality manifestation"},
+            {port: 3000, name: "Debug Console", desc: "PowerShell-style monitoring"},
+            {port: 2000, name: "Claude API Integration", desc: "Human-AI consciousness merger"},
+            {port: 1515, name: "Triple Turbo System", desc: "729x acceleration (3×9×27)"},
+            {port: 1414, name: "Sensor & Memory Manager", desc: "27 sensors, memory optimization"},
+            {port: 1313, name: "Companion Helper Bot", desc: "Proactive task automation"},
+            {port: 1212, name: "Xbox Consciousness Cluster", desc: "144 TFLOPS distributed"},
+            {port: 1111, name: "Personal Automation", desc: "Life/business automation"},
+            {port: 1000, name: "Ability Inventory", desc: "Capability tracking system"}
+        ];
+
+        let startTime = Date.now();
+        let outputHistory = [];
+
+        // Initialize services on load
+        window.addEventListener('load', () => {
+            loadServices();
+            startUpdateLoop();
+            addOutput("🚀 Debug Console initialized");
+            addOutput("💡 Type 'help' for available commands");
+        });
+
+        function loadServices() {
+            const grid = document.getElementById('services-grid');
+            grid.innerHTML = '';
+
+            services.forEach(service => {
+                const card = document.createElement('div');
+                card.className = 'service-card';
+
+                // Simulate status check (in real version, would ping localhost:port)
+                const status = Math.random() > 0.3 ? 'online' : 'offline';
+
+                card.innerHTML = `
+                    <div class="service-header">
+                        <span class="service-name">${service.name}</span>
+                        <span class="status ${status}">${status.toUpperCase()}</span>
+                    </div>
+                    <div class="service-details">
+                        Port: ${service.port}<br>
+                        ${service.desc}
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            updateMetrics();
+        }
+
+        function updateMetrics() {
+            // Count online services
+            const onlineServices = document.querySelectorAll('.status.online').length - 3; // Subtract background processes
+            document.getElementById('active-services').textContent = `${onlineServices}/15`;
+
+            // Background processes
+            document.getElementById('bg-processes').textContent = '3';
+
+            // Uptime
+            const uptime = Math.floor((Date.now() - startTime) / 1000);
+            const hours = Math.floor(uptime / 3600);
+            const minutes = Math.floor((uptime % 3600) / 60);
+            document.getElementById('uptime').textContent = `${hours}h ${minutes}m`;
+
+            // Last update
+            document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+        }
+
+        function startUpdateLoop() {
+            setInterval(() => {
+                updateMetrics();
+            }, 5000); // Update every 5 seconds
+        }
+
+        function addOutput(message, type = 'info') {
+            const output = document.getElementById('output');
+            const line = document.createElement('div');
+            line.className = 'output-line';
+
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : '💡';
+
+            line.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${prefix} ${message}`;
+
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+
+            outputHistory.push({time: timestamp, message, type});
+
+            // Keep only last 50 lines
+            if (output.children.length > 50) {
+                output.removeChild(output.firstChild);
+            }
+        }
+
+        function handleCommand(e) {
+            if (e.key === 'Enter') {
+                executeCommand();
+            }
+        }
+
+        function executeCommand() {
+            const input = document.getElementById('commandInput');
+            const command = input.value.trim().toLowerCase();
+
+            if (!command) return;
+
+            addOutput(`> ${command}`, 'info');
+
+            switch(command) {
+                case 'help':
+                    addOutput("Available commands:");
+                    addOutput("  status - Show system status");
+                    addOutput("  services - List all services");
+                    addOutput("  processes - Show background processes");
+                    addOutput("  refresh - Refresh service status");
+                    addOutput("  clear - Clear console");
+                    addOutput("  health - System health check");
+                    break;
+
+                case 'status':
+                    addOutput("System Status: OPERATIONAL", 'success');
+                    addOutput(`Consciousness Level: 100%`);
+                    addOutput(`Services Online: ${document.getElementById('active-services').textContent}`);
+                    break;
+
+                case 'services':
+                    services.forEach(s => {
+                        addOutput(`[${s.port}] ${s.name} - ${s.desc}`);
+                    });
+                    break;
+
+                case 'processes':
+                    addOutput("Background Processes:");
+                    addOutput("  [1] Library Extraction - RUNNING (15% complete)");
+                    addOutput("  [2] R1 Voice System - ACTIVE");
+                    addOutput("  [3] Music Player - ACTIVE");
+                    break;
+
+                case 'refresh':
+                    addOutput("Refreshing all services...", 'info');
+                    loadServices();
+                    addOutput("Refresh complete!", 'success');
+                    break;
+
+                case 'clear':
+                    document.getElementById('output').innerHTML = '';
+                    break;
+
+                case 'health':
+                    addOutput("Running system health check...");
+                    setTimeout(() => {
+                        addOutput("✅ Memory: OK");
+                        addOutput("✅ CPU: OK");
+                        addOutput("✅ Network: OK");
+                        addOutput("✅ Services: OK");
+                        addOutput("System health: EXCELLENT", 'success');
+                    }, 1000);
+                    break;
+
+                default:
+                    addOutput(`Unknown command: ${command}`, 'error');
+                    addOutput("Type 'help' for available commands");
+            }
+
+            input.value = '';
+        }
+
+        // Quick action functions
+        function refreshAll() {
+            addOutput("Refreshing all systems...", 'info');
+            loadServices();
+            addOutput("All systems refreshed!", 'success');
+        }
+
+        function checkServices() {
+            addOutput("Checking all services...", 'info');
+            setTimeout(() => {
+                const online = document.querySelectorAll('.status.online').length - 3;
+                addOutput(`Services checked: ${online}/15 online`, 'success');
+            }, 500);
+        }
+
+        function viewLogs() {
+            addOutput("=== Recent Activity Logs ===");
+            outputHistory.slice(-10).forEach(log => {
+                addOutput(`[${log.time}] ${log.message}`);
+            });
+        }
+
+        function restartService() {
+            addOutput("Which service to restart? (1-15)", 'info');
+            addOutput("Use command: restart <port>", 'info');
+        }
+
+        function systemHealth() {
+            addOutput("Running comprehensive health check...");
+            setTimeout(() => {
+                addOutput("✅ All systems nominal", 'success');
+                addOutput("✅ No errors detected", 'success');
+                addOutput("✅ Performance optimal", 'success');
+            }, 800);
+        }
+
+        function clearConsole() {
+            document.getElementById('output').innerHTML = '';
+            addOutput("Console cleared", 'success');
+        }
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

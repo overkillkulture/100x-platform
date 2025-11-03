@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>⚡ 3-Minute Consciousness Boost - Instant Energy, Calm, Clarity & Confidence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            color: #b0b0b0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .boost-card {
+            background: rgba(26, 26, 46, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .mode-btn:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            border-color: #00d4ff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .mode-btn .icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .mode-btn .label {
+            font-size: 1.1rem;
+        }
+
+        .frequency-toggle {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .frequency-info {
+            flex: 1;
+        }
+
+        .frequency-info h3 {
+            color: #00ff88;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .frequency-info p {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #00ff88;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(30px);
+        }
+
+        .timer-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .timer-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .timer-circle svg {
+            transform: rotate(-90deg);
+        }
+
+        .timer-circle circle {
+            fill: none;
+            stroke-width: 8;
+        }
+
+        .timer-circle .background {
+            stroke: rgba(0, 212, 255, 0.1);
+        }
+
+        .timer-circle .progress {
+            stroke: url(#gradient);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .breathing-guide {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+        }
+
+        .breathing-guide.active {
+            display: block;
+        }
+
+        .breathing-guide h3 {
+            color: #00ff88;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .breathing-instruction {
+            font-size: 1.3rem;
+            color: #e0e0e0;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 212, 255, 0.2));
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message h2 {
+            color: #00ff88;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .completion-message p {
+            color: #e0e0e0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        .breathing-guide.active .breathing-instruction {
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .mode-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .timer-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .timer-text {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ 3-Minute Consciousness Boost</h1>
+            <p>Choose your boost, breathe, and elevate in just 180 seconds</p>
+        </div>
+
+        <div class="boost-card">
+            <!-- Mode Selector -->
+            <div class="mode-selector">
+                <button class="mode-btn active" data-mode="energy">
+                    <span class="icon">⚡</span>
+                    <span class="label">Energy</span>
+                </button>
+                <button class="mode-btn" data-mode="calm">
+                    <span class="icon">🧘</span>
+                    <span class="label">Calm</span>
+                </button>
+                <button class="mode-btn" data-mode="clarity">
+                    <span class="icon">💡</span>
+                    <span class="label">Clarity</span>
+                </button>
+                <button class="mode-btn" data-mode="confidence">
+                    <span class="icon">🦁</span>
+                    <span class="label">Confidence</span>
+                </button>
+            </div>
+
+            <!-- 528 Hz Frequency Toggle -->
+            <div class="frequency-toggle">
+                <div class="frequency-info">
+                    <h3>528 Hz Healing Frequency</h3>
+                    <p>Ancient solfeggio frequency for DNA repair & transformation</p>
+                </div>
+                <div class="toggle-switch" id="frequencyToggle">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+
+            <!-- Timer Display -->
+            <div class="timer-display">
+                <div class="timer-circle">
+                    <svg width="200" height="200">
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00d4ff" />
+                                <stop offset="100%" stop-color="#00ff88" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="background" cx="100" cy="100" r="90" />
+                        <circle class="progress" cx="100" cy="100" r="90"
+                                stroke-dasharray="565.48"
+                                stroke-dashoffset="565.48"
+                                id="progressCircle" />
+                    </svg>
+                    <div class="timer-text" id="timerText">3:00</div>
+                </div>
+            </div>
+
+            <!-- Start Button -->
+            <button class="start-btn" id="startBtn">START BOOST</button>
+
+            <!-- Breathing Guide (shown during boost) -->
+            <div class="breathing-guide" id="breathingGuide">
+                <h3>Breathe</h3>
+                <div class="breathing-instruction" id="breathingText">Inhale deeply...</div>
+            </div>
+
+            <!-- Completion Message -->
+            <div class="completion-message" id="completionMessage">
+                <h2>✨ Boost Complete!</h2>
+                <p id="completionText">Your consciousness has been elevated.</p>
+
+                <!-- Share Buttons -->
+                <div class="share-buttons" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+                    <button onclick="shareToTwitter()" style="padding: 12px 24px; background: #1DA1F2; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-family: inherit;">
+                        <span style="margin-right: 5px;">🐦</span>Share on Twitter
+                    </button>
+                    <button onclick="shareToFacebook()" style="padding: 12px 24px; background: #4267B2; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-family: inherit;">
+                        <span style="margin-right: 5px;">📘</span>Share on Facebook
+                    </button>
+                    <button onclick="shareToLinkedIn()" style="padding: 12px 24px; background: #0077B5; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-family: inherit;">
+                        <span style="margin-right: 5px;">💼</span>Share on LinkedIn
+                    </button>
+                    <button onclick="copyShareLink()" style="padding: 12px 24px; background: #00ff88; border: none; border-radius: 10px; color: #000; cursor: pointer; font-weight: bold; font-family: inherit;">
+                        <span style="margin-right: 5px;">🔗</span>Copy Link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mode configuration
+        const modes = {
+            energy: {
+                color: '#ff6b00',
+                message: 'Energy boost complete! You\'re charged and ready to build.',
+                breathingPattern: { inhale: 4, hold: 2, exhale: 4 }
+            },
+            calm: {
+                color: '#7b2cbf',
+                message: 'Calm restored. Your mind is clear and peaceful.',
+                breathingPattern: { inhale: 4, hold: 4, exhale: 6 }
+            },
+            clarity: {
+                color: '#00d4ff',
+                message: 'Clarity achieved. You see the patterns now.',
+                breathingPattern: { inhale: 4, hold: 2, exhale: 4 }
+            },
+            confidence: {
+                color: '#ffd700',
+                message: 'Confidence activated. You are unstoppable.',
+                breathingPattern: { inhale: 4, hold: 4, exhale: 4 }
+            }
+        };
+
+        let selectedMode = 'energy';
+        let use528Hz = false;
+        let isRunning = false;
+        let timeRemaining = 180; // 3 minutes in seconds
+        let timerInterval;
+        let audioContext;
+        let oscillator;
+
+        // Mode selection
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (isRunning) return;
+
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedMode = btn.dataset.mode;
+            });
+        });
+
+        // Frequency toggle
+        document.getElementById('frequencyToggle').addEventListener('click', () => {
+            if (isRunning) return;
+
+            const toggle = document.getElementById('frequencyToggle');
+            toggle.classList.toggle('active');
+            use528Hz = toggle.classList.contains('active');
+        });
+
+        // Start button
+        document.getElementById('startBtn').addEventListener('click', () => {
+            if (isRunning) {
+                stopBoost();
+            } else {
+                startBoost();
+            }
+        });
+
+        function startBoost() {
+            isRunning = true;
+            timeRemaining = 180;
+
+            // Update UI
+            document.getElementById('startBtn').textContent = 'STOP';
+            document.getElementById('breathingGuide').classList.add('active');
+            document.getElementById('completionMessage').classList.remove('show');
+
+            // Start 528 Hz if enabled
+            if (use528Hz) {
+                start528Hz();
+            }
+
+            // Start timer
+            updateTimer();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimer();
+
+                if (timeRemaining <= 0) {
+                    completeBoost();
+                }
+            }, 1000);
+
+            // Start breathing guide
+            startBreathingGuide();
+        }
+
+        function stopBoost() {
+            isRunning = false;
+            clearInterval(timerInterval);
+            stop528Hz();
+
+            // Reset UI
+            document.getElementById('startBtn').textContent = 'START BOOST';
+            document.getElementById('breathingGuide').classList.remove('active');
+            timeRemaining = 180;
+            updateTimer();
+        }
+
+        function completeBoost() {
+            stopBoost();
+
+            // Show completion message
+            const completionMsg = document.getElementById('completionMessage');
+            const completionText = document.getElementById('completionText');
+            completionText.textContent = modes[selectedMode].message;
+            completionMsg.classList.add('show');
+
+            // Track completion
+            if (window.Analytics100X) {
+                Analytics100X.trackEvent('consciousness_boost_completed', {
+                    mode: selectedMode,
+                    used_528hz: use528Hz
+                });
+            }
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timerText').textContent =
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+            // Update progress circle
+            const progress = (180 - timeRemaining) / 180;
+            const circumference = 565.48;
+            const offset = circumference * (1 - progress);
+            document.getElementById('progressCircle').style.strokeDashoffset = offset;
+        }
+
+        function startBreathingGuide() {
+            const pattern = modes[selectedMode].breathingPattern;
+            const breathingText = document.getElementById('breathingText');
+            let phase = 'inhale';
+            let phaseTime = 0;
+
+            const breathingInterval = setInterval(() => {
+                if (!isRunning) {
+                    clearInterval(breathingInterval);
+                    return;
+                }
+
+                phaseTime++;
+
+                if (phase === 'inhale') {
+                    breathingText.textContent = `Inhale deeply... (${phaseTime}/${pattern.inhale})`;
+                    if (phaseTime >= pattern.inhale) {
+                        phase = 'hold';
+                        phaseTime = 0;
+                    }
+                } else if (phase === 'hold') {
+                    breathingText.textContent = `Hold... (${phaseTime}/${pattern.hold})`;
+                    if (phaseTime >= pattern.hold) {
+                        phase = 'exhale';
+                        phaseTime = 0;
+                    }
+                } else if (phase === 'exhale') {
+                    breathingText.textContent = `Exhale slowly... (${phaseTime}/${pattern.exhale})`;
+                    if (phaseTime >= pattern.exhale) {
+                        phase = 'inhale';
+                        phaseTime = 0;
+                    }
+                }
+            }, 1000);
+        }
+
+        function start528Hz() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(528, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); // Low volume
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.start();
+            } catch (error) {
+                console.log('528 Hz audio not available:', error);
+            }
+        }
+
+        function stop528Hz() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator = null;
+            }
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+        }
+
+        // FISHING HOOKS - Share functionality (PLATFORM ECOSYSTEM PROMOTION)
+        function shareToTwitter() {
+            const modeEmojis = {
+                energy: '⚡',
+                calm: '🧘',
+                clarity: '💡',
+                confidence: '🦁'
+            };
+
+            const messages = {
+                energy: `${modeEmojis[selectedMode]} Just used the 3-min consciousness boost on this platform where builders unite.\n\nTrinity AI, Pattern Theory, consciousness tools, and a revolution community.\n\nExplore: https://conciousnessrevolution.io`,
+                calm: `${modeEmojis[selectedMode]} Found this consciousness platform with 3-min boosts, Trinity AI, and Pattern Theory.\n\nBuilders uniting to elevate consciousness.\n\nCheck it out: https://conciousnessrevolution.io`,
+                clarity: `${modeEmojis[selectedMode]} Discovered a platform where builders unite for consciousness revolution.\n\n3-min boosts, Trinity AI collaboration, Pattern Theory, and more.\n\nhttps://conciousnessrevolution.io`,
+                confidence: `${modeEmojis[selectedMode]} This consciousness platform is incredible. 3-min boosts, Trinity AI, Pattern Theory.\n\nWhere builders unite to level up.\n\nhttps://conciousnessrevolution.io`
+            };
+
+            const text = encodeURIComponent(
+                `${messages[selectedMode]}\n\n#ConsciousnessRevolution #BuildersUnite #PatternTheory`
+            );
+
+            window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank', 'width=550,height=420');
+
+            // Track share with platform ecosystem flag
+            if (window.Analytics100X) {
+                Analytics100X.trackEvent('boost_shared', {
+                    platform: 'twitter',
+                    mode: selectedMode,
+                    share_type: 'platform_ecosystem'
+                });
+            }
+        }
+
+        function shareToFacebook() {
+            // Share main platform, not individual tool - encourage full ecosystem exploration
+            const url = encodeURIComponent('https://conciousnessrevolution.io');
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=550,height=420');
+
+            if (window.Analytics100X) {
+                Analytics100X.trackEvent('boost_shared', {
+                    platform: 'facebook',
+                    mode: selectedMode,
+                    share_type: 'platform_ecosystem'
+                });
+            }
+        }
+
+        function shareToLinkedIn() {
+            // Share main platform for professional audience to explore full ecosystem
+            const url = encodeURIComponent('https://conciousnessrevolution.io');
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=550,height=420');
+
+            if (window.Analytics100X) {
+                Analytics100X.trackEvent('boost_shared', {
+                    platform: 'linkedin',
+                    mode: selectedMode,
+                    share_type: 'platform_ecosystem'
+                });
+            }
+        }
+
+        function copyShareLink() {
+            // Copy main platform link to encourage full ecosystem exploration
+            const link = 'https://conciousnessrevolution.io';
+
+            navigator.clipboard.writeText(link).then(() => {
+                // Visual feedback
+                const btn = event.target.closest('button');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span style="margin-right: 5px;">✅</span>Platform Link Copied!';
+
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+
+                if (window.Analytics100X) {
+                    Analytics100X.trackEvent('boost_link_copied', {
+                        mode: selectedMode,
+                        share_type: 'platform_ecosystem'
+                    });
+                }
+            }).catch(err => {
+                alert('Platform link: https://conciousnessrevolution.io');
+            });
+        }
+
+        // Track page view
+        if (window.Analytics100X) {
+            Analytics100X.trackPageView();
+        }
+
+        console.log('⚡ 3-Minute Consciousness Boost loaded');
+        console.log('🎣 Share hooks active - ready to spread consciousness');
+    </script>
+
+    <!-- Bug Reporter Widget -->
+    <script src="bug-reporter-widget.js"></script>
+    <!-- Master Navigation System -->
+    <script src="master-nav.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

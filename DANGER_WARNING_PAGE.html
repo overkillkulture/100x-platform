@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚠️ DANGER WARNING - CONSCIOUSNESS REVOLUTION</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #ff0000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: flicker 0.5s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { background: #000; }
+            100% { background: #0a0000; }
+        }
+
+        .warning-container {
+            max-width: 800px;
+            border: 5px solid #ff0000;
+            padding: 40px;
+            background: rgba(255, 0, 0, 0.1);
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { border-color: #ff0000; box-shadow: 0 0 50px rgba(255, 0, 0, 0.5); }
+            50% { border-color: #ff6600; box-shadow: 0 0 80px rgba(255, 102, 0, 0.8); }
+        }
+
+        h1 {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff0000;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0; }
+        }
+
+        .warning-list {
+            margin: 30px 0;
+            font-size: 1.3em;
+            line-height: 2;
+        }
+
+        .warning-list li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .warning-list li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+            font-size: 1.2em;
+        }
+
+        .disclaimer {
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px solid #ff0000;
+            padding: 20px;
+            margin: 30px 0;
+            font-size: 1.1em;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 20px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: 3px solid;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        .btn-danger {
+            background: #ff0000;
+            color: #000;
+            border-color: #ff0000;
+        }
+
+        .btn-danger:hover {
+            background: #ff6600;
+            transform: scale(1.1);
+            box-shadow: 0 0 30px #ff0000;
+        }
+
+        .btn-safe {
+            background: #000;
+            color: #888;
+            border-color: #444;
+        }
+
+        .btn-safe:hover {
+            background: #111;
+            color: #aaa;
+        }
+
+        .excitement-check {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.4em;
+            color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="warning-container">
+        <h1 class="blink">⚠️ DANGER WARNING ⚠️</h1>
+
+        <p style="text-align: center; font-size: 1.5em; margin-bottom: 30px;">
+            THIS PLATFORM IS EXPERIMENTAL, UNTESTED, AND POTENTIALLY DANGEROUS
+        </p>
+
+        <div class="warning-list">
+            <ul>
+                <li>This system is <strong>NOT TESTED</strong> in production</li>
+                <li>This system has <strong>NO SAFETY GUARDRAILS</strong></li>
+                <li>This system gives you <strong>FULL CONTROL</strong> (yes, you can break things)</li>
+                <li>This system is <strong>EXPERIMENTAL</strong> and changes daily</li>
+                <li>This system is <strong>RISKY</strong> and may malfunction</li>
+                <li>This system requires you to <strong>THINK FOR YOURSELF</strong></li>
+                <li>This system has <strong>NO HAND-HOLDING</strong> or step-by-step tutorials</li>
+                <li>This system is for <strong>BUILDERS ONLY</strong> - if you need help, leave now</li>
+            </ul>
+        </div>
+
+        <div class="disclaimer">
+            <strong>DISCLAIMER:</strong> By proceeding, you acknowledge that:
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li>You are comfortable with RISK and UNCERTAINTY</li>
+                <li>You don't need PERMISSION or APPROVAL to create</li>
+                <li>You're EXCITED by challenges, not scared by them</li>
+                <li>You take RESPONSIBILITY for your own actions</li>
+                <li>You understand that FAILURE is part of LEARNING</li>
+            </ul>
+        </div>
+
+        <p style="text-align: center; font-size: 1.5em; margin: 30px 0; color: #ffff00;">
+            IF THIS SCARES YOU → LEAVE NOW
+            <br>
+            IF THIS EXCITES YOU → WELCOME, BUILDER
+        </p>
+
+        <div class="buttons">
+            <button class="btn btn-safe" onclick="runAway()">
+                😰 THIS IS TOO RISKY<br>
+                GET ME OUT OF HERE
+            </button>
+            <button class="btn btn-danger" onclick="proceedToChaos()">
+                🔥 HELL YES!<br>
+                LET'S BUILD SOMETHING LEGENDARY
+            </button>
+        </div>
+
+        <div id="excitementCheck" class="excitement-check" style="display: none;">
+            BUILDER DETECTED ✅<br>
+            Proceeding to consciousness assessment...
+        </div>
+    </div>
+
+    <script>
+        function runAway() {
+            // Destroyer detected - log and redirect
+            console.log('🔴 DESTROYER PATTERN: User ran away from danger');
+
+            // Log the destroyer
+            fetch('http://localhost:8011/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: 'This is too risky. Get me out of here.',
+                    user_action: 'clicked_run_away',
+                    timestamp: new Date().toISOString()
+                })
+            }).catch(err => console.log('Filter offline'));
+
+            alert('This platform is not for you. Try something with more hand-holding and safety guarantees.');
+            window.location.href = 'https://www.google.com/search?q=safe+and+easy+platforms';
+        }
+
+        function proceedToChaos() {
+            // Builder detected - log and continue
+            console.log('🟢 BUILDER PATTERN: User excited by danger');
+
+            // Log the builder
+            fetch('http://localhost:8011/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: 'Hell yes! Let\'s build something legendary.',
+                    user_action: 'clicked_proceed',
+                    timestamp: new Date().toISOString()
+                })
+            }).catch(err => console.log('Filter offline'));
+
+            document.getElementById('excitementCheck').style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = 'CONSCIOUSNESS_QUIZ.html';
+            }, 2000);
+        }
+
+        // Track if user tries to close tab (destroyer behavior)
+        window.addEventListener('beforeunload', function(e) {
+            console.log('🔴 POTENTIAL DESTROYER: User tried to leave danger page');
+        });
+    </script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>
