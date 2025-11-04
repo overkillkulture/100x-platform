@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Crystals - Your Knowledge Becomes an AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .crystal-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.3) 0%, transparent 50%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            z-index: 1;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 4.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 40px rgba(255,255,255,0.5);
+        }
+
+        .tagline {
+            font-size: 2em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 20px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        section {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dark-section {
+            background: rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .use-cases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .use-case {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 4px solid white;
+        }
+
+        .use-case h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .demo-section {
+            background: rgba(0,0,0,0.4);
+            padding: 60px 30px;
+            border-radius: 20px;
+            margin: 60px 0;
+        }
+
+        .terminal {
+            background: #1a1a1a;
+            color: #0f0;
+            padding: 30px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.8;
+            margin: 30px 0;
+        }
+
+        .pricing {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .pricing-card {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .pricing-card.featured {
+            border-color: white;
+            transform: scale(1.05);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .price {
+            font-size: 3.5em;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .price-features {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .price-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .price-features li:before {
+            content: '✓ ';
+            margin-right: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+            .tagline {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="crystal-bg"></div>
+        <div class="hero-content">
+            <h1>💎 AI Data Crystals</h1>
+            <p class="tagline">Your Knowledge Becomes an AI</p>
+            <p style="font-size: 1.2em; max-width: 800px; margin: 20px auto; opacity: 0.9;">
+                Upload your documents, notes, and expertise. Get a personal AI trained on YOUR knowledge.
+                Query it 24/7. Share it with others. Your knowledge, immortalized.
+            </p>
+            <div class="cta-buttons">
+                <a href="#demo" class="btn btn-primary">See Demo</a>
+                <a href="#pricing" class="btn btn-secondary">Start Free Trial</a>
+            </div>
+        </div>
+    </div>
+
+    <section>
+        <h2>How It Works</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📤</div>
+                <h3>1. Upload Your Knowledge</h3>
+                <p>Drag and drop documents, PDFs, notes, emails. Connect Google Drive, Dropbox, Notion.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>2. AI Processes Everything</h3>
+                <p>Our AI extracts concepts, patterns, connections. Learns your thinking style.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💎</div>
+                <h3>3. Your Crystal is Born</h3>
+                <p>Personal AI trained on YOUR expertise. Your knowledge, queryable 24/7.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔮</div>
+                <h3>4. Query Anytime</h3>
+                <p>"What did I learn about X?" Instant answers from your own knowledge.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>5. Share Your Expertise</h3>
+                <p>Give others access. Your knowledge helps people while you sleep.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>6. Scale Infinitely</h3>
+                <p>Your expertise available to 1,000 people at once. Knowledge multiplied.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="dark-section" id="demo">
+        <h2>See It In Action</h2>
+        <div class="demo-section">
+            <h3 style="text-align: center; margin-bottom: 30px;">Command Line Demo</h3>
+            <div class="terminal">
+$ python crystal_builder.py my_expertise --add "business_lessons.txt" --category "Business"<br>
+💎 AI DATA CRYSTALS<br>
+📄 Processing: business_lessons.txt<br>
+   🧠 Extracting knowledge...<br>
+   ✅ Added to crystal<br>
+<br>
+$ python crystal_builder.py my_expertise --query "What's my advice on startup funding?"<br>
+🔮 Querying crystal: What's my advice on startup funding?<br>
+<br>
+💎 Crystal says:<br>
+Based on your experience, you emphasize three key points about startup funding:<br>
+<br>
+1. Bootstrap as long as possible - it keeps you honest about product-market fit<br>
+2. When you do raise, choose investors who add value beyond money<br>
+3. Never give up more than 20% in early rounds - dilution kills founders<br>
+<br>
+You also noted that the best time to raise is when you DON'T need the money.
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Perfect For</h2>
+        <div class="use-cases">
+            <div class="use-case">
+                <h3>💼 Consultants</h3>
+                <p>Clone your expertise. Help 100 clients simultaneously. $9.9K/month passive.</p>
+            </div>
+            <div class="use-case">
+                <h3>📚 Educators</h3>
+                <p>Students query your knowledge 24/7. Scale your teaching infinitely.</p>
+            </div>
+            <div class="use-case">
+                <h3>✍️ Writers</h3>
+                <p>Never forget a research note. Instant recall of everything you've learned.</p>
+            </div>
+            <div class="use-case">
+                <h3>👨‍💼 Executives</h3>
+                <p>Preserve institutional knowledge. New hires learn from your experience.</p>
+            </div>
+            <div class="use-case">
+                <h3>🔬 Researchers</h3>
+                <p>All your papers, queryable. Find connections you never saw before.</p>
+            </div>
+            <div class="use-case">
+                <h3>👨‍👩‍👧 Parents</h3>
+                <p>Leave your wisdom for future generations. Your knowledge lives forever.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="dark-section" id="pricing">
+        <h2>Choose Your Crystal</h2>
+        <div class="pricing">
+            <div class="pricing-card">
+                <h3>Personal</h3>
+                <div class="price">$49<span style="font-size: 0.4em;">/mo</span></div>
+                <ul class="price-features">
+                    <li>10GB storage</li>
+                    <li>Unlimited queries</li>
+                    <li>1 crystal</li>
+                    <li>All document types</li>
+                    <li>API access</li>
+                </ul>
+                <a href="mailto:crystals-sales@conciousnessrevolution.io?subject=Personal Crystal" class="btn btn-primary" style="margin-top: 20px;">Start Free Trial</a>
+            </div>
+
+            <div class="pricing-card featured">
+                <h3>Professional</h3>
+                <div class="price">$199<span style="font-size: 0.4em;">/mo</span></div>
+                <ul class="price-features">
+                    <li>100GB storage</li>
+                    <li>Unlimited queries</li>
+                    <li>3 crystals</li>
+                    <li>Share with clients</li>
+                    <li>Custom branding</li>
+                    <li>Analytics</li>
+                    <li>Priority support</li>
+                </ul>
+                <a href="mailto:crystals-sales@conciousnessrevolution.io?subject=Professional Crystal" class="btn btn-primary" style="margin-top: 20px;">Start Free Trial</a>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price">$999<span style="font-size: 0.4em;">/mo</span></div>
+                <ul class="price-features">
+                    <li>1TB storage</li>
+                    <li>Unlimited crystals</li>
+                    <li>Team collaboration</li>
+                    <li>White-label</li>
+                    <li>SSO integration</li>
+                    <li>On-premise option</li>
+                    <li>Dedicated support</li>
+                </ul>
+                <a href="mailto:enterprise@conciousnessrevolution.io?subject=Enterprise Crystal" class="btn btn-primary" style="margin-top: 20px;">Contact Sales</a>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px; padding: 40px; background: rgba(0,0,0,0.3); border-radius: 20px;">
+            <h3 style="font-size: 2em; margin-bottom: 20px;">7-Day Free Trial</h3>
+            <p style="font-size: 1.2em;">No credit card required. Cancel anytime.</p>
+        </div>
+    </section>
+
+    <section style="text-align: center;">
+        <h2>Ready to Immortalize Your Knowledge?</h2>
+        <p style="font-size: 1.3em; max-width: 700px; margin: 20px auto 40px;">
+            Start with 3-5 documents. Watch your knowledge come alive.
+        </p>
+        <div class="cta-buttons">
+            <a href="mailto:crystals-sales@conciousnessrevolution.io?subject=Crystal Trial" class="btn btn-primary">Start Free Trial</a>
+            <a href="README.md" class="btn btn-secondary">Read Documentation</a>
+        </div>
+    </section>
+
+    <footer>
+        <p style="font-size: 1.5em; margin-bottom: 20px;"><strong>AI Data Crystals</strong></p>
+        <p>Your Knowledge Becomes an AI</p>
+        <p style="margin-top: 30px;">
+            <a href="README.md" style="color: white; margin: 0 15px;">Docs</a> |
+            <a href="https://discord.gg/consciousness" style="color: white; margin: 0 15px;">Community</a> |
+            <a href="mailto:crystals-support@conciousnessrevolution.io" style="color: white; margin: 0 15px;">Support</a>
+        </p>
+        <p style="margin-top: 30px; opacity: 0.7;">
+            Built by <a href="https://conciousnessrevolution.io" style="color: white;">Consciousness Revolution</a><br>
+            💎🧠⚡
+        </p>
+    </footer>
+</body>
+</html>
