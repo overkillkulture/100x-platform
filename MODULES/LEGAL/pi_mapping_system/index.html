@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PI Mapping System - Track the Trail, Expose the Truth</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .network-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.2) 1px, transparent 1px),
+                radial-gradient(circle at 60% 70%, rgba(255,255,255,0.2) 1px, transparent 1px),
+                radial-gradient(circle at 80% 40%, rgba(255,255,255,0.2) 1px, transparent 1px);
+            background-size: 100px 100px, 150px 150px, 120px 120px;
+            animation: networkPulse 5s ease-in-out infinite;
+        }
+
+        @keyframes networkPulse {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.3; }
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            z-index: 1;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 4.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 40px rgba(255,255,255,0.5);
+        }
+
+        .tagline {
+            font-size: 2em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 20px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #1a1a2e;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        section {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dark-section {
+            background: rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .demo-map {
+            background: rgba(0,0,0,0.4);
+            padding: 60px 30px;
+            border-radius: 20px;
+            margin: 60px 0;
+        }
+
+        .network-visualization {
+            background: #0a0a0a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 40px;
+            margin: 30px 0;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            border: 3px solid;
+            animation: nodePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes nodePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .node-high-risk {
+            background: rgba(255,0,0,0.3);
+            border-color: #ff0000;
+            color: #ff0000;
+            top: 20%; left: 50%;
+        }
+
+        .node-medium-risk {
+            background: rgba(255,136,0,0.3);
+            border-color: #ff8800;
+            color: #ff8800;
+            top: 50%; left: 30%;
+        }
+
+        .node-low-risk {
+            background: rgba(0,255,0,0.3);
+            border-color: #00ff00;
+            color: #00ff00;
+            top: 50%; left: 70%;
+        }
+
+        .node-victim {
+            background: rgba(255,255,255,0.3);
+            border-color: #ffffff;
+            color: #ffffff;
+            top: 70%; left: 50%;
+        }
+
+        .connection {
+            position: absolute;
+            height: 2px;
+            background: rgba(255,255,255,0.3);
+            transform-origin: 0 0;
+        }
+
+        .pricing {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .pricing-card {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .pricing-card.featured {
+            border-color: white;
+            transform: scale(1.05);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .price {
+            font-size: 3.5em;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .price-features {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .price-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .price-features li:before {
+            content: '✓ ';
+            margin-right: 10px;
+        }
+
+        .success-story {
+            background: rgba(255,255,255,0.1);
+            border-left: 4px solid #00ff00;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+            .tagline {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="network-bg"></div>
+        <div class="hero-content">
+            <h1>🔍 PI Mapping System</h1>
+            <p class="tagline">Track the Trail, Expose the Truth, Win the Case</p>
+            <p style="font-size: 1.2em; max-width: 800px; margin: 20px auto; opacity: 0.9;">
+                AI-powered private investigation platform. Automatically map relationships, track money trails,
+                detect manipulation patterns. Turn 100 hours of investigation into 10 hours.
+            </p>
+            <div class="cta-buttons">
+                <a href="#demo" class="btn btn-primary">See Demo</a>
+                <a href="#pricing" class="btn btn-secondary">Start Free Trial</a>
+            </div>
+        </div>
+    </div>
+
+    <section>
+        <h2>How PI Mapping Works</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📂</div>
+                <h3>1. Create Case File</h3>
+                <p>Start your investigation. Enter subject details, allegations, timeline. Organized from day one.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h3>2. Upload Evidence</h3>
+                <p>Documents, emails, financial records, witness statements. AI extracts entities and relationships automatically.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>3. AI Analyzes Everything</h3>
+                <p>Entity extraction, relationship mapping, timeline building. Finds connections you'd miss in weeks of manual work.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <h3>4. Visual Relationship Map</h3>
+                <p>See the entire network. Who knows who. Money flows. Power structures. Manipulation clusters.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>5. Pattern Theory Scan</h3>
+                <p>Manipulation score 0-100 for each entity. Detect tactics: gaslighting, isolation, escalation, control.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚖️</div>
+                <h3>6. Court-Ready Report</h3>
+                <p>Timeline, evidence log, relationship map, Pattern Theory analysis. Everything judges and juries understand.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="dark-section" id="demo">
+        <h2>See It In Action</h2>
+        <div class="demo-map">
+            <h3 style="text-align: center; margin-bottom: 30px;">Example: Family Court Manipulation Case</h3>
+            <div class="network-visualization">
+                <div class="node node-victim">Victim<br>Mother</div>
+                <div class="node node-high-risk" style="animation-delay: 0.2s;">Jane<br>88/100</div>
+                <div class="node node-medium-risk" style="animation-delay: 0.4s;">CPS<br>Worker</div>
+                <div class="node node-low-risk" style="animation-delay: 0.6s;">Public<br>Defender</div>
+                <div style="text-align: center; margin-top: 420px; padding: 20px; background: rgba(0,0,0,0.5); border-radius: 10px;">
+                    <p><strong>⚠️ MANIPULATION CLUSTER DETECTED</strong></p>
+                    <p>Network analysis shows coordinated attack pattern</p>
+                    <p>Recommended Action: Emergency intervention, request new judge</p>
+                </div>
+            </div>
+            <div style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                <h4 style="margin-bottom: 15px;">Pattern Theory Analysis Output:</h4>
+                <pre style="color: #0f0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.6;">
+ENTITY: Jane (Father's New Partner)
+Manipulation Score: 88/100 ⚠️ EMERGENCY INTERVENTION NEEDED
+
+Component Breakdown:
+├─ Frequency Escalation: 9.1/10 (Contact increased 450% in 3 months)
+├─ Confusion Building: 8.7/10 (Contradictory statements in court filings)
+├─ Stress Response: 8.2/10 (Timed filings to maximize stress)
+├─ Complexity/Dependency: 7.9/10 (Created 6 dependencies)
+└─ Pattern Escaping: 8.5/10 (Shifts tactics when countered)
+
+TACTICS IDENTIFIED:
+1. Parental Alienation Campaign (23 instances documented)
+2. False Allegations Pattern (8 CPS reports, all unfounded)
+3. Court System Manipulation (15 weaponized motions)
+4. Isolation Tactics (Cut off 9 of 10 family connections)
+5. Gaslighting (47 documented contradictions)
+
+RECOMMENDATIONS:
+✓ File emergency motion citing manipulation pattern
+✓ Request new judge (potential compromise detected)
+✓ Subpoena communications between Jane and CPS worker
+✓ Use Pattern Theory analysis as expert evidence</pre>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Success Stories</h2>
+
+        <div class="success-story">
+            <h3>📋 Washington Family Court Case</h3>
+            <p><strong>Before PI Mapping:</strong></p>
+            <p>Mom using public defender, son stolen by manipulative family, losing custody battle, 6 months of hell.</p>
+            <p style="margin-top: 15px;"><strong>After PI Mapping:</strong></p>
+            <p>Manipulation pattern documented (Score: 88), relationship map showed coordinated attack, timeline proved false allegations, Pattern Theory evidence convinced judge.</p>
+            <p style="margin-top: 15px; font-size: 1.3em; color: #0f0;"><strong>Result: Family reunited, manipulators exposed</strong></p>
+        </div>
+
+        <div class="success-story" style="border-left-color: #ff8800;">
+            <h3>💼 Corporate Embezzlement</h3>
+            <p><strong>Before:</strong> $5M missing, 200 employees to investigate, manual spreadsheets, police overwhelmed.</p>
+            <p><strong>After:</strong> Uploaded 10,000 financial records, AI mapped money trail in 2 hours, identified 3-person conspiracy, connected to offshore accounts.</p>
+            <p style="margin-top: 15px; font-size: 1.3em; color: #0f0;"><strong>Result: $4.8M recovered, arrests made, 95% success rate</strong></p>
+        </div>
+
+        <div class="success-story" style="border-left-color: #ffff00;">
+            <h3>🏛️ Political Corruption Ring</h3>
+            <p><strong>Before:</strong> Anonymous tip about mayor, no evidence, complex web of connections, years of suspected corruption.</p>
+            <p><strong>After:</strong> Mapped 50 entities, tracked $2M in bribes, connected to organized crime, timeline of quid-pro-quo deals.</p>
+            <p style="margin-top: 15px; font-size: 1.3em; color: #0f0;"><strong>Result: Mayor indicted, 8 officials prosecuted, transparency restored</strong></p>
+        </div>
+    </section>
+
+    <section class="dark-section" id="pricing">
+        <h2>Choose Your License</h2>
+        <div class="pricing">
+            <div class="pricing-card">
+                <h3>Private Investigator</h3>
+                <div class="price">$299<span style="font-size: 0.4em;">/mo</span></div>
+                <ul class="price-features">
+                    <li>10 active cases</li>
+                    <li>Unlimited entities</li>
+                    <li>Pattern Theory analysis</li>
+                    <li>Evidence storage (100GB)</li>
+                    <li>Court-ready reports</li>
+                    <li>Email support</li>
+                </ul>
+                <a href="mailto:pi-sales@conciousnessrevolution.io?subject=PI License" class="btn btn-primary" style="margin-top: 20px;">Start Free Trial</a>
+            </div>
+
+            <div class="pricing-card featured">
+                <h3>Law Firm</h3>
+                <div class="price">$999<span style="font-size: 0.4em;">/mo</span></div>
+                <ul class="price-features">
+                    <li>50 active cases</li>
+                    <li>Team collaboration (10 users)</li>
+                    <li>Advanced Pattern Theory</li>
+                    <li>Evidence storage (1TB)</li>
+                    <li>Client portal access</li>
+                    <li>Priority support</li>
+                    <li>API access</li>
+                </ul>
+                <a href="mailto:pi-sales@conciousnessrevolution.io?subject=Law Firm License" class="btn btn-primary" style="margin-top: 20px;">Start Free Trial</a>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Pay-Per-Case</h3>
+                <div class="price">$499<span style="font-size: 0.4em;">/case</span></div>
+                <ul class="price-features">
+                    <li>Single case investigation</li>
+                    <li>30-day access</li>
+                    <li>All features included</li>
+                    <li>Export court-ready report</li>
+                    <li>No subscription required</li>
+                    <li>Perfect for one-time use</li>
+                </ul>
+                <a href="mailto:pi-sales@conciousnessrevolution.io?subject=Pay Per Case" class="btn btn-primary" style="margin-top: 20px;">Purchase Case</a>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px; padding: 40px; background: rgba(0,0,0,0.3); border-radius: 20px;">
+            <h3 style="font-size: 2em; margin-bottom: 20px;">14-Day Free Trial</h3>
+            <p style="font-size: 1.2em;">One case, full features, no credit card required. See it work on your real investigation.</p>
+        </div>
+    </section>
+
+    <section style="text-align: center;">
+        <h2>Ready to Expose the Truth?</h2>
+        <p style="font-size: 1.3em; max-width: 700px; margin: 20px auto 40px;">
+            Start your first investigation. Upload evidence. Watch AI reveal the connections.
+        </p>
+        <div class="cta-buttons">
+            <a href="mailto:pi-sales@conciousnessrevolution.io?subject=PI Mapping Trial" class="btn btn-primary">Start Free Trial</a>
+            <a href="README.md" class="btn btn-secondary">Read Documentation</a>
+        </div>
+    </section>
+
+    <footer>
+        <p style="font-size: 1.5em; margin-bottom: 20px;"><strong>PI Mapping System</strong></p>
+        <p>Track the Trail, Expose the Truth, Win the Case</p>
+        <p style="margin-top: 30px;">
+            <a href="README.md" style="color: white; margin: 0 15px;">Docs</a> |
+            <a href="mailto:pi-support@conciousnessrevolution.io" style="color: white; margin: 0 15px;">Support</a> |
+            <a href="mailto:pi-sales@conciousnessrevolution.io" style="color: white; margin: 0 15px;">Sales</a>
+        </p>
+        <p style="margin-top: 30px; opacity: 0.7;">
+            Pairs perfectly with <a href="../law_module/" style="color: white;">Law Module</a> for complete legal defense<br>
+            Built by <a href="https://conciousnessrevolution.io" style="color: white;">Consciousness Revolution</a><br>
+            🔍🕵️‍♂️⚖️
+        </p>
+    </footer>
+</body>
+</html>
