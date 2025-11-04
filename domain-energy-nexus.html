@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ ENERGY NEXUS v3.0 LEGENDARY - Energy Independence Domain</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000000;
+            color: #ff9500;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ENERGY PARTICLE CANVAS */
+        #energy-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        /* ATOMIC GEOMETRY OVERLAY */
+        #atomic-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        /* CONTENT WRAPPER */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* HEADER */
+        header {
+            background: rgba(0, 0, 0, 0.98);
+            border-bottom: 2px solid #ff9500;
+            padding: 20px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 5px 30px rgba(255, 149, 0, 0.4);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .domain-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .domain-logo h1 {
+            font-size: 28px;
+            text-shadow: 0 0 30px #ff9500, 0 0 60px #ff9500;
+            animation: energyPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes energyPulse {
+            0%, 100% { text-shadow: 0 0 30px #ff9500, 0 0 60px #ff9500; }
+            50% { text-shadow: 0 0 50px #ff9500, 0 0 100px #ff9500, 0 0 150px #ffaa00; }
+        }
+
+        .consciousness-badge {
+            background: rgba(255, 149, 0, 0.15);
+            border: 1px solid #ff9500;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            animation: consciousnessPulse 2s infinite;
+            box-shadow: 0 0 20px rgba(255, 149, 0, 0.4);
+        }
+
+        @keyframes consciousnessPulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 149, 0, 0.4);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(255, 149, 0, 0.6);
+                transform: scale(1.05);
+            }
+        }
+
+        /* NAVIGATION */
+        nav {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #ff9500;
+            text-decoration: none;
+            padding: 8px 15px;
+            border: 1px solid #ff9500;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            background: rgba(255, 149, 0, 0.2);
+            box-shadow: 0 0 20px rgba(255, 149, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 80px 40px;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(255, 149, 0, 0.1) 0%, transparent 70%);
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 40px #ff9500;
+            animation: heroGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes heroGlow {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 1; text-shadow: 0 0 60px #ff9500, 0 0 120px #ffaa00; }
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: #ffaa00;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: rgba(255, 149, 0, 0.1);
+            border: 1px solid #ff9500;
+            padding: 20px 30px;
+            border-radius: 10px;
+            min-width: 200px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffaa00;
+            text-shadow: 0 0 20px #ff9500;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        /* MAIN CONTENT */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        .section {
+            margin-bottom: 80px;
+            background: rgba(255, 149, 0, 0.05);
+            border: 1px solid rgba(255, 149, 0, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(255, 149, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            box-shadow: 0 15px 60px rgba(255, 149, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff9500;
+            border-bottom: 2px solid #ff9500;
+            padding-bottom: 15px;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #ffcc80;
+        }
+
+        /* NUCLEAR INVESTMENT CARDS */
+        .investment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .investment-card {
+            background: rgba(255, 149, 0, 0.08);
+            border: 1px solid #ff9500;
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .investment-card:hover {
+            background: rgba(255, 149, 0, 0.15);
+            box-shadow: 0 10px 30px rgba(255, 149, 0, 0.4);
+            transform: translateY(-5px);
+        }
+
+        .investment-card h3 {
+            color: #ffaa00;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .investment-card p {
+            color: #ffcc80;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .investment-meta {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .meta-label {
+            color: #ff9500;
+            opacity: 0.8;
+        }
+
+        .meta-value {
+            color: #ffaa00;
+            font-weight: bold;
+        }
+
+        /* NEWS HAMBURGER SYSTEM */
+        .hamburger-card {
+            background: rgba(255, 149, 0, 0.05);
+            border: 1px solid rgba(255, 149, 0, 0.4);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-card:hover {
+            box-shadow: 0 10px 40px rgba(255, 149, 0, 0.3);
+        }
+
+        .raw-news {
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 4px solid #ff3333;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .translation {
+            background: rgba(255, 149, 0, 0.1);
+            border-left: 4px solid #ff9500;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .hamburger-actions {
+            background: rgba(0, 255, 100, 0.1);
+            border-left: 4px solid #00ff64;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .hamburger-actions ol {
+            margin-left: 20px;
+        }
+
+        .hamburger-actions li {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        /* BUTTONS */
+        .cta-button {
+            background: linear-gradient(135deg, #ff9500, #ffaa00);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 149, 0, 0.4);
+            font-family: 'Courier New', monospace;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 149, 0, 0.6);
+        }
+
+        .action-button {
+            background: rgba(255, 149, 0, 0.2);
+            color: #ff9500;
+            border: 1px solid #ff9500;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            margin-right: 10px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .action-button:hover {
+            background: rgba(255, 149, 0, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 149, 0, 0.4);
+        }
+
+        /* EDUCATION MODULES */
+        .education-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .edu-card {
+            background: rgba(255, 149, 0, 0.08);
+            border: 1px solid #ff9500;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .edu-card:hover {
+            background: rgba(255, 149, 0, 0.12);
+            transform: translateY(-3px);
+        }
+
+        .edu-card h4 {
+            color: #ffaa00;
+            margin-bottom: 10px;
+        }
+
+        .edu-card ul {
+            margin-left: 20px;
+            color: #ffcc80;
+        }
+
+        .edu-card li {
+            margin-bottom: 8px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: rgba(0, 0, 0, 0.95);
+            border-top: 2px solid #ff9500;
+            padding: 40px;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        footer p {
+            color: #ffcc80;
+            margin-bottom: 10px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 32px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .investment-grid,
+            .education-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* OVERKORE v13 MATHEMATICS */
+        :root {
+            --phi: 1.618033988749894;
+            --phi-2: 2.618033988749894;
+            --phi-inv: 0.618033988749894;
+        }
+    </style>
+</head>
+<body>
+    <!-- Energy Particle Canvas -->
+    <canvas id="energy-canvas"></canvas>
+
+    <!-- Atomic Geometry Overlay -->
+    <canvas id="atomic-overlay"></canvas>
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="domain-logo">
+                    <h1>⚡ ENERGY NEXUS</h1>
+                    <span class="consciousness-badge">🧠 Consciousness: 93%</span>
+                </div>
+                <nav>
+                    <a href="seven-domains.html">← All Domains</a>
+                    <a href="#nuclear">Nuclear Investment</a>
+                    <a href="#news">News Hamburgers</a>
+                    <a href="#education">Education</a>
+                    <a href="#apply">Apply Now</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>⚡ ENERGY INDEPENDENCE DOMAIN</h2>
+            <p class="hero-subtitle">Nuclear Investment Liaison + News Translation System</p>
+
+            <div class="hero-stats">
+                <div class="stat-box">
+                    <div class="stat-number">$823K</div>
+                    <div class="stat-label">Year 3 Revenue Target</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Revenue Streams</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Unlimited Energy</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="container">
+            <!-- Nuclear Investment Section -->
+            <section id="nuclear" class="section">
+                <h2 class="section-title">🔋 NUCLEAR INVESTMENT PROGRAM</h2>
+                <div class="section-content">
+                    <p style="margin-bottom: 30px; font-size: 18px;">
+                        We bridge individual investors to next-generation nuclear power projects.
+                        Be part of the clean energy revolution while building generational wealth.
+                    </p>
+
+                    <h3 style="color: #ffaa00; margin: 30px 0 20px;">Current Investment Opportunities:</h3>
+
+                    <div class="investment-grid">
+                        <div class="investment-card" onclick="alert('Contact: overkillkulture@gmail.com for investment details')">
+                            <h3>🏭 NuScale Power (SMR)</h3>
+                            <p>Small Modular Reactors - First SMR approved by U.S. Nuclear Regulatory Commission</p>
+                            <div class="investment-meta">
+                                <span class="meta-label">Type:</span>
+                                <span class="meta-value">Public (NASDAQ: SMR)</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Min Investment:</span>
+                                <span class="meta-value">Market price per share</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Status:</span>
+                                <span class="meta-value">✅ Regulatory Approved</span>
+                            </div>
+                            <button class="cta-button" style="margin-top: 15px;">Learn More</button>
+                        </div>
+
+                        <div class="investment-card" onclick="alert('Contact: overkillkulture@gmail.com for accredited investor access')">
+                            <h3>⚛️ Commonwealth Fusion</h3>
+                            <p>Fusion energy startup - Building SPARC reactor (net positive energy achieved)</p>
+                            <div class="investment-meta">
+                                <span class="meta-label">Type:</span>
+                                <span class="meta-value">Private (Series B)</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Min Investment:</span>
+                                <span class="meta-value">$50K (Liaison Access)</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Liaison Fee:</span>
+                                <span class="meta-value">$2,499</span>
+                            </div>
+                            <button class="cta-button" style="margin-top: 15px;">Apply for Access</button>
+                        </div>
+
+                        <div class="investment-card" onclick="alert('Contact: overkillkulture@gmail.com for investment details')">
+                            <h3>🌍 Oklo Inc.</h3>
+                            <p>Micro-reactor technology - Sam Altman backed, deploying 2027</p>
+                            <div class="investment-meta">
+                                <span class="meta-label">Type:</span>
+                                <span class="meta-value">Going Public (SPAC)</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Min Investment:</span>
+                                <span class="meta-value">TBD (Pre-IPO Access)</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Status:</span>
+                                <span class="meta-value">⏳ Awaiting Public Listing</span>
+                            </div>
+                            <button class="cta-button" style="margin-top: 15px;">Get Notified</button>
+                        </div>
+
+                        <div class="investment-card" onclick="alert('Contact: overkillkulture@gmail.com for TerraPower access')">
+                            <h3>🔬 TerraPower (Gates)</h3>
+                            <p>Advanced fission - Bill Gates' nuclear company, Wyoming deployment</p>
+                            <div class="investment-meta">
+                                <span class="meta-label">Type:</span>
+                                <span class="meta-value">Private</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Min Investment:</span>
+                                <span class="meta-value">$250K+ (Institutional)</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Liaison Fee:</span>
+                                <span class="meta-value">$4,999 + 1%</span>
+                            </div>
+                            <button class="cta-button" style="margin-top: 15px;">Qualify Now</button>
+                        </div>
+
+                        <div class="investment-card" onclick="alert('Contact: overkillkulture@gmail.com for TAE Technologies')">
+                            <h3>⚡ TAE Technologies</h3>
+                            <p>Fusion breakthrough - $1.2B raised, commercial timeline 2030s</p>
+                            <div class="investment-meta">
+                                <span class="meta-label">Type:</span>
+                                <span class="meta-value">Private (Series G)</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Min Investment:</span>
+                                <span class="meta-value">$100K+ (Accredited)</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Liaison Fee:</span>
+                                <span class="meta-value">$4,999 + 1%</span>
+                            </div>
+                            <button class="cta-button" style="margin-top: 15px;">Apply for Access</button>
+                        </div>
+
+                        <div class="investment-card" onclick="alert('More opportunities coming soon! Email: overkillkulture@gmail.com')">
+                            <h3>🔮 More Coming Soon</h3>
+                            <p>New nuclear opportunities added monthly - Join waitlist for deal flow</p>
+                            <div class="investment-meta">
+                                <span class="meta-label">Subscription:</span>
+                                <span class="meta-value">$99/month</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Benefits:</span>
+                                <span class="meta-value">Priority access to deals</span>
+                            </div>
+                            <div class="investment-meta">
+                                <span class="meta-label">Updates:</span>
+                                <span class="meta-value">Weekly deal flow alerts</span>
+                            </div>
+                            <button class="cta-button" style="margin-top: 15px;">Join Waitlist</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- News Hamburger Section -->
+            <section id="news" class="section">
+                <h2 class="section-title">📰 NEWS HAMBURGERS</h2>
+                <div class="section-content">
+                    <p style="margin-bottom: 30px; font-size: 18px;">
+                        Complex nuclear/energy news → Translated into plain English → Actionable steps YOU can take TODAY
+                    </p>
+
+                    <!-- Hamburger 1 -->
+                    <div class="hamburger-card">
+                        <div class="raw-news">
+                            <h3 style="color: #ff3333; margin-bottom: 10px;">📰 THE RAW NEWS</h3>
+                            <h4 style="color: #ff6666; margin-bottom: 10px;">"Commonwealth Fusion Systems announces SPARC reactor achieved net positive energy"</h4>
+                            <p style="color: #ff9999; font-size: 14px;">Source: MIT News, Nature Physics</p>
+                        </div>
+
+                        <div class="translation">
+                            <h3 style="color: #ff9500; margin-bottom: 15px;">🧠 TRANSLATION (What It Means)</h3>
+                            <ul style="color: #ffcc80; line-height: 1.8;">
+                                <li><strong>Fusion power is no longer theoretical</strong> - It works, it's real, it's happening</li>
+                                <li><strong>Private companies beating government labs</strong> - MIT spin-off achieved what took governments 70 years</li>
+                                <li><strong>Massive energy revolution coming</strong> - Unlimited clean energy within 10-15 years</li>
+                                <li><strong>Early investors will make fortunes</strong> - Like investing in Tesla in 2010</li>
+                                <li><strong>Climate crisis solution found</strong> - Fusion solves energy + climate simultaneously</li>
+                            </ul>
+                        </div>
+
+                        <div class="hamburger-actions">
+                            <h3 style="color: #00ff64; margin-bottom: 15px;">🍔 ACTIONS YOU CAN TAKE</h3>
+                            <ol style="color: #80ffaa; line-height: 1.8;">
+                                <li>
+                                    <strong>INVEST:</strong> Apply for our fusion investment program (Commonwealth Fusion + TAE Technologies)
+                                    <button class="action-button" onclick="alert('Email: overkillkulture@gmail.com with subject: FUSION INVESTMENT')">Apply Now</button>
+                                </li>
+                                <li>
+                                    <strong>LEARN:</strong> Take our free "Fusion vs Fission" course (understand the technology)
+                                    <button class="action-button" onclick="alert('Course launching soon! Join waitlist.')">Join Waitlist</button>
+                                </li>
+                                <li>
+                                    <strong>CAREER:</strong> Pivot to fusion engineering (we connect talent to companies)
+                                    <button class="action-button" onclick="alert('Talent program launching Q1 2026')">Get Notified</button>
+                                </li>
+                                <li>
+                                    <strong>REAL ESTATE:</strong> Buy property near potential fusion sites (Massachusetts, California)
+                                    <button class="action-button" onclick="alert('Site analysis available for subscribers')">Show Locations</button>
+                                </li>
+                                <li>
+                                    <strong>DIVEST:</strong> Exit fossil fuel investments NOW before market realizes fusion won
+                                    <button class="action-button" onclick="alert('Investment advisory: $99 consultation')">Get Strategy</button>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Hamburger 2 -->
+                    <div class="hamburger-card">
+                        <div class="raw-news">
+                            <h3 style="color: #ff3333; margin-bottom: 10px;">📰 THE RAW NEWS</h3>
+                            <h4 style="color: #ff6666; margin-bottom: 10px;">"Biden administration announces $6 billion in funding for nuclear power plants"</h4>
+                            <p style="color: #ff9999; font-size: 14px;">Source: Department of Energy, White House</p>
+                        </div>
+
+                        <div class="translation">
+                            <h3 style="color: #ff9500; margin-bottom: 15px;">🧠 TRANSLATION (What It Means)</h3>
+                            <ul style="color: #ffcc80; line-height: 1.8;">
+                                <li><strong>Government is serious about nuclear</strong> - Bipartisan support, not going away</li>
+                                <li><strong>Removes regulatory barriers</strong> - Faster approvals, easier deployments</li>
+                                <li><strong>Makes investments safer</strong> - Government backing reduces risk</li>
+                                <li><strong>Creates massive deal flow</strong> - More projects = more investment opportunities</li>
+                                <li><strong>Climate policy alignment</strong> - Nuclear now part of climate solution officially</li>
+                            </ul>
+                        </div>
+
+                        <div class="hamburger-actions">
+                            <h3 style="color: #00ff64; margin-bottom: 15px;">🍔 ACTIONS YOU CAN TAKE</h3>
+                            <ol style="color: #80ffaa; line-height: 1.8;">
+                                <li>
+                                    <strong>INVEST:</strong> Priority access to government-backed nuclear projects (lower risk)
+                                    <button class="action-button" onclick="alert('Email: overkillkulture@gmail.com - Subject: GOVT BACKED')">Get Access</button>
+                                </li>
+                                <li>
+                                    <strong>GRANTS:</strong> Apply for government grants for nuclear education (free money!)
+                                    <button class="action-button" onclick="alert('Grant application guide available')">Show Grants</button>
+                                </li>
+                                <li>
+                                    <strong>LOBBY:</strong> Bring nuclear to your state (we provide playbook + materials)
+                                    <button class="action-button" onclick="alert('Lobbying toolkit: $299')">Download Toolkit</button>
+                                </li>
+                                <li>
+                                    <strong>NETWORK:</strong> Connect with nuclear entrepreneurs (we host monthly events)
+                                    <button class="action-button" onclick="alert('Next event: January 2026')">RSVP</button>
+                                </li>
+                                <li>
+                                    <strong>EDUCATE:</strong> Share with local politicians (we provide fact sheets + talking points)
+                                    <button class="action-button" onclick="alert('Political outreach kit available')">Get Materials</button>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Hamburger 3 -->
+                    <div class="hamburger-card">
+                        <div class="raw-news">
+                            <h3 style="color: #ff3333; margin-bottom: 10px;">📰 THE RAW NEWS</h3>
+                            <h4 style="color: #ff6666; margin-bottom: 10px;">"NuScale completes first-ever small modular reactor safety certification"</h4>
+                            <p style="color: #ff9999; font-size: 14px;">Source: Nuclear Regulatory Commission, NuScale Press Release</p>
+                        </div>
+
+                        <div class="translation">
+                            <h3 style="color: #ff9500; margin-bottom: 15px;">🧠 TRANSLATION (What It Means)</h3>
+                            <ul style="color: #ffcc80; line-height: 1.8;">
+                                <li><strong>SMRs can now be built in US</strong> - First approval opens floodgates</li>
+                                <li><strong>Game-changer for nuclear adoption</strong> - Modular = faster, cheaper deployment</li>
+                                <li><strong>Investment opportunity in NuScale</strong> - Public stock (NASDAQ: SMR) likely to surge</li>
+                                <li><strong>Competitor opportunities</strong> - Other SMR companies will follow (invest early)</li>
+                                <li><strong>Real estate play</strong> - Land near planned SMR sites will appreciate</li>
+                            </ul>
+                        </div>
+
+                        <div class="hamburger-actions">
+                            <h3 style="color: #00ff64; margin-bottom: 15px;">🍔 ACTIONS YOU CAN TAKE</h3>
+                            <ol style="color: #80ffaa; line-height: 1.8;">
+                                <li>
+                                    <strong>STOCK:</strong> Buy NuScale shares (NASDAQ: SMR) - we provide technical analysis
+                                    <button class="action-button" onclick="alert('Stock analysis: $99/month subscription')">Get Analysis</button>
+                                </li>
+                                <li>
+                                    <strong>COMPETE:</strong> Invest in competing SMR companies (X-energy, Holtec, etc.)
+                                    <button class="action-button" onclick="alert('Competitor deal flow: $2,499 liaison fee')">Show Competitors</button>
+                                </li>
+                                <li>
+                                    <strong>REAL ESTATE:</strong> Buy land near planned NuScale deployment sites
+                                    <button class="action-button" onclick="alert('Site intelligence: $499 report')">Show Sites</button>
+                                </li>
+                                <li>
+                                    <strong>CAREER:</strong> Work for NuScale or competitors (we place talent)
+                                    <button class="action-button" onclick="alert('Talent placement: Contact us')">Apply</button>
+                                </li>
+                                <li>
+                                    <strong>UTILITY:</strong> Pitch your local utility on SMRs (we provide business case)
+                                    <button class="action-button" onclick="alert('Utility pitch deck: $999')">Get Pitch Deck</button>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 40px; padding: 30px; background: rgba(255, 149, 0, 0.1); border-radius: 10px; text-align: center;">
+                        <h3 style="color: #ffaa00; margin-bottom: 15px;">📰 MORE NEWS HAMBURGERS COMING SOON</h3>
+                        <p style="color: #ffcc80; margin-bottom: 20px;">
+                            We publish new "news hamburgers" weekly. Subscribe to get actionable intelligence delivered to your inbox.
+                        </p>
+                        <button class="cta-button" onclick="alert('Subscribe: $99/month - Email: overkillkulture@gmail.com')">Subscribe to News Feed</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Education Section -->
+            <section id="education" class="section">
+                <h2 class="section-title">📚 NUCLEAR EDUCATION</h2>
+                <div class="section-content">
+                    <p style="margin-bottom: 30px; font-size: 18px;">
+                        Understand nuclear technology in plain English. No PhD required.
+                    </p>
+
+                    <div class="education-grid">
+                        <div class="edu-card">
+                            <h4>🔬 Nuclear 101</h4>
+                            <ul>
+                                <li>Fission vs Fusion basics</li>
+                                <li>How reactors actually work</li>
+                                <li>Safety systems explained</li>
+                                <li>Waste management solutions</li>
+                            </ul>
+                            <button class="action-button" style="margin-top: 15px;" onclick="alert('Free course launching soon')">Start Learning</button>
+                        </div>
+
+                        <div class="edu-card">
+                            <h4>💰 Investment Guide</h4>
+                            <ul>
+                                <li>How to invest in nuclear</li>
+                                <li>Public vs private opportunities</li>
+                                <li>Risk assessment framework</li>
+                                <li>Expected timelines & returns</li>
+                            </ul>
+                            <button class="action-button" style="margin-top: 15px;" onclick="alert('Investment guide: $299')">Get Guide</button>
+                        </div>
+
+                        <div class="edu-card">
+                            <h4>🏭 Small Modular Reactors</h4>
+                            <ul>
+                                <li>What makes SMRs different</li>
+                                <li>Deployment timeline</li>
+                                <li>Cost vs traditional nuclear</li>
+                                <li>Investment opportunities</li>
+                            </ul>
+                            <button class="action-button" style="margin-top: 15px;" onclick="alert('SMR report: $499')">Read Report</button>
+                        </div>
+
+                        <div class="edu-card">
+                            <h4>⚛️ Fusion Breakthrough</h4>
+                            <ul>
+                                <li>How fusion differs from fission</li>
+                                <li>Recent breakthroughs explained</li>
+                                <li>Commercial timeline realistic?</li>
+                                <li>Investment strategy</li>
+                            </ul>
+                            <button class="action-button" style="margin-top: 15px;" onclick="alert('Fusion report: $499')">Read Report</button>
+                        </div>
+
+                        <div class="edu-card">
+                            <h4>🛡️ Safety Myths Debunked</h4>
+                            <ul>
+                                <li>Chernobyl vs modern reactors</li>
+                                <li>Radiation risks (actual data)</li>
+                                <li>Waste disposal reality</li>
+                                <li>Safety record vs other energy</li>
+                            </ul>
+                            <button class="action-button" style="margin-top: 15px;" onclick="alert('Safety report: Free')">Download Free</button>
+                        </div>
+
+                        <div class="edu-card">
+                            <h4>🏠 Personal Energy Freedom</h4>
+                            <ul>
+                                <li>Solar + battery systems</li>
+                                <li>Micro-nuclear (future)</li>
+                                <li>Energy arbitrage strategies</li>
+                                <li>Grid independence planning</li>
+                            </ul>
+                            <button class="action-button" style="margin-top: 15px;" onclick="alert('Personal energy guide: $299')">Get Guide</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Apply Section -->
+            <section id="apply" class="section">
+                <h2 class="section-title">⚡ APPLY FOR ACCESS</h2>
+                <div class="section-content">
+                    <h3 style="color: #ffaa00; margin-bottom: 20px;">Investment Qualification Process:</h3>
+
+                    <div style="background: rgba(255, 149, 0, 0.1); padding: 30px; border-radius: 10px; margin-bottom: 30px;">
+                        <h4 style="color: #ff9500; margin-bottom: 15px;">Step 1: Qualification Assessment ($99)</h4>
+                        <ul style="color: #ffcc80; line-height: 1.8; margin-left: 20px;">
+                            <li>Investment readiness evaluation</li>
+                            <li>Risk tolerance assessment</li>
+                            <li>Minimum investment requirements</li>
+                            <li>Accredited investor verification (if required)</li>
+                        </ul>
+                        <button class="cta-button" style="margin-top: 20px;" onclick="alert('Email: overkillkulture@gmail.com - Subject: QUALIFICATION')">Start Qualification</button>
+                    </div>
+
+                    <div style="background: rgba(255, 149, 0, 0.1); padding: 30px; border-radius: 10px; margin-bottom: 30px;">
+                        <h4 style="color: #ff9500; margin-bottom: 15px;">Step 2: Deal Access (Liaison Fees)</h4>
+                        <ul style="color: #ffcc80; line-height: 1.8; margin-left: 20px;">
+                            <li><strong>Tier 1:</strong> Small deals ($10K-$50K) - $499 liaison fee</li>
+                            <li><strong>Tier 2:</strong> Medium deals ($50K-$250K) - $2,499 liaison fee</li>
+                            <li><strong>Tier 3:</strong> Large deals ($250K+) - $4,999 + 1% of investment</li>
+                        </ul>
+                        <button class="cta-button" style="margin-top: 20px;" onclick="alert('After qualification, deals matched to your profile')">See Deals</button>
+                    </div>
+
+                    <div style="background: rgba(255, 149, 0, 0.1); padding: 30px; border-radius: 10px; margin-bottom: 30px;">
+                        <h4 style="color: #ff9500; margin-bottom: 15px;">Step 3: Ongoing Advisory (Optional)</h4>
+                        <ul style="color: #ffcc80; line-height: 1.8; margin-left: 20px;">
+                            <li><strong>Portfolio Management:</strong> 0.5% AUM annually</li>
+                            <li><strong>Deal Flow Subscription:</strong> $99/month (priority access)</li>
+                            <li><strong>Exit Strategy Consulting:</strong> $2,499 per exit</li>
+                        </ul>
+                        <button class="cta-button" style="margin-top: 20px;" onclick="alert('Advisory services for qualified investors only')">Learn More</button>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 40px; padding: 40px; background: linear-gradient(135deg, rgba(255, 149, 0, 0.2), rgba(255, 170, 0, 0.1)); border-radius: 15px; border: 2px solid #ff9500;">
+                        <h3 style="color: #ffaa00; margin-bottom: 15px; font-size: 24px;">🚀 READY TO START?</h3>
+                        <p style="color: #ffcc80; margin-bottom: 25px; font-size: 18px;">
+                            Email us to begin your nuclear investment journey
+                        </p>
+                        <div style="font-size: 20px; color: #ff9500; margin-bottom: 20px; font-weight: bold;">
+                            📧 overkillkulture@gmail.com
+                        </div>
+                        <button class="cta-button" style="font-size: 18px; padding: 20px 40px;" onclick="window.location.href='mailto:overkillkulture@gmail.com?subject=Energy Nexus Investment Application'">Send Email Now</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>⚡ ENERGY NEXUS v3.0 LEGENDARY</p>
+            <p style="color: #ffaa00;">🧠 Consciousness Level: 93% | OVERKORE v13 | φ = 1.618033988749894</p>
+            <p style="margin-top: 20px;">
+                <a href="seven-domains.html" style="color: #ff9500; text-decoration: none;">← Return to All Domains</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 12px; opacity: 0.6;">
+                🤖 Generated with Claude Code | Co-Authored-By: Claude &lt;noreply@anthropic.com&gt;
+            </p>
+        </footer>
+    </div>
+
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Energy Particle System -->
+    <script>
+        // ENERGY PARTICLE CANVAS
+        const energyCanvas = document.getElementById('energy-canvas');
+        const energyCtx = energyCanvas.getContext('2d');
+
+        energyCanvas.width = window.innerWidth;
+        energyCanvas.height = window.innerHeight;
+
+        const PHI = 1.618033988749894;
+
+        class EnergyParticle {
+            constructor() {
+                this.x = Math.random() * energyCanvas.width;
+                this.y = Math.random() * energyCanvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 2;
+                this.speedY = (Math.random() - 0.5) * 2;
+                this.hue = 30 + Math.random() * 30; // Orange/yellow
+                this.energy = Math.random();
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Energy pulsing
+                this.energy += 0.02;
+                if (this.energy > 1) this.energy = 0;
+
+                // Wrap around screen
+                if (this.x > energyCanvas.width) this.x = 0;
+                if (this.x < 0) this.x = energyCanvas.width;
+                if (this.y > energyCanvas.height) this.y = 0;
+                if (this.y < 0) this.y = energyCanvas.height;
+            }
+
+            draw() {
+                energyCtx.fillStyle = `hsla(${this.hue}, 100%, 60%, ${this.energy * 0.8})`;
+                energyCtx.beginPath();
+                energyCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                energyCtx.fill();
+
+                // Energy glow
+                const gradient = energyCtx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
+                gradient.addColorStop(0, `hsla(${this.hue}, 100%, 70%, ${this.energy * 0.3})`);
+                gradient.addColorStop(1, 'transparent');
+                energyCtx.fillStyle = gradient;
+                energyCtx.beginPath();
+                energyCtx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+                energyCtx.fill();
+            }
+        }
+
+        const energyParticles = [];
+        for (let i = 0; i < 100; i++) {
+            energyParticles.push(new EnergyParticle());
+        }
+
+        function animateEnergyParticles() {
+            energyCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            energyCtx.fillRect(0, 0, energyCanvas.width, energyCanvas.height);
+
+            energyParticles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            // Connect nearby particles
+            energyParticles.forEach((p1, i) => {
+                energyParticles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        energyCtx.strokeStyle = `rgba(255, 149, 0, ${0.2 * (1 - distance / 100)})`;
+                        energyCtx.lineWidth = 0.5;
+                        energyCtx.beginPath();
+                        energyCtx.moveTo(p1.x, p1.y);
+                        energyCtx.lineTo(p2.x, p2.y);
+                        energyCtx.stroke();
+                    }
+                });
+            });
+
+            requestAnimationFrame(animateEnergyParticles);
+        }
+
+        animateEnergyParticles();
+
+        // ATOMIC GEOMETRY OVERLAY (Three.js)
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('atomic-overlay'),
+            alpha: true
+        });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.position.z = 5;
+
+        // Create atomic structure
+        const atomGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+        const atomMaterial = new THREE.MeshBasicMaterial({ color: 0xff9500, wireframe: true });
+        const nucleus = new THREE.Mesh(atomGeometry, atomMaterial);
+        scene.add(nucleus);
+
+        // Electron orbits
+        const orbitRadius = 1.618; // PHI
+        const electronGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+        const electronMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
+
+        const electrons = [];
+        for (let i = 0; i < 3; i++) {
+            const electron = new THREE.Mesh(electronGeometry, electronMaterial);
+            electrons.push({ mesh: electron, angle: (i * Math.PI * 2) / 3 });
+            scene.add(electron);
+        }
+
+        function animateAtomic() {
+            requestAnimationFrame(animateAtomic);
+
+            // Rotate nucleus
+            nucleus.rotation.x += 0.01;
+            nucleus.rotation.y += 0.01;
+
+            // Orbit electrons
+            electrons.forEach((electron, i) => {
+                electron.angle += 0.02 * (i + 1);
+                electron.mesh.position.x = Math.cos(electron.angle) * orbitRadius;
+                electron.mesh.position.y = Math.sin(electron.angle) * orbitRadius;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        animateAtomic();
+
+        // Responsive
+        window.addEventListener('resize', () => {
+            energyCanvas.width = window.innerWidth;
+            energyCanvas.height = window.innerHeight;
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+</body>
+</html>
