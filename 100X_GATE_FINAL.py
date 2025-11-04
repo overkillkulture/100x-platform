@@ -15,7 +15,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Airtable Configuration
-AIRTABLE_TOKEN = "pat8DtOnZ1crQT56g.a83c21fa77ead56a661353b0cd0b286816ca14502ce717c8b247c0c52a326757"
+AIRTABLE_TOKEN = os.getenv("AIRTABLE_TOKEN")
 AIRTABLE_BASE_ID = "app7F75X1uny6jPfd"
 AIRTABLE_TABLE_ID = "tblnf4KNaOfbU5FgK"
 
