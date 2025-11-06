@@ -37,7 +37,8 @@ if (!fs.existsSync(DB_FILE)) {
         users: [],
         projects: [],
         posts: [],
-        sessions: []
+        sessions: [],
+        snippets: []
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(initialDB, null, 2));
 }
@@ -344,6 +345,166 @@ app.get('/api/posts/feed', (req, res) => {
     res.json(posts);
 });
 
+// ===== SNIPPETS MANAGER ENDPOINTS =====
+
+// Get all snippets for logged-in user
+app.get('/api/snippets', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    const db = readDB();
+    const userSnippets = db.snippets
+        .filter(s => s.user_id === req.session.user.id)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    res.json(userSnippets);
+});
+
+// Get snippet by ID
+app.get('/api/snippets/:id', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    const db = readDB();
+    const snippet = db.snippets.find(s =>
+        s.id === parseInt(req.params.id) &&
+        s.user_id === req.session.user.id
+    );
+
+    if (!snippet) {
+        return res.status(404).json({ error: 'Snippet not found' });
+    }
+
+    res.json(snippet);
+});
+
+// Search snippets by tag or keyword
+app.get('/api/snippets/search/:query', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    const db = readDB();
+    const query = req.params.query.toLowerCase();
+
+    const results = db.snippets
+        .filter(s => s.user_id === req.session.user.id)
+        .filter(s =>
+            s.title.toLowerCase().includes(query) ||
+            s.description.toLowerCase().includes(query) ||
+            s.code.toLowerCase().includes(query) ||
+            s.tags.some(tag => tag.toLowerCase().includes(query))
+        )
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    res.json(results);
+});
+
+// Create new snippet
+app.post('/api/snippets', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    const { title, description, code, language, tags } = req.body;
+
+    if (!title || !code) {
+        return res.status(400).json({ error: 'Title and code required' });
+    }
+
+    const db = readDB();
+
+    const newSnippet = {
+        id: db.snippets.length > 0 ? Math.max(...db.snippets.map(s => s.id)) + 1 : 1,
+        user_id: req.session.user.id,
+        title,
+        description: description || '',
+        code,
+        language: language || 'javascript',
+        tags: Array.isArray(tags) ? tags : [],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+    };
+
+    db.snippets.push(newSnippet);
+    writeDB(db);
+
+    res.status(201).json(newSnippet);
+});
+
+// Update snippet
+app.put('/api/snippets/:id', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    const db = readDB();
+    const snippetIndex = db.snippets.findIndex(s =>
+        s.id === parseInt(req.params.id) &&
+        s.user_id === req.session.user.id
+    );
+
+    if (snippetIndex === -1) {
+        return res.status(404).json({ error: 'Snippet not found' });
+    }
+
+    const { title, description, code, language, tags } = req.body;
+
+    // Update fields
+    if (title) db.snippets[snippetIndex].title = title;
+    if (description !== undefined) db.snippets[snippetIndex].description = description;
+    if (code) db.snippets[snippetIndex].code = code;
+    if (language) db.snippets[snippetIndex].language = language;
+    if (tags) db.snippets[snippetIndex].tags = Array.isArray(tags) ? tags : [];
+    db.snippets[snippetIndex].updated_at = new Date().toISOString();
+
+    writeDB(db);
+
+    res.json(db.snippets[snippetIndex]);
+});
+
+// Delete snippet
+app.delete('/api/snippets/:id', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    const db = readDB();
+    const snippetIndex = db.snippets.findIndex(s =>
+        s.id === parseInt(req.params.id) &&
+        s.user_id === req.session.user.id
+    );
+
+    if (snippetIndex === -1) {
+        return res.status(404).json({ error: 'Snippet not found' });
+    }
+
+    db.snippets.splice(snippetIndex, 1);
+    writeDB(db);
+
+    res.json({ message: 'Snippet deleted' });
+});
+
+// Get all unique tags for user
+app.get('/api/snippets/tags/all', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    const db = readDB();
+    const userSnippets = db.snippets.filter(s => s.user_id === req.session.user.id);
+
+    const allTags = userSnippets.reduce((tags, snippet) => {
+        return tags.concat(snippet.tags);
+    }, []);
+
+    const uniqueTags = [...new Set(allTags)].sort();
+
+    res.json(uniqueTags);
+});
+
 // ===== TRINITY AI ENDPOINTS =====
 
 // Trinity Agent System Prompts
@@ -543,6 +704,13 @@ app.get('/blueprint', (req, res) => {
         return res.redirect('/');
     }
     res.sendFile(path.join(__dirname, 'public', 'blueprint.html'));
+});
+
+app.get('/snippets', (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'snippets.html'));
 });
 
 // ===== START SERVER =====
