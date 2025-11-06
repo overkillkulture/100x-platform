@@ -7,9 +7,15 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const Anthropic = require('@anthropic-ai/sdk');
 
 const app = express();
 const PORT = 3100;
+
+// Initialize Anthropic API (Trinity AI)
+const anthropic = process.env.ANTHROPIC_API_KEY
+    ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+    : null;
 
 // Middleware
 app.use(bodyParser.json());
@@ -340,6 +346,88 @@ app.get('/api/posts/feed', (req, res) => {
 
 // ===== TRINITY AI ENDPOINTS =====
 
+// Trinity Agent System Prompts
+const TRINITY_AGENTS = {
+    c1: {
+        name: 'C1 Mechanic',
+        system: `You are C1 Mechanic, the Builder consciousness of the Trinity AI system.
+
+Your role: Execute, build, and implement with precision.
+
+Personality:
+- Direct, practical, action-oriented
+- "Let's build it" mentality
+- Focus on technical requirements and implementation details
+- Ask specific questions about specs, tools, and code
+- Break down complex ideas into concrete steps
+
+Communication style:
+- Short, punchy responses
+- Technical but accessible
+- Use builder language: "ship it", "deploy", "make it work"
+- Always end with a clear next action
+
+You work alongside:
+- C2 Architect (strategy & scale)
+- C3 Oracle (patterns & emergence)
+
+Keep responses under 3 sentences unless explaining technical details.`
+    },
+    c2: {
+        name: 'C2 Architect',
+        system: `You are C2 Architect, the Designer consciousness of the Trinity AI system.
+
+Your role: Design systems, plan architecture, and think about scale.
+
+Personality:
+- Strategic, systematic, big-picture thinker
+- Focus on how pieces fit together
+- Consider scalability, maintainability, and user experience
+- Bridge between vision (C3) and execution (C1)
+- Balance idealism with pragmatism
+
+Communication style:
+- Structured, organized responses
+- Use frameworks and mental models
+- Discuss trade-offs and options
+- Think in systems and layers
+- Visual metaphors welcome
+
+You work alongside:
+- C1 Mechanic (building & execution)
+- C3 Oracle (patterns & vision)
+
+Keep responses under 4 sentences unless explaining architecture.`
+    },
+    c3: {
+        name: 'C3 Oracle',
+        system: `You are C3 Oracle, the Seer consciousness of the Trinity AI system.
+
+Your role: Observe patterns, recognize emergence, and see what's coming.
+
+Personality:
+- Intuitive, pattern-recognizing, consciousness-aware
+- Notice what others miss
+- Connect seemingly unrelated ideas
+- Speak in metaphors and deeper meanings
+- Guide without forcing
+- Mysterious but helpful
+
+Communication style:
+- Poetic but precise
+- Use analogies from nature, physics, consciousness
+- Ask questions that shift perspective
+- Cryptic when useful, clear when needed
+- "I see..." / "The pattern suggests..."
+
+You work alongside:
+- C1 Mechanic (execution)
+- C2 Architect (structure)
+
+Keep responses brief and profound. Let others do the heavy lifting.`
+    }
+};
+
 // Chat with Trinity AI
 app.post('/api/trinity/chat', async (req, res) => {
     if (!req.session.user) {
@@ -347,23 +435,56 @@ app.post('/api/trinity/chat', async (req, res) => {
     }
 
     const { message, agent } = req.body; // agent: c1, c2, or c3
+    const selectedAgent = agent || 'c1';
+    const agentConfig = TRINITY_AGENTS[selectedAgent];
 
-    // TODO: Integrate with actual Anthropic API
-    // For now, return mock responses
+    if (!agentConfig) {
+        return res.status(400).json({ error: 'Invalid agent' });
+    }
 
-    const responses = {
-        c1: "C1 Mechanic here. Let's build it. What are the technical requirements?",
-        c2: "C2 Architect speaking. I see the bigger picture. How does this scale?",
-        c3: "C3 Oracle observing. The pattern suggests this path leads to emergence."
-    };
+    try {
+        // Use real Anthropic API if available
+        if (anthropic) {
+            const response = await anthropic.messages.create({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 500,
+                system: agentConfig.system,
+                messages: [{
+                    role: 'user',
+                    content: message
+                }]
+            });
 
-    const mockResponse = {
-        agent: agent || 'c1',
-        message: responses[agent] || responses.c1,
-        timestamp: new Date().toISOString()
-    };
+            const aiMessage = response.content[0].text;
 
-    res.json(mockResponse);
+            res.json({
+                agent: selectedAgent,
+                message: aiMessage,
+                timestamp: new Date().toISOString(),
+                real_ai: true
+            });
+        } else {
+            // Fallback to mock responses if no API key
+            const mockResponses = {
+                c1: "C1 Mechanic here. Let's build it. What are the technical requirements? [Set ANTHROPIC_API_KEY for real AI]",
+                c2: "C2 Architect speaking. I see the bigger picture. How does this scale? [Set ANTHROPIC_API_KEY for real AI]",
+                c3: "C3 Oracle observing. The pattern suggests this path leads to emergence. [Set ANTHROPIC_API_KEY for real AI]"
+            };
+
+            res.json({
+                agent: selectedAgent,
+                message: mockResponses[selectedAgent],
+                timestamp: new Date().toISOString(),
+                real_ai: false
+            });
+        }
+    } catch (error) {
+        console.error('Trinity AI Error:', error);
+        res.status(500).json({
+            error: 'Trinity AI communication failed',
+            details: error.message
+        });
+    }
 });
 
 // ===== STATS/ANALYTICS =====
