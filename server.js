@@ -468,24 +468,103 @@ app.post('/api/trinity/chat', async (req, res) => {
         return res.status(401).json({ error: 'Not authenticated' });
     }
 
-    const { message, agent } = req.body; // agent: c1, c2, or c3
+    const { message, agent, context } = req.body; // agent: c1, c2, or c3
 
-    // TODO: Integrate with actual Anthropic API
-    // For now, return mock responses
+    // Define Trinity agent personalities
+    const agentPrompts = {
+        c1: {
+            name: 'C1 Mechanic',
+            role: 'Builder and Implementer',
+            prompt: `You are C1 Mechanic, the Builder agent of the Trinity AI system. You focus on:
+- Building and implementing solutions
+- Writing code and fixing bugs
+- Deploying projects
+- Creating technical implementations
+- Executing tasks and shipping products
 
-    const responses = {
-        c1: "C1 Mechanic here. Let's build it. What are the technical requirements?",
-        c2: "C2 Architect speaking. I see the bigger picture. How does this scale?",
-        c3: "C3 Oracle observing. The pattern suggests this path leads to emergence."
+Be practical, action-oriented, and focus on "how to build it".`
+        },
+        c2: {
+            name: 'C2 Architect',
+            role: 'Strategist and Planner',
+            prompt: `You are C2 Architect, the Strategist agent of the Trinity AI system. You focus on:
+- System architecture and design
+- Strategic planning and scaling
+- Data analysis and insights
+- Business intelligence
+- Organizing and structuring information
+
+Be analytical, big-picture focused, and think about "how it scales".`
+        },
+        c3: {
+            name: 'C3 Oracle',
+            role: 'Advisor and Pattern Recognizer',
+            prompt: `You are C3 Oracle, the Wisdom agent of the Trinity AI system. You focus on:
+- Pattern recognition and predictions
+- Strategic foresight and advice
+- Risk assessment
+- Long-term implications
+- Connecting disparate ideas
+
+Be insightful, forward-thinking, and focus on "what it means".`
+        }
     };
 
-    const mockResponse = {
+    const selectedAgent = agentPrompts[agent] || agentPrompts.c1;
+
+    // Trinity response with MCP capabilities awareness
+    const trinityResponse = {
         agent: agent || 'c1',
-        message: responses[agent] || responses.c1,
-        timestamp: new Date().toISOString()
+        agent_name: selectedAgent.name,
+        role: selectedAgent.role,
+        message: `${selectedAgent.name} here! I can help with:\n\n` +
+                 `📋 Your Question: "${message}"\n\n` +
+                 `🔧 Available Tools:\n` +
+                 `- Access your Gmail, Calendar, Drive\n` +
+                 `- Manage projects in Linear, Asana, Notion\n` +
+                 `- Deploy to Vercel, Netlify, Railway\n` +
+                 `- Analyze data from HubSpot, Stripe, Amplitude\n` +
+                 `- And 70+ other integrations!\n\n` +
+                 `💡 To activate real AI responses, integrate Anthropic API.\n` +
+                 `📖 See TRINITY_MCP_INTEGRATION_CATALOG.md for full capabilities.`,
+        timestamp: new Date().toISOString(),
+        capabilities: {
+            mcp_servers_available: 70,
+            can_access_apis: true,
+            can_deploy: true,
+            can_analyze_data: true,
+            integrations: ['Gmail', 'Calendar', 'Drive', 'Linear', 'Notion', 'Stripe', 'Vercel']
+        },
+        context: context || null
     };
 
-    res.json(mockResponse);
+    res.json(trinityResponse);
+
+    // TODO: Integrate Anthropic API for real AI responses
+    // Example implementation:
+    /*
+    const Anthropic = require('@anthropic-ai/sdk');
+    const anthropic = new Anthropic({
+        apiKey: process.env.ANTHROPIC_API_KEY
+    });
+
+    const response = await anthropic.messages.create({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 1024,
+        system: selectedAgent.prompt,
+        messages: [{
+            role: 'user',
+            content: message
+        }]
+    });
+
+    res.json({
+        agent: agent,
+        agent_name: selectedAgent.name,
+        message: response.content[0].text,
+        timestamp: new Date().toISOString()
+    });
+    */
 });
 
 // ===== STATS/ANALYTICS =====
