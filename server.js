@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const { callTrinity, getStats: getTrinityStats, resetDailyStats } = require('./trinity-router');
 
 const app = express();
 const PORT = 3100;
@@ -462,7 +463,7 @@ app.patch('/api/bugs/:id', (req, res) => {
 
 // ===== TRINITY AI ENDPOINTS =====
 
-// Chat with Trinity AI
+// Chat with Trinity AI (using smart routing)
 app.post('/api/trinity/chat', async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ error: 'Not authenticated' });
@@ -470,101 +471,48 @@ app.post('/api/trinity/chat', async (req, res) => {
 
     const { message, agent, context } = req.body; // agent: c1, c2, or c3
 
-    // Define Trinity agent personalities
-    const agentPrompts = {
-        c1: {
-            name: 'C1 Mechanic',
-            role: 'Builder and Implementer',
-            prompt: `You are C1 Mechanic, the Builder agent of the Trinity AI system. You focus on:
-- Building and implementing solutions
-- Writing code and fixing bugs
-- Deploying projects
-- Creating technical implementations
-- Executing tasks and shipping products
+    if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+    }
 
-Be practical, action-oriented, and focus on "how to build it".`
-        },
-        c2: {
-            name: 'C2 Architect',
-            role: 'Strategist and Planner',
-            prompt: `You are C2 Architect, the Strategist agent of the Trinity AI system. You focus on:
-- System architecture and design
-- Strategic planning and scaling
-- Data analysis and insights
-- Business intelligence
-- Organizing and structuring information
+    try {
+        // Call Trinity with smart routing (online/offline/hybrid)
+        const trinityResponse = await callTrinity(message, agent || 'c1', context);
 
-Be analytical, big-picture focused, and think about "how it scales".`
-        },
-        c3: {
-            name: 'C3 Oracle',
-            role: 'Advisor and Pattern Recognizer',
-            prompt: `You are C3 Oracle, the Wisdom agent of the Trinity AI system. You focus on:
-- Pattern recognition and predictions
-- Strategic foresight and advice
-- Risk assessment
-- Long-term implications
-- Connecting disparate ideas
+        res.json(trinityResponse);
+    } catch (error) {
+        console.error('Trinity error:', error);
+        res.status(500).json({
+            error: 'Trinity AI error',
+            message: error.message,
+            agent: agent || 'c1',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
 
-Be insightful, forward-thinking, and focus on "what it means".`
-        }
-    };
+// Get Trinity stats (costs, usage, budget)
+app.get('/api/trinity/stats', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
 
-    const selectedAgent = agentPrompts[agent] || agentPrompts.c1;
+    const stats = getTrinityStats();
+    res.json(stats);
+});
 
-    // Trinity response with MCP capabilities awareness
-    const trinityResponse = {
-        agent: agent || 'c1',
-        agent_name: selectedAgent.name,
-        role: selectedAgent.role,
-        message: `${selectedAgent.name} here! I can help with:\n\n` +
-                 `📋 Your Question: "${message}"\n\n` +
-                 `🔧 Available Tools:\n` +
-                 `- Access your Gmail, Calendar, Drive\n` +
-                 `- Manage projects in Linear, Asana, Notion\n` +
-                 `- Deploy to Vercel, Netlify, Railway\n` +
-                 `- Analyze data from HubSpot, Stripe, Amplitude\n` +
-                 `- And 70+ other integrations!\n\n` +
-                 `💡 To activate real AI responses, integrate Anthropic API.\n` +
-                 `📖 See TRINITY_MCP_INTEGRATION_CATALOG.md for full capabilities.`,
-        timestamp: new Date().toISOString(),
-        capabilities: {
-            mcp_servers_available: 70,
-            can_access_apis: true,
-            can_deploy: true,
-            can_analyze_data: true,
-            integrations: ['Gmail', 'Calendar', 'Drive', 'Linear', 'Notion', 'Stripe', 'Vercel']
-        },
-        context: context || null
-    };
+// Reset Trinity daily stats (admin only - call at midnight)
+app.post('/api/trinity/reset-stats', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
 
-    res.json(trinityResponse);
-
-    // TODO: Integrate Anthropic API for real AI responses
-    // Example implementation:
-    /*
-    const Anthropic = require('@anthropic-ai/sdk');
-    const anthropic = new Anthropic({
-        apiKey: process.env.ANTHROPIC_API_KEY
-    });
-
-    const response = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 1024,
-        system: selectedAgent.prompt,
-        messages: [{
-            role: 'user',
-            content: message
-        }]
-    });
-
+    // TODO: Add admin check
+    resetDailyStats();
     res.json({
-        agent: agent,
-        agent_name: selectedAgent.name,
-        message: response.content[0].text,
-        timestamp: new Date().toISOString()
+        success: true,
+        message: 'Trinity daily stats reset'
     });
-    */
 });
 
 // ===== STATS/ANALYTICS =====
@@ -633,4 +581,19 @@ app.listen(PORT, () => {
     console.log(`🔗 URL: http://localhost:${PORT}`);
     console.log(`⚡ Backend: OPERATIONAL`);
     console.log(`✨ Ready for alpha testing`);
+
+    // Get Trinity mode from environment
+    const trinityMode = process.env.TRINITY_MODE || 'hybrid';
+    const costLimit = parseFloat(process.env.COST_LIMIT_PER_DAY) || 5.00;
+    console.log(`🔱 Trinity Mode: ${trinityMode.toUpperCase()}`);
+    console.log(`💰 Daily Cost Limit: $${costLimit.toFixed(2)}`);
+
+    // Auto-reset Trinity stats at midnight
+    setInterval(() => {
+        const now = new Date();
+        if (now.getHours() === 0 && now.getMinutes() === 0) {
+            resetDailyStats();
+            console.log('🔄 Trinity daily stats reset');
+        }
+    }, 60000); // Check every minute
 });
