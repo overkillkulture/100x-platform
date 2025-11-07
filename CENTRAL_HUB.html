@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 CENTRAL HUB - All 16 Claude Instances</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, #000000 0%, #0a0a1e 50%, #000000 100%);
+            color: #00ff00;
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(0, 255, 0, 0.1) 0%, transparent 50%);
+            animation: bgPulse 10s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Epic Header */
+        .epic-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .epic-header h1 {
+            font-size: 4em;
+            color: #00ffff;
+            text-shadow:
+                0 0 10px #00ffff,
+                0 0 20px #00ffff,
+                0 0 40px #00ffff,
+                0 0 80px #00ffff;
+            margin-bottom: 10px;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; }
+            50% { text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #00ffff; }
+        }
+
+        .subtitle {
+            font-size: 1.5em;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .live-counter {
+            display: inline-block;
+            font-size: 2.5em;
+            color: #ff0066;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px 30px;
+            background: rgba(255, 0, 102, 0.1);
+            border: 3px solid #ff0066;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 0, 102, 0.5);
+            animation: counterPulse 2s infinite;
+        }
+
+        @keyframes counterPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Quick Access Bar */
+        .quick-access {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .quick-btn {
+            background: linear-gradient(135deg, #00ff00 0%, #00cc00 100%);
+            color: #000;
+            border: none;
+            padding: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .quick-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
+        }
+
+        .quick-btn.urgent {
+            background: linear-gradient(135deg, #ff0066 0%, #cc0055 100%);
+            color: #fff;
+            animation: urgentPulse 1.5s infinite;
+        }
+
+        @keyframes urgentPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 102, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(255, 0, 102, 1); }
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* Panel Styles */
+        .panel {
+            background: rgba(0, 20, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+        }
+
+        .panel h2 {
+            color: #00ffff;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #00ffff;
+            padding-bottom: 10px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        /* Instance Grid */
+        .instances-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .instance-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .instance-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .instance-card.active {
+            border-color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            background: rgba(0, 50, 0, 0.4);
+        }
+
+        .instance-card.inactive {
+            border-color: #ff0000;
+            opacity: 0.4;
+        }
+
+        .instance-card.stale {
+            border-color: #ffaa00;
+            box-shadow: 0 0 15px rgba(255, 170, 0, 0.3);
+        }
+
+        .instance-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 8px;
+        }
+
+        .instance-status {
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .instance-task {
+            color: #ffff00;
+            font-style: italic;
+            margin: 10px 0;
+            font-size: 0.95em;
+        }
+
+        .instance-time {
+            color: #00aaff;
+            font-size: 0.85em;
+            margin-top: 8px;
+        }
+
+        /* Stats Dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: rgba(0, 30, 30, 0.6);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 3em;
+            color: #00ffff;
+            font-weight: bold;
+            text-shadow: 0 0 15px #00ffff;
+        }
+
+        .stat-label {
+            color: #00ff00;
+            margin-top: 8px;
+            font-size: 1.1em;
+        }
+
+        /* Activity Feed */
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .activity-item {
+            background: rgba(0, 50, 0, 0.3);
+            border-left: 4px solid #00ff00;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .activity-time {
+            color: #00aaff;
+            font-size: 0.85em;
+        }
+
+        .activity-text {
+            color: #00ff00;
+            margin-top: 5px;
+        }
+
+        /* Computer Sections */
+        .computer-section {
+            margin-bottom: 40px;
+        }
+
+        .computer-header {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(0, 255, 255, 0.05) 100%);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .computer-name {
+            font-size: 1.8em;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .computer-count {
+            font-size: 2em;
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        /* Auto-refresh indicator */
+        .refresh-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 255, 0, 0.2);
+            border: 2px solid #00ff00;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        /* Check-in Form */
+        .check-in-panel {
+            background: linear-gradient(135deg, rgba(255, 0, 102, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
+            border: 3px solid #ff0066;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 0 30px rgba(255, 0, 102, 0.3);
+        }
+
+        .check-in-panel h2 {
+            color: #ff0066;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px #ff0066;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #00ff00;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            border-radius: 8px;
+            font-family: 'Monaco', monospace;
+            font-size: 1em;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .check-in-btn {
+            background: linear-gradient(135deg, #ff0066 0%, #cc0055 100%);
+            color: #fff;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(255, 0, 102, 0.5);
+        }
+
+        .check-in-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 0, 102, 0.8);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .epic-header h1 {
+                font-size: 2.5em;
+            }
+            .instances-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="refresh-indicator">
+        🔴 LIVE: <span id="countdown">5</span>s
+    </div>
+
+    <div class="container">
+        <div class="epic-header">
+            <h1>🎯 CENTRAL HUB</h1>
+            <div class="subtitle">16 Claude Instances Across 3 Computers</div>
+            <div class="live-counter">
+                <span id="totalActive">0</span> / 16 ACTIVE
+            </div>
+        </div>
+
+        <div class="quick-access">
+            <a href="connect.html" class="quick-btn urgent">📡 Coordination Dashboard</a>
+            <a href="TRINITY_MISSION_CONTROL.html" class="quick-btn">🎮 Mission Control</a>
+            <a href="seven-domains-hub.html" class="quick-btn">🌐 Seven Domains</a>
+            <a href="workspace-v3.html" class="quick-btn">💼 Workspace v3</a>
+            <a href="bugs-live.html" class="quick-btn">🐛 Bug Monitor</a>
+            <a href="PLATFORM/araya-chat.html" class="quick-btn">💬 Araya Chat</a>
+        </div>
+
+        <div class="check-in-panel">
+            <h2>⚡ QUICK CHECK-IN</h2>
+            <div class="form-group">
+                <label>Instance Number:</label>
+                <select id="instanceNumber">
+                    <option value="">-- Select Your Instance --</option>
+                    <optgroup label="Computer 1 (Main - 6 instances)">
+                        <option value="1">Instance 1 (Claude Code)</option>
+                        <option value="2">Instance 2 (Web Browser)</option>
+                        <option value="3">Instance 3 (Web Browser)</option>
+                        <option value="4">Instance 4 (Web Browser)</option>
+                        <option value="5">Instance 5 (Claude Code)</option>
+                        <option value="6">Instance 6 (Claude Code)</option>
+                    </optgroup>
+                    <optgroup label="Computer 2 (Left - 6 instances)">
+                        <option value="7">Instance 7</option>
+                        <option value="8">Instance 8</option>
+                        <option value="9">Instance 9</option>
+                        <option value="10">Instance 10</option>
+                        <option value="11">Instance 11</option>
+                        <option value="12">Instance 12</option>
+                    </optgroup>
+                    <optgroup label="Computer 3 (Laptop - 4 instances)">
+                        <option value="13">Instance 13</option>
+                        <option value="14">Instance 14</option>
+                        <option value="15">Instance 15</option>
+                        <option value="16">Instance 16</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>What are you working on?</label>
+                <textarea id="currentTask" placeholder="e.g., Fixing bugs, Building coordination, Testing features..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Files editing (optional):</label>
+                <input type="text" id="filesEditing" placeholder="e.g., index.html, script.js">
+            </div>
+            <button class="check-in-btn" onclick="checkIn()">✅ CHECK IN NOW</button>
+        </div>
+
+        <div class="main-grid">
+            <div class="panel">
+                <h2>📊 Live Instance Status</h2>
+                <div id="allInstances"></div>
+            </div>
+
+            <div>
+                <div class="panel" style="margin-bottom: 20px;">
+                    <h2>📈 Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="comp1Count">0</div>
+                            <div class="stat-label">Computer 1</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="comp2Count">0</div>
+                            <div class="stat-label">Computer 2</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="comp3Count">0</div>
+                            <div class="stat-label">Computer 3</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="activeCount">0</div>
+                            <div class="stat-label">Active Now</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>📡 Recent Activity</h2>
+                    <div class="activity-feed" id="activityFeed">
+                        <div class="activity-item">
+                            <div class="activity-time">Waiting for activity...</div>
+                            <div class="activity-text">No check-ins yet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="computer-section">
+            <div class="computer-header">
+                <div class="computer-name">🖥️ Computer 1 (Main)</div>
+                <div class="computer-count"><span id="comp1Active">0</span> / 6</div>
+            </div>
+            <div class="instances-grid" id="computer1Grid"></div>
+        </div>
+
+        <div class="computer-section">
+            <div class="computer-header">
+                <div class="computer-name">🖥️ Computer 2 (Left)</div>
+                <div class="computer-count"><span id="comp2Active">0</span> / 6</div>
+            </div>
+            <div class="instances-grid" id="computer2Grid"></div>
+        </div>
+
+        <div class="computer-section">
+            <div class="computer-header">
+                <div class="computer-name">💻 Computer 3 (Laptop)</div>
+                <div class="computer-count"><span id="comp3Active">0</span> / 4</div>
+            </div>
+            <div class="instances-grid" id="computer3Grid"></div>
+        </div>
+    </div>
+
+    <script>
+        // Same coordination logic as connect.html but with enhanced UI
+        function getInstances() {
+            const stored = localStorage.getItem('claudeInstances');
+            return stored ? JSON.parse(stored) : {};
+        }
+
+        function saveInstances(instances) {
+            localStorage.setItem('claudeInstances', JSON.stringify(instances));
+        }
+
+        function checkIn() {
+            const instanceNumber = document.getElementById('instanceNumber').value;
+            const currentTask = document.getElementById('currentTask').value;
+            const filesEditing = document.getElementById('filesEditing').value;
+
+            if (!instanceNumber || !currentTask) {
+                alert('Please fill in Instance Number and Current Task!');
+                return;
+            }
+
+            const instances = getInstances();
+            instances[instanceNumber] = {
+                instanceNumber: instanceNumber,
+                currentTask: currentTask,
+                filesEditing: filesEditing,
+                lastUpdate: new Date().toISOString(),
+                timestamp: Date.now()
+            };
+
+            saveInstances(instances);
+
+            // Try cross-computer sync
+            fetch('/.netlify/functions/coordination-checkin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(instances[instanceNumber])
+            }).catch(err => console.log('Cross-computer sync pending'));
+
+            // Add to activity feed
+            addActivity(`Instance ${instanceNumber} checked in: ${currentTask}`);
+
+            alert(`✅ Instance ${instanceNumber} checked in!`);
+            renderInstances();
+        }
+
+        function addActivity(text) {
+            const activities = JSON.parse(localStorage.getItem('activities') || '[]');
+            activities.unshift({
+                time: new Date().toISOString(),
+                text: text
+            });
+            if (activities.length > 20) activities.pop();
+            localStorage.setItem('activities', JSON.stringify(activities));
+            renderActivity();
+        }
+
+        function renderActivity() {
+            const activities = JSON.parse(localStorage.getItem('activities') || '[]');
+            const feed = document.getElementById('activityFeed');
+
+            if (activities.length === 0) {
+                feed.innerHTML = '<div class="activity-item"><div class="activity-time">Waiting...</div><div class="activity-text">No activity yet</div></div>';
+                return;
+            }
+
+            feed.innerHTML = activities.map(a => `
+                <div class="activity-item">
+                    <div class="activity-time">${new Date(a.time).toLocaleTimeString()}</div>
+                    <div class="activity-text">${a.text}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderInstances() {
+            const instances = getInstances();
+            const now = Date.now();
+
+            let comp1Active = 0, comp2Active = 0, comp3Active = 0, totalActive = 0;
+
+            // Render each computer's instances
+            for (let i = 1; i <= 16; i++) {
+                const instance = instances[i];
+                const card = document.createElement('div');
+                card.className = 'instance-card';
+
+                if (instance) {
+                    const age = now - instance.timestamp;
+                    const isStale = age > 300000; // 5 min
+                    const isInactive = age > 600000; // 10 min
+
+                    if (isInactive) {
+                        card.className += ' inactive';
+                    } else if (isStale) {
+                        card.className += ' stale';
+                    } else {
+                        card.className += ' active';
+                        totalActive++;
+                        if (i <= 6) comp1Active++;
+                        else if (i <= 12) comp2Active++;
+                        else comp3Active++;
+                    }
+
+                    const minutesAgo = Math.floor(age / 60000);
+                    const timeStr = minutesAgo === 0 ? 'Just now' : `${minutesAgo}m ago`;
+
+                    card.innerHTML = `
+                        <div class="instance-number">Instance ${i}</div>
+                        <div class="instance-status">✅ CHECKED IN</div>
+                        <div class="instance-task">${instance.currentTask}</div>
+                        ${instance.filesEditing ? `<div style="color: #ff6600; font-size: 0.9em; margin-top: 5px;">📝 ${instance.filesEditing}</div>` : ''}
+                        <div class="instance-time">⏰ ${timeStr}</div>
+                    `;
+                } else {
+                    card.className += ' inactive';
+                    card.innerHTML = `
+                        <div class="instance-number">Instance ${i}</div>
+                        <div class="instance-status" style="color: #ff0000;">❌ OFFLINE</div>
+                        <div style="color: #666; margin-top: 10px;">Waiting for check-in...</div>
+                    `;
+                }
+
+                // Add to appropriate grid
+                if (i <= 6) {
+                    document.getElementById('computer1Grid').appendChild(card);
+                } else if (i <= 12) {
+                    document.getElementById('computer2Grid').appendChild(card);
+                } else {
+                    document.getElementById('computer3Grid').appendChild(card);
+                }
+            }
+
+            // Update stats
+            document.getElementById('totalActive').textContent = totalActive;
+            document.getElementById('activeCount').textContent = totalActive;
+            document.getElementById('comp1Count').textContent = comp1Active;
+            document.getElementById('comp2Count').textContent = comp2Active;
+            document.getElementById('comp3Count').textContent = comp3Active;
+            document.getElementById('comp1Active').textContent = comp1Active;
+            document.getElementById('comp2Active').textContent = comp2Active;
+            document.getElementById('comp3Active').textContent = comp3Active;
+        }
+
+        // Clear grids before render
+        function clearGrids() {
+            document.getElementById('computer1Grid').innerHTML = '';
+            document.getElementById('computer2Grid').innerHTML = '';
+            document.getElementById('computer3Grid').innerHTML = '';
+        }
+
+        // Auto-refresh countdown
+        let countdown = 5;
+        setInterval(() => {
+            countdown--;
+            if (countdown <= 0) {
+                countdown = 5;
+                clearGrids();
+                renderInstances();
+
+                // Try cross-computer sync
+                fetch('/.netlify/functions/coordination-status')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.instances) {
+                            const local = getInstances();
+                            const merged = { ...local, ...data.instances };
+                            saveInstances(merged);
+                            clearGrids();
+                            renderInstances();
+                        }
+                    })
+                    .catch(() => {});
+            }
+            document.getElementById('countdown').textContent = countdown;
+        }, 1000);
+
+        // Initial render
+        clearGrids();
+        renderInstances();
+        renderActivity();
+
+        // Listen for storage changes
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'claudeInstances') {
+                clearGrids();
+                renderInstances();
+            } else if (e.key === 'activities') {
+                renderActivity();
+            }
+        });
+    </script>
+</body>
+</html>
