@@ -1,0 +1,33 @@
+{
+  "bug_number": 26,
+  "title": "Merge index.html and workspace-v3.html functionality",
+  "status": "completed",
+  "fixed_by": "C1_Mechanic",
+  "fix_description": "Merged landing page (index.html) and workspace dashboard (workspace-v3.html) into a single unified page. Landing section appears at top for non-logged-in users. Features section (#features) contains full workspace dashboard for logged-in users. Login automatically takes users to #features section.",
+  "files_modified": [
+    "/home/user/100x-platform/index.html"
+  ],
+  "files_backed_up": [
+    "/home/user/100x-platform/index.html.backup"
+  ],
+  "fix_details": {
+    "problem": "Two separate pages needed to be merged without overlapping functionality",
+    "solution": "Created unified index.html with two sections: #landing (public) and #features (workspace for logged-in users). JavaScript logic handles showing/hiding sections based on login state.",
+    "features_merged": {
+      "landing_section": [
+        "Simple 3-button interface (Explore, Create, Login)",
+        "Clean landing page for new visitors"
+      ],
+      "features_section": [
+        "Workspace header with status badge",
+        "Welcome card with user greeting",
+        "6 action cards (ARAYA download, bug reporting, live monitor, GitHub, chat, back home)",
+        "Online users tracking",
+        "User activity pinging",
+        "Profile loading from Araya API"
+      ]
+    },
+    "behavior": "Logged-out users see landing page. Logged-in users automatically see features section. Login redirects to index.html#features."
+  },
+  "completed_at": "2025-11-07T06:00:00Z"
+}

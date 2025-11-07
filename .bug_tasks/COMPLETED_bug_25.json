@@ -1,0 +1,16 @@
+{
+  "bug_number": 25,
+  "title": "User display in top right corner",
+  "status": "completed",
+  "fixed_by": "C1_Mechanic",
+  "fix_description": "Updated UNIVERSAL_USER_DISPLAY.js to check for 'userName' localStorage key (set by login.html). Script now properly displays logged-in user in top right corner on all pages including index.html#features.",
+  "files_modified": [
+    "/home/user/100x-platform/UNIVERSAL_USER_DISPLAY.js"
+  ],
+  "fix_details": {
+    "problem": "login.html stores username as 'userName' but display script was checking for 'workspace_user_name', 'user_name', or 'username'",
+    "solution": "Added 'userName' as first check in localStorage retrieval chain",
+    "result": "User display now works after login - shows username in top right corner with green styling"
+  },
+  "completed_at": "2025-11-07T05:45:00Z"
+}

@@ -9,7 +9,8 @@
 
     function init() {
         // Get username from localStorage
-        const username = localStorage.getItem('workspace_user_name') ||
+        const username = localStorage.getItem('userName') ||          // From login.html
+                         localStorage.getItem('workspace_user_name') ||
                          localStorage.getItem('user_name') ||
                          localStorage.getItem('username');
 
