@@ -51,34 +51,67 @@ class MasterNavigation {
 
     getCurrentPageInfo() {
         const pages = {
-            // Main Dashboard
+            // Main Dashboard & Entry
+            'index.html': { name: 'Home', icon: '🏠', category: 'Main' },
             'user-dashboard.html': { name: 'Dashboard', icon: '🏠', category: 'Main' },
+            'dashboard.html': { name: 'Dashboard Alt', icon: '📊', category: 'Main' },
             'welcome.html': { name: 'Welcome', icon: '👋', category: 'Main' },
+            'welcome-flow.html': { name: 'Welcome Flow', icon: '🌊', category: 'Main' },
+            'onboarding-welcome.html': { name: 'Onboarding', icon: '🚀', category: 'Main' },
             'workspace.html': { name: 'Workspace', icon: '🛠️', category: 'Main' },
+            'for-the-builders.html': { name: 'For Builders', icon: '👷', category: 'Main' },
+            'mission-control-center.html': { name: 'Mission Control', icon: '🎯', category: 'Main' },
+
+            // Authentication
+            'login.html': { name: 'Login', icon: '🔑', category: 'Auth' },
+            'register.html': { name: 'Register', icon: '📝', category: 'Auth' },
+            'settings-panel.html': { name: 'Settings', icon: '⚙️', category: 'Auth' },
 
             // KORPAKs
             'korpak-wizard.html': { name: 'KORPAK Wizard', icon: '🧙', category: 'KORPAKs' },
             'korpak-detail.html': { name: 'KORPAK Details', icon: '📦', category: 'KORPAKs' },
+            'AMELIA_JOY_KIT_STORE.html': { name: 'Amelia Joy Kit', icon: '😊', category: 'KORPAKs' },
+            'KENNEDI_OBSERVER_KIT_STORE.html': { name: 'Kennedi Observer Kit', icon: '👁️', category: 'KORPAKs' },
 
             // Modules & Tools
             'module-library.html': { name: 'Module Library', icon: '🧩', category: 'Modules' },
+            'MODULE_TEMPLATE.html': { name: 'Module Template', icon: '📋', category: 'Modules' },
             'module-pattern-explorer.html': { name: 'Pattern Explorer', icon: '🔍', category: 'Modules' },
             'cheat-codes.html': { name: 'Cheat Codes', icon: '🎮', category: 'Modules' },
             'todo-master.html': { name: 'TODO Master', icon: '✓', category: 'Modules' },
             'kaizen-builder-board.html': { name: 'Kaizen Board', icon: '📋', category: 'Modules' },
+            'master-kanban-board.html': { name: 'Master Kanban', icon: '📊', category: 'Modules' },
+            'master-kanban-music.html': { name: 'Kanban Music', icon: '🎵', category: 'Modules' },
             'invention-manifestation.html': { name: 'Invention Manifestation', icon: '💡', category: 'Modules' },
             'patent-manager.html': { name: 'Patent Manager', icon: '📜', category: 'Modules' },
+            'domino-cascade-organizer.html': { name: 'Domino Organizer', icon: '🎯', category: 'Modules' },
+            'software-blueprinter.html': { name: 'Software Blueprinter', icon: '🏗️', category: 'Modules' },
+            'life-business-plan.html': { name: 'Life Business Plan', icon: '📈', category: 'Modules' },
+            'corporate-bloat-tracker.html': { name: 'Bloat Tracker', icon: '📉', category: 'Modules' },
 
-            // Trinity AI
+            // Trinity AI & Araya
             'philosopher-ai-connected.html': { name: 'Philosopher AI', icon: '🤖', category: 'Trinity' },
+            'philosopher-ai.html': { name: 'Philosopher AI Alt', icon: '🧙', category: 'Trinity' },
             'trinity-ai-interface.html': { name: 'Trinity Interface', icon: '🔺', category: 'Trinity' },
+            'trinity-chat.html': { name: 'Trinity Chat', icon: '💬', category: 'Trinity' },
             'brain-council.html': { name: 'Brain Council', icon: '🧠', category: 'Trinity' },
             'emergency-ai-chat.html': { name: 'Emergency AI', icon: '🚨', category: 'Trinity' },
+            'araya-chat.html': { name: 'Araya Chat', icon: '🤖', category: 'Trinity' },
+            'aria-3d-avatar.html': { name: 'Aria 3D Avatar', icon: '👤', category: 'Trinity' },
+            'aria-3d-futuristic.html': { name: 'Aria Futuristic', icon: '✨', category: 'Trinity' },
+            'aria-avatar-guide.html': { name: 'Aria Guide', icon: '🧭', category: 'Trinity' },
+            'aria-simple-fallback.html': { name: 'Aria Fallback', icon: '🔄', category: 'Trinity' },
+            'ai-guided-tour.html': { name: 'AI Guided Tour', icon: '🎫', category: 'Trinity' },
+            'ai-native-blueprint.html': { name: 'AI Native Blueprint', icon: '🏗️', category: 'Trinity' },
 
             // Consciousness Tools
             '3-min-boost.html': { name: '3-Min Boost', icon: '⚡', category: 'Consciousness' },
             'consciousness-boost-dashboard.html': { name: 'Consciousness Boost', icon: '⚡', category: 'Consciousness' },
             'consciousness-speed-test.html': { name: 'Speed Test', icon: '⏱️', category: 'Consciousness' },
+            'consciousness-workspace-3d.html': { name: 'Workspace 3D', icon: '🌐', category: 'Consciousness' },
+            'consciousness-network-visualization.html': { name: 'Network Viz', icon: '🕸️', category: 'Consciousness' },
+            'consciousness-profile-dump.html': { name: 'Profile Dump', icon: '📊', category: 'Consciousness' },
+            'computer-consciousness.html': { name: 'Computer Consciousness', icon: '💻', category: 'Consciousness' },
             'pattern-recognition-quiz.html': { name: 'Pattern Quiz', icon: '🧩', category: 'Consciousness' },
             'quantum-pattern-filter.html': { name: 'Quantum Filter', icon: '🌀', category: 'Consciousness' },
             'destroyer-defense.html': { name: 'Destroyer Defense', icon: '🛡️', category: 'Consciousness' },
@@ -94,9 +127,11 @@ class MasterNavigation {
             'business-phase-clock.html': { name: 'Business Phase Clock', icon: '⏰', category: 'Business' },
             'truth-coin.html': { name: 'Truth Coin', icon: '🪙', category: 'Business' },
             'open-source-decision-module.html': { name: 'Open Source Decision', icon: '🌐', category: 'Business' },
+            'case-humor-music-system.html': { name: 'Case Humor Music', icon: '🎭', category: 'Business' },
 
             // Store
             'store.html': { name: 'Store', icon: '🛒', category: 'Store' },
+            'app-store.html': { name: 'App Store', icon: '📱', category: 'Store' },
             'store-products.html': { name: 'Products', icon: '📦', category: 'Store' },
             'store-cart.html': { name: 'Cart', icon: '🛍️', category: 'Store' },
             'store-campaigns.html': { name: 'Campaigns', icon: '📢', category: 'Store' },
@@ -106,43 +141,79 @@ class MasterNavigation {
             // Fun & Engagement
             'arcade-hub.html': { name: 'Arcade Hub', icon: '🎮', category: 'Arcade' },
             'social-hub.html': { name: 'Social Hub', icon: '🌐', category: 'Arcade' },
+            'social-domain.html': { name: 'Social Domain', icon: '👥', category: 'Arcade' },
             'trinity-puzzle.html': { name: 'Trinity Puzzle', icon: '🧩', category: 'Arcade' },
             'time-machine.html': { name: 'Time Machine', icon: '⏰', category: 'Arcade' },
             'music-player.html': { name: 'Music Player', icon: '🎵', category: 'Arcade' },
+            'music-player-simple.html': { name: 'Simple Music Player', icon: '🎶', category: 'Arcade' },
+            'carnival-homepage.html': { name: 'Carnival', icon: '🎪', category: 'Arcade' },
+            'carnival-homepage-v2.html': { name: 'Carnival V2', icon: '🎪', category: 'Arcade' },
+            'poker-table.html': { name: 'Poker Table', icon: '🃏', category: 'Arcade' },
 
             // Analytics & Monitoring
             'analytics-dashboard.html': { name: 'Analytics', icon: '📊', category: 'Analytics' },
             'analytics-test-data-generator.html': { name: 'Test Data Generator', icon: '🧪', category: 'Analytics' },
             'platform-city-map.html': { name: 'Platform Map', icon: '🗺️', category: 'Analytics' },
+            'meta-map.html': { name: 'Meta Map', icon: '🗺️', category: 'Analytics' },
+            'ecosystem-map.html': { name: 'Ecosystem Map', icon: '🌳', category: 'Analytics' },
+            'roadmap.html': { name: 'Roadmap', icon: '🛣️', category: 'Analytics' },
+            'manifestochart-timeline.html': { name: 'Timeline', icon: '⏱️', category: 'Analytics' },
             'builder-xp-demo.html': { name: 'Builder XP', icon: '⭐', category: 'Analytics' },
             'sensor-integration-dashboard.html': { name: 'Sensor Integration', icon: '🛰️', category: 'Analytics' },
 
             // Developer Tools
             'debug-terminal.html': { name: 'Debug Terminal', icon: '⚡', category: 'Developer' },
+            'debug-console.html': { name: 'Debug Console', icon: '🖥️', category: 'Developer' },
+            'mobile-debug.html': { name: 'Mobile Debug', icon: '📱', category: 'Developer' },
             'intelligent-terminal.html': { name: 'AI Terminal', icon: '🤖', category: 'Developer' },
             'terminal.html': { name: 'Terminal', icon: '💻', category: 'Developer' },
+            'builder-workshop.html': { name: 'Builder Workshop', icon: '🔧', category: 'Developer' },
+            'clear-test-data.html': { name: 'Clear Test Data', icon: '🗑️', category: 'Developer' },
 
-            // Support
+            // Voice & Communication
+            'voice-control.html': { name: 'Voice Control', icon: '🎤', category: 'Voice' },
+            'voice-case-compiler.html': { name: 'Voice Case Compiler', icon: '📝', category: 'Voice' },
+
+            // Support & Help
             'visual-language-legend.html': { name: 'Visual Language Legend', icon: '🎨', category: 'Support' },
+            'emoji-legend.html': { name: 'Emoji Legend', icon: '😀', category: 'Support' },
             'help.html': { name: 'Help', icon: '❓', category: 'Support' },
             'get-help.html': { name: 'Get Help', icon: '🆘', category: 'Support' },
             'bug-report-public.html': { name: 'Bug Reports', icon: '🐛', category: 'Support' },
             'debugger-leaderboard.html': { name: 'Debugger Leaderboard', icon: '🏆', category: 'Support' },
+            'community-activity.html': { name: 'Community Activity', icon: '👥', category: 'Support' },
             'privacy-policy.html': { name: 'Privacy Policy', icon: '🔒', category: 'Support' },
 
             // Showcases
             'showcase-hub.html': { name: 'Showcase Hub', icon: '✨', category: 'Showcases' },
+            'showcase-landing.html': { name: 'Showcase Landing', icon: '🎯', category: 'Showcases' },
             'trinity-cockpit.html': { name: 'Trinity Cockpit', icon: '🎛️', category: 'Showcases' },
             'meritocracy-dashboard.html': { name: 'Meritocracy Dashboard', icon: '⚖️', category: 'Showcases' },
             'character-matrix.html': { name: 'Character Matrix', icon: '🧬', category: 'Showcases' },
             'arg-assembly.html': { name: 'ARG Assembly', icon: '🎭', category: 'Showcases' },
+            'ascension-explained.html': { name: 'Ascension Explained', icon: '⬆️', category: 'Showcases' },
+            'universal-hud-system.html': { name: 'Universal HUD', icon: '📺', category: 'Showcases' },
 
-            // Special
-            'carnival-homepage.html': { name: 'Carnival', icon: '🎪', category: 'Special' },
+            // 7 Domains
+            'domain-framework.html': { name: 'Domain Framework', icon: '🏗️', category: 'Domains' },
+            'seven-domains-navigator.html': { name: 'Seven Domains Nav', icon: '🧭', category: 'Domains' },
+            'crypto-domain.html': { name: 'Crypto Domain', icon: '₿', category: 'Domains' },
+            'education-domain.html': { name: 'Education Domain', icon: '🎓', category: 'Domains' },
+            'games-domain.html': { name: 'Games Domain', icon: '🎯', category: 'Domains' },
+            'health-domain.html': { name: 'Health Domain', icon: '🏥', category: 'Domains' },
+            'housing-domain.html': { name: 'Housing Domain', icon: '🏡', category: 'Domains' },
+            'manufacturing-domain.html': { name: 'Manufacturing Domain', icon: '🏭', category: 'Domains' },
+            'music-domain.html': { name: 'Music Domain', icon: '🎵', category: 'Domains' },
+            'governance-domain.html': { name: 'Governance Domain', icon: '⚖️', category: 'Domains' },
+
+            // Templates & Special
+            'coming-soon-template.html': { name: 'Coming Soon Template', icon: '⏳', category: 'Special' },
+            'template-house-starter.html': { name: 'House Template', icon: '🏠', category: 'Special' },
             'baby-gate-test.html': { name: 'Baby Gate Test', icon: '👶', category: 'Special' },
             'construction.html': { name: 'Under Construction', icon: '🚧', category: 'Special' },
             'bug-test-demo.html': { name: 'Bug Test Demo', icon: '🐛', category: 'Special' },
-            'mobile-test.html': { name: 'Mobile Test', icon: '📱', category: 'Special' }
+            'mobile-test.html': { name: 'Mobile Test', icon: '📱', category: 'Special' },
+            'carnival-homepage-backup.html': { name: 'Carnival Backup', icon: '💾', category: 'Special' }
         };
 
         const fileName = this.currentPath.split('/').pop();
