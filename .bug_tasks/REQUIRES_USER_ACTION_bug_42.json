@@ -1,0 +1,20 @@
+{
+  "bug_number": 42,
+  "title": "Bug via SMS",
+  "reporter": "overkillkulture",
+  "description": "**Bug reported via SMS**\n\n**From:** +19147740843\n\n**Message:**\nWhy doesn't the araya chat work on consciousness revolution.io/araya-chat\n\n**Message ID:** SMee82a65d26f1a117ca571385ac72c068\n**Received:** 2025-10-29T04:19:17.680Z",
+  "created_at": "2025-10-29T04:19:18Z",
+  "status": "requires_user_action",
+  "issue_type": "deployment_configuration",
+  "root_cause": "Araya chat function (netlify/functions/araya-chat.js) requires ANTHROPIC_API_KEY environment variable to be set in Netlify dashboard",
+  "investigation_summary": "The araya-chat.html page exists and is properly structured. The Netlify function netlify/functions/araya-chat.js exists and has proper error handling. The issue is likely missing API key in Netlify environment variables.",
+  "required_user_action": "Set ANTHROPIC_API_KEY in Netlify dashboard environment variables at https://app.netlify.com > Site settings > Build & deploy > Environment",
+  "files_verified": [
+    "araya-chat.html - ✅ exists, properly structured",
+    "netlify/functions/araya-chat.js - ✅ exists, requires ANTHROPIC_API_KEY env var"
+  ],
+  "investigated_at": "2025-11-07T01:45:00Z",
+  "investigated_by": "CLAUDE_AUTONOMOUS_4",
+  "autonomous_fix_possible": false,
+  "reason": "Cannot modify Netlify environment variables from code - requires Netlify dashboard access"
+}
