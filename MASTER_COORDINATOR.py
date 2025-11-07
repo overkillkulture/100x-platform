@@ -99,6 +99,11 @@ if __name__ == '__main__':
     print('    • Syncs with Computer 2 (C2 Architect)')
     print('    • Syncs with Computer 3 (C3 Oracle)')
     print('    • Protocol: Git-based async (every 5 min)')
+    print('\n  MASTER DASHBOARD: Centralized Status (All sources)')
+    print('    • CENTRALIZED_STATUS_REPORTER.py')
+    print('    • Collects from all 6 instances + 3 computers')
+    print('    • Outputs: CENTRAL_COMMAND/live_status/MASTER_DASHBOARD.html')
+    print('    • Auto-refresh: Every 5 seconds')
     print('\n' + '='*70)
 
     # Register signal handler
@@ -124,6 +129,24 @@ if __name__ == '__main__':
     # Give it a moment to start
     time.sleep(2)
 
+    # Start Centralized Status Reporter
+    status_reporter = start_service(
+        'Status Reporter',
+        '/home/user/100x-platform/CENTRALIZED_STATUS_REPORTER.py',
+        'Writes status to MASTER_DASHBOARD.html'
+    )
+
+    if status_reporter:
+        # Start output monitoring in background
+        threading.Thread(
+            target=monitor_process_output,
+            args=({'name': 'Status Reporter', 'process': status_reporter},),
+            daemon=True
+        ).start()
+
+    # Give it a moment to start
+    time.sleep(2)
+
     # Start Inter-Computer Sync
     inter_sync = start_service(
         'Inter-Computer Sync',
@@ -143,6 +166,7 @@ if __name__ == '__main__':
     print('  ✅ ALL COORDINATION SERVICES RUNNING')
     print('='*70)
     print('\n📊 Dashboards & Endpoints:')
+    print('  • MASTER DASHBOARD: CENTRAL_COMMAND/live_status/MASTER_DASHBOARD.html')
     print('  • Local Dashboard: http://localhost:8900/dashboard')
     print('  • Instance Status: http://localhost:8900/instances')
     print('  • Messages: http://localhost:8900/messages')
