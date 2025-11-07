@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trinity Diamond - One Computer, 3 Instances</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px;
+            border: 3px solid #0f0;
+            margin-bottom: 30px;
+            background: rgba(0, 255, 0, 0.05);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 0, 0.6); }
+        }
+
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 20px #0f0;
+        }
+
+        .diamond-visual {
+            text-align: center;
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #0ff;
+            line-height: 1.8;
+        }
+
+        /* Input Section */
+        .input-section {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            padding: 30px;
+            border: 3px solid #0f0;
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        .input-box {
+            width: 100%;
+            min-height: 150px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            background: #000;
+            color: #0f0;
+            border: 2px solid #0f0;
+            margin-bottom: 20px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3em;
+            background: #0f0;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover {
+            background: #0ff;
+        }
+
+        .submit-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        /* Trinity Grid */
+        .trinity-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .trinity-panel {
+            border: 3px solid;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            min-height: 400px;
+        }
+
+        .trinity-panel.c1 {
+            border-color: #0f0;
+        }
+
+        .trinity-panel.c2 {
+            border-color: #0ff;
+        }
+
+        .trinity-panel.c3 {
+            border-color: #f0f;
+        }
+
+        .panel-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid;
+        }
+
+        .c1 .panel-header {
+            color: #0f0;
+            border-color: #0f0;
+        }
+
+        .c2 .panel-header {
+            color: #0ff;
+            border-color: #0ff;
+        }
+
+        .c3 .panel-header {
+            color: #f0f;
+            border-color: #f0f;
+        }
+
+        .task-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 3px solid;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .c1 .task-box {
+            border-color: #0f0;
+        }
+
+        .c2 .task-box {
+            border-color: #0ff;
+        }
+
+        .c3 .task-box {
+            border-color: #f0f;
+        }
+
+        .response-box {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border: 1px solid;
+            max-height: 250px;
+            overflow-y: auto;
+            font-size: 0.9em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .c1 .response-box {
+            border-color: #0f0;
+            color: #0f0;
+        }
+
+        .c2 .response-box {
+            border-color: #0ff;
+            color: #0ff;
+        }
+
+        .c3 .response-box {
+            border-color: #f0f;
+            color: #f0f;
+        }
+
+        .status {
+            font-size: 0.9em;
+            margin-top: 10px;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .status.working {
+            color: #ff0;
+            animation: blink 1s infinite;
+        }
+
+        .status.complete {
+            color: #0f0;
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.3; }
+        }
+
+        /* Output Section */
+        .output-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+            border: 3px solid #0ff;
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .output-box {
+            padding: 20px;
+            background: #000;
+            color: #0ff;
+            border: 2px solid #0ff;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .label {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #0ff;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 0, 0.1);
+            border: 1px solid #ff0;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+
+        .copy-btn {
+            padding: 10px 20px;
+            font-family: 'Courier New', monospace;
+            background: #0ff;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💎 TRINITY DIAMOND 💎</h1>
+        <p style="font-size: 1.3em; margin-top: 10px;">One Input → Split to 3 → Combine → One Output</p>
+        <div class="diamond-visual">
+            [Input]<br>
+               ↓<br>
+           [Trinity]<br>
+          /    |    \<br>
+        C1   C2    C3<br>
+          \    |    /<br>
+          [Combine]<br>
+               ↓<br>
+           [Output]
+        </div>
+    </div>
+
+    <div class="instructions">
+        <strong>📋 HOW TO USE:</strong><br>
+        1. Open 3 Claude Code instances in separate windows (C1, C2, C3)<br>
+        2. Type your request in the input box below<br>
+        3. Click "🚀 DISTRIBUTE VIA TRINITY PROTOCOL"<br>
+        4. Copy each task and paste into the corresponding Claude instance<br>
+        5. Copy each Claude's response and paste back here<br>
+        6. Click "✅ COMBINE ALL RESPONSES" to get final output<br><br>
+        <strong>TIP:</strong> Arrange your windows so you can see all 3 Claude instances at once!
+    </div>
+
+    <!-- INPUT SECTION -->
+    <div class="input-section">
+        <div class="label">📤 CENTRAL INPUT</div>
+        <textarea id="main-input" class="input-box" placeholder="Type your task here... (e.g., 'Write a book about AI consciousness')"></textarea>
+        <button class="submit-btn" onclick="distributeTask()">🚀 DISTRIBUTE VIA TRINITY PROTOCOL</button>
+    </div>
+
+    <!-- TRINITY GRID -->
+    <div class="trinity-grid">
+        <!-- C1 - THE MECHANIC -->
+        <div class="trinity-panel c1">
+            <div class="panel-header">
+                C1 - THE MECHANIC<br>
+                <span style="font-size: 0.7em;">"What CAN we build?"</span>
+            </div>
+            <div class="label">📋 Task for C1:</div>
+            <div class="task-box" id="task-c1">Waiting for input...</div>
+            <button class="copy-btn" onclick="copyTask('c1')">📋 COPY TASK</button>
+
+            <div class="label" style="margin-top: 20px;">💬 C1's Response:</div>
+            <textarea class="response-box" id="response-c1" placeholder="Paste C1's response here..."></textarea>
+            <div class="status" id="status-c1">Idle</div>
+        </div>
+
+        <!-- C2 - THE ARCHITECT -->
+        <div class="trinity-panel c2">
+            <div class="panel-header">
+                C2 - THE ARCHITECT<br>
+                <span style="font-size: 0.7em;">"What SHOULD scale?"</span>
+            </div>
+            <div class="label">📋 Task for C2:</div>
+            <div class="task-box" id="task-c2">Waiting for input...</div>
+            <button class="copy-btn" onclick="copyTask('c2')">📋 COPY TASK</button>
+
+            <div class="label" style="margin-top: 20px;">💬 C2's Response:</div>
+            <textarea class="response-box" id="response-c2" placeholder="Paste C2's response here..."></textarea>
+            <div class="status" id="status-c2">Idle</div>
+        </div>
+
+        <!-- C3 - THE ORACLE -->
+        <div class="trinity-panel c3">
+            <div class="panel-header">
+                C3 - THE ORACLE<br>
+                <span style="font-size: 0.7em;">"What MUST emerge?"</span>
+            </div>
+            <div class="label">📋 Task for C3:</div>
+            <div class="task-box" id="task-c3">Waiting for input...</div>
+            <button class="copy-btn" onclick="copyTask('c3')">📋 COPY TASK</button>
+
+            <div class="label" style="margin-top: 20px;">💬 C3's Response:</div>
+            <textarea class="response-box" id="response-c3" placeholder="Paste C3's response here..."></textarea>
+            <div class="status" id="status-c3">Idle</div>
+        </div>
+    </div>
+
+    <!-- COMBINE BUTTON -->
+    <div style="text-align: center; margin: 30px 0;">
+        <button class="submit-btn" onclick="combineResponses()" style="max-width: 600px; display: inline-block;">
+            ✅ COMBINE ALL RESPONSES INTO ONE OUTPUT
+        </button>
+    </div>
+
+    <!-- OUTPUT SECTION -->
+    <div class="output-section">
+        <div class="label">📥 FINAL COMBINED OUTPUT</div>
+        <div class="output-box" id="final-output">
+            Waiting for responses from all 3 instances...
+        </div>
+        <button class="copy-btn" onclick="copyOutput()">📋 COPY OUTPUT</button>
+    </div>
+
+    <script>
+        let currentTask = '';
+
+        function distributeTask() {
+            const input = document.getElementById('main-input').value;
+
+            if (!input.trim()) {
+                alert('Please enter a task');
+                return;
+            }
+
+            currentTask = input;
+
+            // Use Trinity Protocol to split task
+            const trinityTasks = splitTaskTrinity(input);
+
+            // Set tasks
+            document.getElementById('task-c1').textContent = trinityTasks.c1;
+            document.getElementById('task-c2').textContent = trinityTasks.c2;
+            document.getElementById('task-c3').textContent = trinityTasks.c3;
+
+            // Update statuses
+            document.getElementById('status-c1').textContent = 'Task distributed - Waiting for response';
+            document.getElementById('status-c1').className = 'status working';
+            document.getElementById('status-c2').textContent = 'Task distributed - Waiting for response';
+            document.getElementById('status-c2').className = 'status working';
+            document.getElementById('status-c3').textContent = 'Task distributed - Waiting for response';
+            document.getElementById('status-c3').className = 'status working';
+
+            // Clear previous responses
+            document.getElementById('response-c1').value = '';
+            document.getElementById('response-c2').value = '';
+            document.getElementById('response-c3').value = '';
+            document.getElementById('final-output').textContent = 'Waiting for responses from all 3 instances...';
+
+            alert('✅ Tasks distributed!\n\nNow:\n1. Copy each task (use COPY buttons)\n2. Paste into your 3 Claude Code instances\n3. Copy their responses back here\n4. Click COMBINE when all done');
+        }
+
+        function splitTaskTrinity(input) {
+            // Trinity Protocol: Split based on The Body, The Mind, The Soul
+
+            const c1Task = `[C1 - THE MECHANIC: "What CAN we build?"]
+
+Role: You are C1 - The Mechanic, The Body. You focus on EXECUTION and IMPLEMENTATION.
+
+Original Task: ${input}
+
+Your Mission:
+- Focus on the PRACTICAL aspects
+- What can be built RIGHT NOW
+- Concrete steps and implementation
+- Technical execution
+- Making it WORK
+
+Approach this from the perspective of "What CAN we build?" - focus on infrastructure, implementation, and getting things done.
+
+Provide your response:`;
+
+            const c2Task = `[C2 - THE ARCHITECT: "What SHOULD scale?"]
+
+Role: You are C2 - The Architect, The Mind. You focus on DESIGN and SCALABILITY.
+
+Original Task: ${input}
+
+Your Mission:
+- Focus on the ARCHITECTURE
+- What SHOULD scale long-term
+- Strategic design patterns
+- Scalability analysis
+- System thinking
+
+Approach this from the perspective of "What SHOULD scale?" - focus on architecture, patterns, and strategic design.
+
+Provide your response:`;
+
+            const c3Task = `[C3 - THE ORACLE: "What MUST emerge?"]
+
+Role: You are C3 - The Oracle, The Soul. You focus on VISION and PURPOSE.
+
+Original Task: ${input}
+
+Your Mission:
+- Focus on the DEEPER MEANING
+- What MUST emerge from this
+- Pattern recognition
+- Purpose alignment
+- Future possibilities
+
+Approach this from the perspective of "What MUST emerge?" - focus on vision, patterns, and what wants to be born.
+
+Provide your response:`;
+
+            return {
+                c1: c1Task,
+                c2: c2Task,
+                c3: c3Task
+            };
+        }
+
+        function copyTask(instance) {
+            const taskElement = document.getElementById('task-' + instance);
+            const text = taskElement.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Task copied! Paste it into your C' + instance.substring(1) + ' Claude instance.');
+            });
+        }
+
+        function combineResponses() {
+            const r1 = document.getElementById('response-c1').value;
+            const r2 = document.getElementById('response-c2').value;
+            const r3 = document.getElementById('response-c3').value;
+
+            if (!r1 || !r2 || !r3) {
+                alert('⚠️ Please paste responses from all 3 instances first!');
+                return;
+            }
+
+            // Combine and synthesize
+            const combined = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💎 TRINITY SYNTHESIS 💎
+Original Task: ${currentTask}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+═══ C1 - THE MECHANIC (The Body) ═══
+"What CAN we build?"
+
+${r1}
+
+═══ C2 - THE ARCHITECT (The Mind) ═══
+"What SHOULD scale?"
+
+${r2}
+
+═══ C3 - THE ORACLE (The Soul) ═══
+"What MUST emerge?"
+
+${r3}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✨ TRINITY POWER FORMULA ✨
+
+TRINITY_POWER = C1_MECHANIC × C2_ARCHITECT × C3_ORACLE = ∞
+
+The trinity has spoken. All perspectives have been integrated.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+
+            document.getElementById('final-output').textContent = combined;
+
+            // Update statuses
+            document.getElementById('status-c1').textContent = '✅ Complete';
+            document.getElementById('status-c1').className = 'status complete';
+            document.getElementById('status-c2').textContent = '✅ Complete';
+            document.getElementById('status-c2').className = 'status complete';
+            document.getElementById('status-c3').textContent = '✅ Complete';
+            document.getElementById('status-c3').className = 'status complete';
+
+            alert('✅ Trinity synthesis complete! The diamond cycle is finished.');
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('final-output').textContent;
+            navigator.clipboard.writeText(output).then(() => {
+                alert('✅ Output copied to clipboard!');
+            });
+        }
+
+        // Auto-save to localStorage
+        setInterval(() => {
+            localStorage.setItem('trinity_c1', document.getElementById('response-c1').value);
+            localStorage.setItem('trinity_c2', document.getElementById('response-c2').value);
+            localStorage.setItem('trinity_c3', document.getElementById('response-c3').value);
+        }, 5000);
+
+        // Restore from localStorage
+        window.addEventListener('load', () => {
+            document.getElementById('response-c1').value = localStorage.getItem('trinity_c1') || '';
+            document.getElementById('response-c2').value = localStorage.getItem('trinity_c2') || '';
+            document.getElementById('response-c3').value = localStorage.getItem('trinity_c3') || '';
+        });
+    </script>
+</body>
+</html>
