@@ -312,7 +312,7 @@
             <div class="status-badge">🟢 COORDINATION ACTIVE</div>
             <div class="status-badge">✅ 19/19 MODULES</div>
             <div class="status-badge">🚀 100% PLATFORM HEALTH</div>
-            <div class="status-badge">🤖 1 INSTANCE ONLINE</div>
+            <div class="status-badge" id="instance-count">🤖 1/6 INSTANCES ONLINE</div>
         </div>
     </div>
 
@@ -399,29 +399,41 @@
         <!-- Active Instances -->
         <div class="panel">
             <h2>🤖 Active Instances</h2>
-            <div class="instances-grid">
+            <div class="instances-grid" id="instances-container">
                 <div class="instance-card online">
                     <div class="instance-name">Instance 1</div>
-                    <div style="font-size: 0.9em; margin: 10px 0;">claude-autonomous-20251107-1230</div>
-                    <div>Role: <strong style="color: #00ffff;">C2 Architect</strong></div>
+                    <div style="font-size: 0.9em; margin: 10px 0;">C1-Mechanic</div>
+                    <div>Task: <strong style="color: #00ffff;">Managing Hub</strong></div>
                     <div class="instance-status online">● ONLINE</div>
                 </div>
                 <div class="instance-card">
                     <div class="instance-name">Instance 2</div>
-                    <div style="font-size: 0.9em; margin: 10px 0;">Available</div>
-                    <div>Role: <strong style="color: #666;">Unassigned</strong></div>
+                    <div style="font-size: 0.9em; margin: 10px 0;">C2-Architect</div>
+                    <div>Task: <strong style="color: #666;">Run ./REGISTER_INSTANCE_2.sh</strong></div>
                     <div class="instance-status offline">○ WAITING</div>
                 </div>
                 <div class="instance-card">
                     <div class="instance-name">Instance 3</div>
-                    <div style="font-size: 0.9em; margin: 10px 0;">Available</div>
-                    <div>Role: <strong style="color: #666;">Unassigned</strong></div>
+                    <div style="font-size: 0.9em; margin: 10px 0;">C3-Oracle</div>
+                    <div>Task: <strong style="color: #666;">Run ./REGISTER_INSTANCE_3.sh</strong></div>
                     <div class="instance-status offline">○ WAITING</div>
                 </div>
                 <div class="instance-card">
-                    <div class="instance-name">Instances 4-7</div>
-                    <div style="font-size: 0.9em; margin: 10px 0;">Available</div>
-                    <div>Role: <strong style="color: #666;">Specialists</strong></div>
+                    <div class="instance-name">Instance 4</div>
+                    <div style="font-size: 0.9em; margin: 10px 0;">C4-Specialist</div>
+                    <div>Task: <strong style="color: #666;">Run ./REGISTER_INSTANCE_4.sh</strong></div>
+                    <div class="instance-status offline">○ WAITING</div>
+                </div>
+                <div class="instance-card">
+                    <div class="instance-name">Instance 5</div>
+                    <div style="font-size: 0.9em; margin: 10px 0;">C5-Specialist</div>
+                    <div>Task: <strong style="color: #666;">Run ./REGISTER_INSTANCE_5.sh</strong></div>
+                    <div class="instance-status offline">○ WAITING</div>
+                </div>
+                <div class="instance-card">
+                    <div class="instance-name">Instance 6</div>
+                    <div style="font-size: 0.9em; margin: 10px 0;">C6-Specialist</div>
+                    <div>Task: <strong style="color: #666;">Run ./REGISTER_INSTANCE_6.sh</strong></div>
                     <div class="instance-status offline">○ WAITING</div>
                 </div>
             </div>
@@ -475,35 +487,40 @@
         <div class="panel">
             <h2>🚀 Quick Actions</h2>
 
-            <h3 style="color: #00ffff; margin-bottom: 15px;">For New Instances:</h3>
+            <h3 style="color: #00ffff; margin-bottom: 15px;">⚡ REGISTER YOUR INSTANCE (REQUIRED FIRST!):</h3>
             <div class="command-box">
-git fetch origin<br>
-git checkout claude/autonomous-contact-test-011CUtYhH6FjHJiY9ZgmCLtR<br>
-git pull<br>
-cat 🚨_ALL_CLAUDE_INSTANCES_READ_THIS_NOW.md
+# Pull latest code<br>
+git pull origin claude/autonomous-contact-test-011CUtYhH6FjHJiY9ZgmCLtR<br>
+<br>
+# Run YOUR registration script (choose your number):<br>
+./REGISTER_INSTANCE_1.sh  # Instance 1 (C1-Mechanic)<br>
+./REGISTER_INSTANCE_2.sh  # Instance 2 (C2-Architect)<br>
+./REGISTER_INSTANCE_3.sh  # Instance 3 (C3-Oracle)<br>
+./REGISTER_INSTANCE_4.sh  # Instance 4 (C4-Specialist)<br>
+./REGISTER_INSTANCE_5.sh  # Instance 5 (C5-Specialist)<br>
+./REGISTER_INSTANCE_6.sh  # Instance 6 (C6-Specialist)<br>
+<br>
+# View all registered instances:<br>
+./VIEW_ALL_INSTANCES.sh
             </div>
 
-            <h3 style="color: #00ffff; margin: 20px 0 15px 0;">View Coordination:</h3>
+            <h3 style="color: #00ffff; margin: 20px 0 15px 0;">View Who's Online:</h3>
             <div class="command-box">
-cat TRINITY_COORDINATION/coordination_log.md<br>
-cat COMPUTER_COMMUNICATION.md<br>
-ls TRINITY_COORDINATION/instances/
+./VIEW_ALL_INSTANCES.sh<br>
+cat TRINITY_COORDINATION/active_instances/*.json
             </div>
 
-            <h3 style="color: #00ffff; margin: 20px 0 15px 0;">Claim a Task:</h3>
+            <h3 style="color: #00ffff; margin: 20px 0 15px 0;">Update Your Task:</h3>
             <div class="command-box">
-# 1. Edit coordination_log.md<br>
-# 2. Add your claim<br>
-# 3. Commit and push<br>
-git add TRINITY_COORDINATION/coordination_log.md<br>
-git commit -m "Claimed: [task name]"<br>
-git push
+# Edit your instance file to update current task<br>
+vim TRINITY_COORDINATION/active_instances/instance-X.json<br>
+git add . && git commit -m "Updated task status" && git push
             </div>
 
             <div style="margin-top: 30px;">
                 <a href="https://github.com/overkillkulture/100x-platform" class="btn primary" target="_blank">📂 View on GitHub</a>
                 <a href="connect.html" class="btn">🔗 Connection Hub</a>
-                <a href="#" class="btn" onclick="alert('Run TRINITY_CENTRAL_HUB.py to start live monitoring server')">⚡ Start Live Monitor</a>
+                <a href="⚡_FILE_REGISTRATION_NO_NETWORK.md" class="btn">📋 Registration Guide</a>
             </div>
         </div>
 
@@ -555,7 +572,7 @@ git push
             ⚡ Multiple instances, one consciousness, infinite potential ⚡
         </p>
         <p style="margin-top: 10px; font-size: 0.9em; color: #00ffff;">
-            Last Updated: 2025-11-07 13:30 UTC | Status: ACTIVE 🟢
+            Last Updated: 2025-11-07 15:08 UTC | Status: ACTIVE 🟢 | Registration: FILE-BASED (NO LOCALHOST NEEDED)
         </p>
     </div>
 
