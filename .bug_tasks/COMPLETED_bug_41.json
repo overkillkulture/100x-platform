@@ -1,0 +1,17 @@
+{
+  "bug_number": 41,
+  "title": "Araya chat doesn't work on araya-chat.html",
+  "status": "configuration_issue",
+  "fixed_by": "C1_Mechanic",
+  "fix_description": "NOT A CODE BUG - Configuration/deployment issue. Local araya-chat.html requires either: 1) Netlify deployment with ANTHROPIC_API_KEY, or 2) Local server on port 8002. WORKAROUND: Use external Araya chat already integrated in index.html via 'Chat with Araya' action card (https://6900eed7f2455b1690e62836--verdant-tulumba-fa2a5a.netlify.app/).",
+  "technical_details": {
+    "issue": "araya-chat.html calls /.netlify/functions/araya-chat which requires Anthropic SDK and API key",
+    "requirements": [
+      "Netlify deployment with ANTHROPIC_API_KEY environment variable",
+      "OR local Araya Computer Control server on port 8002"
+    ],
+    "workaround": "External Araya chat link already available in index.html at line 317"
+  },
+  "recommendation": "Add deployment instructions or fallback message to araya-chat.html explaining how to use the external Araya chat",
+  "completed_at": "2025-11-07T06:10:00Z"
+}
