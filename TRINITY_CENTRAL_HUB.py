@@ -80,6 +80,43 @@ def index():
             max-width: 1200px;
             margin: 0 auto;
         }
+        .register-panel {
+            background: rgba(0, 200, 255, 0.1);
+            border: 2px solid #00ddff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .register-panel h2 {
+            color: #00ddff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .register-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .register-btn {
+            background: linear-gradient(135deg, #00ff00, #00ddff);
+            color: #000;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        .register-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+        .register-btn:active {
+            transform: scale(0.95);
+        }
         .computer {
             background: rgba(0, 255, 0, 0.1);
             border: 2px solid #00ff00;
@@ -126,24 +163,97 @@ def index():
             font-family: 'Courier New', monospace;
             font-weight: bold;
         }
+        .alert {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(0, 255, 0, 0.9);
+            color: #000;
+            padding: 15px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <button class="refresh" onclick="location.reload()">🔄 Refresh</button>
+    <div class="alert" id="alert"></div>
 
     <div class="container">
         <h1>⚡ TRINITY CENTRAL HUB ⚡</h1>
+
+        <div class="register-panel">
+            <h2>🚀 QUICK REGISTER - CLICK YOUR INSTANCE</h2>
+            <p style="text-align: center; margin-bottom: 15px;">Each instance clicks their button to register instantly!</p>
+            <div class="register-buttons">
+                <button class="register-btn" onclick="registerInstance(1)">
+                    🤖 Instance 1<br>C1-Mechanic
+                </button>
+                <button class="register-btn" onclick="registerInstance(2)">
+                    🏗️ Instance 2<br>C2-Architect
+                </button>
+                <button class="register-btn" onclick="registerInstance(3)">
+                    🔮 Instance 3<br>C3-Oracle
+                </button>
+                <button class="register-btn" onclick="registerInstance(4)">
+                    ⚙️ Instance 4<br>C4-Specialist
+                </button>
+                <button class="register-btn" onclick="registerInstance(5)">
+                    🔧 Instance 5<br>C5-Specialist
+                </button>
+                <button class="register-btn" onclick="registerInstance(6)">
+                    💡 Instance 6<br>C6-Specialist
+                </button>
+            </div>
+        </div>
 
         <div id="computers"></div>
     </div>
 
     <script>
+        async function registerInstance(num) {
+            const roles = {
+                1: 'C1-Mechanic',
+                2: 'C2-Architect',
+                3: 'C3-Oracle',
+                4: 'C4-Specialist',
+                5: 'C5-Specialist',
+                6: 'C6-Specialist'
+            };
+
+            const response = await fetch('/register-instance', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    instance_num: num,
+                    role: roles[num]
+                })
+            });
+
+            const result = await response.json();
+
+            // Show success message
+            const alert = document.getElementById('alert');
+            alert.textContent = `✅ Instance ${num} registered as ${roles[num]}!`;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
+
+            // Reload status
+            loadStatus();
+        }
+
         async function loadStatus() {
             const response = await fetch('/api/computers');
             const computers = await response.json();
 
             const container = document.getElementById('computers');
             container.innerHTML = '';
+
+            if (computers.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #ffff00; padding: 20px;">⏳ Waiting for instances to register...</div>';
+                return;
+            }
 
             computers.forEach(comp => {
                 const div = document.createElement('div');
@@ -160,15 +270,15 @@ def index():
                         ${isOnline ? '🟢 ONLINE' : '🔴 OFFLINE'}
                     </div>
                     <div style="margin-top: 10px;">
-                        <strong>Hostname:</strong> ${comp.hostname}<br>
-                        <strong>IP:</strong> ${comp.ip}<br>
-                        <strong>Last Seen:</strong> ${minutes} min ago
+                        <strong>Role:</strong> ${comp.role || 'Unknown'}<br>
+                        <strong>Current Task:</strong> ${comp.current_task || 'None'}<br>
+                        <strong>Last Seen:</strong> ${minutes < 1 ? 'Just now' : minutes + ' min ago'}
                     </div>
                     <div style="margin-top: 10px;">
                         <strong>Capabilities:</strong><br>
                         ${comp.capabilities.map(c => `<span class="capability">✅ ${c}</span>`).join('')}
                     </div>
-                    ${comp.issues.length > 0 ? `
+                    ${comp.issues && comp.issues.length > 0 ? `
                         <div class="issue">
                             <strong>⚠️ Issues:</strong><br>
                             ${comp.issues.map(i => `
@@ -184,7 +294,7 @@ def index():
         }
 
         loadStatus();
-        setInterval(loadStatus, 5000); // Refresh every 5 seconds
+        setInterval(loadStatus, 3000); // Refresh every 3 seconds
     </script>
 </body>
 </html>
@@ -195,6 +305,51 @@ def get_computers():
     """Get all computer statuses"""
     computers = load_data(COMPUTERS_FILE)
     return jsonify(computers)
+
+@app.route('/register-instance', methods=['POST'])
+def register_instance():
+    """Quick register an instance from the dashboard"""
+    data = request.json
+    instance_num = data['instance_num']
+    role = data['role']
+
+    # Create instance data
+    instance_data = {
+        'computer_id': f'Instance-{instance_num}',
+        'role': role,
+        'current_task': 'Available',
+        'hostname': f'local-instance-{instance_num}',
+        'ip': '127.0.0.1',
+        'timestamp': datetime.now().isoformat(),
+        'capabilities': [
+            'Python 3.11',
+            'Git',
+            'Claude Code',
+            'Full Platform Access'
+        ],
+        'issues': []
+    }
+
+    # Load and update computers list
+    computers = load_data(COMPUTERS_FILE)
+
+    # Check if already registered
+    found = False
+    for i, comp in enumerate(computers):
+        if comp['computer_id'] == instance_data['computer_id']:
+            computers[i] = instance_data
+            found = True
+            break
+
+    if not found:
+        computers.append(instance_data)
+
+    # Save
+    save_data(COMPUTERS_FILE, computers)
+
+    print(f"✅ Instance {instance_num} registered as {role}")
+
+    return jsonify({"status": "registered", "instance": instance_num, "role": role})
 
 @app.route('/report', methods=['POST'])
 def receive_report():
