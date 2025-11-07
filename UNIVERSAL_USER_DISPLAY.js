@@ -10,6 +10,7 @@
     function init() {
         // Get username from localStorage
         const username = localStorage.getItem('workspace_user_name') ||
+                         localStorage.getItem('userName') ||  // Added for PIN-based login
                          localStorage.getItem('user_name') ||
                          localStorage.getItem('username');
 
