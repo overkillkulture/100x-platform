@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Builder Journey - Your Path to Freedom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(180deg, #000000 0%, #1a0a0a 20%, #0a1a0a 40%, #0a0a1a 60%, #1a1a00 80%, #001a1a 100%);
+            color: #00ff00;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00ffff;
+            border-radius: 15px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+            margin-bottom: 15px;
+        }
+
+        .header .tagline {
+            font-size: 20px;
+            color: #00ff00;
+            margin-top: 10px;
+        }
+
+        .journey-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #ff0000, #ffff00, #00ff00, #00ffff, #ffffff);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            transform: translateX(-50%);
+        }
+
+        .level {
+            position: relative;
+            margin: 80px 0;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .level:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .level-marker {
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            z-index: 10;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .level-1 .level-marker {
+            background: radial-gradient(circle, #ff0000, #800000);
+            border: 4px solid #ff0000;
+            color: #ff0000;
+            text-shadow: 0 0 15px #ff0000;
+        }
+
+        .level-2 .level-marker {
+            background: radial-gradient(circle, #ffaa00, #aa5500);
+            border: 4px solid #ffaa00;
+            color: #ffaa00;
+            text-shadow: 0 0 15px #ffaa00;
+        }
+
+        .level-3 .level-marker {
+            background: radial-gradient(circle, #ffff00, #aaaa00);
+            border: 4px solid #ffff00;
+            color: #ffff00;
+            text-shadow: 0 0 15px #ffff00;
+        }
+
+        .level-4 .level-marker {
+            background: radial-gradient(circle, #00ff00, #008800);
+            border: 4px solid #00ff00;
+            color: #00ff00;
+            text-shadow: 0 0 15px #00ff00;
+        }
+
+        .level-5 .level-marker {
+            background: radial-gradient(circle, #00ffff, #0088aa);
+            border: 4px solid #00ffff;
+            color: #00ffff;
+            text-shadow: 0 0 15px #00ffff;
+        }
+
+        .level-content {
+            flex: 1;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 15px;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .level-1 .level-content {
+            border: 3px solid #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+        }
+
+        .level-2 .level-content {
+            border: 3px solid #ffaa00;
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.3);
+        }
+
+        .level-3 .level-content {
+            border: 3px solid #ffff00;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.3);
+        }
+
+        .level-4 .level-content {
+            border: 3px solid #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .level-5 .level-content {
+            border: 3px solid #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .level-content:hover {
+            transform: scale(1.05);
+        }
+
+        .level-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .level-1 .level-title { color: #ff0000; }
+        .level-2 .level-title { color: #ffaa00; }
+        .level-3 .level-title { color: #ffff00; }
+        .level-4 .level-title { color: #00ff00; }
+        .level-5 .level-title { color: #00ffff; }
+
+        .level-subtitle {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .level-description {
+            font-size: 16px;
+            color: #aaffaa;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .characteristics {
+            margin-top: 20px;
+        }
+
+        .characteristics h3 {
+            color: #00ffff;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .characteristics ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .characteristics li {
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(0, 255, 0, 0.05);
+            border-left: 3px solid #00ff00;
+            font-size: 14px;
+        }
+
+        .tools-needed {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+
+        .tools-needed h3 {
+            color: #ff00ff;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .tools-needed ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tools-needed li {
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(255, 0, 255, 0.05);
+            border-left: 3px solid #ff00ff;
+            font-size: 14px;
+        }
+
+        .progress-indicator {
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .progress-indicator h2 {
+            color: #00ffff;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .progress-question {
+            font-size: 20px;
+            color: #ffff00;
+            margin-bottom: 30px;
+        }
+
+        .level-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .level-button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            border: 3px solid;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .level-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px currentColor;
+        }
+
+        .level-button.btn-1 {
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        .level-button.btn-2 {
+            border-color: #ffaa00;
+            color: #ffaa00;
+        }
+
+        .level-button.btn-3 {
+            border-color: #ffff00;
+            color: #ffff00;
+        }
+
+        .level-button.btn-4 {
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+
+        .level-button.btn-5 {
+            border-color: #00ffff;
+            color: #00ffff;
+        }
+
+        .cta-section {
+            margin-top: 60px;
+            padding: 40px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            color: #00ff00;
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #00ff00;
+        }
+
+        .cta-section p {
+            color: #aaffaa;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 20px 40px;
+            font-size: 20px;
+            font-family: 'Courier New', monospace;
+            border: 3px solid #00ffff;
+            border-radius: 10px;
+            background: rgba(0, 255, 255, 0.2);
+            color: #00ffff;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .cta-button:hover {
+            background: rgba(0, 255, 255, 0.4);
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 30px;
+            }
+
+            .level {
+                flex-direction: column !important;
+                padding-left: 80px;
+            }
+
+            .level-marker {
+                left: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 THE BUILDER JOURNEY</h1>
+        <div class="tagline">Your Path from Unconscious to Awakened Builder</div>
+        <div class="tagline" style="margin-top: 5px; font-size: 16px; color: #ff00ff;">
+            5 Levels • Everyone Starts at Level 1 • Where Are You?
+        </div>
+    </div>
+
+    <div class="journey-container">
+        <div class="timeline">
+            <!-- Level 1: Unconscious -->
+            <div class="level level-1">
+                <div class="level-marker">1</div>
+                <div class="level-content">
+                    <div class="level-title">LEVEL 1: UNCONSCIOUS</div>
+                    <div class="level-subtitle">"Asleep in the Matrix"</div>
+                    <div class="level-description">
+                        You don't see the cage. You think this is just how life works. Systems drain your energy,
+                        but you blame yourself. You're stuck in survival mode, not knowing there's another way.
+                    </div>
+                    <div class="characteristics">
+                        <h3>🔴 Characteristics:</h3>
+                        <ul>
+                            <li>Controlled by fear, debt, and external systems</li>
+                            <li>Believe the narrative: "Work hard, get a job, retire at 65"</li>
+                            <li>Don't question why life feels so hard</li>
+                            <li>React to problems, don't see patterns</li>
+                            <li>Energy constantly drained by external sources</li>
+                        </ul>
+                    </div>
+                    <div class="tools-needed">
+                        <h3>🔧 To Move Forward:</h3>
+                        <ul>
+                            <li>Something breaks the spell (crisis, awakening moment)</li>
+                            <li>Start questioning: "Why does it feel like I'm trapped?"</li>
+                            <li>Notice patterns: systems designed to extract, not empower</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 2: Awakening -->
+            <div class="level level-2">
+                <div class="level-marker">2</div>
+                <div class="level-content">
+                    <div class="level-title">LEVEL 2: AWAKENING</div>
+                    <div class="level-subtitle">"Seeing the Bars for the First Time"</div>
+                    <div class="level-description">
+                        You start seeing it. The manipulation. The extraction. The systems designed to keep you small.
+                        It's overwhelming, maybe terrifying, but you can't unsee it. The cage is real.
+                    </div>
+                    <div class="characteristics">
+                        <h3>🟠 Characteristics:</h3>
+                        <ul>
+                            <li>Recognize you've been manipulated</li>
+                            <li>See patterns in media, politics, work, relationships</li>
+                            <li>Feel anger, betrayal, or confusion</li>
+                            <li>Don't know what to do yet, but know something must change</li>
+                            <li>Start looking for answers outside the mainstream</li>
+                        </ul>
+                    </div>
+                    <div class="tools-needed">
+                        <h3>🔧 To Move Forward:</h3>
+                        <ul>
+                            <li>Find communities of other awakened people</li>
+                            <li>Learn about manipulation tactics and systemic control</li>
+                            <li>Begin to reclaim your attention and energy</li>
+                            <li>Start asking: "If I'm trapped, how do I get out?"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 3: Learning -->
+            <div class="level level-3">
+                <div class="level-marker">3</div>
+                <div class="level-content">
+                    <div class="level-title">LEVEL 3: LEARNING</div>
+                    <div class="level-subtitle">"Getting the Tools to Break Free"</div>
+                    <div class="level-description">
+                        You're actively learning. Reading, researching, experimenting. You find tools, frameworks,
+                        and technologies that empower you. AI, automation, sovereignty tools. The path becomes clearer.
+                    </div>
+                    <div class="characteristics">
+                        <h3>🟡 Characteristics:</h3>
+                        <ul>
+                            <li>Obsessively learning new skills</li>
+                            <li>Experimenting with AI, automation, and technology</li>
+                            <li>Building small projects and testing ideas</li>
+                            <li>Cutting ties with systems that drain you</li>
+                            <li>Starting to feel hope and possibility</li>
+                        </ul>
+                    </div>
+                    <div class="tools-needed">
+                        <h3>🔧 To Move Forward:</h3>
+                        <ul>
+                            <li>Master tools like Claude, automation, no-code platforms</li>
+                            <li>Build your first real project (even if small)</li>
+                            <li>Start creating value instead of just consuming</li>
+                            <li>Shift from "employee mindset" to "builder mindset"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 4: Building -->
+            <div class="level level-4">
+                <div class="level-marker">4</div>
+                <div class="level-content">
+                    <div class="level-title">LEVEL 4: BUILDING</div>
+                    <div class="level-subtitle">"Creating Your Own Reality"</div>
+                    <div class="level-description">
+                        You're building now. Products, systems, businesses. You create value at scale. The cage
+                        is broken. You're free. Income flows from what you build, not what someone pays you to do.
+                    </div>
+                    <div class="characteristics">
+                        <h3>🟢 Characteristics:</h3>
+                        <ul>
+                            <li>Build multiple projects, systems, or businesses</li>
+                            <li>Generate revenue from your creations</li>
+                            <li>Work on your own terms, your own schedule</li>
+                            <li>Leverage AI and automation to 100x your output</li>
+                            <li>Feel truly free for the first time</li>
+                        </ul>
+                    </div>
+                    <div class="tools-needed">
+                        <h3>🔧 To Move Forward:</h3>
+                        <ul>
+                            <li>Scale your impact: reach more people</li>
+                            <li>Document your journey so others can follow</li>
+                            <li>Begin teaching others what you've learned</li>
+                            <li>Shift from "building for me" to "building for us"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 5: Teaching -->
+            <div class="level level-5">
+                <div class="level-marker">5</div>
+                <div class="level-content">
+                    <div class="level-title">LEVEL 5: TEACHING</div>
+                    <div class="level-subtitle">"Helping Others Escape"</div>
+                    <div class="level-description">
+                        You're beyond building for yourself. You teach, mentor, and empower others. You create
+                        frameworks that wake people up and give them tools to break free. You multiply freedom.
+                    </div>
+                    <div class="characteristics">
+                        <h3>🔵 Characteristics:</h3>
+                        <ul>
+                            <li>Actively teaching others to become builders</li>
+                            <li>Creating educational content, courses, and tools</li>
+                            <li>Mentoring individuals on their journey</li>
+                            <li>Building platforms that empower thousands</li>
+                            <li>Legacy: You've freed more people than you'll ever meet</li>
+                        </ul>
+                    </div>
+                    <div class="tools-needed">
+                        <h3>🔧 The Mission:</h3>
+                        <ul>
+                            <li>Wake up 1 million builders</li>
+                            <li>Create tools that scale consciousness globally</li>
+                            <li>Build systems that outlive you</li>
+                            <li>Tip the balance: more builders than destroyers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-indicator">
+            <h2>📍 WHERE ARE YOU ON THE JOURNEY?</h2>
+            <div class="progress-question">Click your current level to learn what's next:</div>
+            <div class="level-buttons">
+                <button class="level-button btn-1" onclick="scrollToLevel(1)">Level 1<br>Unconscious</button>
+                <button class="level-button btn-2" onclick="scrollToLevel(2)">Level 2<br>Awakening</button>
+                <button class="level-button btn-3" onclick="scrollToLevel(3)">Level 3<br>Learning</button>
+                <button class="level-button btn-4" onclick="scrollToLevel(4)">Level 4<br>Building</button>
+                <button class="level-button btn-5" onclick="scrollToLevel(5)">Level 5<br>Teaching</button>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>🚀 READY TO LEVEL UP?</h2>
+            <p>
+                No matter where you are on the journey, there's a path forward.<br>
+                The Consciousness Revolution platform gives you the tools to accelerate.<br>
+                <strong>From Level 1 to Level 5, faster than ever possible.</strong>
+            </p>
+            <a href="https://conciousnessrevolution.io" class="cta-button">
+                START YOUR JOURNEY →
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function scrollToLevel(level) {
+            const levelElement = document.querySelector(`.level-${level}`);
+            if (levelElement) {
+                levelElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                levelElement.querySelector('.level-content').style.transform = 'scale(1.08)';
+                setTimeout(() => {
+                    levelElement.querySelector('.level-content').style.transform = 'scale(1)';
+                }, 500);
+            }
+        }
+
+        // Add click animation to level cards
+        document.querySelectorAll('.level-content').forEach(content => {
+            content.addEventListener('click', function() {
+                this.style.transform = 'scale(1.08)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>

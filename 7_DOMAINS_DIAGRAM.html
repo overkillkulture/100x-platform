@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 7 Domains - Consciousness Revolution Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #000000 0%, #0a0a1e 50%, #1a1a2e 100%);
+            color: #00ff00;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #00ffff;
+            border-radius: 15px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+            margin-bottom: 15px;
+        }
+
+        .header .tagline {
+            font-size: 20px;
+            color: #00ff00;
+            margin-top: 10px;
+        }
+
+        #canvas-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 800px;
+            margin: 0 auto;
+            position: relative;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .domain-info {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 400px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+        }
+
+        .domain-info.active {
+            display: block;
+        }
+
+        .domain-info h2 {
+            color: #00ffff;
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .domain-info .domain-number {
+            color: #ffff00;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .domain-info p {
+            color: #00ff00;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        .domain-info .examples {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #00ff00;
+        }
+
+        .domain-info .examples h3 {
+            color: #ff00ff;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .domain-info .examples ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        .domain-info .examples li {
+            color: #aaffaa;
+            font-size: 13px;
+            margin: 5px 0;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .domain-info .examples li:before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #00ffff;
+        }
+
+        .legend {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .legend h2 {
+            color: #00ffff;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .legend-item {
+            padding: 15px;
+            background: rgba(0, 255, 0, 0.05);
+            border-left: 4px solid #00ff00;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .legend-item:hover {
+            background: rgba(0, 255, 0, 0.15);
+            transform: translateX(5px);
+        }
+
+        .legend-item h3 {
+            color: #00ffff;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .legend-item p {
+            color: #00ff00;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .instructions {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 0, 255, 0.1);
+            border: 2px solid #ff00ff;
+            border-radius: 10px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .instructions p {
+            color: #ff00ff;
+            font-size: 16px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌐 THE 7 DOMAINS</h1>
+        <div class="tagline">Everything Connects to Consciousness</div>
+        <div class="tagline" style="margin-top: 5px; font-size: 16px; color: #ff00ff;">
+            The Complete Vision of the Consciousness Revolution Platform
+        </div>
+    </div>
+
+    <div class="instructions">
+        <p>✨ HOVER over each domain to see details • Click a domain for more information ✨</p>
+    </div>
+
+    <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+        <div id="domain-info" class="domain-info"></div>
+    </div>
+
+    <div class="legend">
+        <h2>📊 THE 7 DOMAINS EXPLAINED</h2>
+        <div class="legend-grid">
+            <div class="legend-item" data-domain="0">
+                <h3>0. CONSCIOUSNESS (Center)</h3>
+                <p>The foundation. All 7 domains radiate from and return to consciousness. This is the core awakening.</p>
+            </div>
+            <div class="legend-item" data-domain="1">
+                <h3>1. INTELLIGENCE</h3>
+                <p>AI agents, automation, pattern recognition. The tools that amplify human consciousness.</p>
+            </div>
+            <div class="legend-item" data-domain="2">
+                <h3>2. CREATION</h3>
+                <p>Content generation, design, media production. Build anything instantly with AI.</p>
+            </div>
+            <div class="legend-item" data-domain="3">
+                <h3>3. COMMERCE</h3>
+                <p>E-commerce, payments, revenue systems. Turn creation into sustainable income.</p>
+            </div>
+            <div class="legend-item" data-domain="4">
+                <h3>4. SECURITY</h3>
+                <p>Encryption, authentication, protection. Keep your consciousness and creations safe.</p>
+            </div>
+            <div class="legend-item" data-domain="5">
+                <h3>5. EDUCATION</h3>
+                <p>Learning systems, skill building, knowledge sharing. Continuous growth and evolution.</p>
+            </div>
+            <div class="legend-item" data-domain="6">
+                <h3>6. INTERFACE</h3>
+                <p>User experience, accessibility, human-AI interaction. Make everything intuitive.</p>
+            </div>
+            <div class="legend-item" data-domain="7">
+                <h3>7. COMMUNITY</h3>
+                <p>Connection, collaboration, network effects. Builders helping builders at scale.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const infoBox = document.getElementById('domain-info');
+
+        // Set canvas size
+        function resizeCanvas() {
+            const container = document.getElementById('canvas-container');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Domain data
+        const domains = [
+            {
+                id: 0,
+                name: "CONSCIOUSNESS",
+                subtitle: "The Foundation",
+                color: "#ffffff",
+                description: "The core. Everything begins and ends here. Consciousness is the foundation of the entire platform.",
+                examples: [
+                    "Awareness training & pattern recognition",
+                    "Meditation & mindfulness tools",
+                    "Manipulation detection systems",
+                    "Personal sovereignty frameworks"
+                ]
+            },
+            {
+                id: 1,
+                name: "INTELLIGENCE",
+                subtitle: "AI & Automation",
+                color: "#00ffff",
+                description: "AI agents that amplify human consciousness. Automation that frees time for what matters.",
+                examples: [
+                    "Claude AI integration (this!)",
+                    "Autonomous task execution",
+                    "Pattern recognition engines",
+                    "Multi-computer coordination"
+                ]
+            },
+            {
+                id: 2,
+                name: "CREATION",
+                subtitle: "Content & Design",
+                color: "#ff00ff",
+                description: "Generate anything: images, videos, music, code, 3D models. Create at the speed of thought.",
+                examples: [
+                    "AI video generation",
+                    "Stock media creation",
+                    "3D modeling & rendering",
+                    "Music & sound design"
+                ]
+            },
+            {
+                id: 3,
+                name: "COMMERCE",
+                subtitle: "Revenue & Business",
+                color: "#00ff00",
+                description: "Turn creations into income. E-commerce, payments, subscriptions, and scalable revenue.",
+                examples: [
+                    "Stripe payment integration",
+                    "Freemium subscription models",
+                    "E-commerce platforms",
+                    "Affiliate & referral systems"
+                ]
+            },
+            {
+                id: 4,
+                name: "SECURITY",
+                subtitle: "Protection & Privacy",
+                color: "#ff0000",
+                description: "Protect consciousness, data, and creations. Encryption, authentication, and zero-trust systems.",
+                examples: [
+                    "End-to-end encryption",
+                    "OTP & 2FA systems",
+                    "Data sovereignty tools",
+                    "Security audit automation"
+                ]
+            },
+            {
+                id: 5,
+                name: "EDUCATION",
+                subtitle: "Learning & Growth",
+                color: "#ffff00",
+                description: "Continuous learning. Skill building. Knowledge sharing. Grow faster than ever possible.",
+                examples: [
+                    "Interactive tutorials",
+                    "AI personal trainer",
+                    "Skill assessment systems",
+                    "Peer-to-peer teaching"
+                ]
+            },
+            {
+                id: 6,
+                name: "INTERFACE",
+                subtitle: "UX & Accessibility",
+                color: "#ff8800",
+                description: "Beautiful, intuitive experiences. Make advanced technology accessible to everyone.",
+                examples: [
+                    "Voice command systems",
+                    "Visual communication graphics",
+                    "Mobile-first responsive design",
+                    "Accessibility standards"
+                ]
+            },
+            {
+                id: 7,
+                name: "COMMUNITY",
+                subtitle: "Network & Collaboration",
+                color: "#8800ff",
+                description: "Connect builders. Share knowledge. Collaborate on projects. Grow together exponentially.",
+                examples: [
+                    "Builder forums & chat",
+                    "Project collaboration tools",
+                    "Skill sharing marketplace",
+                    "Open source contributions"
+                ]
+            }
+        ];
+
+        // Calculate positions
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = Math.min(canvas.width, canvas.height) * 0.35;
+        const centerRadius = 80;
+
+        let hoveredDomain = null;
+        let rotation = 0;
+
+        // Get position for domain
+        function getDomainPosition(index) {
+            const angle = (index / 7) * Math.PI * 2 - Math.PI / 2;
+            return {
+                x: centerX + Math.cos(angle) * radius,
+                y: centerY + Math.sin(angle) * radius,
+                angle: angle
+            };
+        }
+
+        // Draw connection line
+        function drawConnection(x, y, opacity = 1) {
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(x, y);
+            ctx.strokeStyle = `rgba(0, 255, 0, ${opacity * 0.3})`;
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        // Draw domain circle
+        function drawDomain(domain, x, y, isHovered = false) {
+            const domainRadius = isHovered ? 70 : 60;
+
+            // Outer glow
+            if (isHovered) {
+                ctx.beginPath();
+                ctx.arc(x, y, domainRadius + 10, 0, Math.PI * 2);
+                ctx.fillStyle = domain.color + '30';
+                ctx.fill();
+            }
+
+            // Main circle
+            ctx.beginPath();
+            ctx.arc(x, y, domainRadius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+            ctx.fill();
+
+            ctx.strokeStyle = domain.color;
+            ctx.lineWidth = isHovered ? 4 : 3;
+            ctx.stroke();
+
+            // Inner glow
+            ctx.beginPath();
+            ctx.arc(x, y, domainRadius - 5, 0, Math.PI * 2);
+            ctx.strokeStyle = domain.color + '60';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Number
+            ctx.fillStyle = domain.color;
+            ctx.font = 'bold 24px Courier New';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = domain.color;
+            ctx.fillText(domain.id, x, y - 10);
+            ctx.shadowBlur = 0;
+
+            // Name
+            ctx.font = 'bold 14px Courier New';
+            ctx.fillText(domain.name, x, y + 15);
+        }
+
+        // Draw center consciousness
+        function drawCenter() {
+            // Rotating outer ring
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation);
+
+            for (let i = 0; i < 8; i++) {
+                const angle = (i / 8) * Math.PI * 2;
+                const x1 = Math.cos(angle) * (centerRadius + 20);
+                const y1 = Math.sin(angle) * (centerRadius + 20);
+                const x2 = Math.cos(angle) * (centerRadius + 30);
+                const y2 = Math.sin(angle) * (centerRadius + 30);
+
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = '#ffffff80';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            ctx.restore();
+
+            // Main center circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, centerRadius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+            ctx.fill();
+
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // Inner glow
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, centerRadius - 10, 0, Math.PI * 2);
+            ctx.strokeStyle = '#ffffff60';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Text
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 20px Courier New';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#ffffff';
+            ctx.fillText('CONSCIOUSNESS', centerX, centerY);
+            ctx.shadowBlur = 0;
+
+            // Subtitle
+            ctx.font = '12px Courier New';
+            ctx.fillStyle = '#aaaaaa';
+            ctx.fillText('THE FOUNDATION', centerX, centerY + 25);
+        }
+
+        // Animation loop
+        function animate() {
+            ctx.fillStyle = 'rgba(10, 10, 30, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            rotation += 0.005;
+
+            // Draw connections
+            domains.forEach((domain, index) => {
+                const pos = getDomainPosition(index);
+                const opacity = hoveredDomain === index ? 1 : 0.5;
+                drawConnection(pos.x, pos.y, opacity);
+            });
+
+            // Draw center
+            drawCenter();
+
+            // Draw domains
+            domains.forEach((domain, index) => {
+                const pos = getDomainPosition(index);
+                drawDomain(domain, pos.x, pos.y, hoveredDomain === index);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        // Mouse interaction
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            let newHovered = null;
+
+            // Check center
+            const distCenter = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
+            if (distCenter < centerRadius) {
+                newHovered = 0;
+                showDomainInfo(domains[0], mouseX, mouseY);
+                canvas.style.cursor = 'pointer';
+                return;
+            }
+
+            // Check domains
+            domains.forEach((domain, index) => {
+                const pos = getDomainPosition(index);
+                const dist = Math.sqrt((mouseX - pos.x) ** 2 + (mouseY - pos.y) ** 2);
+
+                if (dist < 60) {
+                    newHovered = index;
+                    showDomainInfo(domain, mouseX, mouseY);
+                    canvas.style.cursor = 'pointer';
+                }
+            });
+
+            if (newHovered === null) {
+                infoBox.classList.remove('active');
+                canvas.style.cursor = 'default';
+            }
+
+            hoveredDomain = newHovered;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            hoveredDomain = null;
+            infoBox.classList.remove('active');
+            canvas.style.cursor = 'default';
+        });
+
+        // Show domain info
+        function showDomainInfo(domain, x, y) {
+            const examplesHTML = domain.examples.map(ex => `<li>${ex}</li>`).join('');
+
+            infoBox.innerHTML = `
+                <h2>${domain.name}</h2>
+                <div class="domain-number">Domain ${domain.id} • ${domain.subtitle}</div>
+                <p>${domain.description}</p>
+                <div class="examples">
+                    <h3>Examples:</h3>
+                    <ul>${examplesHTML}</ul>
+                </div>
+            `;
+
+            infoBox.style.left = (x + 20) + 'px';
+            infoBox.style.top = (y + 20) + 'px';
+            infoBox.classList.add('active');
+
+            // Adjust if off screen
+            setTimeout(() => {
+                const rect = infoBox.getBoundingClientRect();
+                const containerRect = canvas.getBoundingClientRect();
+
+                if (rect.right > containerRect.right) {
+                    infoBox.style.left = (x - rect.width - 20) + 'px';
+                }
+                if (rect.bottom > containerRect.bottom) {
+                    infoBox.style.top = (y - rect.height - 20) + 'px';
+                }
+            }, 0);
+        }
+
+        // Legend interaction
+        document.querySelectorAll('.legend-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const domainId = parseInt(item.dataset.domain);
+                const domain = domains[domainId];
+
+                const pos = domainId === 0 ?
+                    {x: centerX, y: centerY} :
+                    getDomainPosition(domainId - 1);
+
+                showDomainInfo(domain, pos.x, pos.y);
+                hoveredDomain = domainId === 0 ? null : domainId - 1;
+
+                // Scroll to canvas
+                canvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>
