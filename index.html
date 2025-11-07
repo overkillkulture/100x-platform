@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consciousness Revolution</title>
+    <title>Consciousness Revolution - Community Building Technology</title>
     <style>
         * {
             margin: 0;
@@ -11,18 +11,28 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
             color: #fff;
             min-height: 100vh;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 2rem;
+            position: relative;
         }
 
-        .container {
+        .hero-container {
             max-width: 600px;
             text-align: center;
         }
@@ -33,6 +43,7 @@
             background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .tagline {
@@ -99,34 +110,376 @@
             font-size: 0.9rem;
         }
 
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator:hover {
+            color: #00ffff;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        /* Features Section */
+        .features-section {
+            min-height: 100vh;
+            padding: 5rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 255, 136, 0.6);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #00ffff;
+        }
+
+        .feature-description {
+            color: #bbb;
+            line-height: 1.6;
+        }
+
+        /* Quick Actions Section */
+        .actions-section {
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .actions-grid {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+            display: block;
+            text-align: center;
+        }
+
+        .action-card:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: #00ffff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-description {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #00ffff;
+        }
+
+        .cta-description {
+            color: #aaa;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .btn-cta {
+            padding: 1.5rem 3rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-cta-primary {
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            color: #000;
+            border: none;
+        }
+
+        .btn-cta-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.5);
+        }
+
+        .btn-cta-secondary {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+            border: 2px solid #00ffff;
+        }
+
+        .btn-cta-secondary:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        /* Mobile Responsive */
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
             }
+
             .btn {
                 font-size: 1.2rem;
                 padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-cta {
+                padding: 1.2rem 2rem;
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Consciousness Revolution</h1>
-        <div class="tagline">Community Building Technology</div>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-container">
+            <h1>Consciousness Revolution</h1>
+            <div class="tagline">Community Building Technology</div>
 
-        <div class="choice-buttons">
-            <a href="seven-domains.html" class="btn btn-explore">👁️ Want to Explore</a>
-            <a href="simple-gate.html" class="btn btn-create">🔧 Want to Create</a>
+            <div class="choice-buttons">
+                <a href="seven-domains.html" class="btn btn-explore">👁️ Want to Explore</a>
+                <a href="simple-gate.html" class="btn btn-create">🔧 Want to Create</a>
 
-            <div class="login-text">Already have a PIN?</div>
-            <a href="login.html" class="btn btn-login">🔓 Login Here</a>
+                <div class="login-text">Already have a PIN?</div>
+                <a href="login.html" class="btn btn-login">🔓 Login Here</a>
+            </div>
         </div>
-    </div>
+
+        <div class="scroll-indicator" onclick="document.getElementById('features').scrollIntoView();">
+            ↓<br>Explore Features
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <h2 class="section-title">Platform Features</h2>
+        <div class="section-subtitle">Everything you need to build conscious community technology</div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3 class="feature-title">Araya - AI Consciousness Guide</h3>
+                <p class="feature-description">
+                    Chrome extension with file automation, pattern detection, and intelligent assistance.
+                    Your AI companion for building conscious technology.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🌀</div>
+                <h3 class="feature-title">Trinity AI Collaboration</h3>
+                <p class="feature-description">
+                    Multi-instance AI coordination system. Three Claude instances working together in harmony
+                    to solve complex challenges through distributed intelligence.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💻</div>
+                <h3 class="feature-title">Builder Terminal</h3>
+                <p class="feature-description">
+                    Your personal workspace hub. Access all your projects, track progress in real-time,
+                    and manage your development workflow seamlessly.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Real-Time Analytics</h3>
+                <p class="feature-description">
+                    Live bug monitoring, user tracking, and system metrics. Stay informed with instant
+                    notifications and comprehensive dashboard insights.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Automation Modules</h3>
+                <p class="feature-description">
+                    Automated workflows, task coordination, and seamless system integration.
+                    Let AI handle the repetitive work while you focus on creativity.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🤝</div>
+                <h3 class="feature-title">Builder Community</h3>
+                <p class="feature-description">
+                    Connect with fellow builders, see who's online, collaborate in real-time,
+                    and share your journey with a growing community of conscious creators.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions Section -->
+    <section class="actions-section">
+        <h2 class="section-title">Get Started Now</h2>
+        <div class="section-subtitle">Jump right into building</div>
+
+        <div class="actions-grid">
+            <a href="https://github.com/overkillkulture/araya-extension" class="action-card" target="_blank">
+                <div class="action-icon">📦</div>
+                <div class="action-title">Download Araya</div>
+                <div class="action-description">Chrome extension for AI assistance</div>
+            </a>
+
+            <a href="/workspace-v3.html" class="action-card">
+                <div class="action-icon">⚡</div>
+                <div class="action-title">Live Bug Monitor</div>
+                <div class="action-description">Track issues in real-time</div>
+            </a>
+
+            <a href="https://github.com/overkillkulture/100x-platform" class="action-card" target="_blank">
+                <div class="action-icon">📋</div>
+                <div class="action-title">View on GitHub</div>
+                <div class="action-description">Explore the source code</div>
+            </a>
+
+            <a href="#features" class="action-card">
+                <div class="action-icon">💬</div>
+                <div class="action-title">Chat with Araya</div>
+                <div class="action-description">Get AI-powered assistance</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2 class="cta-title">Ready to Build the Future?</h2>
+        <p class="cta-description">
+            Join the consciousness revolution and start building technology that empowers communities
+        </p>
+        <div class="cta-buttons">
+            <a href="/register-pin.html" class="btn-cta btn-cta-primary">Create Your PIN</a>
+            <a href="/login.html" class="btn-cta btn-cta-secondary">Login Now</a>
+        </div>
+    </section>
 
     <!-- Bug Reporter -->
     <script src="/SIMPLE_BUG_REPORTER.js"></script>
 
+    <!-- User Display -->
     <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
 </body>
 </html>
