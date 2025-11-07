@@ -1,0 +1,268 @@
+"""
+CONSCIOUSNESS REVOLUTION - REVENUE AUTOMATION BACKEND
+Main Flask application entry point
+
+Orchestrates 9 microservices:
+1. Authentication System
+2. Stripe Payment Processing
+3. Music Domain Service
+4. Marketplace Commission System
+5. Quantum Vault Analytics
+6. Conversion Funnel System
+7. Korpak Autonomous Engine
+8. Self-Healing Monitoring
+9. Emergency Systems
+"""
+
+import os
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import psycopg2
+from datetime import datetime
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Initialize Flask app
+app = Flask(__name__)
+
+# CORS configuration - allow frontend domain
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "https://conciousnessrevolution.io",
+            "http://localhost:*",
+            "http://127.0.0.1:*"
+        ],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    }
+})
+
+# Database connection
+def get_db_connection():
+    """Get PostgreSQL database connection"""
+    try:
+        conn = psycopg2.connect(
+            host=os.getenv('PGHOST', 'localhost'),
+            port=os.getenv('PGPORT', '5432'),
+            database=os.getenv('PGDATABASE', 'consciousness_db'),
+            user=os.getenv('PGUSER', 'postgres'),
+            password=os.getenv('PGPASSWORD', '')
+        )
+        return conn
+    except Exception as e:
+        logger.error(f"Database connection error: {e}")
+        return None
+
+# Health check endpoint
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """System health check"""
+    db_status = "healthy"
+    try:
+        conn = get_db_connection()
+        if conn:
+            conn.close()
+        else:
+            db_status = "degraded"
+    except:
+        db_status = "unhealthy"
+
+    return jsonify({
+        "status": "healthy" if db_status == "healthy" else "degraded",
+        "timestamp": datetime.utcnow().isoformat(),
+        "services": {
+            "auth": {"status": "healthy"},
+            "payments": {"status": "healthy"},
+            "music": {"status": "healthy"},
+            "marketplace": {"status": "healthy"},
+            "vault": {"status": "healthy"},
+            "conversion": {"status": "healthy"},
+            "korpak": {"status": "healthy"},
+            "monitoring": {"status": "healthy"},
+            "database": {"status": db_status}
+        }
+    }), 200
+
+# Import and register service blueprints
+try:
+    # Import all service modules
+    import auth_system
+    import stripe_payment_system
+    import music_domain_service
+    import marketplace_commission_system
+    import quantum_vault_analytics
+    import conversion_funnel_system
+    import korpak_autonomous_engine
+    import self_healing_monitoring
+
+    logger.info("✅ All service modules imported successfully")
+
+    # Register authentication routes
+    @app.route('/api/auth/signup', methods=['POST'])
+    def auth_signup():
+        return auth_system.handle_signup(request)
+
+    @app.route('/api/auth/login', methods=['POST'])
+    def auth_login():
+        return auth_system.handle_login(request)
+
+    @app.route('/api/auth/verify', methods=['POST'])
+    def auth_verify():
+        return auth_system.handle_verify(request)
+
+    @app.route('/api/auth/logout', methods=['POST'])
+    def auth_logout():
+        return auth_system.handle_logout(request)
+
+    @app.route('/api/auth/check-access/<domain>', methods=['GET'])
+    def auth_check_access(domain):
+        return auth_system.check_domain_access(request, domain)
+
+    @app.route('/api/auth/record-usage', methods=['POST'])
+    def auth_record_usage():
+        return auth_system.record_usage(request)
+
+    # Register payment routes
+    @app.route('/api/payments/create-subscription', methods=['POST'])
+    def payments_create_subscription():
+        return stripe_payment_system.create_subscription(request)
+
+    @app.route('/api/payments/cancel-subscription', methods=['POST'])
+    def payments_cancel_subscription():
+        return stripe_payment_system.cancel_subscription(request)
+
+    @app.route('/api/payments/upgrade-subscription', methods=['POST'])
+    def payments_upgrade_subscription():
+        return stripe_payment_system.upgrade_subscription(request)
+
+    @app.route('/api/payments/webhook', methods=['POST'])
+    def payments_webhook():
+        return stripe_payment_system.handle_webhook(request)
+
+    # Register music domain routes
+    @app.route('/api/music/tracks', methods=['GET'])
+    def music_get_tracks():
+        return music_domain_service.get_user_tracks(request)
+
+    @app.route('/api/music/tracks', methods=['POST'])
+    def music_create_track():
+        return music_domain_service.create_track(request)
+
+    @app.route('/api/music/stats', methods=['GET'])
+    def music_get_stats():
+        return music_domain_service.get_user_stats(request)
+
+    # Register marketplace routes
+    @app.route('/api/marketplace/browse', methods=['GET'])
+    def marketplace_browse():
+        return marketplace_commission_system.browse_products(request)
+
+    @app.route('/api/marketplace/purchase', methods=['POST'])
+    def marketplace_purchase():
+        return marketplace_commission_system.process_purchase(request)
+
+    @app.route('/api/marketplace/create-item', methods=['POST'])
+    def marketplace_create_item():
+        return marketplace_commission_system.create_product(request)
+
+    @app.route('/api/marketplace/creator-dashboard', methods=['GET'])
+    def marketplace_creator_dashboard():
+        return marketplace_commission_system.get_creator_dashboard(request)
+
+    @app.route('/api/marketplace/onboard-creator', methods=['POST'])
+    def marketplace_onboard_creator():
+        return marketplace_commission_system.onboard_creator(request)
+
+    # Register Quantum Vault routes
+    @app.route('/api/vault/mrr', methods=['GET'])
+    def vault_get_mrr():
+        return quantum_vault_analytics.get_mrr_data(request)
+
+    @app.route('/api/vault/arr', methods=['GET'])
+    def vault_get_arr():
+        return quantum_vault_analytics.get_arr_data(request)
+
+    @app.route('/api/vault/fibonacci', methods=['GET'])
+    def vault_get_fibonacci():
+        return quantum_vault_analytics.get_fibonacci_progression(request)
+
+    @app.route('/api/vault/ltv-cac', methods=['GET'])
+    def vault_get_ltv_cac():
+        return quantum_vault_analytics.get_ltv_cac_ratio(request)
+
+    # Register conversion funnel routes
+    @app.route('/api/conversion/prompt', methods=['POST'])
+    def conversion_prompt():
+        return conversion_funnel_system.trigger_conversion_prompt(request)
+
+    @app.route('/api/conversion/stats', methods=['GET'])
+    def conversion_stats():
+        return conversion_funnel_system.get_conversion_stats(request)
+
+    # Register Korpak routes
+    @app.route('/api/korpak/analyze-suppression', methods=['POST'])
+    def korpak_analyze():
+        return korpak_autonomous_engine.analyze_suppression(request)
+
+    @app.route('/api/korpak/battles', methods=['GET'])
+    def korpak_battles():
+        return korpak_autonomous_engine.get_active_battles(request)
+
+    # Register monitoring routes
+    @app.route('/api/monitoring/metrics', methods=['GET'])
+    def monitoring_metrics():
+        return self_healing_monitoring.get_system_metrics(request)
+
+    @app.route('/api/monitoring/alerts', methods=['GET'])
+    def monitoring_alerts():
+        return self_healing_monitoring.get_active_alerts(request)
+
+    logger.info("✅ All API routes registered successfully")
+
+except ImportError as e:
+    logger.error(f"❌ Failed to import service modules: {e}")
+    logger.info("⚠️ Running in degraded mode - some routes may not work")
+
+# Root endpoint
+@app.route('/', methods=['GET'])
+def root():
+    return jsonify({
+        "name": "Consciousness Revolution API",
+        "version": "1.0.0",
+        "status": "operational",
+        "documentation": "/api/health",
+        "endpoints": {
+            "auth": "/api/auth/*",
+            "payments": "/api/payments/*",
+            "music": "/api/music/*",
+            "marketplace": "/api/marketplace/*",
+            "vault": "/api/vault/*",
+            "conversion": "/api/conversion/*",
+            "korpak": "/api/korpak/*",
+            "monitoring": "/api/monitoring/*"
+        }
+    }), 200
+
+# Error handlers
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({"error": "Endpoint not found"}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    logger.error(f"Internal server error: {error}")
+    return jsonify({"error": "Internal server error"}), 500
+
+if __name__ == '__main__':
+    port = int(os.getenv('PORT', 5000))
+    debug = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+
+    logger.info(f"🚀 Starting Consciousness Revolution API on port {port}")
+    logger.info(f"🔧 Debug mode: {debug}")
+
+    app.run(host='0.0.0.0', port=port, debug=debug)

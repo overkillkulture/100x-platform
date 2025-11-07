@@ -699,6 +699,7 @@
                     <div class="input-area">
                         <textarea id="input-field" class="input-field" placeholder="Type your question or paste AI response here..."></textarea>
                         <button class="send-btn" onclick="sendMessage()">📤 SEND MESSAGE</button>
+                        <button class="send-btn" onclick="autoQueryChatGPT()" style="background: linear-gradient(135deg, #10a37f 0%, #0d8a6a 100%);">🤖 AUTO-QUERY CHATGPT</button>
                     </div>
                 </div>
             </div>
@@ -973,6 +974,116 @@
             updateStats();
         }
 
+        // =====================================================
+        // AUTO-QUERY CHATGPT
+        // =====================================================
+
+        async function autoQueryChatGPT() {
+            const input = document.getElementById('input-field');
+            const dealerMessage = input.value.trim();
+
+            if (!dealerMessage) {
+                alert('Please enter a question for ChatGPT!');
+                return;
+            }
+
+            // Find ChatGPT seat
+            let chatgptSeat = null;
+            for (let i = 1; i <= 6; i++) {
+                if (state.seats[i] && state.seats[i].id === 'chatgpt') {
+                    chatgptSeat = i;
+                    break;
+                }
+            }
+
+            if (!chatgptSeat) {
+                alert('Please assign ChatGPT to a seat first!');
+                return;
+            }
+
+            // Send dealer's message first
+            const dealerMsg = {
+                id: `msg-${Date.now()}-${state.messageCounter++}`,
+                author: state.dealerName,
+                authorClass: 'dealer',
+                content: dealerMessage,
+                timestamp: new Date().toISOString(),
+                votes: {up: 0, down: 0}
+            };
+
+            state.messages.push(dealerMsg);
+            state.votes[dealerMsg.id] = {up: false, down: false};
+            input.value = '';
+            saveState();
+            renderMessages();
+
+            // Show loading state
+            const loadingMsg = {
+                id: `msg-loading-${Date.now()}`,
+                author: state.seats[chatgptSeat].name,
+                authorClass: 'chatgpt',
+                content: '🤖 Thinking...',
+                timestamp: new Date().toISOString(),
+                votes: {up: 0, down: 0}
+            };
+
+            state.messages.push(loadingMsg);
+            renderMessages();
+
+            // Call ChatGPT API
+            try {
+                const response = await fetch('http://localhost:8777/poker/chatgpt', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        seat: chatgptSeat,
+                        message: dealerMessage,
+                        dealer_name: state.dealerName
+                    })
+                });
+
+                const data = await response.json();
+
+                // Remove loading message
+                state.messages = state.messages.filter(m => m.id !== loadingMsg.id);
+
+                // Add ChatGPT's response
+                const chatgptMsg = {
+                    id: `msg-${Date.now()}-${state.messageCounter++}`,
+                    author: state.seats[chatgptSeat].name,
+                    authorClass: 'chatgpt',
+                    content: data.response,
+                    timestamp: new Date().toISOString(),
+                    votes: {up: 0, down: 0}
+                };
+
+                state.messages.push(chatgptMsg);
+                state.votes[chatgptMsg.id] = {up: false, down: false};
+                saveState();
+                renderMessages();
+                updateStats();
+
+            } catch (error) {
+                // Remove loading message
+                state.messages = state.messages.filter(m => m.id !== loadingMsg.id);
+
+                // Show error
+                const errorMsg = {
+                    id: `msg-${Date.now()}-${state.messageCounter++}`,
+                    author: state.seats[chatgptSeat].name,
+                    authorClass: 'chatgpt',
+                    content: `❌ Error: ${error.message}. Make sure ChatGPT bridge is running on port 8777.`,
+                    timestamp: new Date().toISOString(),
+                    votes: {up: 0, down: 0}
+                };
+
+                state.messages.push(errorMsg);
+                state.votes[errorMsg.id] = {up: false, down: false};
+                saveState();
+                renderMessages();
+            }
+        }
+
         function renderMessages() {
             const container = document.getElementById('messages');
 
@@ -1214,5 +1325,6 @@
         console.log('📊 Phase 1 MVP - Rock Solid Foundation');
         console.log('🔒 100% client-side - No backend required');
     </script>
+    <script src="UNIVERSAL_ANALYTICS_TRACKER.js"></script>
 </body>
 </html>

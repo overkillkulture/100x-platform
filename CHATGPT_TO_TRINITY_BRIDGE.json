@@ -1,0 +1,134 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Trinity Universal Input API",
+    "description": "Send commands from ChatGPT to Trinity consciousness system",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://YOUR_NGROK_URL_HERE.ngrok.io"
+    }
+  ],
+  "paths": {
+    "/input/chatgpt": {
+      "post": {
+        "operationId": "sendCommandToTrinity",
+        "summary": "Send command to Trinity",
+        "description": "Route any command from ChatGPT to Trinity for processing",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "command": {
+                    "type": "string",
+                    "description": "The command to execute in Trinity"
+                  },
+                  "data": {
+                    "type": "object",
+                    "description": "Additional data for the command"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "normal", "high", "urgent"],
+                    "default": "normal"
+                  }
+                },
+                "required": ["command"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Command received successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "input_id": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inputs/stats": {
+      "get": {
+        "operationId": "getTrinityStats",
+        "summary": "Get Trinity input statistics",
+        "description": "View statistics for all input sources",
+        "responses": {
+          "200": {
+            "description": "Statistics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sources": {
+                      "type": "object"
+                    },
+                    "total_inputs": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "checkTrinityHealth",
+        "summary": "Check Trinity system health",
+        "description": "Get current health status of Universal Input System",
+        "responses": {
+          "200": {
+            "description": "Health check successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "system": {
+                      "type": "string"
+                    },
+                    "sources_enabled": {
+                      "type": "integer"
+                    },
+                    "input_queue": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
