@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your PIN - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid rgba(100, 255, 218, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #64ffda 0%, #00bfa5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #b8b8b8;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            color: #64ffda;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #64ffda;
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
+        }
+
+        .pin-input-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .pin-box {
+            width: 60px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .pin-box:focus {
+            outline: none;
+            border-color: #64ffda;
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #64ffda 0%, #00bfa5 100%);
+            border: none;
+            border-radius: 12px;
+            color: #0f0c29;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .register-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.5);
+        }
+
+        .register-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .success-message,
+        .error-message {
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(100, 255, 218, 0.2);
+            border: 1px solid #64ffda;
+            color: #64ffda;
+        }
+
+        .error-message {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff6666;
+        }
+
+        .help-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 1.5rem;
+        }
+
+        .help-text a {
+            color: #64ffda;
+            text-decoration: none;
+        }
+
+        .info-box {
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #b8b8b8;
+        }
+
+        @media (max-width: 500px) {
+            .register-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .pin-box {
+                width: 50px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h1>🌌 Create Your Access PIN 🌌</h1>
+        <p class="subtitle">Set up your workspace in 30 seconds</p>
+
+        <div class="info-box">
+            💡 Choose a 4-digit PIN you'll remember. You'll use this to access your workspace.
+        </div>
+
+        <div class="form-group">
+            <label for="userName">Your Name (Optional)</label>
+            <input type="text" id="userName" placeholder="Enter your name">
+        </div>
+
+        <div class="form-group">
+            <label for="userEmail">Email (Optional)</label>
+            <input type="email" id="userEmail" placeholder="your.email@example.com">
+        </div>
+
+        <div class="form-group">
+            <label>Create Your 4-Digit PIN</label>
+            <div class="pin-input-container">
+                <input type="text" maxlength="1" class="pin-box" id="pin1" autofocus>
+                <input type="text" maxlength="1" class="pin-box" id="pin2">
+                <input type="text" maxlength="1" class="pin-box" id="pin3">
+                <input type="text" maxlength="1" class="pin-box" id="pin4">
+            </div>
+        </div>
+
+        <button class="register-button" id="registerButton" disabled onclick="registerPin()">
+            ✨ Create Workspace
+        </button>
+
+        <div class="success-message" id="successMessage">
+            ✅ PIN created successfully! Redirecting to workspace...
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            ❌ Please enter a 4-digit PIN
+        </div>
+
+        <div class="help-text">
+            Already have a PIN? <a href="/access.html">Sign In</a>
+        </div>
+    </div>
+
+    <script>
+        const pinInputs = document.querySelectorAll('.pin-box');
+        const registerButton = document.getElementById('registerButton');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const userNameInput = document.getElementById('userName');
+        const userEmailInput = document.getElementById('userEmail');
+
+        // Auto-focus next box on input
+        pinInputs.forEach((box, index) => {
+            box.addEventListener('input', (e) => {
+                // Only allow numbers
+                if (e.target.value && !/[0-9]/.test(e.target.value)) {
+                    e.target.value = '';
+                    return;
+                }
+
+                // Move to next box
+                if (e.target.value.length === 1 && index < 3) {
+                    pinInputs[index + 1].focus();
+                }
+
+                // Clear messages
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+
+                // Enable button if all 4 digits entered
+                const allFilled = Array.from(pinInputs).every(input => input.value.length === 1);
+                registerButton.disabled = !allFilled;
+            });
+
+            // Handle backspace
+            box.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    pinInputs[index - 1].focus();
+                }
+
+                // Handle Enter
+                if (e.key === 'Enter' && !registerButton.disabled) {
+                    registerPin();
+                }
+
+                // Only allow numbers
+                if (e.key.length === 1 && !/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        function registerPin() {
+            const pin = Array.from(pinInputs).map(input => input.value).join('');
+            const userName = userNameInput.value.trim() || 'User';
+            const userEmail = userEmailInput.value.trim();
+
+            if (pin.length !== 4) {
+                errorMessage.textContent = '❌ Please enter a 4-digit PIN';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Check if PIN is already in use (hardcoded PINs)
+            const reservedPins = ['1776', '2025', '1234'];
+            if (reservedPins.includes(pin)) {
+                errorMessage.textContent = '❌ This PIN is reserved. Please choose a different one.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Generate unique user ID
+            const userId = 'user_' + pin + '_' + Date.now();
+
+            // Create user profile
+            const userProfile = {
+                id: userId,
+                pin: pin,
+                name: userName,
+                email: userEmail,
+                created: new Date().toISOString()
+            };
+
+            // Store user profile
+            localStorage.setItem('user_profile_' + pin, JSON.stringify(userProfile));
+
+            // Also store the PIN temporarily for access.html to recognize
+            localStorage.setItem('generated_pin', pin);
+            localStorage.setItem('pin_generated_at', new Date().toISOString());
+
+            // Store user name for display
+            localStorage.setItem('userName', userName);
+            localStorage.setItem('user_name', userName);
+            localStorage.setItem('workspace_user_name', userName);
+
+            // Create workspace data
+            const newWorkspace = {
+                id: userId,
+                name: userName,
+                created: new Date().toISOString(),
+                transcript: '',
+                caseDetails: {},
+                projects: []
+            };
+            localStorage.setItem(`workspace_${userId}`, JSON.stringify(newWorkspace));
+
+            // Show success
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+
+            // Log registration (for debugging)
+            console.log('✅ User registered:', {
+                userId,
+                pin: '****',
+                name: userName
+            });
+
+            // Redirect to workspace after 1.5 seconds
+            setTimeout(() => {
+                window.location.href = `/workspace.html?user=${userId}`;
+            }, 1500);
+        }
+
+        // Initial state
+        registerButton.disabled = true;
+
+        console.log('🔐 PIN registration ready');
+    </script>
+
+    <!-- Universal HUD - Auto-injected -->
+    <script src="/UNIVERSAL_AI_HUD.js"></script>
+
+    <!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+    <script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>
