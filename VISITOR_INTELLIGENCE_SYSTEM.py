@@ -9,6 +9,7 @@ Features:
 - Detects what people actually want
 - Generates daily intelligence reports
 - Feeds insights to The Observatory
+- Provides conversational interface via Flask API
 """
 
 import json
@@ -16,6 +17,8 @@ import os
 from datetime import datetime, timedelta
 from collections import defaultdict, Counter
 from pathlib import Path
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 class VisitorIntelligence:
     def __init__(self, data_dir="C:/Users/dwrek/100X_DEPLOYMENT/visitor_data"):
@@ -317,38 +320,211 @@ class GreeterBot:
         return suggestions.get(page, ["Explore the platform", "Ask me anything"])
 
 
+# ============================================================================
+# FLASK API - Chat Interface for Visitor Intelligence
+# ============================================================================
+
+app = Flask(__name__)
+CORS(app)
+
+# Global instances
+vi_instance = None
+greeter_instance = None
+
+def get_instances():
+    """Get or create global instances"""
+    global vi_instance, greeter_instance
+    if vi_instance is None:
+        vi_instance = VisitorIntelligence()
+        greeter_instance = GreeterBot(vi_instance)
+    return vi_instance, greeter_instance
+
+@app.route('/health', methods=['GET'])
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'online',
+        'service': 'Visitor Intelligence',
+        'description': 'Tracks and analyzes visitor behavior and conversations',
+        'capabilities': [
+            'Visitor tracking',
+            'Conversation analysis',
+            'Pattern detection',
+            'Intelligence reporting'
+        ]
+    })
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    """Chat endpoint for Visitor Intelligence queries"""
+    vi, greeter = get_instances()
+
+    data = request.json
+    message = data.get('message', '').lower()
+
+    response_text = ""
+
+    if 'report' in message or 'stats' in message or 'how many' in message:
+        total_sessions = len(vi.sessions)
+        total_patterns = len(vi.patterns)
+        response_text = f"""👥 **Visitor Intelligence Report**
+
+**Current Session Stats:**
+- Active Sessions: {total_sessions}
+- Patterns Detected: {total_patterns}
+- Tracking: Conversations, navigation, user intent
+
+I'm continuously analyzing visitor behavior to understand what people want and how they interact with your platform."""
+
+    elif 'pattern' in message or 'behavior' in message or 'what are people' in message:
+        if vi.patterns:
+            top_patterns = sorted(vi.patterns.items(), key=lambda x: x[1], reverse=True)[:5]
+            pattern_list = '\n'.join([f"- {pattern.replace('_', ' ').title()}: {count}" for pattern, count in top_patterns])
+            response_text = f"""👥 **Detected Visitor Patterns**
+
+Top patterns I've identified:
+{pattern_list}
+
+These insights help optimize the user experience and identify what visitors are looking for."""
+        else:
+            response_text = "👥 **Visitor Patterns**\n\nNo significant patterns detected yet. I'll analyze visitor behavior as they interact with your platform."
+
+    elif 'help' in message or 'what can you do' in message or 'capabilities' in message:
+        response_text = """👥 **Visitor Intelligence Capabilities**
+
+I watch and learn from every visitor to your platform:
+
+1. **Session Tracking** - Log arrivals, navigation, time spent
+2. **Conversation Analysis** - Understand what people ask about
+3. **Pattern Detection** - Identify confusion loops, common questions
+4. **Intelligence Reports** - Daily summaries of visitor behavior
+5. **Predictive Insights** - What visitors will need before they ask
+
+I help you understand your users deeply and improve their experience!"""
+
+    elif 'confusion' in message or 'lost' in message or 'problem' in message:
+        confusion_count = vi.patterns.get('possible_confusion_loop', 0)
+        if confusion_count > 0:
+            response_text = f"👥 **Visitor Confusion Alert**\n\nDetected {confusion_count} possible confusion loops where visitors are navigating back and forth between the same pages. This might indicate unclear navigation or missing information."
+        else:
+            response_text = "👥 **Navigation Status**\n\nNo confusion patterns detected. Visitors seem to be navigating smoothly!"
+
+    elif 'question' in message or 'asking' in message or 'common' in message:
+        if vi.common_questions:
+            top_questions = vi.common_questions.most_common(5)
+            question_list = '\n'.join([f"- {q.replace('_', ' ').title()}: {count}" for q, count in top_questions])
+            response_text = f"""👥 **Common Visitor Questions**
+
+{question_list}
+
+These are the main topics visitors are asking about. This insight can help you create better content and FAQs."""
+        else:
+            response_text = "👥 **Visitor Questions**\n\nNo questions logged yet. I'll track common inquiries as visitors interact with your platform."
+
+    else:
+        response_text = f"""👥 **Visitor Intelligence**
+
+I'm your eyes and ears on visitor behavior. I received: '{message[:100]}...'
+
+I can provide insights on:
+- Visitor statistics and patterns
+- Common questions and concerns
+- Navigation issues and confusion
+- Behavioral trends
+
+What would you like to know about your visitors?"""
+
+    return jsonify({
+        'response': response_text,
+        'status': 'success',
+        'active_sessions': len(vi.sessions),
+        'patterns_detected': len(vi.patterns)
+    })
+
+@app.route('/track', methods=['POST'])
+def track_visitor():
+    """Endpoint to track visitor events"""
+    vi, greeter = get_instances()
+
+    data = request.json
+    event_type = data.get('type')
+
+    if event_type == 'arrival':
+        greeting = greeter.greet(
+            data.get('visitor_id'),
+            data.get('page'),
+            data.get('metadata')
+        )
+        return jsonify(greeting)
+
+    elif event_type == 'conversation':
+        result = vi.log_conversation(
+            data.get('visitor_id'),
+            data.get('user_message'),
+            data.get('bot_response'),
+            data.get('context')
+        )
+        return jsonify(result)
+
+    elif event_type == 'navigation':
+        result = vi.log_page_navigation(
+            data.get('visitor_id'),
+            data.get('from_page'),
+            data.get('to_page')
+        )
+        return jsonify(result)
+
+    return jsonify({'error': 'Unknown event type'}), 400
+
+
 if __name__ == "__main__":
-    # Example usage
-    vi = VisitorIntelligence()
-    greeter = GreeterBot(vi)
+    import sys
 
-    vi.banner("VISITOR INTELLIGENCE SYSTEM - TEST")
+    # Check if running as API server or test mode
+    if '--api' in sys.argv:
+        print("\n" + "=" * 70)
+        print("  👥 VISITOR INTELLIGENCE - API SERVER")
+        print("=" * 70)
+        print("\n🌐 Starting Flask API on port 6000...")
+        print("\nEndpoints:")
+        print("  GET  /health - Health check")
+        print("  POST /chat   - Chat with Visitor Intelligence")
+        print("  POST /track  - Track visitor events")
+        print("\n" + "=" * 70 + "\n")
 
-    # Simulate a visitor
-    print("\n🧪 Simulating visitor session...\n")
+        app.run(host='0.0.0.0', port=6000, debug=False)
+    else:
+        # Run test mode
+        vi = VisitorIntelligence()
+        greeter = GreeterBot(vi)
 
-    visitor_id = "test_visitor_001"
+        vi.banner("VISITOR INTELLIGENCE SYSTEM - TEST")
 
-    # Arrival
-    greeting = greeter.greet(visitor_id, 'philosopher-ai.html')
-    print(f"Greeter: {greeting['message']}")
-    print(f"Suggestions: {greeting['suggestions']}")
+        # Simulate a visitor
+        print("\n🧪 Simulating visitor session...\n")
 
-    # Conversation
-    vi.log_conversation(
-        visitor_id,
-        "How do I build a module?",
-        "Great question! Modules are built using...",
-        {'page': 'philosopher-ai.html'}
-    )
+        visitor_id = "test_visitor_001"
 
-    # Navigation
-    vi.log_page_navigation(visitor_id, 'philosopher-ai.html', 'module-library.html')
+        # Arrival
+        greeting = greeter.greet(visitor_id, 'philosopher-ai.html')
+        print(f"Greeter: {greeting['message']}")
+        print(f"Suggestions: {greeting['suggestions']}")
 
-    # Generate report
-    report = vi.generate_daily_report()
+        # Conversation
+        vi.log_conversation(
+            visitor_id,
+            "How do I build a module?",
+            "Great question! Modules are built using...",
+            {'page': 'philosopher-ai.html'}
+        )
 
-    # Export to Observatory
-    vi.export_to_observatory()
+        # Navigation
+        vi.log_page_navigation(visitor_id, 'philosopher-ai.html', 'module-library.html')
 
-    print("\n✅ Visitor Intelligence System operational!")
+        # Generate report
+        report = vi.generate_daily_report()
+
+        # Export to Observatory
+        vi.export_to_observatory()
+
+        print("\n✅ Visitor Intelligence System operational!")

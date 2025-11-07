@@ -9,6 +9,7 @@ Capabilities:
 - Tracks patterns and fixes
 - Maintains synchronized meta-documents
 - Predicts problems before they happen
+- Provides conversational interface via Flask API
 """
 
 import os
@@ -17,6 +18,9 @@ import ast
 from datetime import datetime
 from pathlib import Path
 from collections import defaultdict
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import threading
 
 class Observatory:
     def __init__(self, root_path="C:/Users/dwrek/100X_DEPLOYMENT"):
@@ -490,6 +494,130 @@ If System A depends on System B, mention it in docstrings
         print("\n🔭 The Observatory is now watching your systems...\n")
 
 
+# ============================================================================
+# FLASK API - Chat Interface for Observatory
+# ============================================================================
+
+app = Flask(__name__)
+CORS(app)
+
+# Global observatory instance
+observatory_instance = None
+
+@app.route('/health', methods=['GET'])
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'online',
+        'service': 'The Observatory',
+        'description': 'Meta-brain that watches and documents all systems',
+        'capabilities': [
+            'System discovery',
+            'Relationship mapping',
+            'Pattern detection',
+            'Auto-documentation'
+        ]
+    })
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    """Chat endpoint for Observatory queries"""
+    global observatory_instance
+
+    data = request.json
+    message = data.get('message', '').lower()
+
+    # Initialize observatory if needed
+    if observatory_instance is None:
+        observatory_instance = Observatory()
+
+    # Parse user intent and provide responses
+    response_text = ""
+
+    if 'scan' in message or 'discover' in message or 'find systems' in message:
+        response_text = "🔭 **Observatory System Scan**\n\nI can scan your entire platform to discover all systems, map their relationships, and generate comprehensive documentation.\n\nWould you like me to:\n- Run a full system scan\n- Check specific components\n- Update documentation\n- Find patterns and connections"
+
+    elif 'status' in message or 'how many' in message or 'systems' in message:
+        if observatory_instance.systems:
+            total = len(observatory_instance.systems)
+            response_text = f"🔭 **Current Status**\n\nI'm tracking {total} systems across the platform. These systems span multiple categories including Analytics, APIs, Deployment tools, and Core infrastructure."
+        else:
+            response_text = "🔭 **Status**\n\nNo systems have been scanned yet. Run a full observation to discover all platform systems."
+
+    elif 'help' in message or 'what can you do' in message or 'capabilities' in message:
+        response_text = """🔭 **The Observatory Capabilities**
+
+I'm the meta-brain that watches and learns from all your systems. I can:
+
+1. **System Discovery** - Find all Python files, APIs, and services
+2. **Relationship Mapping** - Show how systems connect and depend on each other
+3. **Auto-Documentation** - Generate up-to-date system maps
+4. **Pattern Detection** - Identify common patterns and potential issues
+5. **Predictive Analysis** - Spot problems before they happen
+
+Ask me to scan, check status, or explain any system!"""
+
+    elif 'relationship' in message or 'connection' in message or 'how does' in message:
+        response_text = "🔭 **System Relationships**\n\nI can analyze how systems connect through imports, file operations, and API calls. Run a full scan and I'll map all the relationships in your platform."
+
+    elif 'documentation' in message or 'docs' in message or 'map' in message:
+        response_text = "🔭 **Auto-Documentation**\n\nI generate three key documents:\n\n1. **OBSERVATORY_SYSTEM_MAP.md** - Complete system overview\n2. **OBSERVATORY_GUIDE.md** - How to use The Observatory\n3. **OBSERVATORY_PATTERNS.json** - Detected patterns and learnings\n\nThese stay synchronized with your codebase automatically!"
+
+    else:
+        response_text = f"🔭 **The Observatory**\n\nI'm watching your systems and learning their patterns. I received your message: '{message[:100]}...'\n\nI can help with:\n- System scanning and discovery\n- Relationship mapping\n- Documentation generation\n- Pattern analysis\n\nWhat would you like to know?"
+
+    return jsonify({
+        'response': response_text,
+        'status': 'success',
+        'systems_tracked': len(observatory_instance.systems) if observatory_instance.systems else 0
+    })
+
+@app.route('/scan', methods=['POST'])
+def run_scan():
+    """Endpoint to trigger a system scan"""
+    global observatory_instance
+
+    if observatory_instance is None:
+        observatory_instance = Observatory()
+
+    try:
+        # Run discovery in background to avoid timeout
+        def background_scan():
+            observatory_instance.discover_systems()
+            observatory_instance.map_relationships()
+            observatory_instance.generate_system_map()
+
+        thread = threading.Thread(target=background_scan)
+        thread.start()
+
+        return jsonify({
+            'status': 'scanning',
+            'message': 'System scan initiated. Check back in a few moments.'
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+
 if __name__ == "__main__":
-    observatory = Observatory()
-    observatory.run_full_observation()
+    import sys
+
+    # Check if running as API server or standalone
+    if '--api' in sys.argv:
+        print("\n" + "=" * 70)
+        print("  🔭 THE OBSERVATORY - API SERVER")
+        print("=" * 70)
+        print("\n🌐 Starting Flask API on port 7777...")
+        print("\nEndpoints:")
+        print("  GET  /health - Health check")
+        print("  POST /chat   - Chat with Observatory")
+        print("  POST /scan   - Trigger system scan")
+        print("\n" + "=" * 70 + "\n")
+
+        app.run(host='0.0.0.0', port=7777, debug=False)
+    else:
+        # Run standalone observation
+        observatory = Observatory()
+        observatory.run_full_observation()

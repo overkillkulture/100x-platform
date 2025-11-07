@@ -28,19 +28,19 @@ AI_SERVICES = {
     'observatory': {
         'url': 'http://localhost:7777',
         'health': '/health',
-        'chat': None,  # TODO: Add /chat endpoint
+        'chat': '/chat',  # ✅ Chat endpoint now available
         'description': 'System Observatory - Meta-brain that watches and documents all systems'
     },
     'visitor_intelligence': {
         'url': 'http://localhost:6000',
         'health': '/health',
-        'chat': None,  # TODO: Add /chat endpoint
+        'chat': '/chat',  # ✅ Chat endpoint now available
         'description': 'Visitor Intelligence - Tracks and analyzes user behavior'
     },
     'analytics': {
         'url': 'http://localhost:5000',
         'health': '/health',
-        'chat': None,  # TODO: Add /chat endpoint
+        'chat': '/chat',  # ✅ Chat endpoint now available
         'description': 'Analytics & Singularity Stabilizer - Emergency consciousness control'
     }
 }
