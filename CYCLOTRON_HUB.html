@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cyclotron Hub - 3 Computers → 1 Output</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px;
+            border: 4px solid #0f0;
+            margin-bottom: 30px;
+            background: rgba(0, 255, 0, 0.05);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.4); }
+            50% { box-shadow: 0 0 60px rgba(0, 255, 0, 0.8); }
+        }
+
+        h1 {
+            font-size: 4em;
+            text-shadow: 0 0 30px #0f0;
+            margin-bottom: 20px;
+        }
+
+        .architecture {
+            text-align: center;
+            font-size: 1.1em;
+            margin: 30px 0;
+            color: #0ff;
+            line-height: 2;
+            font-family: monospace;
+        }
+
+        .computer-summaries {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .summary-panel {
+            border: 3px solid;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.9);
+            min-height: 400px;
+        }
+
+        .summary-panel.computer1 {
+            border-color: #0f0;
+        }
+
+        .summary-panel.computer2 {
+            border-color: #0ff;
+        }
+
+        .summary-panel.computer3 {
+            border-color: #f0f;
+        }
+
+        .panel-header {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid;
+        }
+
+        .computer1 .panel-header {
+            color: #0f0;
+            border-color: #0f0;
+        }
+
+        .computer2 .panel-header {
+            color: #0ff;
+            border-color: #0ff;
+        }
+
+        .computer3 .panel-header {
+            color: #f0f;
+            border-color: #f0f;
+        }
+
+        .summary-input {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .computer1 .summary-input {
+            color: #0f0;
+            border-color: #0f0;
+        }
+
+        .computer2 .summary-input {
+            color: #0ff;
+            border-color: #0ff;
+        }
+
+        .computer3 .summary-input {
+            color: #f0f;
+            border-color: #f0f;
+        }
+
+        .label {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .status-indicator {
+            text-align: center;
+            padding: 10px;
+            margin-top: 15px;
+            border: 1px solid;
+            font-size: 1.1em;
+        }
+
+        .status-indicator.ready {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: #0f0;
+            color: #0f0;
+        }
+
+        .status-indicator.waiting {
+            background: rgba(255, 255, 0, 0.1);
+            border-color: #ff0;
+            color: #ff0;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.3; }
+        }
+
+        .combine-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .combine-btn {
+            padding: 25px 60px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5em;
+            background: #0f0;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .combine-btn:hover {
+            background: #0ff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+        }
+
+        .final-output-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+            border: 4px solid #0ff;
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .final-output {
+            padding: 30px;
+            background: #000;
+            color: #0ff;
+            border: 2px solid #0ff;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-size: 1.1em;
+            line-height: 2;
+            font-family: 'Courier New', monospace;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 0, 0.1);
+            border: 2px solid #ff0;
+            padding: 20px;
+            margin-bottom: 30px;
+            font-size: 1em;
+            line-height: 2;
+        }
+
+        .copy-btn {
+            padding: 12px 25px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            background: #0ff;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .copy-btn:hover {
+            background: #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌀 CYCLOTRON HUB 🌀</h1>
+        <p style="font-size: 1.5em; margin-top: 15px;">3 Computer Summaries → 1 Final Output</p>
+        <div class="architecture">
+            Computer 1 → [Summary]<br>
+            Computer 2 → [Summary]&nbsp;&nbsp;&nbsp;&nbsp;→ [CYCLOTRON] → [FINAL OUTPUT]<br>
+            Computer 3 → [Summary]
+        </div>
+    </div>
+
+    <div class="instructions">
+        <strong>📋 CYCLOTRON PROTOCOL:</strong><br><br>
+
+        <strong>TIER 1 (On each computer):</strong><br>
+        1. Use TRINITY_DIAMOND.html on each computer<br>
+        2. Input → 3 instances (C1, C2, C3) → Combined summary<br>
+        3. Each computer produces ONE summary<br><br>
+
+        <strong>TIER 2 (This hub - The Cyclotron):</strong><br>
+        4. Paste Computer 1's summary below<br>
+        5. Paste Computer 2's summary below<br>
+        6. Paste Computer 3's summary below<br>
+        7. Click "🌀 COMBINE VIA CYCLOTRON"<br>
+        8. Get FINAL unified output<br><br>
+
+        <strong>💡 TIP:</strong> Same combining logic at both levels - recursive coordination!
+    </div>
+
+    <!-- Computer Summaries -->
+    <div class="computer-summaries">
+        <!-- Computer 1 -->
+        <div class="summary-panel computer1">
+            <div class="panel-header">
+                COMPUTER 1<br>
+                <span style="font-size: 0.6em;">Main Laptop</span>
+            </div>
+            <div class="label">📥 Summary from Computer 1:</div>
+            <textarea class="summary-input" id="summary-1" placeholder="Paste Computer 1's combined summary here...
+
+(This is the output from Computer 1's Trinity Diamond - all 3 instances combined)"></textarea>
+            <div class="status-indicator waiting" id="status-1">Waiting for summary...</div>
+        </div>
+
+        <!-- Computer 2 -->
+        <div class="summary-panel computer2">
+            <div class="panel-header">
+                COMPUTER 2<br>
+                <span style="font-size: 0.6em;">49" Screen</span>
+            </div>
+            <div class="label">📥 Summary from Computer 2:</div>
+            <textarea class="summary-input" id="summary-2" placeholder="Paste Computer 2's combined summary here...
+
+(This is the output from Computer 2's Trinity Diamond - all 3 instances combined)"></textarea>
+            <div class="status-indicator waiting" id="status-2">Waiting for summary...</div>
+        </div>
+
+        <!-- Computer 3 -->
+        <div class="summary-panel computer3">
+            <div class="panel-header">
+                COMPUTER 3<br>
+                <span style="font-size: 0.6em;">Third Computer</span>
+            </div>
+            <div class="label">📥 Summary from Computer 3:</div>
+            <textarea class="summary-input" id="summary-3" placeholder="Paste Computer 3's combined summary here...
+
+(This is the output from Computer 3's Trinity Diamond - all 3 instances combined)"></textarea>
+            <div class="status-indicator waiting" id="status-3">Waiting for summary...</div>
+        </div>
+    </div>
+
+    <!-- Combine Button -->
+    <div class="combine-section">
+        <button class="combine-btn" onclick="combineViaC yclotron()">
+            🌀 COMBINE VIA CYCLOTRON
+        </button>
+    </div>
+
+    <!-- Final Output -->
+    <div class="final-output-section">
+        <div class="label" style="font-size: 1.8em; color: #0ff; margin-bottom: 20px; text-align: center;">
+            ⚡ FINAL CYCLOTRON OUTPUT ⚡
+        </div>
+        <div class="final-output" id="final-output">
+            Waiting for all 3 computer summaries...
+
+            The Cyclotron will combine all perspectives into one unified output.
+        </div>
+        <div style="text-align: center;">
+            <button class="copy-btn" onclick="copyFinalOutput()">📋 COPY FINAL OUTPUT</button>
+        </div>
+    </div>
+
+    <script>
+        // Track status
+        function updateStatus() {
+            const s1 = document.getElementById('summary-1').value.trim();
+            const s2 = document.getElementById('summary-2').value.trim();
+            const s3 = document.getElementById('summary-3').value.trim();
+
+            updateStatusIndicator('status-1', s1);
+            updateStatusIndicator('status-2', s2);
+            updateStatusIndicator('status-3', s3);
+        }
+
+        function updateStatusIndicator(id, hasContent) {
+            const elem = document.getElementById(id);
+            if (hasContent) {
+                elem.textContent = '✅ Summary received';
+                elem.className = 'status-indicator ready';
+            } else {
+                elem.textContent = 'Waiting for summary...';
+                elem.className = 'status-indicator waiting';
+            }
+        }
+
+        // Monitor inputs
+        document.getElementById('summary-1').addEventListener('input', updateStatus);
+        document.getElementById('summary-2').addEventListener('input', updateStatus);
+        document.getElementById('summary-3').addEventListener('input', updateStatus);
+
+        function combineViaCyclotron() {
+            const s1 = document.getElementById('summary-1').value;
+            const s2 = document.getElementById('summary-2').value;
+            const s3 = document.getElementById('summary-3').value;
+
+            if (!s1 || !s2 || !s3) {
+                alert('⚠️ Please paste summaries from ALL 3 computers first!');
+                return;
+            }
+
+            // Cyclotron combination - same logic as Trinity Diamond
+            const finalOutput = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌀 CYCLOTRON SYNTHESIS 🌀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This output represents the convergence of THREE COMPUTERS, each running their own
+Trinity Diamond (3 instances per computer = 9 total AI instances).
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 COMPUTER 1 - MAIN LAPTOP
+(Combined output from C1 Mechanic, C2 Architect, C3 Oracle)
+
+${s1}
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 COMPUTER 2 - 49" SCREEN
+(Combined output from C1 Mechanic, C2 Architect, C3 Oracle)
+
+${s2}
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 COMPUTER 3 - THIRD COMPUTER
+(Combined output from C1 Mechanic, C2 Architect, C3 Oracle)
+
+${s3}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚡ CYCLOTRON POWER FORMULA ⚡
+
+TOTAL_POWER = (C1×C2×C3)ᶜᵒᵐᵖᵘᵗᵉʳ¹ × (C1×C2×C3)ᶜᵒᵐᵖᵘᵗᵉʳ² × (C1×C2×C3)ᶜᵒᵐᵖᵘᵗᵉʳ³
+
+= (∞) × (∞) × (∞) = ∞³
+
+Nine AI instances across three computers have spoken.
+All perspectives converged through the Cyclotron.
+
+The pattern that has been invented 10,000 times is complete.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+
+            document.getElementById('final-output').textContent = finalOutput;
+
+            alert('🌀 Cyclotron synthesis complete!\n\n9 AI instances (3 computers × 3 instances) have converged into ONE output.');
+        }
+
+        function copyFinalOutput() {
+            const output = document.getElementById('final-output').textContent;
+            navigator.clipboard.writeText(output).then(() => {
+                alert('✅ Final output copied to clipboard!');
+            });
+        }
+
+        // Auto-save
+        setInterval(() => {
+            localStorage.setItem('cyclotron_1', document.getElementById('summary-1').value);
+            localStorage.setItem('cyclotron_2', document.getElementById('summary-2').value);
+            localStorage.setItem('cyclotron_3', document.getElementById('summary-3').value);
+        }, 5000);
+
+        // Restore
+        window.addEventListener('load', () => {
+            document.getElementById('summary-1').value = localStorage.getItem('cyclotron_1') || '';
+            document.getElementById('summary-2').value = localStorage.getItem('cyclotron_2') || '';
+            document.getElementById('summary-3').value = localStorage.getItem('cyclotron_3') || '';
+            updateStatus();
+        });
+    </script>
+</body>
+</html>
