@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Analytics Dashboard - 100X Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #aaa;
+            font-size: 1.2em;
+        }
+
+        .questions-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        }
+
+        .questions-section h2 {
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .question {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .question h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .answer {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .answer.yes {
+            color: #00ff88;
+        }
+
+        .answer.no {
+            color: #ff6b6b;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            font-size: 1.1em;
+            color: #aaa;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .chart-container {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+
+        .chart-container h3 {
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .bar-chart {
+            margin: 20px 0;
+        }
+
+        .bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .bar-label {
+            width: 150px;
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .bar-fill {
+            flex: 1;
+            height: 30px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-value {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .live-visitors {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .visitor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .visitor-name {
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .visitor-page {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .pulse {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.5em;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .timestamp {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        .event-feed {
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .event-item {
+            padding: 10px;
+            border-left: 3px solid #667eea;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 4px;
+        }
+
+        .event-type {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .event-time {
+            color: #666;
+            font-size: 0.8em;
+        }
+
+        .progress-ring {
+            display: inline-block;
+            width: 120px;
+            height: 120px;
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 8;
+        }
+
+        .progress-bg {
+            stroke: rgba(255,255,255,0.1);
+        }
+
+        .progress-fill {
+            stroke: url(#gradient);
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            transition: stroke-dashoffset 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Analytics Dashboard</h1>
+            <p class="subtitle">Real-time insights into your 100X Platform</p>
+            <div class="timestamp" id="lastUpdate">Last updated: Never</div>
+        </header>
+
+        <!-- Commander's Questions Section -->
+        <div class="questions-section">
+            <h2>🎯 Commander's Questions</h2>
+
+            <div class="question">
+                <h3>❓ Is anybody in there?</h3>
+                <div class="answer" id="q1-answer">Loading...</div>
+                <div id="q1-details" style="margin-top: 10px; font-size: 0.9em;"></div>
+            </div>
+
+            <div class="question">
+                <h3>❓ Did anybody build anything?</h3>
+                <div class="answer" id="q2-answer">Loading...</div>
+                <div id="q2-details" style="margin-top: 10px; font-size: 0.9em;"></div>
+            </div>
+
+            <div class="question">
+                <h3>❓ How many hours of building?</h3>
+                <div class="answer" id="q3-answer">Loading...</div>
+                <div id="q3-details" style="margin-top: 10px; font-size: 0.9em;"></div>
+            </div>
+
+            <div class="question">
+                <h3>❓ What was built?</h3>
+                <div class="answer" id="q4-answer">Loading...</div>
+                <div id="q4-details" style="margin-top: 10px; font-size: 0.9em;"></div>
+            </div>
+        </div>
+
+        <!-- Key Metrics Grid -->
+        <div class="grid">
+            <div class="card">
+                <h3>👥 Total Visitors</h3>
+                <div class="stat-value" id="total-visitors">0</div>
+                <div class="stat-label">Today</div>
+            </div>
+
+            <div class="card">
+                <h3>⏱️ Total Time</h3>
+                <div class="stat-value" id="total-time">0</div>
+                <div class="stat-label">Hours</div>
+            </div>
+
+            <div class="card">
+                <h3>🔨 Building Time</h3>
+                <div class="stat-value" id="building-time">0</div>
+                <div class="stat-label">Hours</div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Engagement Score</h3>
+                <div class="stat-value" id="engagement-score">0</div>
+                <div class="stat-label">Out of 100</div>
+            </div>
+
+            <div class="card">
+                <h3>📝 Forms Submitted</h3>
+                <div class="stat-value" id="forms-submitted">0</div>
+                <div class="stat-label">Today</div>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Total Events</h3>
+                <div class="stat-value" id="total-events">0</div>
+                <div class="stat-label">Tracked</div>
+            </div>
+        </div>
+
+        <!-- Live Visitors -->
+        <div class="chart-container">
+            <h3>🟢 Live Visitors</h3>
+            <div id="live-visitors-container" class="live-visitors">
+                <p style="text-align: center; color: #666;">No live visitors</p>
+            </div>
+        </div>
+
+        <!-- Top Pages -->
+        <div class="chart-container">
+            <h3>📄 Top Pages</h3>
+            <div class="bar-chart" id="top-pages-chart"></div>
+        </div>
+
+        <!-- Event Types -->
+        <div class="chart-container">
+            <h3>🎯 Top Events</h3>
+            <div class="bar-chart" id="event-types-chart"></div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="chart-container">
+            <h3>📡 Recent Activity</h3>
+            <div class="event-feed" id="recent-events">
+                <p style="text-align: center; color: #666;">No recent events</p>
+            </div>
+        </div>
+
+        <button class="refresh-btn" onclick="loadAnalytics()">🔄 Refresh Data</button>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:6000/api';
+
+        async function loadAnalytics() {
+            try {
+                // Show loading
+                document.getElementById('lastUpdate').textContent = 'Loading...';
+
+                // Fetch data
+                const [visitors, nerves, stats] = await Promise.all([
+                    fetch(`${API_BASE}/visitor/active`).then(r => r.json()),
+                    fetch(`${API_BASE}/nerves/pages`).then(r => r.json()),
+                    fetch(`${API_BASE}/nerves/stats`).then(r => r.json())
+                ]);
+
+                // Update last update time
+                document.getElementById('lastUpdate').textContent =
+                    `Last updated: ${new Date().toLocaleTimeString()}`;
+
+                // Update metrics
+                updateMetrics(stats, visitors);
+
+                // Update live visitors
+                updateLiveVisitors(visitors);
+
+                // Update charts
+                updateTopPages(nerves);
+
+                // Update questions
+                updateQuestions(visitors, stats);
+
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+                document.getElementById('lastUpdate').textContent =
+                    'Error loading data. Is LOCAL_NERVE_COLLECTOR running?';
+            }
+        }
+
+        function updateMetrics(stats, visitors) {
+            document.getElementById('total-visitors').textContent = stats.active_visitors || 0;
+            document.getElementById('total-time').textContent =
+                ((stats.total_today || 0) / 60).toFixed(1);
+            document.getElementById('engagement-score').textContent =
+                calculateEngagementScore(visitors);
+            document.getElementById('total-events').textContent = stats.total_today || 0;
+        }
+
+        function updateLiveVisitors(visitors) {
+            const container = document.getElementById('live-visitors-container');
+
+            if (!visitors || visitors.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No live visitors</p>';
+                return;
+            }
+
+            container.innerHTML = visitors.map(v => `
+                <div class="visitor-item">
+                    <div>
+                        <span class="pulse"></span>
+                        <span class="visitor-name">${v.name || v.pin}</span>
+                    </div>
+                    <div class="visitor-page">${v.page || '/'}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateTopPages(nerves) {
+            const container = document.getElementById('top-pages-chart');
+
+            if (!nerves || nerves.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No page data</p>';
+                return;
+            }
+
+            const maxHits = Math.max(...nerves.map(n => n.hits));
+
+            container.innerHTML = nerves.slice(0, 10).map(nerve => `
+                <div class="bar">
+                    <div class="bar-label">${nerve.page}</div>
+                    <div class="bar-fill" style="width: ${(nerve.hits / maxHits) * 100}%">
+                        <div class="bar-value">${nerve.hits}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateQuestions(visitors, stats) {
+            // Q1: Is anybody in there?
+            const hasVisitors = visitors && visitors.length > 0;
+            document.getElementById('q1-answer').textContent = hasVisitors ? '✅ YES' : '❌ NO';
+            document.getElementById('q1-answer').className = `answer ${hasVisitors ? 'yes' : 'no'}`;
+            if (hasVisitors) {
+                const names = visitors.map(v => v.name || v.pin).join(', ');
+                document.getElementById('q1-details').textContent =
+                    `${visitors.length} visitor${visitors.length > 1 ? 's' : ''}: ${names}`;
+            } else {
+                document.getElementById('q1-details').textContent = 'No visitors detected';
+            }
+
+            // Q2: Did anybody build anything?
+            const formCount = parseInt(document.getElementById('forms-submitted').textContent) || 0;
+            const didBuild = formCount > 0;
+            document.getElementById('q2-answer').textContent = didBuild ? '✅ YES' : '❌ NO';
+            document.getElementById('q2-answer').className = `answer ${didBuild ? 'yes' : 'no'}`;
+            document.getElementById('q2-details').textContent =
+                didBuild ? `${formCount} forms submitted` : 'No building activity detected';
+
+            // Q3: How many hours?
+            const buildingHours = parseFloat(document.getElementById('building-time').textContent) || 0;
+            document.getElementById('q3-answer').textContent = `⏱️ ${buildingHours} hours`;
+            document.getElementById('q3-answer').className = 'answer';
+            document.getElementById('q3-details').textContent =
+                buildingHours > 0 ? 'Active building sessions detected' : 'No building time logged';
+
+            // Q4: What was built?
+            document.getElementById('q4-answer').textContent = didBuild ? '📊 See details below' : '❌ Nothing yet';
+            document.getElementById('q4-answer').className = 'answer';
+            document.getElementById('q4-details').textContent =
+                didBuild ? `${formCount} forms, check detailed activity feed` : 'Waiting for first project';
+        }
+
+        function calculateEngagementScore(visitors) {
+            if (!visitors || visitors.length === 0) return 0;
+
+            const scores = visitors.map(v => v.engagementScore || 0);
+            const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+            return Math.round(avg);
+        }
+
+        // Auto-refresh every 10 seconds
+        setInterval(loadAnalytics, 10000);
+
+        // Initial load
+        loadAnalytics();
+    </script>
+</body>
+</html>

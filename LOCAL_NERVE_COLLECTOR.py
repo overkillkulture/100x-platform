@@ -164,6 +164,37 @@ def visitor_inactive():
 
     return jsonify({'status': 'marked_inactive'})
 
+@app.route('/api/visitor/events', methods=['POST'])
+def receive_events():
+    """Receive batch of analytics events from enhanced tracking"""
+    data = request.json
+    events = data.get('events', [])
+
+    if not events:
+        return jsonify({'status': 'no_events'}), 400
+
+    # Write events to daily log file
+    now = datetime.now()
+    events_file = VISITOR_DATA_DIR / f"events_{now.strftime('%Y-%m-%d')}.jsonl"
+
+    with open(events_file, 'a') as f:
+        for event in events:
+            f.write(json.dumps(event) + '\n')
+
+    # Log summary
+    event_types = {}
+    for event in events:
+        event_type = event.get('type', 'unknown')
+        event_types[event_type] = event_types.get(event_type, 0) + 1
+
+    print(f"📊 EVENTS BATCH: {len(events)} events - {', '.join(f'{k}:{v}' for k,v in event_types.items())}")
+
+    return jsonify({
+        'status': 'received',
+        'count': len(events),
+        'types': event_types
+    })
+
 # ==========================================
 # INSTAGRAM INTEGRATION ENDPOINTS
 # ==========================================
