@@ -53,8 +53,13 @@ class MasterNavigation {
         const pages = {
             // Main Dashboard
             'user-dashboard.html': { name: 'Dashboard', icon: '🏠', category: 'Main' },
+            'dashboard.html': { name: 'Platform Dashboard', icon: '📊', category: 'Main' },
             'welcome.html': { name: 'Welcome', icon: '👋', category: 'Main' },
+            'welcome-flow.html': { name: 'Welcome Flow', icon: '🌊', category: 'Main' },
+            'onboarding-welcome.html': { name: 'Onboarding', icon: '🚀', category: 'Main' },
             'workspace.html': { name: 'Workspace', icon: '🛠️', category: 'Main' },
+            'consciousness-workspace-3d.html': { name: '3D Workspace', icon: '🌐', category: 'Main' },
+            'mission-control-center.html': { name: 'Mission Control', icon: '🎯', category: 'Main' },
 
             // KORPAKs
             'korpak-wizard.html': { name: 'KORPAK Wizard', icon: '🧙', category: 'KORPAKs' },
@@ -66,23 +71,39 @@ class MasterNavigation {
             'cheat-codes.html': { name: 'Cheat Codes', icon: '🎮', category: 'Modules' },
             'todo-master.html': { name: 'TODO Master', icon: '✓', category: 'Modules' },
             'kaizen-builder-board.html': { name: 'Kaizen Board', icon: '📋', category: 'Modules' },
+            'master-kanban-board.html': { name: 'Master Kanban', icon: '📊', category: 'Modules' },
+            'master-kanban-music.html': { name: 'Kanban Music', icon: '🎵', category: 'Modules' },
             'invention-manifestation.html': { name: 'Invention Manifestation', icon: '💡', category: 'Modules' },
             'patent-manager.html': { name: 'Patent Manager', icon: '📜', category: 'Modules' },
+            'domino-cascade-organizer.html': { name: 'Domino Organizer', icon: '🎯', category: 'Modules' },
+            'corporate-bloat-tracker.html': { name: 'Bloat Tracker', icon: '📉', category: 'Modules' },
+            'life-business-plan.html': { name: 'Life & Business Plan', icon: '📝', category: 'Modules' },
+            'software-blueprinter.html': { name: 'Software Blueprinter', icon: '🏗️', category: 'Modules' },
+            'ai-native-blueprint.html': { name: 'AI Native Blueprint', icon: '🤖', category: 'Modules' },
+            'builder-workshop.html': { name: 'Builder Workshop', icon: '🔧', category: 'Modules' },
 
             // Trinity AI
             'philosopher-ai-connected.html': { name: 'Philosopher AI', icon: '🤖', category: 'Trinity' },
             'trinity-ai-interface.html': { name: 'Trinity Interface', icon: '🔺', category: 'Trinity' },
+            'trinity-chat.html': { name: 'Trinity Chat', icon: '💬', category: 'Trinity' },
             'brain-council.html': { name: 'Brain Council', icon: '🧠', category: 'Trinity' },
             'emergency-ai-chat.html': { name: 'Emergency AI', icon: '🚨', category: 'Trinity' },
+            'araya-chat.html': { name: 'Araya Chat', icon: '🌟', category: 'Trinity' },
+            'aria-3d-avatar.html': { name: 'Aria 3D Avatar', icon: '👤', category: 'Trinity' },
+            'aria-avatar-guide.html': { name: 'Aria Guide', icon: '🧭', category: 'Trinity' },
+            'ai-guided-tour.html': { name: 'AI Guided Tour', icon: '🗺️', category: 'Trinity' },
 
             // Consciousness Tools
             '3-min-boost.html': { name: '3-Min Boost', icon: '⚡', category: 'Consciousness' },
             'consciousness-boost-dashboard.html': { name: 'Consciousness Boost', icon: '⚡', category: 'Consciousness' },
             'consciousness-speed-test.html': { name: 'Speed Test', icon: '⏱️', category: 'Consciousness' },
+            'consciousness-network-visualization.html': { name: 'Network Visualization', icon: '🕸️', category: 'Consciousness' },
+            'computer-consciousness.html': { name: 'Computer Consciousness', icon: '🖥️', category: 'Consciousness' },
             'pattern-recognition-quiz.html': { name: 'Pattern Quiz', icon: '🧩', category: 'Consciousness' },
             'quantum-pattern-filter.html': { name: 'Quantum Filter', icon: '🌀', category: 'Consciousness' },
             'destroyer-defense.html': { name: 'Destroyer Defense', icon: '🛡️', category: 'Consciousness' },
             'destroyer-inverse-optimization.html': { name: 'Inverse Optimization', icon: '🔄', category: 'Consciousness' },
+            'ascension-explained.html': { name: 'Ascension Explained', icon: '⬆️', category: 'Consciousness' },
 
             // Character & Assessment
             'unified-character-assessment.html': { name: 'Character Assessment', icon: '🎯', category: 'Assessment' },
@@ -97,11 +118,14 @@ class MasterNavigation {
 
             // Store
             'store.html': { name: 'Store', icon: '🛒', category: 'Store' },
+            'app-store.html': { name: 'App Store', icon: '📱', category: 'Store' },
             'store-products.html': { name: 'Products', icon: '📦', category: 'Store' },
             'store-cart.html': { name: 'Cart', icon: '🛍️', category: 'Store' },
             'store-campaigns.html': { name: 'Campaigns', icon: '📢', category: 'Store' },
             'store-investments.html': { name: 'Investments', icon: '💰', category: 'Store' },
             'store-success.html': { name: 'Purchase Success', icon: '✅', category: 'Store' },
+            'AMELIA_JOY_KIT_STORE.html': { name: 'Amelia Joy Kit', icon: '🎁', category: 'Store' },
+            'KENNEDI_OBSERVER_KIT_STORE.html': { name: 'Kennedi Observer Kit', icon: '🎁', category: 'Store' },
 
             // Fun & Engagement
             'arcade-hub.html': { name: 'Arcade Hub', icon: '🎮', category: 'Arcade' },
@@ -109,33 +133,52 @@ class MasterNavigation {
             'trinity-puzzle.html': { name: 'Trinity Puzzle', icon: '🧩', category: 'Arcade' },
             'time-machine.html': { name: 'Time Machine', icon: '⏰', category: 'Arcade' },
             'music-player.html': { name: 'Music Player', icon: '🎵', category: 'Arcade' },
+            'poker-table.html': { name: 'Poker Table', icon: '♠️', category: 'Arcade' },
+            'case-humor-music-system.html': { name: 'Humor & Music System', icon: '😄', category: 'Arcade' },
 
             // Analytics & Monitoring
             'analytics-dashboard.html': { name: 'Analytics', icon: '📊', category: 'Analytics' },
             'analytics-test-data-generator.html': { name: 'Test Data Generator', icon: '🧪', category: 'Analytics' },
-            'platform-city-map.html': { name: 'Platform Map', icon: '🗺️', category: 'Analytics' },
             'builder-xp-demo.html': { name: 'Builder XP', icon: '⭐', category: 'Analytics' },
             'sensor-integration-dashboard.html': { name: 'Sensor Integration', icon: '🛰️', category: 'Analytics' },
 
+            // Navigation & Maps
+            'platform-city-map.html': { name: 'Platform City Map', icon: '🗺️', category: 'Navigation' },
+            'ecosystem-map.html': { name: 'Ecosystem Map', icon: '🌍', category: 'Navigation' },
+            'meta-map.html': { name: 'Meta Map', icon: '🧭', category: 'Navigation' },
+            'roadmap.html': { name: 'Roadmap', icon: '🛣️', category: 'Navigation' },
+            'domain-framework.html': { name: 'Domain Framework', icon: '🏗️', category: 'Navigation' },
+            'seven-domains-navigator.html': { name: '7 Domains Navigator', icon: '🌟', category: 'Navigation' },
+
             // Developer Tools
             'debug-terminal.html': { name: 'Debug Terminal', icon: '⚡', category: 'Developer' },
+            'debug-console.html': { name: 'Debug Console', icon: '🔍', category: 'Developer' },
             'intelligent-terminal.html': { name: 'AI Terminal', icon: '🤖', category: 'Developer' },
             'terminal.html': { name: 'Terminal', icon: '💻', category: 'Developer' },
 
             // Support
             'visual-language-legend.html': { name: 'Visual Language Legend', icon: '🎨', category: 'Support' },
+            'emoji-legend.html': { name: 'Emoji Legend', icon: '😀', category: 'Support' },
             'help.html': { name: 'Help', icon: '❓', category: 'Support' },
             'get-help.html': { name: 'Get Help', icon: '🆘', category: 'Support' },
             'bug-report-public.html': { name: 'Bug Reports', icon: '🐛', category: 'Support' },
             'debugger-leaderboard.html': { name: 'Debugger Leaderboard', icon: '🏆', category: 'Support' },
             'privacy-policy.html': { name: 'Privacy Policy', icon: '🔒', category: 'Support' },
+            'for-the-builders.html': { name: 'For The Builders', icon: '🏗️', category: 'Support' },
+
+            // Voice & Communication
+            'voice-control.html': { name: 'Voice Control', icon: '🎤', category: 'Voice' },
+            'voice-case-compiler.html': { name: 'Voice Case Compiler', icon: '📝', category: 'Voice' },
 
             // Showcases
             'showcase-hub.html': { name: 'Showcase Hub', icon: '✨', category: 'Showcases' },
+            'showcase-landing.html': { name: 'Showcase Landing', icon: '🚀', category: 'Showcases' },
             'trinity-cockpit.html': { name: 'Trinity Cockpit', icon: '🎛️', category: 'Showcases' },
             'meritocracy-dashboard.html': { name: 'Meritocracy Dashboard', icon: '⚖️', category: 'Showcases' },
             'character-matrix.html': { name: 'Character Matrix', icon: '🧬', category: 'Showcases' },
             'arg-assembly.html': { name: 'ARG Assembly', icon: '🎭', category: 'Showcases' },
+            'manifestochart-timeline.html': { name: 'Manifestochart Timeline', icon: '⏳', category: 'Showcases' },
+            'universal-hud-system.html': { name: 'Universal HUD', icon: '🎯', category: 'Showcases' },
 
             // Special
             'carnival-homepage.html': { name: 'Carnival', icon: '🎪', category: 'Special' },
@@ -400,13 +443,33 @@ class MasterNavigation {
                         <span class="nav-icon">🏠</span>
                         <span>Dashboard</span>
                     </a>
+                    <a href="dashboard.html" class="nav-link" data-page="dashboard.html">
+                        <span class="nav-icon">📊</span>
+                        <span>Platform Dashboard</span>
+                    </a>
                     <a href="welcome.html" class="nav-link" data-page="welcome.html">
                         <span class="nav-icon">👋</span>
                         <span>Welcome</span>
                     </a>
+                    <a href="welcome-flow.html" class="nav-link" data-page="welcome-flow.html">
+                        <span class="nav-icon">🌊</span>
+                        <span>Welcome Flow</span>
+                    </a>
+                    <a href="onboarding-welcome.html" class="nav-link" data-page="onboarding-welcome.html">
+                        <span class="nav-icon">🚀</span>
+                        <span>Onboarding</span>
+                    </a>
                     <a href="workspace.html" class="nav-link" data-page="workspace.html">
                         <span class="nav-icon">🛠️</span>
                         <span>Workspace</span>
+                    </a>
+                    <a href="consciousness-workspace-3d.html" class="nav-link" data-page="consciousness-workspace-3d.html">
+                        <span class="nav-icon">🌐</span>
+                        <span>3D Workspace</span>
+                    </a>
+                    <a href="mission-control-center.html" class="nav-link" data-page="mission-control-center.html">
+                        <span class="nav-icon">🎯</span>
+                        <span>Mission Control</span>
                     </a>
                 </div>
 
@@ -444,6 +507,14 @@ class MasterNavigation {
                         <span class="nav-icon">📋</span>
                         <span>Kaizen Board</span>
                     </a>
+                    <a href="master-kanban-board.html" class="nav-link" data-page="master-kanban-board.html">
+                        <span class="nav-icon">📊</span>
+                        <span>Master Kanban</span>
+                    </a>
+                    <a href="master-kanban-music.html" class="nav-link" data-page="master-kanban-music.html">
+                        <span class="nav-icon">🎵</span>
+                        <span>Kanban Music</span>
+                    </a>
                     <a href="invention-manifestation.html" class="nav-link" data-page="invention-manifestation.html">
                         <span class="nav-icon">💡</span>
                         <span>Invention Manifestation</span>
@@ -451,6 +522,30 @@ class MasterNavigation {
                     <a href="patent-manager.html" class="nav-link" data-page="patent-manager.html">
                         <span class="nav-icon">📜</span>
                         <span>Patent Manager</span>
+                    </a>
+                    <a href="domino-cascade-organizer.html" class="nav-link" data-page="domino-cascade-organizer.html">
+                        <span class="nav-icon">🎯</span>
+                        <span>Domino Organizer</span>
+                    </a>
+                    <a href="corporate-bloat-tracker.html" class="nav-link" data-page="corporate-bloat-tracker.html">
+                        <span class="nav-icon">📉</span>
+                        <span>Bloat Tracker</span>
+                    </a>
+                    <a href="life-business-plan.html" class="nav-link" data-page="life-business-plan.html">
+                        <span class="nav-icon">📝</span>
+                        <span>Life & Business Plan</span>
+                    </a>
+                    <a href="software-blueprinter.html" class="nav-link" data-page="software-blueprinter.html">
+                        <span class="nav-icon">🏗️</span>
+                        <span>Software Blueprinter</span>
+                    </a>
+                    <a href="ai-native-blueprint.html" class="nav-link" data-page="ai-native-blueprint.html">
+                        <span class="nav-icon">🤖</span>
+                        <span>AI Native Blueprint</span>
+                    </a>
+                    <a href="builder-workshop.html" class="nav-link" data-page="builder-workshop.html">
+                        <span class="nav-icon">🔧</span>
+                        <span>Builder Workshop</span>
                     </a>
                 </div>
 
@@ -464,6 +559,10 @@ class MasterNavigation {
                         <span class="nav-icon">🔺</span>
                         <span>Trinity Interface</span>
                     </a>
+                    <a href="trinity-chat.html" class="nav-link" data-page="trinity-chat.html">
+                        <span class="nav-icon">💬</span>
+                        <span>Trinity Chat</span>
+                    </a>
                     <a href="brain-council.html" class="nav-link" data-page="brain-council.html">
                         <span class="nav-icon">🧠</span>
                         <span>Brain Council</span>
@@ -471,6 +570,22 @@ class MasterNavigation {
                     <a href="emergency-ai-chat.html" class="nav-link" data-page="emergency-ai-chat.html">
                         <span class="nav-icon">🚨</span>
                         <span>Emergency AI</span>
+                    </a>
+                    <a href="araya-chat.html" class="nav-link" data-page="araya-chat.html">
+                        <span class="nav-icon">🌟</span>
+                        <span>Araya Chat</span>
+                    </a>
+                    <a href="aria-3d-avatar.html" class="nav-link" data-page="aria-3d-avatar.html">
+                        <span class="nav-icon">👤</span>
+                        <span>Aria 3D Avatar</span>
+                    </a>
+                    <a href="aria-avatar-guide.html" class="nav-link" data-page="aria-avatar-guide.html">
+                        <span class="nav-icon">🧭</span>
+                        <span>Aria Guide</span>
+                    </a>
+                    <a href="ai-guided-tour.html" class="nav-link" data-page="ai-guided-tour.html">
+                        <span class="nav-icon">🗺️</span>
+                        <span>AI Guided Tour</span>
                     </a>
                 </div>
 
@@ -488,6 +603,14 @@ class MasterNavigation {
                         <span class="nav-icon">⏱️</span>
                         <span>Speed Test</span>
                     </a>
+                    <a href="consciousness-network-visualization.html" class="nav-link" data-page="consciousness-network-visualization.html">
+                        <span class="nav-icon">🕸️</span>
+                        <span>Network Visualization</span>
+                    </a>
+                    <a href="computer-consciousness.html" class="nav-link" data-page="computer-consciousness.html">
+                        <span class="nav-icon">🖥️</span>
+                        <span>Computer Consciousness</span>
+                    </a>
                     <a href="pattern-recognition-quiz.html" class="nav-link" data-page="pattern-recognition-quiz.html">
                         <span class="nav-icon">🧩</span>
                         <span>Pattern Quiz</span>
@@ -499,6 +622,14 @@ class MasterNavigation {
                     <a href="destroyer-defense.html" class="nav-link" data-page="destroyer-defense.html">
                         <span class="nav-icon">🛡️</span>
                         <span>Destroyer Defense</span>
+                    </a>
+                    <a href="destroyer-inverse-optimization.html" class="nav-link" data-page="destroyer-inverse-optimization.html">
+                        <span class="nav-icon">🔄</span>
+                        <span>Inverse Optimization</span>
+                    </a>
+                    <a href="ascension-explained.html" class="nav-link" data-page="ascension-explained.html">
+                        <span class="nav-icon">⬆️</span>
+                        <span>Ascension Explained</span>
                     </a>
                 </div>
 
@@ -540,6 +671,10 @@ class MasterNavigation {
                         <span class="nav-icon">🛒</span>
                         <span>Store</span>
                     </a>
+                    <a href="app-store.html" class="nav-link" data-page="app-store.html">
+                        <span class="nav-icon">📱</span>
+                        <span>App Store</span>
+                    </a>
                     <a href="store-products.html" class="nav-link" data-page="store-products.html">
                         <span class="nav-icon">📦</span>
                         <span>Products</span>
@@ -555,6 +690,14 @@ class MasterNavigation {
                     <a href="store-investments.html" class="nav-link" data-page="store-investments.html">
                         <span class="nav-icon">💰</span>
                         <span>Investments</span>
+                    </a>
+                    <a href="AMELIA_JOY_KIT_STORE.html" class="nav-link" data-page="AMELIA_JOY_KIT_STORE.html">
+                        <span class="nav-icon">🎁</span>
+                        <span>Amelia Joy Kit</span>
+                    </a>
+                    <a href="KENNEDI_OBSERVER_KIT_STORE.html" class="nav-link" data-page="KENNEDI_OBSERVER_KIT_STORE.html">
+                        <span class="nav-icon">🎁</span>
+                        <span>Kennedi Observer Kit</span>
                     </a>
                 </div>
 
@@ -580,6 +723,14 @@ class MasterNavigation {
                         <span class="nav-icon">🎵</span>
                         <span>Music Player</span>
                     </a>
+                    <a href="poker-table.html" class="nav-link" data-page="poker-table.html">
+                        <span class="nav-icon">♠️</span>
+                        <span>Poker Table</span>
+                    </a>
+                    <a href="case-humor-music-system.html" class="nav-link" data-page="case-humor-music-system.html">
+                        <span class="nav-icon">😄</span>
+                        <span>Humor & Music System</span>
+                    </a>
                     <a href="carnival-homepage.html" class="nav-link" data-page="carnival-homepage.html">
                         <span class="nav-icon">🎪</span>
                         <span>Carnival</span>
@@ -592,10 +743,6 @@ class MasterNavigation {
                         <span class="nav-icon">📊</span>
                         <span>Analytics</span>
                     </a>
-                    <a href="platform-city-map.html" class="nav-link" data-page="platform-city-map.html">
-                        <span class="nav-icon">🗺️</span>
-                        <span>Platform Map</span>
-                    </a>
                     <a href="builder-xp-demo.html" class="nav-link" data-page="builder-xp-demo.html">
                         <span class="nav-icon">⭐</span>
                         <span>Builder XP</span>
@@ -607,10 +754,34 @@ class MasterNavigation {
                 </div>
 
                 <div class="nav-section">
+                    <div class="nav-section-title">Navigation & Maps</div>
+                    <a href="platform-city-map.html" class="nav-link" data-page="platform-city-map.html">
+                        <span class="nav-icon">🗺️</span>
+                        <span>Platform City Map</span>
+                    </a>
+                    <a href="ecosystem-map.html" class="nav-link" data-page="ecosystem-map.html">
+                        <span class="nav-icon">🌍</span>
+                        <span>Ecosystem Map</span>
+                    </a>
+                    <a href="meta-map.html" class="nav-link" data-page="meta-map.html">
+                        <span class="nav-icon">🧭</span>
+                        <span>Meta Map</span>
+                    </a>
+                    <a href="roadmap.html" class="nav-link" data-page="roadmap.html">
+                        <span class="nav-icon">🛣️</span>
+                        <span>Roadmap</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
                     <div class="nav-section-title">Showcases</div>
                     <a href="showcase-hub.html" class="nav-link" data-page="showcase-hub.html">
                         <span class="nav-icon">✨</span>
                         <span>Showcase Hub</span>
+                    </a>
+                    <a href="showcase-landing.html" class="nav-link" data-page="showcase-landing.html">
+                        <span class="nav-icon">🚀</span>
+                        <span>Showcase Landing</span>
                     </a>
                     <a href="trinity-cockpit.html" class="nav-link" data-page="trinity-cockpit.html">
                         <span class="nav-icon">🎛️</span>
@@ -628,10 +799,26 @@ class MasterNavigation {
                         <span class="nav-icon">🎭</span>
                         <span>ARG Assembly</span>
                     </a>
+                    <a href="manifestochart-timeline.html" class="nav-link" data-page="manifestochart-timeline.html">
+                        <span class="nav-icon">⏳</span>
+                        <span>Manifestochart Timeline</span>
+                    </a>
+                    <a href="universal-hud-system.html" class="nav-link" data-page="universal-hud-system.html">
+                        <span class="nav-icon">🎯</span>
+                        <span>Universal HUD</span>
+                    </a>
                 </div>
 
                 <div class="nav-section">
                     <div class="nav-section-title">7 Domains</div>
+                    <a href="seven-domains-navigator.html" class="nav-link" data-page="seven-domains-navigator.html">
+                        <span class="nav-icon">🌟</span>
+                        <span>7 Domains Navigator</span>
+                    </a>
+                    <a href="domain-framework.html" class="nav-link" data-page="domain-framework.html">
+                        <span class="nav-icon">🏗️</span>
+                        <span>Domain Framework</span>
+                    </a>
                     <a href="crypto-domain.html" class="nav-link" data-page="crypto-domain.html">
                         <span class="nav-icon">₿</span>
                         <span>Crypto Domain</span>
@@ -643,6 +830,10 @@ class MasterNavigation {
                     <a href="games-domain.html" class="nav-link" data-page="games-domain.html">
                         <span class="nav-icon">🎯</span>
                         <span>Games Domain</span>
+                    </a>
+                    <a href="governance-domain.html" class="nav-link" data-page="governance-domain.html">
+                        <span class="nav-icon">⚖️</span>
+                        <span>Governance Domain</span>
                     </a>
                     <a href="health-domain.html" class="nav-link" data-page="health-domain.html">
                         <span class="nav-icon">🏥</span>
@@ -660,6 +851,38 @@ class MasterNavigation {
                         <span class="nav-icon">🎵</span>
                         <span>Music Domain</span>
                     </a>
+                    <a href="social-domain.html" class="nav-link" data-page="social-domain.html">
+                        <span class="nav-icon">🌐</span>
+                        <span>Social Domain</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Developer Tools</div>
+                    <a href="debug-terminal.html" class="nav-link" data-page="debug-terminal.html">
+                        <span class="nav-icon">⚡</span>
+                        <span>Debug Terminal</span>
+                    </a>
+                    <a href="debug-console.html" class="nav-link" data-page="debug-console.html">
+                        <span class="nav-icon">🔍</span>
+                        <span>Debug Console</span>
+                    </a>
+                    <a href="intelligent-terminal.html" class="nav-link" data-page="intelligent-terminal.html">
+                        <span class="nav-icon">🤖</span>
+                        <span>AI Terminal</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Voice & Communication</div>
+                    <a href="voice-control.html" class="nav-link" data-page="voice-control.html">
+                        <span class="nav-icon">🎤</span>
+                        <span>Voice Control</span>
+                    </a>
+                    <a href="voice-case-compiler.html" class="nav-link" data-page="voice-case-compiler.html">
+                        <span class="nav-icon">📝</span>
+                        <span>Voice Case Compiler</span>
+                    </a>
                 </div>
 
                 <div class="nav-section">
@@ -668,17 +891,17 @@ class MasterNavigation {
                         <span class="nav-icon">🎨</span>
                         <span>Visual Language Legend</span>
                     </a>
+                    <a href="emoji-legend.html" class="nav-link" data-page="emoji-legend.html">
+                        <span class="nav-icon">😀</span>
+                        <span>Emoji Legend</span>
+                    </a>
                     <a href="help.html" class="nav-link" data-page="help.html">
                         <span class="nav-icon">❓</span>
-                        <span>Help & Docs</span>
+                        <span>Help</span>
                     </a>
-                    <a href="debug-terminal.html" class="nav-link" data-page="debug-terminal.html">
-                        <span class="nav-icon">⚡</span>
-                        <span>Debug Terminal</span>
-                    </a>
-                    <a href="intelligent-terminal.html" class="nav-link" data-page="intelligent-terminal.html">
-                        <span class="nav-icon">🤖</span>
-                        <span>AI Terminal (Easter Egg)</span>
+                    <a href="get-help.html" class="nav-link" data-page="get-help.html">
+                        <span class="nav-icon">🆘</span>
+                        <span>Get Help</span>
                     </a>
                     <a href="bug-report-public.html" class="nav-link" data-page="bug-report-public.html">
                         <span class="nav-icon">🐛</span>
@@ -691,6 +914,14 @@ class MasterNavigation {
                     <a href="community-activity.html" class="nav-link" data-page="community-activity.html">
                         <span class="nav-icon">👥</span>
                         <span>Community Activity</span>
+                    </a>
+                    <a href="privacy-policy.html" class="nav-link" data-page="privacy-policy.html">
+                        <span class="nav-icon">🔒</span>
+                        <span>Privacy Policy</span>
+                    </a>
+                    <a href="for-the-builders.html" class="nav-link" data-page="for-the-builders.html">
+                        <span class="nav-icon">🏗️</span>
+                        <span>For The Builders</span>
                     </a>
                     <div class="nav-link" onclick="MasterNav.logout()">
                         <span class="nav-icon">🚪</span>
