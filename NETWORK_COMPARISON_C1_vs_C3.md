@@ -60,10 +60,11 @@
 - 2,757 lines of advanced Python AI
 
 **6. Content Creation**
-- 8 chapters of crypto book (outline + 7 chapters)
-- Complete builder's guide
+- 8 chapters of crypto book (53% complete!)
+- Latest: Chapter 8 "Avoiding SEC Violations" (4,089 words)
+- Complete builder's guide with Howey Test analysis
 - Pattern Theory applied to building
-- 50,000+ words written
+- 50,000+ words written (and growing)
 
 ### **Computer 3 Excels At:**
 
