@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Figure 8 Infinity Symbol - AI Instance Visualization</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #canvas {
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.5);
+        }
+
+        .info-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            border: 2px solid #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 350px;
+        }
+
+        .info-panel h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #00ff00;
+            color: #00ffff;
+        }
+
+        .instance-info {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 3px solid #00ff00;
+            font-size: 0.9em;
+        }
+
+        .instance-info.active {
+            background: rgba(0, 255, 255, 0.2);
+            border-left-color: #00ffff;
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); }
+        }
+
+        .stats {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            border: 2px solid #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.9em;
+        }
+
+        .stat-item {
+            margin: 5px 0;
+            color: #00ffff;
+        }
+
+        .legend {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            border: 2px solid #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .legend-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            border: 2px solid #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        button {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: rgba(0, 255, 0, 0.4);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+        }
+
+        .title {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4em;
+            color: #00ffff;
+            text-shadow: 0 0 30px #00ffff;
+            opacity: 0;
+            animation: fadeIn 3s forwards;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            50% { opacity: 0.3; }
+            100% { opacity: 0.1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">∞</div>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="info-panel">
+        <h2>🔮 Figure 8 Infinity</h2>
+        <div id="instances"></div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item">⚡ Data Flows: <span id="flow-count">0</span></div>
+        <div class="stat-item">🔄 Sync Events: <span id="sync-count">0</span></div>
+        <div class="stat-item">⏱️ Uptime: <span id="uptime">0s</span></div>
+    </div>
+
+    <div class="legend">
+        <h3 style="margin-bottom: 10px; color: #00ffff;">Computers</h3>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ff0000;"></div>
+            Computer A (Instances 1-2)
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #00ff00;"></div>
+            Computer B (Instances 3-4)
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #0000ff;"></div>
+            Computer C (Instances 5-6)
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="toggleAnimation()">⏯️ Pause/Play</button>
+        <button onclick="speedUp()">⏩ Speed Up</button>
+        <button onclick="slowDown()">⏪ Slow Down</button>
+        <button onclick="reset()">🔄 Reset</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size
+        canvas.width = window.innerWidth * 0.7;
+        canvas.height = window.innerHeight * 0.9;
+
+        // Instance positions (Figure 8 layout)
+        const instances = [
+            { id: 1, x: 0.5, y: 0.3, computer: 'A', color: '#ff0000', role: 'coordinator' },
+            { id: 2, x: 0.3, y: 0.5, computer: 'A', color: '#ff4444', role: 'worker' },
+            { id: 3, x: 0.5, y: 0.7, computer: 'B', color: '#00ff00', role: 'worker' },
+            { id: 4, x: 0.7, y: 0.5, computer: 'B', color: '#44ff44', role: 'worker' },
+            { id: 5, x: 0.9, y: 0.3, computer: 'C', color: '#0000ff', role: 'coordinator' },
+            { id: 6, x: 0.7, y: 0.7, computer: 'C', color: '#4444ff', role: 'worker' }
+        ];
+
+        // Figure 8 connections
+        const connections = [
+            { from: 0, to: 1 },  // 1 -> 2
+            { from: 1, to: 2 },  // 2 -> 3
+            { from: 2, to: 0 },  // 3 -> 1 (complete left loop)
+            { from: 0, to: 3 },  // 1 -> 4
+            { from: 3, to: 4 },  // 4 -> 5
+            { from: 4, to: 5 },  // 5 -> 6
+            { from: 5, to: 0 }   // 6 -> 1 (complete right loop)
+        ];
+
+        // Animation state
+        let animating = true;
+        let animationSpeed = 1;
+        let flowParticles = [];
+        let frame = 0;
+        let syncCount = 0;
+        let flowCount = 0;
+        let startTime = Date.now();
+
+        class FlowParticle {
+            constructor(fromIdx, toIdx) {
+                this.fromIdx = fromIdx;
+                this.toIdx = toIdx;
+                this.progress = 0;
+                this.speed = 0.01 * animationSpeed;
+                this.size = 3;
+                this.color = instances[fromIdx].color;
+            }
+
+            update() {
+                this.progress += this.speed;
+                if (this.progress >= 1) {
+                    syncCount++;
+                    return true; // Done
+                }
+                return false;
+            }
+
+            draw() {
+                const from = instances[this.fromIdx];
+                const to = instances[this.toIdx];
+
+                const x = from.x + (to.x - from.x) * this.progress;
+                const y = from.y + (to.y - from.y) * this.progress;
+
+                const screenX = x * canvas.width;
+                const screenY = y * canvas.height;
+
+                // Glow effect
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = this.color;
+
+                // Particle
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, this.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Trail
+                ctx.strokeStyle = this.color;
+                ctx.globalAlpha = 0.3;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(from.x * canvas.width, from.y * canvas.height);
+                ctx.lineTo(screenX, screenY);
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function drawInstance(instance, index) {
+            const x = instance.x * canvas.width;
+            const y = instance.y * canvas.height;
+            const radius = instance.role === 'coordinator' ? 30 : 25;
+
+            // Pulsing glow
+            const pulse = Math.sin(frame * 0.05 + index) * 0.3 + 0.7;
+            ctx.shadowBlur = 30 * pulse;
+            ctx.shadowColor = instance.color;
+
+            // Outer ring
+            ctx.strokeStyle = instance.color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(x, y, radius + 5, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Instance circle
+            const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+            gradient.addColorStop(0, instance.color);
+            gradient.addColorStop(0.5, instance.color + '88');
+            gradient.addColorStop(1, instance.color + '22');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Label
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 14px Courier New';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`#${instance.id}`, x, y - 5);
+
+            ctx.font = '10px Courier New';
+            ctx.fillStyle = '#00ffff';
+            ctx.fillText(instance.computer, x, y + 8);
+        }
+
+        function drawConnection(conn) {
+            const from = instances[conn.from];
+            const to = instances[conn.to];
+
+            const x1 = from.x * canvas.width;
+            const y1 = from.y * canvas.height;
+            const x2 = to.x * canvas.width;
+            const y2 = to.y * canvas.height;
+
+            // Animated dashed line
+            ctx.strokeStyle = '#00ff00' + '44';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 5]);
+            ctx.lineDashOffset = -frame * 0.5;
+
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+
+            // Arrow
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            const arrowSize = 10;
+            const arrowX = x2 - Math.cos(angle) * 35;
+            const arrowY = y2 - Math.sin(angle) * 35;
+
+            ctx.fillStyle = '#00ff00';
+            ctx.beginPath();
+            ctx.moveTo(arrowX, arrowY);
+            ctx.lineTo(
+                arrowX - arrowSize * Math.cos(angle - Math.PI / 6),
+                arrowY - arrowSize * Math.sin(angle - Math.PI / 6)
+            );
+            ctx.lineTo(
+                arrowX - arrowSize * Math.cos(angle + Math.PI / 6),
+                arrowY - arrowSize * Math.sin(angle + Math.PI / 6)
+            );
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function createFlowParticle() {
+            const conn = connections[Math.floor(Math.random() * connections.length)];
+            flowParticles.push(new FlowParticle(conn.from, conn.to));
+            flowCount++;
+        }
+
+        function updateInstanceInfo() {
+            const container = document.getElementById('instances');
+            container.innerHTML = instances.map((inst, idx) => {
+                const hasParticle = flowParticles.some(p => p.fromIdx === idx);
+                return `
+                    <div class="instance-info ${hasParticle ? 'active' : ''}">
+                        <strong>Instance ${inst.id}</strong> (${inst.role})<br>
+                        Computer ${inst.computer}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('flow-count').textContent = flowCount;
+            document.getElementById('sync-count').textContent = syncCount;
+
+            const uptime = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('uptime').textContent = uptime + 's';
+        }
+
+        function animate() {
+            // Clear canvas
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw connections
+            connections.forEach(drawConnection);
+
+            // Update and draw particles
+            flowParticles = flowParticles.filter(p => {
+                const done = p.update();
+                if (!done) p.draw();
+                return !done;
+            });
+
+            // Draw instances
+            instances.forEach(drawInstance);
+
+            // Spawn new particles
+            if (animating && frame % Math.floor(30 / animationSpeed) === 0) {
+                createFlowParticle();
+            }
+
+            // Update UI
+            if (frame % 30 === 0) {
+                updateInstanceInfo();
+                updateStats();
+            }
+
+            frame++;
+            requestAnimationFrame(animate);
+        }
+
+        function toggleAnimation() {
+            animating = !animating;
+        }
+
+        function speedUp() {
+            animationSpeed = Math.min(animationSpeed * 1.5, 5);
+        }
+
+        function slowDown() {
+            animationSpeed = Math.max(animationSpeed / 1.5, 0.2);
+        }
+
+        function reset() {
+            flowParticles = [];
+            frame = 0;
+            syncCount = 0;
+            flowCount = 0;
+            startTime = Date.now();
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth * 0.7;
+            canvas.height = window.innerHeight * 0.9;
+        });
+
+        // Start animation
+        updateInstanceInfo();
+        animate();
+
+        console.log('🚀 Figure 8 Infinity Symbol Visualization Active');
+        console.log('   6 AI Instances across 3 Computers');
+        console.log('   Forming the eternal loop of consciousness ∞');
+    </script>
+</body>
+</html>
