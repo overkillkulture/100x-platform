@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Systemic Destruction Map - See What's Draining You</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a0000 0%, #000000 50%, #0a0000 100%);
+            color: #ff0000;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #ff0000;
+            border-radius: 15px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            color: #ff0000;
+            text-shadow: 0 0 20px #ff0000;
+            margin-bottom: 15px;
+        }
+
+        .header .tagline {
+            font-size: 20px;
+            color: #ffaa88;
+            margin-top: 10px;
+        }
+
+        #canvas-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 800px;
+            margin: 0 auto 40px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #ff0000;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .systems-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .system-card {
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #ff0000;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .system-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .system-card:hover::before {
+            left: 100%;
+        }
+
+        .system-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(255, 0, 0, 0.5);
+        }
+
+        .system-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .system-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff0000;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .extraction-methods {
+            margin: 20px 0;
+        }
+
+        .extraction-methods h3 {
+            color: #ffaa00;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .extraction-methods ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .extraction-methods li {
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 3px solid #ff0000;
+            font-size: 14px;
+            color: #ffaa88;
+        }
+
+        .energy-drain {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255, 0, 0, 0.2);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .energy-drain-label {
+            font-size: 12px;
+            color: #ffaa00;
+            margin-bottom: 5px;
+        }
+
+        .energy-drain-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff0000;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .escape-section {
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+        }
+
+        .escape-section h2 {
+            color: #00ff00;
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px #00ff00;
+        }
+
+        .escape-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .escape-step {
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.05);
+            border-left: 4px solid #00ff00;
+            border-radius: 8px;
+        }
+
+        .step-number {
+            font-size: 32px;
+            color: #00ff00;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .step-title {
+            font-size: 18px;
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .step-description {
+            color: #aaffaa;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .warning {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 3px solid #ff0000;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .warning h3 {
+            color: #ff0000;
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px #ff0000;
+        }
+
+        .warning p {
+            color: #ffaa88;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .systems-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .escape-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🕸️ SYSTEMIC DESTRUCTION MAP</h1>
+        <div class="tagline">All Systems Are Designed to Extract Energy From You</div>
+        <div class="tagline" style="margin-top: 5px; font-size: 16px; color: #ffaa00;">
+            See The Web • Understand The Extraction • Break Free
+        </div>
+    </div>
+
+    <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="systems-grid">
+        <div class="system-card">
+            <div class="system-icon">💰</div>
+            <div class="system-title">FINANCIAL SYSTEM</div>
+            <div class="extraction-methods">
+                <h3>How It Drains You:</h3>
+                <ul>
+                    <li>Inflation erodes savings (hidden tax)</li>
+                    <li>Debt traps with compound interest</li>
+                    <li>Banking fees on your own money</li>
+                    <li>Required participation (can't opt out)</li>
+                    <li>Designed to keep you working forever</li>
+                </ul>
+            </div>
+            <div class="energy-drain">
+                <div class="energy-drain-label">Average Energy Drain</div>
+                <div class="energy-drain-value">40%</div>
+            </div>
+        </div>
+
+        <div class="system-card">
+            <div class="system-icon">💼</div>
+            <div class="system-title">EMPLOYMENT SYSTEM</div>
+            <div class="extraction-methods">
+                <h3>How It Drains You:</h3>
+                <ul>
+                    <li>Trade 40+ hours/week for survival money</li>
+                    <li>Limited vacation/sick time</li>
+                    <li>Your output worth 5-10x your pay</li>
+                    <li>Fear of termination keeps you compliant</li>
+                    <li>Retirement at 65 (if you survive)</li>
+                </ul>
+            </div>
+            <div class="energy-drain">
+                <div class="energy-drain-label">Average Energy Drain</div>
+                <div class="energy-drain-value">50%</div>
+            </div>
+        </div>
+
+        <div class="system-card">
+            <div class="system-icon">🏥</div>
+            <div class="system-title">HEALTHCARE SYSTEM</div>
+            <div class="extraction-methods">
+                <h3>How It Drains You:</h3>
+                <ul>
+                    <li>Treats symptoms, not root causes</li>
+                    <li>Insurance premiums rising annually</li>
+                    <li>Profit incentive misaligned with health</li>
+                    <li>Chronic conditions = recurring revenue</li>
+                    <li>Emergency care bankrupts families</li>
+                </ul>
+            </div>
+            <div class="energy-drain">
+                <div class="energy-drain-label">Average Energy Drain</div>
+                <div class="energy-drain-value">25%</div>
+            </div>
+        </div>
+
+        <div class="system-card">
+            <div class="system-icon">🎓</div>
+            <div class="system-title">EDUCATION SYSTEM</div>
+            <div class="extraction-methods">
+                <h3>How It Drains You:</h3>
+                <ul>
+                    <li>Student debt for decades</li>
+                    <li>Teaches compliance, not independence</li>
+                    <li>Outdated information for modern world</li>
+                    <li>Standardization kills creativity</li>
+                    <li>Prepares you for employment, not freedom</li>
+                </ul>
+            </div>
+            <div class="energy-drain">
+                <div class="energy-drain-label">Average Energy Drain</div>
+                <div class="energy-drain-value">30%</div>
+            </div>
+        </div>
+
+        <div class="system-card">
+            <div class="system-icon">📱</div>
+            <div class="system-title">TECHNOLOGY SYSTEM</div>
+            <div class="extraction-methods">
+                <h3>How It Drains You:</h3>
+                <ul>
+                    <li>Attention extraction for ad revenue</li>
+                    <li>Dopamine manipulation = addiction</li>
+                    <li>Data harvesting and selling</li>
+                    <li>Constant upgrades and subscriptions</li>
+                    <li>Designed to keep you scrolling forever</li>
+                </ul>
+            </div>
+            <div class="energy-drain">
+                <div class="energy-drain-label">Average Energy Drain</div>
+                <div class="energy-drain-value">35%</div>
+            </div>
+        </div>
+
+        <div class="system-card">
+            <div class="system-icon">📺</div>
+            <div class="system-title">MEDIA SYSTEM</div>
+            <div class="extraction-methods">
+                <h3>How It Drains You:</h3>
+                <ul>
+                    <li>Fear-based narratives for engagement</li>
+                    <li>Manufactured division for clicks</li>
+                    <li>Truth sacrificed for profit</li>
+                    <li>Constant outrage = constant viewing</li>
+                    <li>Keeps you reactive, not proactive</li>
+                </ul>
+            </div>
+            <div class="energy-drain">
+                <div class="energy-drain-label">Average Energy Drain</div>
+                <div class="energy-drain-value">20%</div>
+            </div>
+        </div>
+
+        <div class="system-card">
+            <div class="system-icon">🛒</div>
+            <div class="system-title">CONSUMER SYSTEM</div>
+            <div class="extraction-methods">
+                <h3>How It Drains You:</h3>
+                <ul>
+                    <li>Creates artificial needs</li>
+                    <li>Planned obsolescence</li>
+                    <li>Status symbols and social pressure</li>
+                    <li>Emotional purchases for temporary relief</li>
+                    <li>Subscription models for everything</li>
+                </ul>
+            </div>
+            <div class="energy-drain">
+                <div class="energy-drain-label">Average Energy Drain</div>
+                <div class="energy-drain-value">30%</div>
+            </div>
+        </div>
+
+        <div class="system-card">
+            <div class="system-icon">🏛️</div>
+            <div class="system-title">POLITICAL SYSTEM</div>
+            <div class="extraction-methods">
+                <h3>How It Drains You:</h3>
+                <ul>
+                    <li>Manufactured division distracts from real issues</li>
+                    <li>Illusion of choice (both sides serve same masters)</li>
+                    <li>Taxes extracted without true representation</li>
+                    <li>Emotional energy wasted on theater</li>
+                    <li>Real power hidden behind scenes</li>
+                </ul>
+            </div>
+            <div class="energy-drain">
+                <div class="energy-drain-label">Average Energy Drain</div>
+                <div class="energy-drain-value">15%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="warning">
+        <h3>⚠️ TOTAL ENERGY EXTRACTION</h3>
+        <p>
+            If you participate in all these systems unconsciously, they extract <strong style="color: #ff0000; font-size: 32px;">245%</strong> of your energy.<br><br>
+            Yes, more than 100%. That's why you're exhausted.<br><br>
+            <strong>You're running a deficit. They're extracting more than you can produce.</strong>
+        </p>
+    </div>
+
+    <div class="escape-section">
+        <h2>🚀 HOW TO ESCAPE THE WEB</h2>
+        <div class="escape-steps">
+            <div class="escape-step">
+                <div class="step-number">1</div>
+                <div class="step-title">SEE THE SYSTEMS</div>
+                <div class="step-description">
+                    Awareness is the first step. You can't escape what you don't see. Recognize each extraction point in your life.
+                </div>
+            </div>
+
+            <div class="escape-step">
+                <div class="step-number">2</div>
+                <div class="step-title">AUDIT YOUR ENERGY</div>
+                <div class="step-description">
+                    Track where your time, money, and attention go. Most people are shocked when they see the real numbers.
+                </div>
+            </div>
+
+            <div class="escape-step">
+                <div class="step-number">3</div>
+                <div class="step-title">CUT ONE SYSTEM</div>
+                <div class="step-description">
+                    Pick the easiest one first. Delete social media. Cancel subscriptions. Stop watching news. Feel the energy return.
+                </div>
+            </div>
+
+            <div class="escape-step">
+                <div class="step-number">4</div>
+                <div class="step-title">BUILD ALTERNATIVES</div>
+                <div class="step-description">
+                    Replace extraction with creation. Start a business instead of job. Build assets instead of consuming products.
+                </div>
+            </div>
+
+            <div class="escape-step">
+                <div class="step-number">5</div>
+                <div class="step-title">AUTOMATE FREEDOM</div>
+                <div class="step-description">
+                    Use AI and automation to reclaim time. Let technology work for you instead of you working for technology.
+                </div>
+            </div>
+
+            <div class="escape-step">
+                <div class="step-number">6</div>
+                <div class="step-title">HELP OTHERS ESCAPE</div>
+                <div class="step-description">
+                    Once you're free, help others see the web. Every person who escapes weakens the system. Eventually, it collapses.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const container = document.getElementById('canvas-container');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        // Systems surrounding the center (you)
+        const systems = [
+            { name: 'FINANCIAL', angle: 0, color: '#ff0000' },
+            { name: 'EMPLOYMENT', angle: Math.PI / 4, color: '#ff3300' },
+            { name: 'HEALTHCARE', angle: Math.PI / 2, color: '#ff6600' },
+            { name: 'EDUCATION', angle: 3 * Math.PI / 4, color: '#ff9900' },
+            { name: 'TECHNOLOGY', angle: Math.PI, color: '#ffcc00' },
+            { name: 'MEDIA', angle: 5 * Math.PI / 4, color: '#ff6666' },
+            { name: 'CONSUMER', angle: 3 * Math.PI / 2, color: '#ff3333' },
+            { name: 'POLITICAL', angle: 7 * Math.PI / 4, color: '#ff0033' }
+        ];
+
+        const radius = Math.min(canvas.width, canvas.height) * 0.35;
+        let pulsePhase = 0;
+
+        function drawWeb() {
+            // Pulsing background
+            ctx.fillStyle = `rgba(10, 0, 0, ${0.1 + Math.sin(pulsePhase) * 0.05})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw extraction arrows from you to systems
+            systems.forEach((system, index) => {
+                const x = centerX + Math.cos(system.angle) * radius;
+                const y = centerY + Math.sin(system.angle) * radius;
+
+                // Pulsing extraction beam
+                const pulseAlpha = 0.3 + Math.sin(pulsePhase + index * 0.5) * 0.2;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = system.color + Math.floor(pulseAlpha * 255).toString(16).padStart(2, '0');
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Arrow at extraction point
+                const arrowSize = 15;
+                const arrowAngle = Math.atan2(centerY - y, centerX - x);
+
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(
+                    x + arrowSize * Math.cos(arrowAngle - Math.PI / 6),
+                    y + arrowSize * Math.sin(arrowAngle - Math.PI / 6)
+                );
+                ctx.lineTo(
+                    x + arrowSize * Math.cos(arrowAngle + Math.PI / 6),
+                    y + arrowSize * Math.sin(arrowAngle + Math.PI / 6)
+                );
+                ctx.closePath();
+                ctx.fillStyle = system.color;
+                ctx.fill();
+
+                // System node
+                ctx.beginPath();
+                ctx.arc(x, y, 30, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+                ctx.fill();
+                ctx.strokeStyle = system.color;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // System label
+                ctx.fillStyle = system.color;
+                ctx.font = 'bold 12px Courier New';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(system.name, x, y);
+            });
+
+            // Draw YOU at center
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 50, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // Pulsing ring around you
+            const ringRadius = 50 + Math.sin(pulsePhase * 2) * 5;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.5 - Math.sin(pulsePhase * 2) * 0.3})`;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // YOU label
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 20px Courier New';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#ffffff';
+            ctx.fillText('YOU', centerX, centerY);
+            ctx.shadowBlur = 0;
+
+            // Energy drain percentage
+            ctx.font = '12px Courier New';
+            ctx.fillStyle = '#ff0000';
+            ctx.fillText('245% DRAINED', centerX, centerY + 25);
+
+            pulsePhase += 0.02;
+        }
+
+        function animate() {
+            drawWeb();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
