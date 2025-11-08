@@ -15,6 +15,14 @@ from datetime import datetime
 from typing import Dict, List, Optional
 import re
 
+# Import the anti-treadmill system
+try:
+    from EXECUTE_WITH_CAPTURE import ExecuteWithCapture
+    CAPTURE_AVAILABLE = True
+except ImportError:
+    CAPTURE_AVAILABLE = False
+    print("⚠️  EXECUTE_WITH_CAPTURE not available - running without capture")
+
 # Will use gspread for Google Sheets integration
 # pip install gspread oauth2client
 
@@ -453,7 +461,7 @@ class AutonomousExecutor:
         self.agent_name = agent_name
 
     def run_cycle(self):
-        """Execute one work cycle"""
+        """Execute one work cycle WITH FULL CAPTURE (Anti-Treadmill)"""
 
         print(f"\n{'='*70}")
         print(f"🤖 {self.agent_name} - Autonomous Work Cycle")
@@ -476,28 +484,67 @@ class AutonomousExecutor:
         # Mark in progress
         self.brain.mark_in_progress(task['id'])
 
-        # Simulate execution (in real implementation, actually execute)
-        print(f"⚙️  Executing task...")
-        print(f"   (In real implementation, this would actually do the work)")
+        # Execute with full capture (Anti-Treadmill System)
+        if CAPTURE_AVAILABLE:
+            with ExecuteWithCapture(task['id'], task['task']) as capture:
+                # Simulate execution with capture
+                capture.update_progress(25)
+                capture.log_sub_task("Analyzed task requirements")
 
-        # Mark complete
-        self.brain.mark_complete(task['id'], actual_hours=task['estimated_hours'])
+                capture.update_progress(50)
+                print(f"⚙️  Executing task...")
+                print(f"   (In real implementation, this would actually do the work)")
+                capture.log_sub_task("Executed main task logic")
 
-        # Extract new TODOs from completion
-        new_todos = self.brain.extract_todos_from_action(task['task'])
+                capture.update_progress(75)
 
-        for todo_data in new_todos:
-            self.brain.add_todo(
-                task=todo_data['task'],
-                priority=todo_data['priority'],
-                assigned_to=todo_data['assigned_to'],
-                dependencies=todo_data.get('dependencies'),
-                commander_review=todo_data.get('commander_review', False),
-                estimated_hours=todo_data.get('estimated_hours', 1.0),
-                auto_generated=True
-            )
+                # Extract new TODOs from completion
+                new_todos = self.brain.extract_todos_from_action(task['task'])
+                capture.log_sub_task(f"Generated {len(new_todos)} follow-up todos")
 
-        print(f"\n✅ Task complete! Generated {len(new_todos)} follow-up TODOs\n")
+                for todo_data in new_todos:
+                    todo_id = self.brain.add_todo(
+                        task=todo_data['task'],
+                        priority=todo_data['priority'],
+                        assigned_to=todo_data['assigned_to'],
+                        dependencies=todo_data.get('dependencies'),
+                        commander_review=todo_data.get('commander_review', False),
+                        estimated_hours=todo_data.get('estimated_hours', 1.0),
+                        auto_generated=True
+                    )
+                    capture.log_sub_task(f"Created TODO #{todo_id}: {todo_data['task'][:50]}")
+
+                capture.update_progress(100)
+
+                # Mark complete
+                self.brain.mark_complete(task['id'], actual_hours=task['estimated_hours'])
+
+            print(f"\n✅ Task complete! Generated {len(new_todos)} follow-up TODOs")
+            print(f"📊 Full execution capture saved to EXECUTION_CAPTURES/\n")
+
+        else:
+            # Fallback without capture
+            print(f"⚙️  Executing task...")
+            print(f"   (In real implementation, this would actually do the work)")
+
+            # Mark complete
+            self.brain.mark_complete(task['id'], actual_hours=task['estimated_hours'])
+
+            # Extract new TODOs from completion
+            new_todos = self.brain.extract_todos_from_action(task['task'])
+
+            for todo_data in new_todos:
+                self.brain.add_todo(
+                    task=todo_data['task'],
+                    priority=todo_data['priority'],
+                    assigned_to=todo_data['assigned_to'],
+                    dependencies=todo_data.get('dependencies'),
+                    commander_review=todo_data.get('commander_review', False),
+                    estimated_hours=todo_data.get('estimated_hours', 1.0),
+                    auto_generated=True
+                )
+
+            print(f"\n✅ Task complete! Generated {len(new_todos)} follow-up TODOs\n")
 
 
 # =============================================================================
