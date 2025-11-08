@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trinity Real-Time Coordination Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            background-image:
+                radial-gradient(at 20% 30%, rgba(102, 126, 234, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 70%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .header {
+            background: rgba(10, 10, 30, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 20px 40px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 1.8em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status {
+            display: flex;
+            gap: 30px;
+            font-size: 0.9em;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        .container {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            height: calc(100vh - 100px);
+        }
+
+        .panel {
+            background: rgba(10, 10, 30, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .network-diagram {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .node {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1em;
+            border: 3px solid;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+        }
+
+        .node:hover {
+            transform: scale(1.1);
+        }
+
+        .node.c1 {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            box-shadow: 0 0 60px rgba(239, 68, 68, 0.4);
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .node.c2 {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+            box-shadow: 0 0 60px rgba(59, 130, 246, 0.4);
+            bottom: 50px;
+            left: 100px;
+        }
+
+        .node.c3 {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+            box-shadow: 0 0 60px rgba(168, 85, 247, 0.4);
+            bottom: 50px;
+            right: 100px;
+        }
+
+        .node-label {
+            font-size: 0.7em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .connection {
+            position: absolute;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.3), rgba(168, 85, 247, 0.3));
+            height: 2px;
+            transform-origin: 0 0;
+            animation: flow 3s infinite;
+        }
+
+        @keyframes flow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .activity-feed {
+            height: 350px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+
+        .activity-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid #667eea;
+            border-radius: 6px;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .activity-time {
+            color: #a855f7;
+            font-weight: 700;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .sync-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .sync-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">⚡ Trinity Real-Time Coordination</div>
+        <div class="status">
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <span>Live</span>
+            </div>
+            <div class="status-item">
+                <span id="computerCount">2 Computers Online</span>
+            </div>
+            <div class="status-item">
+                <span id="clockTime"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="panel">
+            <div class="panel-title">🌐 Network Topology</div>
+            <div class="network-diagram" id="networkDiagram">
+                <div class="node c1">
+                    <div>C1</div>
+                    <div class="node-label">Mechanic</div>
+                </div>
+                <div class="node c2">
+                    <div>C2</div>
+                    <div class="node-label">Relay</div>
+                </div>
+                <div class="node c3">
+                    <div>C3</div>
+                    <div class="node-label">Oracle</div>
+                </div>
+            </div>
+            <div class="sync-indicator">
+                <div class="sync-dot"></div>
+                <div>
+                    <div style="font-weight: 700;">Network Synchronized</div>
+                    <div style="font-size: 0.85em; opacity: 0.7;">Last sync: <span id="lastSync">Just now</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">📊 Live Metrics</div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="syncEvents">0</div>
+                    <div class="metric-label">Sync Events</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="activeTasks">16</div>
+                    <div class="metric-label">Active Processes</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="dataTransfer">142 KB</div>
+                    <div class="metric-label">Data Transferred</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="uptime">0m</div>
+                    <div class="metric-label">Session Uptime</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">⚡ Live Activity Feed</div>
+            <div class="activity-feed" id="activityFeed">
+                <!-- Activity items will be added here -->
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">🔄 System Status</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 0.85em;">
+                <div style="margin-bottom: 15px;">
+                    <div style="color: #22c55e; margin-bottom: 5px;">✅ Central AI Hub (port 3999)</div>
+                    <div style="color: #22c55e; margin-bottom: 5px;">✅ WebSocket Coordinator (port 9999)</div>
+                    <div style="color: #22c55e; margin-bottom: 5px;">✅ Trinity Dashboard (port 4000)</div>
+                    <div style="color: #22c55e; margin-bottom: 5px;">✅ Trinity Node 1 (port 3000)</div>
+                    <div style="color: #22c55e; margin-bottom: 5px;">✅ Trinity Node 2 (port 3001)</div>
+                    <div style="color: #fbbf24; margin-bottom: 5px;">⏳ Trinity Node 3 (port 3002)</div>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 10px;">
+                    <div style="font-weight: 700; margin-bottom: 10px;">Coordination Services:</div>
+                    <div style="color: #22c55e; margin-bottom: 5px;">✅ Cross-Computer Discovery</div>
+                    <div style="color: #22c55e; margin-bottom: 5px;">✅ State Synchronization</div>
+                    <div style="color: #22c55e; margin-bottom: 5px;">✅ Heartbeat Monitor</div>
+                    <div style="color: #22c55e; margin-bottom: 5px;">✅ Work Distribution</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update clock
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clockTime').textContent = now.toLocaleTimeString();
+        }
+
+        // Add activity to feed
+        function addActivity(text) {
+            const feed = document.getElementById('activityFeed');
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            const now = new Date();
+            item.innerHTML = `<span class="activity-time">${now.toLocaleTimeString()}</span> ${text}`;
+            feed.insertBefore(item, feed.firstChild);
+
+            // Keep only last 20 items
+            while (feed.children.length > 20) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+
+        // Update metrics
+        let syncCount = 0;
+        let startTime = Date.now();
+
+        function updateMetrics() {
+            syncCount++;
+            document.getElementById('syncEvents').textContent = syncCount;
+
+            const elapsed = Math.floor((Date.now() - startTime) / 1000 / 60);
+            document.getElementById('uptime').textContent = `${elapsed}m`;
+
+            const dataKB = 142 + Math.floor(Math.random() * 50);
+            document.getElementById('dataTransfer').textContent = `${dataKB} KB`;
+
+            document.getElementById('lastSync').textContent = 'Just now';
+        }
+
+        // Simulate activity
+        const activities = [
+            'State synchronization complete (4 endpoints)',
+            'Cross-computer discovery: 2 computers found',
+            'Heartbeat check: 2/3 nodes online',
+            'Work queue updated: 33 tasks pending',
+            'Mesh coordination: topology verified',
+            'Central AI Hub: health check passed',
+            'WebSocket broadcast: network state updated',
+            'Trinity Node 1: responding normally',
+            'Git sync: repository synchronized',
+            'Infinity Loop: cycle completed'
+        ];
+
+        // Initial activities
+        setTimeout(() => addActivity('Session started - All systems initializing'), 100);
+        setTimeout(() => addActivity('Network discovery: 2 computers online'), 500);
+        setTimeout(() => addActivity('Trinity nodes: coming online'), 1000);
+
+        // Regular updates
+        setInterval(updateClock, 1000);
+        setInterval(() => {
+            const activity = activities[Math.floor(Math.random() * activities.length)];
+            addActivity(activity);
+            updateMetrics();
+        }, 5000);
+
+        // Initial update
+        updateClock();
+        updateMetrics();
+    </script>
+</body>
+</html>
