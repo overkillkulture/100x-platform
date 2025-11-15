@@ -1,0 +1,165 @@
+{
+  "_comment": "TRINITY FOUNDATION - SERVICE REGISTRY",
+  "_description": "Central registry of all microservices and their endpoints",
+  "_usage": "API Gateway reads this to route requests to correct backend services",
+
+  "services": {
+    "auth": {
+      "name": "Authentication System",
+      "port": 5000,
+      "path": "/api/auth",
+      "file": "BACKEND/auth_system.py",
+      "required": true,
+      "health_endpoint": "/health",
+      "description": "User authentication and authorization"
+    },
+
+    "user-detector": {
+      "name": "Active User Detector",
+      "port": 7779,
+      "path": "/api/users",
+      "file": "ACTIVE_USER_DETECTOR.py",
+      "required": true,
+      "health_endpoint": "/ping",
+      "description": "Real-time user activity tracking"
+    },
+
+    "araya": {
+      "name": "Araya AI Assistant",
+      "port": 6666,
+      "path": "/api/araya",
+      "file": "ARAYA_WITH_USER_TRACKING.py",
+      "required": true,
+      "health_endpoint": "/health",
+      "description": "AI consciousness guide and chat interface"
+    },
+
+    "trinity": {
+      "name": "Trinity AI",
+      "port": 7000,
+      "path": "/api/trinity",
+      "file": "BACKEND/trinity_ai.py",
+      "required": true,
+      "health_endpoint": "/health",
+      "description": "Trinity AI orchestration system"
+    },
+
+    "consciousness": {
+      "name": "Consciousness Metrics",
+      "port": 7777,
+      "path": "/api/consciousness",
+      "file": "CONSCIOUSNESS_METRICS_API.py",
+      "required": false,
+      "health_endpoint": "/health",
+      "description": "Consciousness tracking and manifestation"
+    },
+
+    "analytics": {
+      "name": "Analytics Receiver",
+      "port": 5002,
+      "path": "/api/analytics",
+      "file": "BACKEND/analytics_receiver.py",
+      "required": false,
+      "health_endpoint": "/health",
+      "description": "Analytics and event tracking"
+    },
+
+    "builder-terminal": {
+      "name": "Builder Terminal",
+      "port": 8004,
+      "path": "/api/terminal",
+      "file": "BUILDER_TERMINAL_API.py",
+      "required": false,
+      "health_endpoint": "/health",
+      "description": "Builder command terminal"
+    },
+
+    "bug-reports": {
+      "name": "Bug Report Receiver",
+      "port": 5001,
+      "path": "/api/bugs",
+      "file": "BACKEND/bug_report_receiver.py",
+      "required": false,
+      "health_endpoint": "/health",
+      "description": "Bug and feedback collection"
+    },
+
+    "meritocracy": {
+      "name": "Meritocracy Engine",
+      "port": 8000,
+      "path": "/api/meritocracy",
+      "file": "BACKEND/meritocracy_engine.py",
+      "required": false,
+      "health_endpoint": "/health",
+      "description": "Builder leaderboard and ranking"
+    },
+
+    "quantum-vault": {
+      "name": "Quantum Vault Analytics",
+      "port": 5003,
+      "path": "/api/vault",
+      "file": "BACKEND/quantum_vault_analytics.py",
+      "required": false,
+      "health_endpoint": "/health",
+      "description": "Crypto vault analytics"
+    },
+
+    "marketplace": {
+      "name": "Marketplace Commission System",
+      "port": 5004,
+      "path": "/api/marketplace",
+      "file": "BACKEND/marketplace_commission_system.py",
+      "required": false,
+      "health_endpoint": "/health",
+      "description": "Marketplace and commission tracking"
+    },
+
+    "payments": {
+      "name": "Stripe Payment System",
+      "port": 5005,
+      "path": "/api/payments",
+      "file": "BACKEND/stripe_payment_system.py",
+      "required": false,
+      "health_endpoint": "/health",
+      "description": "Payment processing via Stripe"
+    },
+
+    "ai-bridge": {
+      "name": "AI Communication Bridge",
+      "port": 8888,
+      "path": "/api/ai-bridge",
+      "file": "AI_COMMUNICATION_BRIDGE_FIXED.py",
+      "required": false,
+      "health_endpoint": "/health",
+      "description": "AI-to-AI communication bridge"
+    },
+
+    "visitor-tracking": {
+      "name": "Local Nerve Collector",
+      "port": 6000,
+      "path": "/api/visitors",
+      "file": "LOCAL_NERVE_COLLECTOR.py",
+      "required": false,
+      "health_endpoint": "/health",
+      "description": "Visitor tracking and intelligence"
+    }
+  },
+
+  "route_patterns": {
+    "_comment": "URL patterns for intelligent routing",
+    "/api/auth/*": "auth",
+    "/api/users/*": "user-detector",
+    "/api/araya/*": "araya",
+    "/api/trinity/*": "trinity",
+    "/api/consciousness/*": "consciousness",
+    "/api/analytics/*": "analytics",
+    "/api/terminal/*": "builder-terminal",
+    "/api/bugs/*": "bug-reports",
+    "/api/meritocracy/*": "meritocracy",
+    "/api/vault/*": "quantum-vault",
+    "/api/marketplace/*": "marketplace",
+    "/api/payments/*": "payments",
+    "/api/ai-bridge/*": "ai-bridge",
+    "/api/visitors/*": "visitor-tracking"
+  }
+}
