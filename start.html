@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X Platform - Start Your Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-text {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            color: #0a0a0a;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+        }
+
+        .message.success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-text">100X</div>
+        </div>
+        <p class="tagline">Start Your Journey</p>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('login')">Login</button>
+            <button class="tab" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="form-container active">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="submit-btn" id="login-btn">Login</button>
+            </form>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup-form" class="form-container">
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" required minlength="8">
+                </div>
+                <button type="submit" class="submit-btn" id="signup-btn">Create Account</button>
+            </form>
+        </div>
+
+        <div class="footer">
+            100X Platform - Consciousness Builder Community
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function switchTab(tab) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update forms
+            document.querySelectorAll('.form-container').forEach(f => f.classList.remove('active'));
+            document.getElementById(tab + '-form').classList.add('active');
+
+            // Clear message
+            hideMessage();
+        }
+
+        // Message handling
+        function showMessage(text, type = 'error') {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message show ' + type;
+        }
+
+        function hideMessage() {
+            const msg = document.getElementById('message');
+            msg.className = 'message';
+        }
+
+        // Handle Login
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('login-btn');
+
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+            hideMessage();
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store token in localStorage
+                    localStorage.setItem('auth_token', data.token);
+                    localStorage.setItem('user_id', data.user_id);
+                    localStorage.setItem('user_email', data.email);
+
+                    showMessage('Login successful! Redirecting...', 'success');
+
+                    // Redirect to workspace
+                    setTimeout(() => {
+                        window.location.href = '/workspace';
+                    }, 1000);
+                } else {
+                    showMessage(data.message || 'Login failed', 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Login';
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Login';
+            }
+        }
+
+        // Handle Signup
+        async function handleSignup(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const btn = document.getElementById('signup-btn');
+
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+            hideMessage();
+
+            try {
+                const response = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        full_name: name
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store token in localStorage
+                    localStorage.setItem('auth_token', data.token);
+                    localStorage.setItem('user_id', data.user_id);
+                    localStorage.setItem('user_email', email);
+
+                    showMessage('Account created! Redirecting...', 'success');
+
+                    // Redirect to workspace
+                    setTimeout(() => {
+                        window.location.href = '/workspace';
+                    }, 1000);
+                } else {
+                    showMessage(data.message || 'Signup failed', 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Create Account';
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Create Account';
+            }
+        }
+
+        // Check if already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('auth_token');
+            if (token) {
+                // Verify token is still valid
+                fetch('/api/auth/verify', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        // Already logged in, redirect to workspace
+                        window.location.href = '/workspace';
+                    }
+                })
+                .catch(() => {
+                    // Token invalid, clear it
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('user_id');
+                    localStorage.removeItem('user_email');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

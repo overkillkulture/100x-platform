@@ -193,18 +193,30 @@
 <button class="logout-btn" onclick="logout()">Logout</button>
 <script>
 function logout() {
-    localStorage.clear();
-    sessionStorage.clear();
-    window.location.href = 'index.html';
+    // Clear all auth data
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('user_email');
+    localStorage.removeItem('workspace_user_id');
+    localStorage.removeItem('workspace_user_name');
+    localStorage.removeItem('workspace_user_email');
+
+    // Redirect to start page
+    window.location.href = '/';
 }
 </script>
 
     <!-- Header -->
     <div class="header">
         <div class="logo">🌀 100X Workspace</div>
-        <div class="status-badge">
-            <div class="status-dot"></div>
-            <span id="statusText">Online</span>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                <span id="statusText">Online</span>
+            </div>
+            <button onclick="logout()" style="padding: 0.5rem 1rem; background: rgba(255, 0, 0, 0.1); border: 1px solid rgba(255, 0, 0, 0.3); border-radius: 8px; color: #ff6b6b; cursor: pointer; font-size: 0.8rem; font-weight: 600;">
+                Logout
+            </button>
         </div>
     </div>
 
@@ -254,9 +266,66 @@ function logout() {
         </div>
     </div>
 
+    <!-- ============================================= -->
+    <!-- TRINITY FOUNDATION: UNIFIED API CLIENT      -->
+    <!-- Replaces 41 hardcoded ports with ONE gateway -->
+    <!-- ============================================= -->
+    <script src="/api_client.js"></script>
+
     <script>
-        const USER_DETECTOR = 'http://localhost:7779';
-        const ARAYA_API = 'http://localhost:6666';
+        // =====================================================
+        // AUTHENTICATION CHECK
+        // =====================================================
+        // Check if user is authenticated before loading workspace
+        async function checkAuth() {
+            const token = localStorage.getItem('auth_token');
+
+            if (!token) {
+                // No token, redirect to start page
+                window.location.href = '/';
+                return false;
+            }
+
+            try {
+                // UPGRADED: Using API Gateway instead of direct fetch
+                const data = await apiClient.get('/auth/verify', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+
+                if (!data.success) {
+                    // Invalid token, clear and redirect
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('user_id');
+                    localStorage.removeItem('user_email');
+                    window.location.href = '/';
+                    return false;
+                }
+
+                // Token valid, set user info
+                localStorage.setItem('workspace_user_id', data.user_id);
+                localStorage.setItem('workspace_user_email', data.email);
+
+                return true;
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                // On network error, allow access but warn
+                console.warn('Could not verify auth, allowing offline access');
+                return true;
+            }
+        }
+
+        // Run auth check immediately
+        checkAuth();
+
+        // =====================================================
+        // WORKSPACE CONFIGURATION
+        // =====================================================
+        // BEFORE: 41 hardcoded localhost URLs
+        // AFTER: ONE unified API client calling gateway on port 8080
+        console.log('Workspace using Trinity API Gateway');
+        console.log('Gateway URL:', apiClient.baseURL);
 
         let userId = localStorage.getItem('workspace_user_id') || 'user_' + Date.now();
         let userName = localStorage.getItem('workspace_user_name') || 'Guest';
@@ -276,6 +345,9 @@ function logout() {
 
             document.getElementById('userGreeting').textContent = `👋 Hello, ${userName}!`;
 
+            // Check API Gateway health
+            await checkGatewayHealth();
+
             // Check workspace state
             await checkWorkspaceState();
 
@@ -289,10 +361,23 @@ function logout() {
             loadOnlineUsers();
         }
 
+        async function checkGatewayHealth() {
+            try {
+                const health = await apiClient.healthCheck();
+                if (health.healthy) {
+                    console.log('✓ API Gateway: Connected');
+                } else {
+                    console.warn('⚠ API Gateway: Degraded', health.error);
+                }
+            } catch (error) {
+                console.error('✗ API Gateway: Offline', error);
+            }
+        }
+
         async function checkWorkspaceState() {
             try {
-                const response = await fetch(`${USER_DETECTOR}/workspace/state`);
-                const state = await response.json();
+                // UPGRADED: Using API Gateway
+                const state = await apiClient.getWorkspaceState();
 
                 if (state.mode === 'maintenance') {
                     document.getElementById('maintenanceBanner').classList.add('active');
@@ -302,7 +387,7 @@ function logout() {
                 if (state.stuck_on) {
                     // Clear stuck state automatically
                     console.log('Detected stuck state:', state.stuck_on, '- clearing...');
-                    await fetch(`${USER_DETECTOR}/workspace/clear-stuck`, {method: 'POST'});
+                    await apiClient.post('/users/workspace/clear-stuck', {});
                     location.reload();
                 }
             } catch (error) {
@@ -312,8 +397,8 @@ function logout() {
 
         async function loadUserProfile() {
             try {
-                const response = await fetch(`${ARAYA_API}/user/${userId}`);
-                const profile = await response.json();
+                // UPGRADED: Using API Gateway
+                const profile = await apiClient.getUserProfile(userId);
 
                 if (profile && profile.name && profile.name !== userId) {
                     userName = profile.name;
@@ -329,38 +414,21 @@ function logout() {
             // Send ping every 30 seconds
             setInterval(async () => {
                 try {
-                    await fetch(`${USER_DETECTOR}/ping`, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({
-                            user_id: userId,
-                            user_name: userName,
-                            location: '/workspace',
-                            action: 'active'
-                        })
-                    });
+                    // UPGRADED: Using API Gateway
+                    await apiClient.pingActivity(userId, userName, '/workspace', 'active');
                 } catch (error) {
                     console.error('Ping failed:', error);
                 }
             }, 30000);
 
-            // Send initial ping
-            fetch(`${USER_DETECTOR}/ping`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    user_id: userId,
-                    user_name: userName,
-                    location: '/workspace',
-                    action: 'logged_in'
-                })
-            });
+            // Send initial ping - UPGRADED: Using API Gateway
+            apiClient.pingActivity(userId, userName, '/workspace', 'logged_in');
         }
 
         async function loadOnlineUsers() {
             try {
-                const response = await fetch(`${USER_DETECTOR}/users/active`);
-                const data = await response.json();
+                // UPGRADED: Using API Gateway
+                const data = await apiClient.getActiveUsers();
 
                 document.getElementById('onlineCount').textContent = data.count;
 
