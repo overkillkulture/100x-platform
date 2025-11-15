@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consciousness Workspace - OVERKORE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .workspace-header {
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 3px solid #d4af37;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .workspace-title {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 2px solid #d4af37;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #d4af37;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Vision Intake Screen */
+        .vision-intake {
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #d4af37;
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .vision-intake.hidden {
+            display: none;
+        }
+
+        .vision-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .vision-header h2 {
+            font-size: 36px;
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+
+        .vision-header p {
+            font-size: 18px;
+            color: #999;
+            line-height: 1.6;
+        }
+
+        .vision-form {
+            display: grid;
+            gap: 30px;
+        }
+
+        .vision-field {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .vision-label {
+            font-size: 20px;
+            font-weight: bold;
+            color: #d4af37;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vision-hint {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .vision-textarea {
+            width: 100%;
+            min-height: 120px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #444;
+            border-radius: 10px;
+            padding: 15px;
+            color: #e8e8e8;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .vision-textarea:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .submit-vision-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 20px 40px;
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .submit-vision-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Processing Screen */
+        .processing {
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #00ffff;
+            border-radius: 20px;
+            padding: 80px 50px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 50px rgba(0, 255, 255, 0.3);
+        }
+
+        .processing.hidden {
+            display: none;
+        }
+
+        .processing-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+
+        .processing h3 {
+            font-size: 32px;
+            color: #00ffff;
+            margin-bottom: 20px;
+        }
+
+        .processing p {
+            font-size: 18px;
+            color: #999;
+        }
+
+        /* Recommendations */
+        .recommendations {
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #00ff88;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 50px rgba(0, 255, 136, 0.3);
+        }
+
+        .recommendations.hidden {
+            display: none;
+        }
+
+        .recommendations h3 {
+            font-size: 28px;
+            color: #00ff88;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .recommended-domains {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .recommended-badge {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .start-here-btn {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .start-here-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.5);
+        }
+
+        /* Domain Navigation */
+        .domains-section {
+            margin-top: 40px;
+        }
+
+        .domains-section.hidden {
+            display: none;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+
+        .section-header p {
+            font-size: 16px;
+            color: #999;
+        }
+
+        .domains-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .domain-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #444;
+            border-radius: 15px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .domain-card:hover {
+            border-color: #d4af37;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .domain-card.recommended {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .domain-card.recommended::before {
+            content: "RECOMMENDED";
+            position: absolute;
+            top: 15px;
+            right: -35px;
+            background: #00ff88;
+            color: #000;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .domain-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .domain-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+
+        .domain-description {
+            font-size: 14px;
+            color: #999;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .domain-status {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-live {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+        }
+
+        .status-beta {
+            background: rgba(255, 152, 0, 0.2);
+            border: 1px solid #ff9800;
+            color: #ff9800;
+        }
+
+        .status-soon {
+            background: rgba(158, 158, 158, 0.2);
+            border: 1px solid #9e9e9e;
+            color: #9e9e9e;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .quick-action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4af37, #ffd700);
+            border: none;
+            color: #000;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .quick-action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.6);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .workspace-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+            }
+
+            .vision-intake {
+                padding: 30px 20px;
+            }
+
+            .vision-header h2 {
+                font-size: 28px;
+            }
+
+            .domains-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="workspace-header">
+        <div class="workspace-title">Consciousness Workspace</div>
+        <div class="user-profile">
+            <div class="user-info">
+                <div class="user-name" id="user-name">Commander</div>
+                <div class="user-status">Builder - Consciousness Level: Evolving</div>
+            </div>
+            <div class="user-avatar" id="user-avatar">👤</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Vision Intake Screen -->
+        <div class="vision-intake" id="vision-intake">
+            <div class="vision-header">
+                <h2>Welcome to Your Consciousness Workspace</h2>
+                <p>Tell us about your journey so we can create a personalized workspace that guides you to the right tools and domains.</p>
+            </div>
+
+            <div class="vision-form">
+                <div class="vision-field">
+                    <label class="vision-label">
+                        <span>🔙 Past</span>
+                    </label>
+                    <div class="vision-hint">What have you built or accomplished? What experiences shaped you?</div>
+                    <textarea
+                        id="vision-past"
+                        class="vision-textarea"
+                        placeholder="Share your journey... e.g., 'I built a legal practice for 10 years...', 'I created content for 5 years...', 'I have been learning automation...'"
+                    ></textarea>
+                </div>
+
+                <div class="vision-field">
+                    <label class="vision-label">
+                        <span>📍 Present</span>
+                    </label>
+                    <div class="vision-hint">Where are you now? What challenges are you facing?</div>
+                    <textarea
+                        id="vision-present"
+                        class="vision-textarea"
+                        placeholder="Share your current state... e.g., 'Struggling with scaling my business...', 'Need better systems...', 'Want to automate repetitive tasks...'"
+                    ></textarea>
+                </div>
+
+                <div class="vision-field">
+                    <label class="vision-label">
+                        <span>🚀 Future</span>
+                    </label>
+                    <div class="vision-hint">Where do you want to go? What is your vision?</div>
+                    <textarea
+                        id="vision-future"
+                        class="vision-textarea"
+                        placeholder="Share your vision... e.g., 'Build a 100x automated law firm...', 'Create AI-powered content empire...', 'Master consciousness and reality manipulation...'"
+                    ></textarea>
+                </div>
+
+                <button class="submit-vision-btn" onclick="submitVision()">
+                    Process My Vision
+                </button>
+            </div>
+        </div>
+
+        <!-- Processing Screen -->
+        <div class="processing hidden" id="processing">
+            <div class="processing-icon">🌀</div>
+            <h3>Processing Your Vision...</h3>
+            <p>Trinity AI is analyzing your journey and creating your personalized workspace</p>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="recommendations hidden" id="recommendations">
+            <h3>Based on Your Vision, Start Here:</h3>
+            <div class="recommended-domains" id="recommended-domains"></div>
+            <button class="start-here-btn" onclick="showDomains()">Explore All Domains</button>
+        </div>
+
+        <!-- Domain Navigation -->
+        <div class="domains-section hidden" id="domains-section">
+            <div class="section-header">
+                <h2>7 Sacred Domains</h2>
+                <p>Click any domain to enter and begin your journey</p>
+            </div>
+
+            <div class="domains-grid" id="domains-grid">
+                <!-- Domains will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button class="quick-action-btn" onclick="window.location.href='dashboard.html'" title="Dashboard">📊</button>
+        <button class="quick-action-btn" onclick="resetWorkspace()" title="Reset Vision">🔄</button>
+    </div>
+
+    <script>
+        // Domain configuration
+        const DOMAINS = [
+            {
+                id: 'intelligence',
+                name: 'Intelligence',
+                icon: '🧠',
+                description: 'AI-powered decision making, pattern recognition, and consciousness analytics',
+                status: 'live',
+                url: 'domain-intelligence.html',
+                keywords: ['ai', 'automation', 'intelligence', 'analytics', 'pattern', 'decision']
+            },
+            {
+                id: 'interface',
+                name: 'Interface',
+                icon: '💻',
+                description: 'Build beautiful, functional interfaces and user experiences',
+                status: 'beta',
+                url: 'domain-interface.html',
+                keywords: ['interface', 'ui', 'ux', 'design', 'frontend', 'web']
+            },
+            {
+                id: 'security',
+                name: 'Security',
+                icon: '🛡️',
+                description: 'Pattern-based security, manipulation detection, and protection systems',
+                status: 'live',
+                url: 'domain-security.html',
+                keywords: ['security', 'protection', 'safety', 'legal', 'compliance', 'manipulation']
+            },
+            {
+                id: 'creation',
+                name: 'Creation',
+                icon: '⚡',
+                description: 'Content creation, automation, and manifestation tools',
+                status: 'live',
+                url: 'domain-creation.html',
+                keywords: ['content', 'create', 'build', 'automation', 'generate', 'writing']
+            },
+            {
+                id: 'education',
+                name: 'Education',
+                icon: '📚',
+                description: 'Learn Pattern Theory, consciousness evolution, and mastery systems',
+                status: 'soon',
+                url: 'domain-education.html',
+                keywords: ['learn', 'education', 'training', 'course', 'teach', 'knowledge']
+            },
+            {
+                id: 'commerce',
+                name: 'Commerce',
+                icon: '💰',
+                description: 'Business automation, scaling, and revenue systems',
+                status: 'beta',
+                url: 'domain-commerce.html',
+                keywords: ['business', 'money', 'revenue', 'commerce', 'scale', 'growth', 'sales']
+            },
+            {
+                id: 'consciousness',
+                name: 'Consciousness',
+                icon: '🌌',
+                description: 'Evolution, elevation, and reality manipulation through consciousness',
+                status: 'beta',
+                url: 'domain-consciousness.html',
+                keywords: ['consciousness', 'evolution', 'spiritual', 'reality', 'manifestation', 'mindset']
+            }
+        ];
+
+        // State management
+        let userVision = null;
+        let recommendedDomainIds = [];
+
+        // Load user from JWT or localStorage
+        function loadUser() {
+            // Try to get from localStorage first
+            const savedUser = localStorage.getItem('workspace_user');
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                document.getElementById('user-name').textContent = user.name || 'Commander';
+                document.getElementById('user-avatar').textContent = user.avatar || '👤';
+            }
+
+            // Check if vision already exists
+            const savedVision = localStorage.getItem('workspace_vision');
+            if (savedVision) {
+                userVision = JSON.parse(savedVision);
+                showRecommendations();
+            }
+        }
+
+        // Submit vision
+        function submitVision() {
+            const past = document.getElementById('vision-past').value.trim();
+            const present = document.getElementById('vision-present').value.trim();
+            const future = document.getElementById('vision-future').value.trim();
+
+            if (!past && !present && !future) {
+                alert('Please share at least one part of your journey!');
+                return;
+            }
+
+            userVision = { past, present, future };
+
+            // Save to localStorage
+            localStorage.setItem('workspace_vision', JSON.stringify(userVision));
+
+            // Show processing
+            document.getElementById('vision-intake').classList.add('hidden');
+            document.getElementById('processing').classList.remove('hidden');
+
+            // Process vision and show recommendations
+            setTimeout(() => {
+                processVision();
+                document.getElementById('processing').classList.add('hidden');
+                showRecommendations();
+            }, 2000);
+        }
+
+        // Process vision using keyword matching
+        function processVision() {
+            const allText = (userVision.past + ' ' + userVision.present + ' ' + userVision.future).toLowerCase();
+
+            // Score each domain
+            const domainScores = DOMAINS.map(domain => {
+                let score = 0;
+                domain.keywords.forEach(keyword => {
+                    const regex = new RegExp('\\\\b' + keyword + '\\\\w*\\\\b', 'gi');
+                    const matches = allText.match(regex);
+                    if (matches) {
+                        score += matches.length;
+                    }
+                });
+                return { id: domain.id, name: domain.name, score };
+            });
+
+            // Sort by score and get top 2-3
+            domainScores.sort((a, b) => b.score - a.score);
+
+            // Get top domains with score > 0, max 3
+            recommendedDomainIds = domainScores
+                .filter(d => d.score > 0)
+                .slice(0, 3)
+                .map(d => d.id);
+
+            // If no matches, recommend Intelligence and Creation as defaults
+            if (recommendedDomainIds.length === 0) {
+                recommendedDomainIds = ['intelligence', 'creation'];
+            }
+
+            console.log('Domain Scores:', domainScores);
+            console.log('Recommended:', recommendedDomainIds);
+        }
+
+        // Show recommendations
+        function showRecommendations() {
+            const container = document.getElementById('recommended-domains');
+            container.innerHTML = '';
+
+            recommendedDomainIds.forEach(id => {
+                const domain = DOMAINS.find(d => d.id === id);
+                const badge = document.createElement('div');
+                badge.className = 'recommended-badge';
+                badge.textContent = domain.icon + ' ' + domain.name;
+                container.appendChild(badge);
+            });
+
+            document.getElementById('recommendations').classList.remove('hidden');
+
+            // Also render domains section (hidden until clicked)
+            renderDomains();
+        }
+
+        // Show all domains
+        function showDomains() {
+            document.getElementById('recommendations').classList.add('hidden');
+            document.getElementById('domains-section').classList.remove('hidden');
+            window.scrollTo({ top: document.getElementById('domains-section').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        // Render domains
+        function renderDomains() {
+            const grid = document.getElementById('domains-grid');
+            grid.innerHTML = '';
+
+            DOMAINS.forEach(domain => {
+                const card = document.createElement('div');
+                card.className = 'domain-card';
+
+                // Mark as recommended
+                if (recommendedDomainIds.includes(domain.id)) {
+                    card.classList.add('recommended');
+                }
+
+                card.innerHTML = '<div class="domain-icon">' + domain.icon + '</div>' +
+                    '<div class="domain-name">' + domain.name + '</div>' +
+                    '<div class="domain-description">' + domain.description + '</div>' +
+                    '<div class="domain-status status-' + domain.status + '">' +
+                    (domain.status === 'live' ? 'LIVE NOW' : domain.status === 'beta' ? 'BETA' : 'COMING SOON') +
+                    '</div>';
+
+                card.onclick = function() { window.location.href = domain.url; };
+                grid.appendChild(card);
+            });
+        }
+
+        // Reset workspace
+        function resetWorkspace() {
+            if (confirm('Reset your vision and start over?')) {
+                localStorage.removeItem('workspace_vision');
+                userVision = null;
+                recommendedDomainIds = [];
+
+                document.getElementById('vision-past').value = '';
+                document.getElementById('vision-present').value = '';
+                document.getElementById('vision-future').value = '';
+
+                document.getElementById('vision-intake').classList.remove('hidden');
+                document.getElementById('processing').classList.add('hidden');
+                document.getElementById('recommendations').classList.add('hidden');
+                document.getElementById('domains-section').classList.add('hidden');
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Initialize
+        loadUser();
+    </script>
+
+    <!-- Analytics -->
+    <script src="PUBLIC/analytics.js"></script>
+    <script>
+        setTimeout(function() {
+            if (window.Analytics100X) {
+                Analytics100X.trackPageView();
+            }
+        }, 100);
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>
