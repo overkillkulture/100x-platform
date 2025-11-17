@@ -561,19 +561,56 @@
 
         <!-- Quick Actions -->
         <div class="actions">
-            <button onclick="window.open('https://iridescent-fenglisu-7508ac.netlify.app', '_blank')" data-doc="Performs: window.open('https://iridescent-fenglisu-7508ac.ne..." data-why="Interactive feature for user control">
+            <button onclick="openInCockpit('https://iridescent-fenglisu-7508ac.netlify.app')">
                 🌐 View Live Website
             </button>
-            <button onclick="window.open('https://dashboard.stripe.com', '_blank')" data-doc="Performs: window.open('https://dashboard.stripe.com', '_blan..." data-why="Interactive feature for user control">
+            <button onclick="openInCockpit('https://dashboard.stripe.com')">
                 💳 Open Stripe Dashboard
             </button>
-            <button onclick="window.open('QUICK_START_SESSION_MANAGER.md', '_blank')" data-doc="Performs: window.open('QUICK_START_SESSION_MANAGER.md', '_bl..." data-why="Interactive feature for user control">
+            <button onclick="viewDoc('QUICK_START_SESSION_MANAGER.md')">
                 📖 Session Manager Guide
             </button>
-            <button onclick="window.open('AUTOMATION_GAPS_TO_FILL.md', '_blank')" data-doc="Performs: window.open('AUTOMATION_GAPS_TO_FILL.md', '_blank'..." data-why="Interactive feature for user control">
+            <button onclick="viewDoc('AUTOMATION_GAPS_TO_FILL.md')">
                 🎯 View Automation Gaps
             </button>
+            <button onclick="viewDoc('TRINITY_DIAMOND.html')">
+                💎 Trinity Diamond
+            </button>
+            <button onclick="viewDoc('CYCLOTRON_HUB.html')">
+                🌀 Cyclotron Hub
+            </button>
         </div>
+
+        <script>
+        // Cockpit navigation functions
+        function openInCockpit(url) {
+            window.open(url, '_blank');
+        }
+
+        function viewDoc(filename) {
+            // Try to open the file
+            const fullPath = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/' + filename;
+            window.open(fullPath, '_blank');
+        }
+
+        // Export cockpit data
+        function exportCockpitData() {
+            const data = {
+                bugs: JSON.parse(localStorage.getItem('cockpit_bugs') || '[]'),
+                events: JSON.parse(localStorage.getItem('module_events') || '[]'),
+                userData: JSON.parse(localStorage.getItem('module_user') || 'null'),
+                timestamp: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `cockpit_export_${Date.now()}.json`;
+            a.click();
+
+            alert('✅ Cockpit data exported!');
+        }
+        </script>
 
         <!-- Documentation Links -->
         <div class="card">
@@ -763,39 +800,122 @@
     </div>
 
 
-<!-- Universal HUD - Auto-injected -->
-<script src="/UNIVERSAL_AI_HUD.js"></script>
+<!-- 🐛 BUG REPORTER - IN THE COCKPIT -->
+<div id="bug-panel" style="position: fixed; bottom: 120px; right: 20px;
+                            background: rgba(255,0,0,0.1); border: 2px solid #ff0000;
+                            border-radius: 10px; padding: 20px; z-index: 9997;
+                            display: none; max-width: 400px; font-family: 'Courier New', monospace;">
+    <h3 style="color: #ff0000; margin: 0 0 15px 0;">🐛 Bug Reporter</h3>
+    <form id="bug-report-form" onsubmit="submitBugReport(event)">
+        <div style="margin-bottom: 10px;">
+            <label style="color: #00ff00; display: block; margin-bottom: 5px;">What's broken?</label>
+            <input type="text" id="bug-title" required
+                   style="width: 100%; padding: 8px; background: rgba(0,0,0,0.5);
+                          border: 1px solid #00ff00; color: #00ff00; border-radius: 5px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label style="color: #00ff00; display: block; margin-bottom: 5px;">Details:</label>
+            <textarea id="bug-details" rows="4" required
+                      style="width: 100%; padding: 8px; background: rgba(0,0,0,0.5);
+                             border: 1px solid #00ff00; color: #00ff00; border-radius: 5px;"></textarea>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" style="flex: 1; background: rgba(0,255,0,0.2);
+                                         border: 2px solid #00ff00; color: #00ff00;
+                                         padding: 10px; border-radius: 5px; cursor: pointer;">
+                📝 Submit Bug
+            </button>
+            <button type="button" onclick="toggleBugPanel()"
+                    style="background: rgba(255,0,0,0.2); border: 2px solid #ff0000;
+                           color: #ff0000; padding: 10px 15px; border-radius: 5px; cursor: pointer;">
+                ✖
+            </button>
+        </div>
+    </form>
+</div>
 
+<script>
+// Bug Reporter - Self-contained in the cockpit
+function toggleBugPanel() {
+    const panel = document.getElementById('bug-panel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
 
-<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
-<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
-    <script>
+function submitBugReport(event) {
+    event.preventDefault();
 
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `bug_${Date.now()}.json`;
-            a.click();
-        });
-
-        // Show success message
-        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
-
-        // Reset form
-        document.getElementById('bug-report-form').reset();
-        toggleBugPanel();
+    const bugData = {
+        title: document.getElementById('bug-title').value,
+        details: document.getElementById('bug-details').value,
+        timestamp: new Date().toISOString(),
+        page: window.location.href,
+        userAgent: navigator.userAgent
     };
-})();
+
+    // Save to localStorage (in the cockpit)
+    const bugs = JSON.parse(localStorage.getItem('cockpit_bugs') || '[]');
+    bugs.push(bugData);
+    localStorage.setItem('cockpit_bugs', JSON.stringify(bugs));
+
+    // Download bug report
+    const blob = new Blob([JSON.stringify(bugData, null, 2)], {type: 'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `bug_${Date.now()}.json`;
+    a.click();
+
+    // Show success
+    alert('✅ BUG REPORTED!\n\nBug saved to cockpit and downloaded.\nYour feedback makes the platform better!');
+
+    // Reset and close
+    document.getElementById('bug-report-form').reset();
+    toggleBugPanel();
+}
+
+// View all bugs in cockpit
+function viewCockpitBugs() {
+    const bugs = JSON.parse(localStorage.getItem('cockpit_bugs') || '[]');
+    if (bugs.length === 0) {
+        alert('No bugs reported yet!');
+        return;
+    }
+
+    let report = '🐛 COCKPIT BUG REPORTS\n\n';
+    bugs.forEach((bug, i) => {
+        report += `#${i+1} - ${bug.title}\n`;
+        report += `Time: ${new Date(bug.timestamp).toLocaleString()}\n`;
+        report += `Details: ${bug.details}\n\n`;
+    });
+
+    alert(report);
+}
 </script>
 
+<!-- Bug Reporter Button (in the cockpit) -->
+<button onclick="toggleBugPanel()"
+        style="position: fixed; bottom: 100px; right: 20px; z-index: 9999;
+               background: rgba(255,0,0,0.2); border: 2px solid #ff0000;
+               color: #ff0000; padding: 12px 20px; border-radius: 50px;
+               cursor: pointer; font-size: 14px; box-shadow: 0 4px 15px rgba(255,0,0,0.4);">
+    🐛 Report Bug
+</button>
 
-</body> tag -->
+<!-- View Bugs Button -->
+<button onclick="viewCockpitBugs()"
+        style="position: fixed; bottom: 150px; right: 20px; z-index: 9999;
+               background: rgba(255,165,0,0.2); border: 2px solid #ffaa00;
+               color: #ffaa00; padding: 10px 18px; border-radius: 50px;
+               cursor: pointer; font-size: 12px; box-shadow: 0 4px 15px rgba(255,165,0,0.4);">
+    📋 View Bugs
+</button>
 
-
-
-
-    <!-- Simple Bug Reporter -->
-    <script src="/SIMPLE_BUG_REPORTER.js"></script>
-
-    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+<!-- Export Cockpit Data Button -->
+<button onclick="exportCockpitData()"
+        style="position: fixed; bottom: 200px; right: 20px; z-index: 9999;
+               background: rgba(0,221,255,0.2); border: 2px solid #00ddff;
+               color: #00ddff; padding: 10px 18px; border-radius: 50px;
+               cursor: pointer; font-size: 12px; box-shadow: 0 4px 15px rgba(0,221,255,0.4);">
+    💾 Export Cockpit
+</button>
 </body>
 </html>
