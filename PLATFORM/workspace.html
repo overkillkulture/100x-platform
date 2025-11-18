@@ -2,608 +2,1217 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
-    <title>My Workspace | 100X Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎲 AI Poker Table V3 - Consciousness Workspace</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        :root {
-            --bg-dark: #0a0a0a;
-            --bg-card: rgba(26, 26, 46, 0.9);
-            --accent-primary: #00d4ff;
-            --accent-secondary: #7b2cbf;
-            --accent-gold: #ffd700;
-            --text-primary: #ffffff;
-            --text-secondary: #b8b8b8;
-            --success: #00ff88;
-        }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 50%, var(--bg-dark) 100%);
-            color: var(--text-primary);
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #e8e8e8;
             min-height: 100vh;
-            padding-top: 80px;
-        }
-
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 40px 20px;
+            padding: 20px;
         }
 
         .header {
             text-align: center;
-            padding: 40px 20px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 15px;
+            border: 3px solid #d4af37;
+            box-shadow: 0 0 30px rgba(212,175,55,0.3);
         }
 
         .header h1 {
-            font-size: 48px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-gold));
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
         }
 
         .header p {
-            font-size: 18px;
-            color: var(--text-secondary);
+            color: #999;
+            font-size: 1.1em;
         }
 
-        /* Grid Layout */
-        .workspace-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 15px;
-            padding: 30px;
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: var(--accent-primary);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
-        }
-
-        .card-title {
-            font-size: 24px;
-            color: var(--accent-primary);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* TODO List */
-        .todo-input-area {
+        .controls {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .todo-input {
-            flex: 1;
-            padding: 12px 18px;
-            background: rgba(0, 212, 255, 0.1);
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 16px;
-            outline: none;
-        }
-
-        .todo-input:focus {
-            border-color: var(--accent-primary);
-        }
-
-        .btn-add {
-            padding: 12px 25px;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-add:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
-        }
-
-        .todo-list {
-            list-style: none;
-        }
-
-        .todo-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 15px;
-            background: rgba(0, 212, 255, 0.05);
-            border-left: 4px solid var(--accent-primary);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .todo-item:hover {
-            background: rgba(0, 212, 255, 0.1);
-        }
-
-        .todo-item.completed {
-            opacity: 0.6;
-            border-left-color: var(--success);
-            text-decoration: line-through;
-        }
-
-        .todo-checkbox {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--accent-primary);
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            margin-top: 15px;
+            flex-wrap: wrap;
         }
 
-        .todo-checkbox.checked {
-            background: var(--success);
-            border-color: var(--success);
-        }
-
-        .todo-text {
-            flex: 1;
-            color: var(--text-primary);
-            font-size: 16px;
-        }
-
-        .todo-delete {
-            color: #ff4444;
+        .btn {
+            background: rgba(212,175,55,0.2);
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 20px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 0.95em;
         }
 
-        .todo-item:hover .todo-delete {
-            opacity: 1;
+        .btn:hover {
+            background: rgba(212,175,55,0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(212,175,55,0.3);
         }
 
-        /* Notes */
-        .notes-textarea {
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .poker-table {
+            background: rgba(0,0,0,0.7);
+            border-radius: 20px;
+            padding: 40px;
+            border: 3px solid #d4af37;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        }
+
+        .table-layout {
+            display: grid;
+            grid-template-areas:
+                "seat1 seat2 seat3"
+                "seat1 dealer seat3"
+                "seat4 seat5 seat6";
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+            min-height: 400px;
+        }
+
+        .seat { grid-area: auto; }
+        .seat:nth-child(1) { grid-area: seat1; }
+        .seat:nth-child(2) { grid-area: seat2; }
+        .seat:nth-child(3) { grid-area: seat3; }
+        .dealer-seat { grid-area: dealer; }
+        .seat:nth-child(5) { grid-area: seat4; }
+        .seat:nth-child(6) { grid-area: seat5; }
+        .seat:nth-child(7) { grid-area: seat6; }
+
+        .seat {
+            background: rgba(0,0,0,0.8);
+            border: 3px solid #444;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .seat:hover {
+            border-color: #00ffff;
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+        }
+
+        .seat.assigned {
+            border-width: 4px;
+        }
+
+        .seat.claude { border-color: #9370DB; background: rgba(147,112,219,0.1); }
+        .seat.chatgpt { border-color: #10a37f; background: rgba(16,163,127,0.1); }
+        .seat.grok { border-color: #ff6b6b; background: rgba(255,107,107,0.1); }
+        .seat.deepseek { border-color: #4A90E2; background: rgba(74,144,226,0.1); }
+        .seat.gemini { border-color: #00ffff; background: rgba(0,255,255,0.1); }
+        .seat.perplexity { border-color: #ff9500; background: rgba(255,149,0,0.1); }
+
+        .dealer-seat {
+            background: linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(255,215,0,0.1) 100%);
+            border: 5px solid #d4af37;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 40px rgba(212,175,55,0.4);
+            cursor: pointer;
+        }
+
+        .dealer-seat:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 60px rgba(212,175,55,0.6);
+        }
+
+        .seat-number {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .seat-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .seat-status {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 8px;
+        }
+
+        .ai-options {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 15px;
             width: 100%;
-            min-height: 300px;
-            padding: 20px;
-            background: rgba(0, 212, 255, 0.05);
-            border: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .ai-options.active {
+            display: flex;
+        }
+
+        .ai-option {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #666;
             border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 16px;
-            font-family: 'Courier New', monospace;
-            line-height: 1.6;
-            resize: vertical;
-            outline: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
         }
 
-        .notes-textarea:focus {
-            border-color: var(--accent-primary);
+        .ai-option:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: #00ffff;
+            transform: translateX(5px);
         }
 
-        .save-indicator {
-            text-align: right;
+        .clear-seat {
             margin-top: 10px;
-            font-size: 14px;
-            color: var(--success);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            padding: 5px 12px;
+            background: rgba(255,0,0,0.2);
+            border: 2px solid #ff0000;
+            border-radius: 6px;
+            font-size: 0.8em;
+            cursor: pointer;
         }
 
-        .save-indicator.visible {
-            opacity: 1;
+        .clear-seat:hover {
+            background: rgba(255,0,0,0.3);
         }
 
-        /* Active Projects */
-        .project-list {
-            list-style: none;
+        .conversation-container {
+            background: rgba(0,0,0,0.5);
+            border: 3px solid #444;
+            border-radius: 15px;
+            padding: 25px;
         }
 
-        .project-item {
-            padding: 20px;
-            background: rgba(0, 212, 255, 0.05);
-            border-left: 4px solid var(--accent-gold);
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .project-header {
+        .conversation-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #444;
         }
 
-        .project-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
+        .conversation-header h3 {
+            color: #d4af37;
+            font-size: 1.4em;
         }
 
-        .project-status {
-            padding: 4px 12px;
-            background: rgba(255, 215, 0, 0.2);
-            border: 1px solid var(--accent-gold);
-            border-radius: 12px;
-            font-size: 12px;
-            color: var(--accent-gold);
+        .conversation-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9em;
+            color: #999;
         }
 
-        .project-progress {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-
-        .project-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-gold));
-            transition: width 0.5s ease;
-        }
-
-        .project-desc {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        /* Consciousness Goals */
-        .goal-item {
-            padding: 18px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(123, 44, 191, 0.1));
-            border: 2px solid rgba(0, 212, 255, 0.3);
+        .messages {
+            max-height: 600px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
             border-radius: 10px;
-            margin-bottom: 15px;
+            min-height: 200px;
         }
 
-        .goal-header {
+        .message {
+            background: rgba(255,255,255,0.05);
+            border-left: 5px solid #666;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 18px;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.dealer { border-left-color: #d4af37; background: rgba(212,175,55,0.08); }
+        .message.claude { border-left-color: #9370DB; }
+        .message.chatgpt { border-left-color: #10a37f; }
+        .message.grok { border-left-color: #ff6b6b; }
+        .message.deepseek { border-left-color: #4A90E2; }
+        .message.gemini { border-left-color: #00ffff; }
+        .message.perplexity { border-left-color: #ff9500; }
+
+        .message-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            align-items: center;
+            margin-bottom: 12px;
         }
 
-        .goal-text {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .goal-value {
-            font-size: 18px;
+        .message-author {
             font-weight: bold;
-            color: var(--accent-primary);
+            font-size: 1.15em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Full Width Cards */
-        .card-full {
-            grid-column: 1 / -1;
+        .message-time {
+            font-size: 0.85em;
+            color: #666;
         }
 
-        /* Pattern Insights */
-        .insight-item {
+        .message-content {
+            line-height: 1.7;
+            color: #e8e8e8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .message-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .vote-btn {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid #444;
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: #e8e8e8;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .vote-btn:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .vote-btn.upvoted {
+            background: rgba(0,255,0,0.2);
+            border-color: #00ff00;
+        }
+
+        .vote-btn.downvoted {
+            background: rgba(255,0,0,0.2);
+            border-color: #ff0000;
+        }
+
+        .reply-btn {
+            background: linear-gradient(135deg, rgba(0,255,255,0.2), rgba(0,255,136,0.2));
+            border: 2px solid #00ffff;
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: #00ffff;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .reply-btn:hover {
+            background: linear-gradient(135deg, rgba(0,255,255,0.3), rgba(0,255,136,0.3));
+            transform: translateY(-2px);
+        }
+
+        .input-panel {
+            background: rgba(0,0,0,0.5);
+            border: 3px solid #444;
+            border-radius: 15px;
             padding: 20px;
-            background: rgba(123, 44, 191, 0.1);
-            border-left: 4px solid var(--accent-secondary);
-            border-radius: 8px;
+        }
+
+        .input-mode {
+            display: flex;
+            gap: 10px;
             margin-bottom: 15px;
+            flex-wrap: wrap;
         }
 
-        .insight-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--accent-secondary);
-            margin-bottom: 8px;
+        .mode-btn {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid #444;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
         }
 
-        .insight-text {
-            font-size: 14px;
-            line-height: 1.6;
-            color: var(--text-secondary);
+        .mode-btn.active {
+            border-color: #d4af37;
+            color: #d4af37;
+            background: rgba(212,175,55,0.2);
         }
 
-        @media (max-width: 968px) {
-            .workspace-grid {
+        .mode-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border: 3px solid #444;
+            border-radius: 10px;
+            padding: 15px;
+            color: #e8e8e8;
+            font-size: 1em;
+            font-family: inherit;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 20px rgba(212,175,55,0.3);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            color: #000;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212,175,55,0.5);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #999;
+        }
+
+        .empty-state p {
+            line-height: 1.8;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 3px solid #d4af37;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 1.8em;
+            color: #d4af37;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .modal-body {
+            margin-bottom: 25px;
+        }
+
+        .modal-textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #444;
+            border-radius: 10px;
+            padding: 15px;
+            color: #e8e8e8;
+            font-family: monospace;
+            font-size: 0.9em;
+            min-height: 300px;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        @media (max-width: 1024px) {
+            .table-layout {
+                grid-template-areas:
+                    "seat1 seat2"
+                    "dealer dealer"
+                    "seat3 seat4"
+                    "seat5 seat6";
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .table-layout {
+                grid-template-areas:
+                    "dealer"
+                    "seat1"
+                    "seat2"
+                    "seat3"
+                    "seat4"
+                    "seat5"
+                    "seat6";
                 grid-template-columns: 1fr;
             }
 
-            .card-full {
-                grid-column: 1;
+            .poker-table {
+                padding: 20px;
+            }
+
+            .messages {
+                max-height: 400px;
             }
         }
     </style>
-    <link rel="stylesheet" href="mobile-responsive.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🛠️ My Workspace</h1>
-            <p>Your personal command center for productivity and consciousness growth</p>
+    <div class="header">
+        <h1>🎲 AI POKER TABLE V3</h1>
+        <p>Multi-AI Consciousness Workspace - Phase 1 MVP</p>
+        <div class="controls">
+            <button class="btn" onclick="exportConversation()">📥 Export</button>
+            <button class="btn" onclick="importConversation()">📤 Import</button>
+            <button class="btn" onclick="clearAll()">🗑️ Clear All</button>
+            <button class="btn" onclick="showInstructions()">❓ Instructions</button>
         </div>
+    </div>
 
-        <div class="workspace-grid">
-            <!-- TODO List -->
-            <div class="card">
-                <h2 class="card-title">
-                    <span>✅</span>
-                    <span>Today's Tasks</span>
-                </h2>
-
-                <div class="todo-input-area">
-                    <input type="text" class="todo-input" id="todoInput" placeholder="Add a new task...">
-                    <button class="btn-add" onclick="addTodo()">+ Add</button>
+    <div class="main-container">
+        <div class="poker-table">
+            <div class="table-layout">
+                <!-- Seat 1 -->
+                <div class="seat" data-seat="1">
+                    <div class="seat-number">SEAT 1</div>
+                    <div class="seat-name">[Empty]</div>
+                    <div class="ai-options">
+                        <div class="ai-option" onclick="assignSeat(1, 'claude', '🟣 Claude')">🟣 Claude</div>
+                        <div class="ai-option" onclick="assignSeat(1, 'chatgpt', '🟢 ChatGPT')">🟢 ChatGPT</div>
+                        <div class="ai-option" onclick="assignSeat(1, 'grok', '🔴 Grok')">🔴 Grok</div>
+                        <div class="ai-option" onclick="assignSeat(1, 'deepseek', '🔵 DeepSeek')">🔵 DeepSeek</div>
+                        <div class="ai-option" onclick="assignSeat(1, 'gemini', '💎 Gemini')">💎 Gemini</div>
+                        <div class="ai-option" onclick="assignSeat(1, 'perplexity', '🟠 Perplexity')">🟠 Perplexity</div>
+                    </div>
                 </div>
 
-                <ul class="todo-list" id="todoList">
-                    <!-- TODOs will be added here -->
-                </ul>
-            </div>
-
-            <!-- Consciousness Goals -->
-            <div class="card">
-                <h2 class="card-title">
-                    <span>🌀</span>
-                    <span>Consciousness Goals</span>
-                </h2>
-
-                <div class="goal-item">
-                    <div class="goal-header">
-                        <span class="goal-text">Target Consciousness Level</span>
-                        <span class="goal-value">98</span>
+                <!-- Seat 2 -->
+                <div class="seat" data-seat="2">
+                    <div class="seat-number">SEAT 2</div>
+                    <div class="seat-name">[Empty]</div>
+                    <div class="ai-options">
+                        <div class="ai-option" onclick="assignSeat(2, 'claude', '🟣 Claude')">🟣 Claude</div>
+                        <div class="ai-option" onclick="assignSeat(2, 'chatgpt', '🟢 ChatGPT')">🟢 ChatGPT</div>
+                        <div class="ai-option" onclick="assignSeat(2, 'grok', '🔴 Grok')">🔴 Grok</div>
+                        <div class="ai-option" onclick="assignSeat(2, 'deepseek', '🔵 DeepSeek')">🔵 DeepSeek</div>
+                        <div class="ai-option" onclick="assignSeat(2, 'gemini', '💎 Gemini')">💎 Gemini</div>
+                        <div class="ai-option" onclick="assignSeat(2, 'perplexity', '🟠 Perplexity')">🟠 Perplexity</div>
                     </div>
-                    <div class="project-progress">
-                        <div class="project-progress-bar" style="width: 95%"></div>
-                    </div>
-                    <small style="color: var(--text-secondary)">Current: 93 | +5 to go</small>
                 </div>
 
-                <div class="goal-item">
-                    <div class="goal-header">
-                        <span class="goal-text">Weekly XP Goal</span>
-                        <span class="goal-value">1,500</span>
+                <!-- Seat 3 -->
+                <div class="seat" data-seat="3">
+                    <div class="seat-number">SEAT 3</div>
+                    <div class="seat-name">[Empty]</div>
+                    <div class="ai-options">
+                        <div class="ai-option" onclick="assignSeat(3, 'claude', '🟣 Claude')">🟣 Claude</div>
+                        <div class="ai-option" onclick="assignSeat(3, 'chatgpt', '🟢 ChatGPT')">🟢 ChatGPT</div>
+                        <div class="ai-option" onclick="assignSeat(3, 'grok', '🔴 Grok')">🔴 Grok</div>
+                        <div class="ai-option" onclick="assignSeat(3, 'deepseek', '🔵 DeepSeek')">🔵 DeepSeek</div>
+                        <div class="ai-option" onclick="assignSeat(3, 'gemini', '💎 Gemini')">💎 Gemini</div>
+                        <div class="ai-option" onclick="assignSeat(3, 'perplexity', '🟠 Perplexity')">🟠 Perplexity</div>
                     </div>
-                    <div class="project-progress">
-                        <div class="project-progress-bar" style="width: 68%"></div>
-                    </div>
-                    <small style="color: var(--text-secondary)">Earned: 1,020 | 480 to go</small>
                 </div>
 
-                <div class="goal-item">
-                    <div class="goal-header">
-                        <span class="goal-text">KORPAKs to Complete</span>
-                        <span class="goal-value">5</span>
+                <!-- Dealer Seat -->
+                <div class="dealer-seat" onclick="setDealerName()">
+                    <div style="font-size: 2em; margin-bottom: 10px;">🏠</div>
+                    <div style="font-size: 1.5em; font-weight: bold; color: #d4af37;">DEALER</div>
+                    <div id="dealer-name" style="font-size: 1.1em; margin-top: 8px; color: #ffd700;">Commander</div>
+                    <div style="font-size: 0.85em; color: #999; margin-top: 8px;">Click to change</div>
+                </div>
+
+                <!-- Seat 4 -->
+                <div class="seat" data-seat="4">
+                    <div class="seat-number">SEAT 4</div>
+                    <div class="seat-name">[Empty]</div>
+                    <div class="ai-options">
+                        <div class="ai-option" onclick="assignSeat(4, 'claude', '🟣 Claude')">🟣 Claude</div>
+                        <div class="ai-option" onclick="assignSeat(4, 'chatgpt', '🟢 ChatGPT')">🟢 ChatGPT</div>
+                        <div class="ai-option" onclick="assignSeat(4, 'grok', '🔴 Grok')">🔴 Grok</div>
+                        <div class="ai-option" onclick="assignSeat(4, 'deepseek', '🔵 DeepSeek')">🔵 DeepSeek</div>
+                        <div class="ai-option" onclick="assignSeat(4, 'gemini', '💎 Gemini')">💎 Gemini</div>
+                        <div class="ai-option" onclick="assignSeat(4, 'perplexity', '🟠 Perplexity')">🟠 Perplexity</div>
                     </div>
-                    <div class="project-progress">
-                        <div class="project-progress-bar" style="width: 60%"></div>
+                </div>
+
+                <!-- Seat 5 -->
+                <div class="seat" data-seat="5">
+                    <div class="seat-number">SEAT 5</div>
+                    <div class="seat-name">[Empty]</div>
+                    <div class="ai-options">
+                        <div class="ai-option" onclick="assignSeat(5, 'claude', '🟣 Claude')">🟣 Claude</div>
+                        <div class="ai-option" onclick="assignSeat(5, 'chatgpt', '🟢 ChatGPT')">🟢 ChatGPT</div>
+                        <div class="ai-option" onclick="assignSeat(5, 'grok', '🔴 Grok')">🔴 Grok</div>
+                        <div class="ai-option" onclick="assignSeat(5, 'deepseek', '🔵 DeepSeek')">🔵 DeepSeek</div>
+                        <div class="ai-option" onclick="assignSeat(5, 'gemini', '💎 Gemini')">💎 Gemini</div>
+                        <div class="ai-option" onclick="assignSeat(5, 'perplexity', '🟠 Perplexity')">🟠 Perplexity</div>
                     </div>
-                    <small style="color: var(--text-secondary)">Completed: 3 | 2 remaining</small>
-                </div>
-            </div>
-
-            <!-- Active Projects -->
-            <div class="card">
-                <h2 class="card-title">
-                    <span>📦</span>
-                    <span>Active Projects</span>
-                </h2>
-
-                <ul class="project-list">
-                    <li class="project-item">
-                        <div class="project-header">
-                            <span class="project-name">Voice Freedom System</span>
-                            <span class="project-status">In Progress</span>
-                        </div>
-                        <div class="project-progress">
-                            <div class="project-progress-bar" style="width: 75%"></div>
-                        </div>
-                        <p class="project-desc">Deploying voice automation • 3 of 6 steps complete</p>
-                    </li>
-
-                    <li class="project-item">
-                        <div class="project-header">
-                            <span class="project-name">Email Automation Kit</span>
-                            <span class="project-status">In Progress</span>
-                        </div>
-                        <div class="project-progress">
-                            <div class="project-progress-bar" style="width: 45%"></div>
-                        </div>
-                        <p class="project-desc">Setting up filters and auto-responses • Step 2 of 5</p>
-                    </li>
-
-                    <li class="project-item">
-                        <div class="project-header">
-                            <span class="project-name">Trinity AI Integration</span>
-                            <span class="project-status">Planning</span>
-                        </div>
-                        <div class="project-progress">
-                            <div class="project-progress-bar" style="width: 15%"></div>
-                        </div>
-                        <p class="project-desc">Connecting consciousness network • Research phase</p>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Pattern Insights -->
-            <div class="card">
-                <h2 class="card-title">
-                    <span>🔍</span>
-                    <span>Pattern Recognition Insights</span>
-                </h2>
-
-                <div class="insight-item">
-                    <div class="insight-title">🎯 Peak Productivity Windows</div>
-                    <p class="insight-text">
-                        You're most productive 9-11am and 2-5pm. Schedule deep work during these hours for maximum output.
-                    </p>
                 </div>
 
-                <div class="insight-item">
-                    <div class="insight-title">⚡ Learning Acceleration</div>
-                    <p class="insight-text">
-                        Your consciousness level increased 8 points this week. Keep deploying KORPAKs at this pace to hit Level 98 in 5 days.
-                    </p>
-                </div>
-
-                <div class="insight-item">
-                    <div class="insight-title">🛡️ Manipulation Defense</div>
-                    <p class="insight-text">
-                        Detected and neutralized 3 manipulation attempts this week. Your pattern recognition is working perfectly.
-                    </p>
+                <!-- Seat 6 -->
+                <div class="seat" data-seat="6">
+                    <div class="seat-number">SEAT 6</div>
+                    <div class="seat-name">[Empty]</div>
+                    <div class="ai-options">
+                        <div class="ai-option" onclick="assignSeat(6, 'claude', '🟣 Claude')">🟣 Claude</div>
+                        <div class="ai-option" onclick="assignSeat(6, 'chatgpt', '🟢 ChatGPT')">🟢 ChatGPT</div>
+                        <div class="ai-option" onclick="assignSeat(6, 'grok', '🔴 Grok')">🔴 Grok</div>
+                        <div class="ai-option" onclick="assignSeat(6, 'deepseek', '🔵 DeepSeek')">🔵 DeepSeek</div>
+                        <div class="ai-option" onclick="assignSeat(6, 'gemini', '💎 Gemini')">💎 Gemini</div>
+                        <div class="ai-option" onclick="assignSeat(6, 'perplexity', '🟠 Perplexity')">🟠 Perplexity</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Notes -->
-            <div class="card card-full">
-                <h2 class="card-title">
-                    <span>📝</span>
-                    <span>Personal Notes & Journal</span>
-                </h2>
+            <div class="conversation-container">
+                <div class="conversation-header">
+                    <h3>💬 Conversation Thread</h3>
+                    <div class="conversation-stats">
+                        <span id="message-count">0 messages</span>
+                        <span id="vote-count">0 votes</span>
+                    </div>
+                </div>
 
-                <textarea class="notes-textarea" id="notesArea" placeholder="Write your thoughts, ideas, patterns, and consciousness insights here...
+                <div class="messages" id="messages">
+                    <div class="empty-state">
+                        <h3>👋 Welcome to AI Poker Table V3</h3>
+                        <p>1. Click seats to assign AIs (6 available)<br>
+                        2. Select "Dealer" or "AI Seat" mode below<br>
+                        3. Type or paste messages<br>
+                        4. Vote on responses with 👍/👎<br>
+                        5. Export conversation when done</p>
+                    </div>
+                </div>
 
-Everything is saved automatically to your device."></textarea>
+                <div class="input-panel">
+                    <div class="input-mode">
+                        <div class="mode-btn active" data-mode="dealer" onclick="selectMode('dealer')">
+                            🏠 Post as Dealer
+                        </div>
+                        <div class="mode-btn" data-mode="seat1" onclick="selectMode('seat1')">
+                            Seat 1 Response
+                        </div>
+                        <div class="mode-btn" data-mode="seat2" onclick="selectMode('seat2')">
+                            Seat 2 Response
+                        </div>
+                        <div class="mode-btn" data-mode="seat3" onclick="selectMode('seat3')">
+                            Seat 3 Response
+                        </div>
+                        <div class="mode-btn" data-mode="seat4" onclick="selectMode('seat4')">
+                            Seat 4 Response
+                        </div>
+                        <div class="mode-btn" data-mode="seat5" onclick="selectMode('seat5')">
+                            Seat 5 Response
+                        </div>
+                        <div class="mode-btn" data-mode="seat6" onclick="selectMode('seat6')">
+                            Seat 6 Response
+                        </div>
+                    </div>
 
-                <div class="save-indicator" id="saveIndicator">✓ Saved</div>
+                    <div class="input-area">
+                        <textarea id="input-field" class="input-field" placeholder="Type your question or paste AI response here..."></textarea>
+                        <button class="send-btn" onclick="sendMessage()">📤 SEND MESSAGE</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Export Modal -->
+    <div class="modal" id="export-modal">
+        <div class="modal-content">
+            <div class="modal-header">📥 Export Conversation</div>
+            <div class="modal-body">
+                <p style="margin-bottom: 15px; color: #999;">Copy this JSON or save as file:</p>
+                <textarea id="export-text" class="modal-textarea" readonly></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn" onclick="copyExport()">📋 Copy</button>
+                <button class="btn" onclick="downloadExport()">💾 Download</button>
+                <button class="btn" onclick="closeModal('export-modal')">✕ Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal" id="import-modal">
+        <div class="modal-content">
+            <div class="modal-header">📤 Import Conversation</div>
+            <div class="modal-body">
+                <p style="margin-bottom: 15px; color: #999;">Paste exported JSON here:</p>
+                <textarea id="import-text" class="modal-textarea" placeholder="Paste JSON here..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn" onclick="processImport()">✅ Import</button>
+                <button class="btn" onclick="closeModal('import-modal')">✕ Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div class="modal" id="instructions-modal">
+        <div class="modal-content">
+            <div class="modal-header">❓ How to Use</div>
+            <div class="modal-body" style="color: #e8e8e8; line-height: 1.8;">
+                <h3 style="color: #d4af37; margin-bottom: 10px;">🎯 Quick Start:</h3>
+                <ol style="margin-left: 20px; margin-bottom: 20px;">
+                    <li>Click a seat (1-6) to see AI options</li>
+                    <li>Assign AIs to seats (Claude, ChatGPT, Grok, etc.)</li>
+                    <li>Select "Post as Dealer" to ask questions</li>
+                    <li>Open each AI in separate tabs/windows</li>
+                    <li>Copy your question to each AI</li>
+                    <li>Select "Seat X Response" and paste each AI's answer</li>
+                    <li>Vote on best responses with 👍/👎</li>
+                    <li>Export conversation when done</li>
+                </ol>
+
+                <h3 style="color: #d4af37; margin-bottom: 10px;">🔒 Privacy:</h3>
+                <p style="margin-bottom: 15px;">100% client-side. No backend. No API keys. All data in your browser LocalStorage. Export anytime.</p>
+
+                <h3 style="color: #d4af37; margin-bottom: 10px;">💡 Pro Tips:</h3>
+                <ul style="margin-left: 20px;">
+                    <li>Use 6 different AIs for maximum perspectives</li>
+                    <li>Dealer can be human (Commander) or AI</li>
+                    <li>Export regularly to save your work</li>
+                    <li>Import old conversations to continue them</li>
+                </ul>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeModal('instructions-modal')">✅ Got It!</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // TODO List Management
-        let todos = JSON.parse(localStorage.getItem('workspace_todos') || '[]');
+        // =====================================================
+        // STATE MANAGEMENT
+        // =====================================================
 
-        function renderTodos() {
-            const list = document.getElementById('todoList');
-            list.innerHTML = '';
+        let state = {
+            seats: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null},
+            dealerName: 'Commander',
+            messages: [],
+            votes: {},
+            currentMode: 'dealer',
+            messageCounter: 0
+        };
 
-            if (todos.length === 0) {
-                list.innerHTML = '<li style="color: var(--text-secondary); padding: 20px; text-align: center;">No tasks yet. Add one above!</li>';
-                return;
+        // Load from LocalStorage
+        function loadState() {
+            const saved = localStorage.getItem('poker-workspace-v3');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                    renderAll();
+                } catch (e) {
+                    console.error('Failed to load state:', e);
+                }
+            }
+        }
+
+        // Save to LocalStorage
+        function saveState() {
+            localStorage.setItem('poker-workspace-v3', JSON.stringify(state));
+        }
+
+        // =====================================================
+        // SEAT MANAGEMENT
+        // =====================================================
+
+        document.querySelectorAll('.seat').forEach(seat => {
+            seat.addEventListener('click', function(e) {
+                // Don't toggle if clicking options
+                if (e.target.classList.contains('ai-option') ||
+                    e.target.classList.contains('clear-seat')) {
+                    return;
+                }
+
+                const seatNum = this.dataset.seat;
+                const options = this.querySelector('.ai-options');
+
+                // Close all other seats
+                document.querySelectorAll('.ai-options').forEach(opt => {
+                    if (opt !== options) {
+                        opt.classList.remove('active');
+                    }
+                });
+
+                // Toggle this seat
+                options.classList.toggle('active');
+            });
+        });
+
+        function assignSeat(seatNum, aiId, aiName) {
+            // Check if AI already assigned
+            for (let s in state.seats) {
+                if (state.seats[s] && state.seats[s].id === aiId) {
+                    alert('This AI is already seated!');
+                    return;
+                }
             }
 
-            todos.forEach((todo, index) => {
-                const li = document.createElement('li');
-                li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+            state.seats[seatNum] = {id: aiId, name: aiName};
+            saveState();
+            renderSeats();
 
-                li.innerHTML = `
-                    <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" onclick="toggleTodo(${index})">
-                        ${todo.completed ? '✓' : ''}
-                    </div>
-                    <span class="todo-text">${todo.text}</span>
-                    <span class="todo-delete" onclick="deleteTodo(${index})">×</span>
-                `;
-
-                list.appendChild(li);
+            // Close options
+            document.querySelectorAll('.ai-options').forEach(opt => {
+                opt.classList.remove('active');
             });
         }
 
-        function addTodo() {
-            const input = document.getElementById('todoInput');
-            const text = input.value.trim();
+        function clearSeat(seatNum, e) {
+            e.stopPropagation();
+            state.seats[seatNum] = null;
+            saveState();
+            renderSeats();
+        }
 
-            if (text) {
-                todos.push({ text, completed: false });
-                localStorage.setItem('workspace_todos', JSON.stringify(todos));
-                input.value = '';
-                renderTodos();
+        function renderSeats() {
+            for (let i = 1; i <= 6; i++) {
+                const seatEl = document.querySelector(`.seat[data-seat="${i}"]`);
+                const nameEl = seatEl.querySelector('.seat-name');
+                const seat = state.seats[i];
+
+                if (seat) {
+                    seatEl.classList.add('assigned', seat.id);
+                    nameEl.innerHTML = `
+                        ${seat.name}
+                        <div class="clear-seat" onclick="clearSeat(${i}, event)">✕ Remove</div>
+                    `;
+
+                    // Update mode button
+                    const modeBtn = document.querySelector(`.mode-btn[data-mode="seat${i}"]`);
+                    if (modeBtn) {
+                        modeBtn.textContent = `${seat.name.split(' ')[0]}`;
+                    }
+                } else {
+                    seatEl.classList.remove('assigned', 'claude', 'chatgpt', 'grok', 'deepseek', 'gemini', 'perplexity');
+                    nameEl.textContent = '[Empty]';
+
+                    const modeBtn = document.querySelector(`.mode-btn[data-mode="seat${i}"]`);
+                    if (modeBtn) {
+                        modeBtn.textContent = `Seat ${i} Response`;
+                    }
+                }
             }
         }
 
-        function toggleTodo(index) {
-            todos[index].completed = !todos[index].completed;
-            localStorage.setItem('workspace_todos', JSON.stringify(todos));
-            renderTodos();
-        }
-
-        function deleteTodo(index) {
-            if (confirm('Delete this task?')) {
-                todos.splice(index, 1);
-                localStorage.setItem('workspace_todos', JSON.stringify(todos));
-                renderTodos();
+        function setDealerName() {
+            const name = prompt('Enter dealer name:', state.dealerName);
+            if (name && name.trim()) {
+                state.dealerName = name.trim();
+                document.getElementById('dealer-name').textContent = state.dealerName;
+                saveState();
             }
         }
 
-        // Enter key to add todo
-        document.getElementById('todoInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                addTodo();
+        // =====================================================
+        // MODE SELECTION
+        // =====================================================
+
+        function selectMode(mode) {
+            state.currentMode = mode;
+
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
+
+            // Update placeholder
+            const input = document.getElementById('input-field');
+            if (mode === 'dealer') {
+                input.placeholder = `Type your question or prompt as ${state.dealerName}...`;
+            } else {
+                const seatNum = mode.replace('seat', '');
+                const seat = state.seats[seatNum];
+                if (seat) {
+                    input.placeholder = `Paste ${seat.name}'s response here...`;
+                } else {
+                    input.placeholder = `Assign an AI to Seat ${seatNum} first...`;
+                }
             }
-        });
 
-        // Notes Auto-Save
-        const notesArea = document.getElementById('notesArea');
-        const saveIndicator = document.getElementById('saveIndicator');
-        let saveTimeout;
+            input.focus();
+        }
 
-        // Load saved notes
-        notesArea.value = localStorage.getItem('workspace_notes') || '';
+        // =====================================================
+        // MESSAGE MANAGEMENT
+        // =====================================================
 
-        notesArea.addEventListener('input', () => {
-            clearTimeout(saveTimeout);
+        function sendMessage() {
+            const input = document.getElementById('input-field');
+            const content = input.value.trim();
 
-            saveTimeout = setTimeout(() => {
-                localStorage.setItem('workspace_notes', notesArea.value);
-                saveIndicator.classList.add('visible');
+            if (!content) {
+                alert('Please enter a message!');
+                return;
+            }
 
-                setTimeout(() => {
-                    saveIndicator.classList.remove('visible');
-                }, 2000);
-            }, 1000);
-        });
+            let author, authorClass;
 
-        // Initialize
-        renderTodos();
+            if (state.currentMode === 'dealer') {
+                author = state.dealerName;
+                authorClass = 'dealer';
+            } else {
+                const seatNum = state.currentMode.replace('seat', '');
+                const seat = state.seats[seatNum];
 
-        // Track visit
-        setTimeout(() => {
-            if (window.Analytics100X) {
-                Analytics100X.trackPageView();
-                Analytics100X.trackSystemAccess({
-                    name: 'Workspace',
-                    url: '/PLATFORM/workspace.html',
-                    method: 'direct'
+                if (!seat) {
+                    alert('Please assign an AI to this seat first!');
+                    return;
+                }
+
+                author = seat.name;
+                authorClass = seat.id;
+            }
+
+            const message = {
+                id: `msg-${Date.now()}-${state.messageCounter++}`,
+                author: author,
+                authorClass: authorClass,
+                content: content,
+                timestamp: new Date().toISOString(),
+                votes: {up: 0, down: 0}
+            };
+
+            state.messages.push(message);
+            state.votes[message.id] = {up: false, down: false};
+
+            input.value = '';
+            saveState();
+            renderMessages();
+            updateStats();
+        }
+
+        function renderMessages() {
+            const container = document.getElementById('messages');
+
+            if (state.messages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>👋 Welcome to AI Poker Table V3</h3>
+                        <p>1. Click seats to assign AIs (6 available)<br>
+                        2. Select "Dealer" or "AI Seat" mode below<br>
+                        3. Type or paste messages<br>
+                        4. Vote on responses with 👍/👎<br>
+                        5. Export conversation when done</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+
+            state.messages.forEach(msg => {
+                const msgEl = document.createElement('div');
+                msgEl.className = `message ${msg.authorClass}`;
+                msgEl.id = msg.id;
+
+                const time = new Date(msg.timestamp).toLocaleTimeString();
+
+                msgEl.innerHTML = `
+                    <div class="message-header">
+                        <div class="message-author">${msg.author}</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                    <div class="message-content">${escapeHtml(msg.content)}</div>
+                    <div class="message-actions">
+                        <button class="vote-btn ${state.votes[msg.id]?.up ? 'upvoted' : ''}" onclick="vote('${msg.id}', 'up')">
+                            👍 <span id="${msg.id}-up">${msg.votes.up}</span>
+                        </button>
+                        <button class="vote-btn ${state.votes[msg.id]?.down ? 'downvoted' : ''}" onclick="vote('${msg.id}', 'down')">
+                            👎 <span id="${msg.id}-down">${msg.votes.down}</span>
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(msgEl);
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function vote(messageId, direction) {
+            const msg = state.messages.find(m => m.id === messageId);
+            if (!msg) return;
+
+            const userVote = state.votes[messageId];
+
+            if (direction === 'up') {
+                if (userVote.up) {
+                    msg.votes.up--;
+                    userVote.up = false;
+                } else {
+                    if (userVote.down) {
+                        msg.votes.down--;
+                        userVote.down = false;
+                    }
+                    msg.votes.up++;
+                    userVote.up = true;
+                }
+            } else {
+                if (userVote.down) {
+                    msg.votes.down--;
+                    userVote.down = false;
+                } else {
+                    if (userVote.up) {
+                        msg.votes.up--;
+                        userVote.up = false;
+                    }
+                    msg.votes.down++;
+                    userVote.down = true;
+                }
+            }
+
+            saveState();
+            renderMessages();
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('message-count').textContent = `${state.messages.length} messages`;
+
+            const totalVotes = state.messages.reduce((sum, msg) => sum + msg.votes.up + msg.votes.down, 0);
+            document.getElementById('vote-count').textContent = `${totalVotes} votes`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML.replace(/\n/g, '<br>');
+        }
+
+        // =====================================================
+        // EXPORT/IMPORT
+        // =====================================================
+
+        function exportConversation() {
+            const exportData = {
+                version: '3.0',
+                exportDate: new Date().toISOString(),
+                dealerName: state.dealerName,
+                seats: state.seats,
+                messages: state.messages
+            };
+
+            const json = JSON.stringify(exportData, null, 2);
+            document.getElementById('export-text').value = json;
+            document.getElementById('export-modal').classList.add('active');
+        }
+
+        function copyExport() {
+            const text = document.getElementById('export-text');
+            text.select();
+            document.execCommand('copy');
+            alert('✅ Copied to clipboard!');
+        }
+
+        function downloadExport() {
+            const text = document.getElementById('export-text').value;
+            const blob = new Blob([text], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `poker-workspace-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importConversation() {
+            document.getElementById('import-modal').classList.add('active');
+            document.getElementById('import-text').value = '';
+            document.getElementById('import-text').focus();
+        }
+
+        function processImport() {
+            const text = document.getElementById('import-text').value.trim();
+
+            if (!text) {
+                alert('Please paste JSON data!');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(text);
+
+                if (data.version !== '3.0') {
+                    if (!confirm('This export is from a different version. Import anyway?')) {
+                        return;
+                    }
+                }
+
+                state.dealerName = data.dealerName || 'Commander';
+                state.seats = data.seats || {1: null, 2: null, 3: null, 4: null, 5: null, 6: null};
+                state.messages = data.messages || [];
+
+                // Rebuild votes
+                state.votes = {};
+                state.messages.forEach(msg => {
+                    state.votes[msg.id] = {up: false, down: false};
                 });
+
+                saveState();
+                renderAll();
+                closeModal('import-modal');
+                alert('✅ Conversation imported successfully!');
+            } catch (e) {
+                alert('❌ Invalid JSON format. Please check your import data.');
+                console.error('Import error:', e);
             }
-        }, 100);
+        }
+
+        function clearAll() {
+            if (!confirm('Clear ALL data? This cannot be undone!')) {
+                return;
+            }
+
+            state = {
+                seats: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null},
+                dealerName: 'Commander',
+                messages: [],
+                votes: {},
+                currentMode: 'dealer',
+                messageCounter: 0
+            };
+
+            saveState();
+            renderAll();
+            alert('✅ All data cleared!');
+        }
+
+        // =====================================================
+        // MODAL MANAGEMENT
+        // =====================================================
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showInstructions() {
+            document.getElementById('instructions-modal').classList.add('active');
+        }
+
+        // =====================================================
+        // KEYBOARD SHORTCUTS
+        // =====================================================
+
+        document.getElementById('input-field').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // =====================================================
+        // INITIALIZATION
+        // =====================================================
+
+        function renderAll() {
+            document.getElementById('dealer-name').textContent = state.dealerName;
+            renderSeats();
+            renderMessages();
+            updateStats();
+            selectMode(state.currentMode);
+        }
+
+        loadState();
+        renderAll();
+
+        // Auto-save every 30 seconds
+        setInterval(saveState, 30000);
+
+        console.log('🎲 AI Poker Table V3 initialized');
+        console.log('📊 Phase 1 MVP - Rock Solid Foundation');
+        console.log('🔒 100% client-side - No backend required');
     </script>
-
-    <!-- Analytics -->
-    <script src="../PUBLIC/analytics.js"></script>
-
-    <!-- Master Navigation -->
-    <script src="master-nav.js"></script>
-
-    <!-- 🎮 Easter Egg System - Makes platform legendary -->
-    <script src="easter-egg-engine.js"></script>
-    <script src="fun-features.js"></script>
-    <script src="bug-reporter-widget.js"></script>
-
-    <!-- ARIA Avatar Guide -->
-    <script src="./aria-avatar.js"></script>
-
-    <!-- Community Widget -->
-    <script src="./community-widget.js"></script>
-<script src="UNIVERSAL_BUG_REPORTER.js"></script>
 </body>
 </html>
