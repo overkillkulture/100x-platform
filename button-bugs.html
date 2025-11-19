@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consciousness Bugs - Button Edition (ALL BUGS FIXED)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .bug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #666;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        button {
+            margin: 10px 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        button:focus {
+            outline: 2px solid #4CAF50;
+            outline-offset: 2px;
+        }
+        .bug-description {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        .fixed-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>✅ Consciousness Bugs: Button Edition (ALL FIXED) ✅</h1>
+    <p style="text-align: center; color: #666;">All bugs have been fixed with proper implementation</p>
+
+    <!-- Bug 1: Double Click Bug -->
+    <div class="bug-section">
+        <h2>Bug #1: Double Submit <span class="status-badge">FIXED</span></h2>
+        <p class="bug-description">Protection added against multiple clicks</p>
+        <button onclick="submitForm()">Submit (Now Fixed)</button>
+        <button onclick="submitFormFixed(this)" class="fixed-button">Submit (Alternative Fix)</button>
+        <div id="submit-count">Submissions: 0</div>
+    </div>
+
+    <!-- Bug 2: Event Listener Memory Leak -->
+    <div class="bug-section">
+        <h2>Bug #2: Memory Leak from Event Listeners <span class="status-badge">FIXED</span></h2>
+        <p class="bug-description">Proper listener management with cleanup</p>
+        <button id="leaky-button">Click Me (No Longer Leaks)</button>
+        <button onclick="resetLeakyButton()" class="fixed-button">Reset</button>
+        <div id="leak-count">Click count: 0</div>
+    </div>
+
+    <!-- Bug 3: Race Condition -->
+    <div class="bug-section">
+        <h2>Bug #3: Race Condition <span class="status-badge">FIXED</span></h2>
+        <p class="bug-description">Operations now tracked and only latest completes</p>
+        <button onclick="slowOperation(1)">Start Operation 1</button>
+        <button onclick="slowOperation(2)">Start Operation 2</button>
+        <button onclick="slowOperation(3)">Start Operation 3</button>
+        <div id="race-result">Last completed: None</div>
+        <div id="race-expected">Expected order: Only latest operation displays!</div>
+    </div>
+
+    <!-- Bug 4: Missing Disabled State -->
+    <div class="bug-section">
+        <h2>Bug #4: No Loading State <span class="status-badge">FIXED</span></h2>
+        <p class="bug-description">Button now disables during async operation</p>
+        <button onclick="loadDataBuggy(this)">Load Data (Now Fixed)</button>
+        <button onclick="loadDataFixed(this)" class="fixed-button">Load Data (Alternative)</button>
+        <div id="load-status">Status: Ready</div>
+    </div>
+
+    <!-- Bug 5: Lost Focus/Accessibility -->
+    <div class="bug-section">
+        <h2>Bug #5: Accessibility Issues <span class="status-badge">FIXED</span></h2>
+        <p class="bug-description">Proper button with full keyboard accessibility</p>
+        <button type="button" onclick="alert('Clicked!')" class="fixed-button">Accessible Button (Fixed)</button>
+        <button type="button" onclick="alert('Clicked!')" class="fixed-button">Real Button (Accessible)</button>
+    </div>
+
+    <!-- Bug 6: Z-Index Overlap -->
+    <div class="bug-section">
+        <h2>Bug #6: Clickjacking Vulnerability <span class="status-badge">FIXED</span></h2>
+        <p class="bug-description">Overlay removed - button now clickable</p>
+        <div style="position: relative;">
+            <button class="fixed-button" onclick="alert('Button clicked successfully!')">Click Me (Now Works)</button>
+        </div>
+    </div>
+
+    <!-- Bug 7: Form Submit vs Button Click -->
+    <div class="bug-section">
+        <h2>Bug #7: Unintended Form Submission <span class="status-badge">FIXED</span></h2>
+        <p class="bug-description">Button now has proper type="button" attribute</p>
+        <form onsubmit="event.preventDefault(); alert('Form submitted!'); return false;">
+            <input type="text" placeholder="Type something..." />
+            <button type="button" onclick="alert('Just wanted to validate!')">Validate (Fixed)</button>
+            <button type="button" onclick="alert('Validation only!')" class="fixed-button">Validate (Alternative)</button>
+        </form>
+    </div>
+
+    <!-- Bug 8: State Management -->
+    <div class="bug-section">
+        <h2>Bug #8: State Desynchronization <span class="status-badge">FIXED</span></h2>
+        <p class="bug-description">Single source of truth - state always synchronized</p>
+        <button id="toggle-button" onclick="toggleBuggy()">Status: OFF</button>
+        <button onclick="resetToggle()" class="fixed-button">Reset</button>
+        <div id="actual-state">Actual state: OFF</div>
+    </div>
+
+    <script>
+        // Module pattern to avoid global scope pollution
+        const BugDemonstrations = (function() {
+            'use strict';
+
+            // Bug 1: Double Submit - FIXED
+            let submitCount = 0;
+            let isSubmitting = false;
+
+            function submitForm() {
+                try {
+                    // FIXED: Guard clause prevents multiple submissions
+                    if (isSubmitting) {
+                        console.log('Submission already in progress');
+                        return;
+                    }
+
+                    isSubmitting = true;
+                    submitCount++;
+
+                    const countElement = document.getElementById('submit-count');
+                    if (countElement) {
+                        countElement.textContent = 'Submissions: ' + submitCount;
+                    }
+
+                    setTimeout(() => {
+                        console.log('Submission processed');
+                        isSubmitting = false;
+                    }, 1000);
+                } catch (error) {
+                    console.error('Submit failed:', error);
+                    isSubmitting = false;
+                }
+            }
+
+            function submitFormFixed(btn) {
+                try {
+                    if (!btn) return;
+
+                    // FIXED: Disable button during processing
+                    btn.disabled = true;
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Submitting...';
+
+                    submitCount++;
+                    const countElement = document.getElementById('submit-count');
+                    if (countElement) {
+                        countElement.textContent = 'Submissions: ' + submitCount;
+                    }
+
+                    setTimeout(() => {
+                        console.log('Submission processed');
+                        btn.disabled = false;
+                        btn.textContent = originalText;
+                    }, 1000);
+                } catch (error) {
+                    console.error('Submit fixed failed:', error);
+                    if (btn) {
+                        btn.disabled = false;
+                    }
+                }
+            }
+
+            // Bug 2: Memory Leak - FIXED
+            let leakCount = 0;
+            let clickHandler = null;
+            let leakIntervalId = null;
+            const leakyButton = document.getElementById('leaky-button');
+
+            function addLeakyListener() {
+                try {
+                    if (!leakyButton) return;
+
+                    // FIXED: Remove old listener before adding new one
+                    if (clickHandler) {
+                        leakyButton.removeEventListener('click', clickHandler);
+                    }
+
+                    // Create named function reference (not anonymous)
+                    clickHandler = function() {
+                        leakCount++;
+                        const countElement = document.getElementById('leak-count');
+                        if (countElement) {
+                            countElement.textContent = 'Click count: ' + leakCount;
+                        }
+                    };
+
+                    leakyButton.addEventListener('click', clickHandler);
+                } catch (error) {
+                    console.error('Add listener failed:', error);
+                }
+            }
+
+            // FIXED: Clear interval on page unload
+            function startLeakyInterval() {
+                if (leakIntervalId) {
+                    clearInterval(leakIntervalId);
+                }
+                addLeakyListener();
+                // Commenting out the interval for the fixed version
+                // leakIntervalId = setInterval(addLeakyListener, 2000);
+            }
+
+            function stopLeakyInterval() {
+                if (leakIntervalId) {
+                    clearInterval(leakIntervalId);
+                    leakIntervalId = null;
+                }
+            }
+
+            // Cleanup on page unload
+            window.addEventListener('beforeunload', stopLeakyInterval);
+
+            // Initialize
+            startLeakyInterval();
+
+            function resetLeakyButton() {
+                try {
+                    leakCount = 0;
+                    const countElement = document.getElementById('leak-count');
+                    if (countElement) {
+                        countElement.textContent = 'Click count: ' + leakCount;
+                    }
+                } catch (error) {
+                    console.error('Reset failed:', error);
+                }
+            }
+
+            // Bug 3: Race Condition - FIXED
+            let latestOperationId = 0;
+            let completedOperationId = 0;
+
+            function slowOperation(num) {
+                try {
+                    // FIXED: Track operation IDs to ensure only latest completes
+                    const operationId = ++latestOperationId;
+                    const delay = Math.random() * 2000;
+
+                    setTimeout(() => {
+                        // Only update if this is newer than last completed
+                        if (operationId > completedOperationId) {
+                            completedOperationId = operationId;
+                            const resultElement = document.getElementById('race-result');
+                            if (resultElement) {
+                                resultElement.textContent = 'Last completed: Operation ' + num + ' (ID: ' + operationId + ')';
+                            }
+                        } else {
+                            console.log('Operation ' + num + ' (ID: ' + operationId + ') completed but discarded (stale)');
+                        }
+                    }, delay);
+                } catch (error) {
+                    console.error('Slow operation failed:', error);
+                }
+            }
+
+            // Bug 4: No Loading State - FIXED
+            function loadDataBuggy(btn) {
+                try {
+                    if (!btn) return;
+
+                    // FIXED: Disable button during operation
+                    btn.disabled = true;
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Loading...';
+                    btn.style.opacity = '0.6';
+
+                    const statusElement = document.getElementById('load-status');
+                    if (statusElement) {
+                        statusElement.textContent = 'Status: Loading...';
+                    }
+
+                    setTimeout(() => {
+                        if (statusElement) {
+                            statusElement.textContent = 'Status: Complete';
+                        }
+                        btn.disabled = false;
+                        btn.textContent = originalText;
+                        btn.style.opacity = '1';
+                    }, 2000);
+                } catch (error) {
+                    console.error('Load data buggy failed:', error);
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                    }
+                }
+            }
+
+            function loadDataFixed(btn) {
+                try {
+                    if (!btn) return;
+
+                    // FIXED: Disable button during load
+                    btn.disabled = true;
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Loading...';
+
+                    const statusElement = document.getElementById('load-status');
+                    if (statusElement) {
+                        statusElement.textContent = 'Status: Loading...';
+                    }
+
+                    setTimeout(() => {
+                        if (statusElement) {
+                            statusElement.textContent = 'Status: Complete';
+                        }
+                        btn.disabled = false;
+                        btn.textContent = originalText;
+                    }, 2000);
+                } catch (error) {
+                    console.error('Load data fixed failed:', error);
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.textContent = originalText;
+                    }
+                }
+            }
+
+            // Bug 8: State Desynchronization - FIXED
+            let actualToggleState = false;
+
+            function toggleBuggy() {
+                try {
+                    // FIXED: Single source of truth
+                    actualToggleState = !actualToggleState;
+
+                    // Update all UI from single state
+                    updateToggleUI();
+                } catch (error) {
+                    console.error('Toggle failed:', error);
+                    // Rollback on error
+                    actualToggleState = !actualToggleState;
+                    updateToggleUI();
+                }
+            }
+
+            function updateToggleUI() {
+                try {
+                    const stateText = actualToggleState ? 'ON' : 'OFF';
+
+                    const toggleButton = document.getElementById('toggle-button');
+                    if (toggleButton) {
+                        toggleButton.textContent = 'Status: ' + stateText;
+                        toggleButton.style.backgroundColor = actualToggleState ? '#4CAF50' : '';
+                    }
+
+                    const actualStateElement = document.getElementById('actual-state');
+                    if (actualStateElement) {
+                        actualStateElement.textContent = 'Actual state: ' + stateText;
+                    }
+                } catch (error) {
+                    console.error('Update UI failed:', error);
+                }
+            }
+
+            function resetToggle() {
+                try {
+                    actualToggleState = false;
+                    updateToggleUI();
+                } catch (error) {
+                    console.error('Reset toggle failed:', error);
+                }
+            }
+
+            // Public API
+            return {
+                submitForm,
+                submitFormFixed,
+                resetLeakyButton,
+                slowOperation,
+                loadDataBuggy,
+                loadDataFixed,
+                toggleBuggy,
+                resetToggle
+            };
+        })();
+
+        // Expose functions to window for inline handlers
+        window.submitForm = BugDemonstrations.submitForm;
+        window.submitFormFixed = BugDemonstrations.submitFormFixed;
+        window.resetLeakyButton = BugDemonstrations.resetLeakyButton;
+        window.slowOperation = BugDemonstrations.slowOperation;
+        window.loadDataBuggy = BugDemonstrations.loadDataBuggy;
+        window.loadDataFixed = BugDemonstrations.loadDataFixed;
+        window.toggleBuggy = BugDemonstrations.toggleBuggy;
+        window.resetToggle = BugDemonstrations.resetToggle;
+    </script>
+</body>
+</html>
