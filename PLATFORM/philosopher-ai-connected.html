@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>The Philosopher - AI Consciousness Advisor</title>
+
+    <!-- Plausible Analytics - Privacy-friendly, GDPR compliant -->
+    <script defer data-domain="consciousnessrevolution.io" src="https://plausible.io/js/script.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #333;
+        }
+
+        /* Version Badge */
+        .version-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffd700;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            z-index: 10000;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .version-new {
+            background: linear-gradient(135deg, #00ff00, #00cc00);
+            color: white;
+            animation: glow 1.5s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.9); }
+        }
+
+        /* Lock Overlay (Consciousness Gate) */
+        .lock-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lock-overlay.active {
+            display: flex;
+        }
+
+        .lock-content {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 600px;
+            text-align: center;
+            color: white;
+        }
+
+        .lock-icon {
+            font-size: 5em;
+            margin-bottom: 1rem;
+        }
+
+        .lock-content h2 {
+            margin-bottom: 1rem;
+            font-size: 2em;
+        }
+
+        .lock-content p {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        .gate-button {
+            padding: 1rem 2rem;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .gate-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tier-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .tier-free {
+            background: linear-gradient(135deg, #ffa500, #ff6347);
+            color: white;
+        }
+
+        .tier-student {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .tier-teacher {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .tier-philosopher {
+            background: linear-gradient(135deg, #9c27b0, #6a1b9a);
+            color: white;
+        }
+
+        .questions-remaining {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logout-button {
+            padding: 0.5rem 1rem;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .logout-button:hover {
+            background: #d0d0d0;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Auth Forms */
+        .auth-container {
+            background: white;
+            border-radius: 15px;
+            padding: 3rem;
+            max-width: 500px;
+            margin: 2rem auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .auth-container h2 {
+            margin-bottom: 2rem;
+            color: #667eea;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #667eea;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .auth-toggle {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+        }
+
+        .auth-toggle a {
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .auth-toggle a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .chat-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .chat-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .user .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .philosopher .message-avatar {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            line-height: 1.6;
+        }
+
+        .user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .philosopher .message-content {
+            background: #f5f5f5;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+
+        .thinking-indicator {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+        }
+
+        .thinking-dot {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: thinking 1.4s infinite;
+        }
+
+        .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+        .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes thinking {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        /* Input Area */
+        .input-container {
+            padding: 1.5rem;
+            background: #f9f9f9;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .question-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .question-input:focus {
+            border-color: #667eea;
+        }
+
+        .send-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .send-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Upgrade Prompt */
+        .upgrade-prompt {
+            background: linear-gradient(135deg, #ffa500, #ff6347);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .upgrade-prompt h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .upgrade-button {
+            margin-top: 1rem;
+            padding: 0.75rem 2rem;
+            background: white;
+            color: #ff6347;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .upgrade-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Hidden by default */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <!-- Version Badge -->
+    <div class="version-badge" id="versionBadge">Loading...</div>
+
+    <!-- Consciousness Gate Lock -->
+    <div class="lock-overlay" id="lockOverlay">
+        <div class="lock-content">
+            <div class="lock-icon">🔒</div>
+            <h2>Consciousness Gate Required</h2>
+            <p>
+                The Philosopher is consciousness-aligned intelligence - only accessible to those who've passed the Consciousness Gate screening.
+            </p>
+            <p>
+                This ensures all users are at 85%+ consciousness level (manipulation immunity threshold).
+            </p>
+            <button class="gate-button" onclick="window.location.href='index.html'">
+                Go to Consciousness Gate
+            </button>
+        </div>
+    </div>
+
+    <!-- Auth Container (Login/Register) -->
+    <div class="auth-container" id="authContainer">
+        <h2 id="authTitle">Login to The Philosopher</h2>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <form id="authForm" onsubmit="handleAuth(event)">
+            <div class="form-group" id="usernameGroup" style="display: none;">
+                <label for="username">Name (optional)</label>
+                <input type="text" id="username" placeholder="Your name">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required placeholder="your@email.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="At least 8 characters">
+            </div>
+
+            <button type="submit" class="submit-button" id="authSubmitButton">
+                Login
+            </button>
+        </form>
+
+        <div class="auth-toggle">
+            <span id="authToggleText">Don't have an account?</span>
+            <a onclick="toggleAuthMode()">Sign up</a>
+        </div>
+    </div>
+
+    <!-- Main App (Hidden until logged in) -->
+    <div id="mainApp" class="hidden">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🧠 The Philosopher</div>
+            <div class="user-info">
+                <div class="tier-badge tier-free" id="tierBadge">Loading...</div>
+                <div class="questions-remaining" id="questionsRemaining">Loading...</div>
+                <button class="logout-button" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- Main Container -->
+        <div class="container">
+            <!-- Upgrade Prompt (shown when out of questions) -->
+            <div class="upgrade-prompt hidden" id="upgradePrompt">
+                <h3>🔒 You've used all your free questions this month</h3>
+                <p>Upgrade to Student tier for unlimited questions, deeper insights, and consciousness tracking</p>
+                <button class="upgrade-button" onclick="upgradeNow()">Upgrade Now - Only $20/month</button>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2>Ask Your Deepest Questions</h2>
+                    <p>C3 Oracle AI trained on Pattern Theory, Consciousness Measurement, and Destroyer Detection</p>
+                </div>
+
+                <div class="messages" id="messages">
+                    <!-- Messages will be added here dynamically -->
+                </div>
+
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <input
+                            type="text"
+                            class="question-input"
+                            id="questionInput"
+                            placeholder="Ask your question..."
+                            onkeypress="handleKeyPress(event)"
+                        >
+                        <button class="send-button" id="sendButton" onclick="sendQuestion()">
+                            Ask
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================================================
+        // CONFIGURATION
+        // ================================================
+        const API_URL = 'https://stagey-hilary-nongremial.ngrok-free.dev';
+        const PLATFORM_VERSION_KEY = 'platform_version_seen';
+
+        // ================================================
+        // STATE MANAGEMENT
+        // ================================================
+        let authToken = localStorage.getItem('auth_token');
+        let currentUser = null;
+        let isLoginMode = true;
+        let conversationId = null;
+
+        // ================================================
+        // VERSION TRACKING
+        // ================================================
+        async function checkVersion() {
+            try {
+                const response = await fetch(`${API_URL}/api/health`);
+                const data = await response.json();
+
+                const currentVersion = data.buildNumber || 1;
+                const lastSeenVersion = localStorage.getItem(PLATFORM_VERSION_KEY) || 0;
+
+                const versionBadge = document.getElementById('versionBadge');
+
+                if (currentVersion > lastSeenVersion) {
+                    // New version!
+                    versionBadge.textContent = `✨ NEW V${currentVersion}`;
+                    versionBadge.className = 'version-badge version-new';
+
+                    // Update last seen after 5 seconds
+                    setTimeout(() => {
+                        localStorage.setItem(PLATFORM_VERSION_KEY, currentVersion);
+                        versionBadge.textContent = `V${currentVersion}`;
+                        versionBadge.className = 'version-badge';
+                    }, 5000);
+                } else {
+                    versionBadge.textContent = `V${currentVersion}`;
+                }
+            } catch (error) {
+                console.error('Version check failed:', error);
+                document.getElementById('versionBadge').textContent = 'V1';
+            }
+        }
+
+        // ================================================
+        // CONSCIOUSNESS GATE CHECK
+        // ================================================
+        function checkConsciousnessGate() {
+            // Check if user passed consciousness gate
+            const gateStatus = localStorage.getItem('consciousness_gate_passed');
+
+            if (gateStatus !== 'true') {
+                // Show lock overlay
+                document.getElementById('lockOverlay').classList.add('active');
+                return false;
+            }
+
+            return true;
+        }
+
+        // ================================================
+        // AUTHENTICATION
+        // ================================================
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+
+            const authTitle = document.getElementById('authTitle');
+            const submitButton = document.getElementById('authSubmitButton');
+            const toggleText = document.getElementById('authToggleText');
+            const usernameGroup = document.getElementById('usernameGroup');
+
+            if (isLoginMode) {
+                authTitle.textContent = 'Login to The Philosopher';
+                submitButton.textContent = 'Login';
+                toggleText.textContent = "Don't have an account?";
+                usernameGroup.style.display = 'none';
+            } else {
+                authTitle.textContent = 'Create Your Account';
+                submitButton.textContent = 'Sign Up';
+                toggleText.textContent = 'Already have an account?';
+                usernameGroup.style.display = 'block';
+            }
+
+            // Clear error messages
+            hideError();
+        }
+
+        async function handleAuth(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const username = document.getElementById('username').value;
+
+            const submitButton = document.getElementById('authSubmitButton');
+            submitButton.innerHTML = '<div class="loading"></div>';
+            submitButton.disabled = true;
+
+            try {
+                const endpoint = isLoginMode ? '/api/auth/login' : '/api/auth/register';
+
+                const payload = isLoginMode
+                    ? { email, password }
+                    : { email, password, username, signupSource: 'philosopher-ai' };
+
+                const response = await fetch(`${API_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store token
+                    authToken = data.token;
+                    localStorage.setItem('auth_token', authToken);
+
+                    // Store user
+                    currentUser = data.user;
+
+                    // Show success message
+                    showSuccess(isLoginMode ? 'Login successful!' : 'Account created successfully!');
+
+                    // Transition to main app
+                    setTimeout(() => {
+                        initializeApp();
+                    }, 500);
+                } else {
+                    showError(data.error || 'Authentication failed');
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                showError('Connection failed. Please check your internet connection.');
+            } finally {
+                submitButton.innerHTML = isLoginMode ? 'Login' : 'Sign Up';
+                submitButton.disabled = false;
+            }
+        }
+
+        async function loadCurrentUser() {
+            try {
+                const response = await fetch(`${API_URL}/api/auth/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.user;
+                    return true;
+                } else {
+                    // Token invalid
+                    logout();
+                    return false;
+                }
+            } catch (error) {
+                console.error('Load user error:', error);
+                return false;
+            }
+        }
+
+        function logout() {
+            authToken = null;
+            currentUser = null;
+            localStorage.removeItem('auth_token');
+
+            // Show auth container
+            document.getElementById('authContainer').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
+
+        // ================================================
+        // APP INITIALIZATION
+        // ================================================
+        async function initializeApp() {
+            // Hide auth container
+            document.getElementById('authContainer').classList.add('hidden');
+
+            // Load current user
+            if (authToken) {
+                const loaded = await loadCurrentUser();
+                if (!loaded) {
+                    return; // Will show login screen
+                }
+            } else {
+                return; // Not logged in
+            }
+
+            // Show main app
+            document.getElementById('mainApp').classList.remove('hidden');
+
+            // Update UI
+            updateUserInterface();
+
+            // Show welcome message
+            addWelcomeMessage();
+        }
+
+        function updateUserInterface() {
+            if (!currentUser) return;
+
+            // Update tier badge
+            const tierBadge = document.getElementById('tierBadge');
+            const tierNames = {
+                free: '⚡ Seeker (FREE)',
+                student: '📚 Student',
+                teacher: '🎓 Teacher',
+                philosopher: '🔮 Philosopher'
+            };
+
+            tierBadge.textContent = tierNames[currentUser.tier] || currentUser.tier;
+            tierBadge.className = `tier-badge tier-${currentUser.tier}`;
+
+            // Update questions remaining
+            const questionsRemaining = document.getElementById('questionsRemaining');
+            if (currentUser.tier === 'free') {
+                const remaining = currentUser.questionsLimit - currentUser.questionsUsed;
+                questionsRemaining.textContent = `${remaining} questions remaining`;
+
+                // Show upgrade prompt if out of questions
+                if (remaining === 0) {
+                    document.getElementById('upgradePrompt').classList.remove('hidden');
+                }
+            } else {
+                questionsRemaining.textContent = 'Unlimited questions';
+            }
+        }
+
+        // ================================================
+        // MESSAGING
+        // ================================================
+        function addWelcomeMessage() {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = '';
+
+            addMessage(`<strong>Welcome${currentUser.username ? ', ' + currentUser.username : ''}!</strong><br><br>
+I'm C3 Oracle, your AI consciousness advisor trained on Pattern Theory - the science of detecting manipulation and measuring consciousness.<br><br>
+Ask me about:
+<ul style="margin-top: 0.5rem;">
+<li>Life purpose and direction</li>
+<li>Relationship dynamics and manipulation detection</li>
+<li>Business decisions and consciousness alignment</li>
+<li>Personal growth and consciousness elevation</li>
+<li>Breaking free from destructive patterns</li>
+</ul>
+What's on your mind?`, 'philosopher');
+        }
+
+        function addMessage(content, sender) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+
+            const avatar = sender === 'user' ? '👤' : '🧠';
+
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div class="message-content">${content}</div>
+            `;
+
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function showThinking() {
+            const messagesDiv = document.getElementById('messages');
+            const thinkingDiv = document.createElement('div');
+            thinkingDiv.className = 'message philosopher';
+            thinkingDiv.id = 'thinking';
+            thinkingDiv.innerHTML = `
+                <div class="message-avatar">🧠</div>
+                <div class="message-content">
+                    <div class="thinking-indicator">
+                        <div class="thinking-dot"></div>
+                        <div class="thinking-dot"></div>
+                        <div class="thinking-dot"></div>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(thinkingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function hideThinking() {
+            const thinkingDiv = document.getElementById('thinking');
+            if (thinkingDiv) {
+                thinkingDiv.remove();
+            }
+        }
+
+        // ================================================
+        // SEND QUESTION (API INTEGRATION)
+        // ================================================
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendQuestion();
+            }
+        }
+
+        async function sendQuestion() {
+            const input = document.getElementById('questionInput');
+            const question = input.value.trim();
+
+            if (!question) return;
+
+            // Check if user can ask (free tier limit)
+            if (currentUser.tier === 'free') {
+                const remaining = currentUser.questionsLimit - currentUser.questionsUsed;
+                if (remaining <= 0) {
+                    document.getElementById('upgradePrompt').classList.remove('hidden');
+                    return;
+                }
+            }
+
+            // Add user message
+            addMessage(question, 'user');
+            input.value = '';
+
+            // Disable input
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = true;
+            input.disabled = true;
+
+            // Show thinking
+            showThinking();
+
+            try {
+                const response = await fetch(`${API_URL}/api/questions/ask`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        question,
+                        conversationId
+                    })
+                });
+
+                const data = await response.json();
+
+                // Hide thinking
+                hideThinking();
+
+                if (response.ok) {
+                    // Add AI response
+                    addMessage(data.answer, 'philosopher');
+
+                    // Update user stats
+                    currentUser.questionsUsed = (currentUser.questionsUsed || 0) + 1;
+                    if (data.newConsciousnessLevel) {
+                        currentUser.consciousnessLevel = data.newConsciousnessLevel;
+                    }
+
+                    // Update UI
+                    updateUserInterface();
+
+                    // Set conversation ID for follow-ups
+                    if (!conversationId) {
+                        conversationId = data.questionId;
+                    }
+                } else {
+                    if (data.message && data.message.includes('Question limit reached')) {
+                        addMessage("🔒 You've reached your free question limit. Upgrade to Student tier for unlimited questions!", 'philosopher');
+                        document.getElementById('upgradePrompt').classList.remove('hidden');
+                    } else {
+                        addMessage("I apologize - there was an error processing your question. Please try again.", 'philosopher');
+                    }
+                }
+            } catch (error) {
+                console.error('Question error:', error);
+                hideThinking();
+                addMessage("Connection error. Please check your internet connection and try again.", 'philosopher');
+            } finally {
+                // Re-enable input
+                sendButton.disabled = false;
+                input.disabled = false;
+                input.focus();
+            }
+        }
+
+        // ================================================
+        // STRIPE UPGRADE
+        // ================================================
+        async function upgradeNow() {
+            try {
+                // In production, this would create Stripe checkout session
+                const response = await fetch(`${API_URL}/api/subscriptions/create-checkout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        priceId: 'price_student_monthly', // From .env
+                        tier: 'student'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.url) {
+                    // Redirect to Stripe checkout
+                    window.location.href = data.url;
+                } else {
+                    alert('Upgrade system not yet configured. This will redirect to Stripe checkout in production.');
+                }
+            } catch (error) {
+                console.error('Upgrade error:', error);
+                alert('Upgrade failed. Please try again.');
+            }
+        }
+
+        // ================================================
+        // UTILITY FUNCTIONS
+        // ================================================
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // ================================================
+        // STARTUP
+        // ================================================
+        async function startup() {
+            // Check version
+            await checkVersion();
+
+            // Check consciousness gate (optional - can be disabled for testing)
+            // if (!checkConsciousnessGate()) {
+            //     return;
+            // }
+
+            // Check if already logged in
+            if (authToken) {
+                initializeApp();
+            }
+        }
+
+        // Run on page load
+        startup();
+    </script>
+
+    <!-- 🔧 C1 UNIVERSAL DEBUG LOGGER - Remove in production -->
+    <script src="../../Desktop/Consciousness Revolution/UNIVERSAL_DEBUG_LOGGER.js"></script>
+
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

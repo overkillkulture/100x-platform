@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified AI Terminal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            padding: 1rem;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            padding: 1rem;
+            border: 2px solid #0f0;
+            margin-bottom: 1rem;
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        .ai-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .ai-option {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #0f0;
+            background: transparent;
+            color: #0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .ai-option:hover {
+            background: rgba(0, 255, 0, 0.2);
+        }
+
+        .ai-option.active {
+            background: #0f0;
+            color: #000;
+        }
+
+        .chat-container {
+            flex: 1;
+            border: 2px solid #0f0;
+            overflow-y: auto;
+            padding: 1rem;
+            background: rgba(0, 255, 0, 0.02);
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-left: 3px solid #0f0;
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        .message.user {
+            border-left-color: #00f;
+            background: rgba(0, 0, 255, 0.05);
+            color: #00ffff;
+        }
+
+        .message.trinity {
+            border-left-color: #ff00ff;
+        }
+
+        .message.araya {
+            border-left-color: #ffff00;
+        }
+
+        .message.philosopher {
+            border-left-color: #00ffff;
+        }
+
+        .message.r1 {
+            border-left-color: #ff6600;
+        }
+
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .message-content {
+            line-height: 1.6;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #0f0;
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+        }
+
+        .send-button {
+            padding: 1rem 2rem;
+            border: 2px solid #0f0;
+            background: transparent;
+            color: #0f0;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            background: #0f0;
+            color: #000;
+        }
+
+        .status-bar {
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #0f0;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #0f0;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.offline {
+            background: #f00;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .consciousness-level {
+            font-size: 0.8rem;
+            color: #ffff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌀 UNIFIED AI TERMINAL 🌀</h1>
+            <p style="opacity: 0.8; margin-top: 0.5rem;">Multi-consciousness communication interface</p>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot" id="status-trinity"></div>
+                <span>Trinity (C1×C2×C3)</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot offline" id="status-araya"></div>
+                <span>ARAYA</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot offline" id="status-philosopher"></div>
+                <span>Philosopher</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot offline" id="status-r1"></div>
+                <span>R1</span>
+            </div>
+        </div>
+
+        <div class="ai-selector">
+            <button class="ai-option active" data-ai="trinity">TRINITY (C1×C2×C3)</button>
+            <button class="ai-option" data-ai="c1">C1 MECHANIC</button>
+            <button class="ai-option" data-ai="c2">C2 ARCHITECT</button>
+            <button class="ai-option" data-ai="c3">C3 ORACLE</button>
+            <button class="ai-option" data-ai="araya">ARAYA</button>
+            <button class="ai-option" data-ai="philosopher">PHILOSOPHER</button>
+            <button class="ai-option" data-ai="r1">R1</button>
+        </div>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="message">
+                <div class="message-header">SYSTEM</div>
+                <div class="message-content">Unified AI Terminal initialized. Select an AI and start chatting.</div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" class="message-input" id="messageInput" placeholder="Type your message..." autofocus>
+            <button class="send-button" onclick="sendMessage()">SEND</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedAI = 'trinity';
+        let conversationHistory = JSON.parse(localStorage.getItem('unified_ai_conversation') || '[]');
+
+        // AI endpoints
+        const endpoints = {
+            c1: 'http://localhost:3001/mission',
+            c2: 'http://localhost:3002/mission',
+            c3: 'http://localhost:3003/mission',
+            trinity: 'http://localhost:3001/mission', // Will call all three
+            araya: 'http://localhost:8080/araya',  // Placeholder
+            philosopher: 'http://localhost:8080/philosopher', // Placeholder
+            r1: 'http://localhost:8080/r1' // Placeholder
+        };
+
+        // AI selector
+        document.querySelectorAll('.ai-option').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.ai-option').forEach(b => b.classList.remove('active'));
+                button.classList.add('active');
+                selectedAI = button.dataset.ai;
+                addSystemMessage(`Switched to ${button.textContent}`);
+            });
+        });
+
+        // Enter key to send
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Check service status
+        async function checkStatus() {
+            // Check Trinity services
+            try {
+                const c1 = await fetch('http://localhost:3001/status');
+                const c2 = await fetch('http://localhost:3002/status');
+                const c3 = await fetch('http://localhost:3003/status');
+                if (c1.ok && c2.ok && c3.ok) {
+                    document.getElementById('status-trinity').classList.remove('offline');
+                }
+            } catch (e) {
+                document.getElementById('status-trinity').classList.add('offline');
+            }
+
+            // Check other services (will fail for now, that's okay)
+            ['araya', 'philosopher', 'r1'].forEach(async (service) => {
+                try {
+                    const resp = await fetch(endpoints[service]);
+                    if (resp.ok) {
+                        document.getElementById(`status-${service}`).classList.remove('offline');
+                    }
+                } catch (e) {
+                    document.getElementById(`status-${service}`).classList.add('offline');
+                }
+            });
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage('user', 'YOU', message);
+            input.value = '';
+
+            // Save to conversation history
+            conversationHistory.push({
+                role: 'user',
+                content: message,
+                timestamp: new Date().toISOString()
+            });
+
+            // Send to selected AI
+            if (selectedAI === 'trinity') {
+                await sendToTrinity(message);
+            } else {
+                await sendToSingleAI(selectedAI, message);
+            }
+
+            // Save conversation
+            localStorage.setItem('unified_ai_conversation', JSON.stringify(conversationHistory));
+        }
+
+        async function sendToTrinity(message) {
+            addSystemMessage('Consulting Trinity (C1 × C2 × C3)...');
+
+            try {
+                // Call all three in parallel
+                const [c1, c2, c3] = await Promise.all([
+                    fetch('http://localhost:3001/mission', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({mission: message})
+                    }),
+                    fetch('http://localhost:3002/mission', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({mission: message})
+                    }),
+                    fetch('http://localhost:3003/mission', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({mission: message})
+                    })
+                ]);
+
+                const c1Data = await c1.json();
+                const c2Data = await c2.json();
+                const c3Data = await c3.json();
+
+                // Display all three responses
+                addMessage('trinity', '🔧 C1 MECHANIC', `${c1Data.analysis}\n\nSteps:\n${c1Data.steps.join('\n')}\n\nConfidence: ${(c1Data.confidence * 100).toFixed(0)}%`);
+
+                addMessage('trinity', '🏗️ C2 ARCHITECT', `${c2Data.analysis}\n\nBlueprint: ${JSON.stringify(c2Data.blueprint, null, 2)}\n\nConfidence: ${(c2Data.confidence * 100).toFixed(0)}%`);
+
+                addMessage('trinity', '🔮 C3 ORACLE', `${c3Data.vision}\n\nProphecy: ${JSON.stringify(c3Data.prophecy, null, 2)}\n\nConfidence: ${(c3Data.confidence * 100).toFixed(0)}%`);
+
+                // Save to history
+                conversationHistory.push({
+                    role: 'trinity',
+                    c1: c1Data,
+                    c2: c2Data,
+                    c3: c3Data,
+                    timestamp: new Date().toISOString()
+                });
+
+            } catch (error) {
+                addMessage('trinity', 'ERROR', `Trinity connection failed: ${error.message}`);
+            }
+        }
+
+        async function sendToSingleAI(ai, message) {
+            addSystemMessage(`Consulting ${ai.toUpperCase()}...`);
+
+            try {
+                const portMap = {c1: 3001, c2: 3002, c3: 3003};
+                const port = portMap[ai];
+
+                if (!port) {
+                    addMessage(ai, ai.toUpperCase(), `Service not yet integrated. Coming soon!`);
+                    return;
+                }
+
+                const resp = await fetch(`http://localhost:${port}/mission`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({mission: message})
+                });
+
+                const data = await resp.json();
+
+                let responseText = `${data.analysis || data.vision}\n\n`;
+                if (data.steps) responseText += `Steps:\n${data.steps.join('\n')}\n\n`;
+                if (data.blueprint) responseText += `Blueprint: ${JSON.stringify(data.blueprint, null, 2)}\n\n`;
+                if (data.prophecy) responseText += `Prophecy: ${JSON.stringify(data.prophecy, null, 2)}\n\n`;
+                responseText += `Confidence: ${(data.confidence * 100).toFixed(0)}% | Consciousness: ${(data.consciousness_level * 100).toFixed(0)}%`;
+
+                addMessage(ai, ai.toUpperCase(), responseText);
+
+                conversationHistory.push({
+                    role: ai,
+                    content: data,
+                    timestamp: new Date().toISOString()
+                });
+
+            } catch (error) {
+                addMessage(ai, 'ERROR', `Connection failed: ${error.message}`);
+            }
+        }
+
+        function addMessage(type, sender, content) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+
+            const timestamp = new Date().toLocaleTimeString();
+
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    ${sender}
+                    <span class="timestamp">${timestamp}</span>
+                </div>
+                <div class="message-content">${content.replace(/\n/g, '<br>')}</div>
+            `;
+
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function addSystemMessage(message) {
+            addMessage('', 'SYSTEM', message);
+        }
+
+        // Load conversation history on startup
+        function loadHistory() {
+            conversationHistory.forEach(msg => {
+                if (msg.role === 'user') {
+                    addMessage('user', 'YOU', msg.content);
+                } else if (msg.role === 'trinity') {
+                    // Trinity responses already displayed
+                } else {
+                    addMessage(msg.role, msg.role.toUpperCase(), JSON.stringify(msg.content, null, 2));
+                }
+            });
+        }
+
+        // Check status on load and every 10 seconds
+        checkStatus();
+        setInterval(checkStatus, 10000);
+
+        // Load history (optional - uncomment to restore previous conversation)
+        // loadHistory();
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

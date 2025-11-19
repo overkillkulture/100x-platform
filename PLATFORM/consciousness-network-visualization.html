@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Consciousness Network Visualization - CASCADE PHYSICS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            overflow: hidden;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            background: linear-gradient(45deg, #00f5ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        #visualization-canvas {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 70px);
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 30px;
+            border-radius: 20px;
+            display: flex;
+            gap: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .control-button.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            animation: pulse-glow 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4); }
+            50% { box-shadow: 0 6px 30px rgba(245, 87, 108, 0.8); }
+        }
+
+        .info-panel {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            min-width: 250px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-panel h3 {
+            color: #00f5ff;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            color: #aaa;
+        }
+
+        .stat-value {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .intensity-meter {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .intensity-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .intensity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00f5ff, #667eea);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .legend {
+            position: fixed;
+            top: 90px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .legend h3 {
+            color: #00f5ff;
+            margin-bottom: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .info-panel, .legend {
+                position: static;
+                margin: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+                bottom: 10px;
+                gap: 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🌊 Consciousness Network Visualization 🌊</h1>
+        <button class="back-button" onclick="window.location.href='welcome.html'">← Back to Playground</button>
+    </div>
+
+    <canvas id="visualization-canvas"></canvas>
+
+    <div class="legend">
+        <h3>📊 Pattern Legend</h3>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #00ff88;"></div>
+            <span>Normal Node</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ff6b6b;"></div>
+            <span>Activated Node</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ffd93d;"></div>
+            <span>Cascade Source</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: rgba(0, 245, 255, 0.3);"></div>
+            <span>Connection Lines</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(90deg, #ff6b6b, transparent);"></div>
+            <span>Cascade Wave</span>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <h3>📈 Network Stats</h3>
+        <div class="stat-item">
+            <span class="stat-label">Total Nodes:</span>
+            <span class="stat-value" id="node-count">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Active Cascades:</span>
+            <span class="stat-value" id="cascade-count">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Total Activations:</span>
+            <span class="stat-value" id="activation-count">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Current Pattern:</span>
+            <span class="stat-value" id="current-pattern">Idle</span>
+        </div>
+
+        <div class="intensity-meter">
+            <div style="color: #00f5ff; font-weight: bold; margin-bottom: 5px;">Cascade Intensity</div>
+            <div class="intensity-bar">
+                <div class="intensity-fill" id="intensity-fill" style="width: 0%;">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-button" onclick="triggerRipple()">🌊 Ripple Wave</button>
+        <button class="control-button" onclick="triggerExplodeAll()">💣 Explode All</button>
+        <button class="control-button" onclick="triggerChaos()">🌀 CHAOS MODE</button>
+        <button class="control-button" onclick="resetNetwork()">🔄 Reset</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('visualization-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Resize canvas to full size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight - 70;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Network configuration
+        const config = {
+            nodeCount: 50,
+            connectionDistance: 200,
+            nodeRadius: 8,
+            waveSpeed: 5,
+            particleSpeed: 2
+        };
+
+        // Node class
+        class Node {
+            constructor(x, y, id) {
+                this.x = x;
+                this.y = y;
+                this.id = id;
+                this.vx = (Math.random() - 0.5) * config.particleSpeed;
+                this.vy = (Math.random() - 0.5) * config.particleSpeed;
+                this.activated = false;
+                this.isCascadeSource = false;
+                this.activationTime = 0;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off edges
+                if (this.x < config.nodeRadius || this.x > canvas.width - config.nodeRadius) {
+                    this.vx *= -1;
+                }
+                if (this.y < config.nodeRadius || this.y > canvas.height - config.nodeRadius) {
+                    this.vy *= -1;
+                }
+
+                // Fade activation
+                if (this.activated && Date.now() - this.activationTime > 1000) {
+                    this.activated = false;
+                }
+                if (this.isCascadeSource && Date.now() - this.activationTime > 2000) {
+                    this.isCascadeSource = false;
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, config.nodeRadius, 0, Math.PI * 2);
+
+                if (this.isCascadeSource) {
+                    ctx.fillStyle = '#ffd93d';
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = '#ffd93d';
+                } else if (this.activated) {
+                    ctx.fillStyle = '#ff6b6b';
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#ff6b6b';
+                } else {
+                    ctx.fillStyle = '#00ff88';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#00ff88';
+                }
+
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            distanceTo(other) {
+                return Math.sqrt(
+                    Math.pow(this.x - other.x, 2) +
+                    Math.pow(this.y - other.y, 2)
+                );
+            }
+        }
+
+        // Cascade wave class
+        class CascadeWave {
+            constructor(sourceNode, targetNode, pattern) {
+                this.sourceNode = sourceNode;
+                this.targetNode = targetNode;
+                this.pattern = pattern;
+                this.progress = 0;
+                this.speed = 0.05;
+                this.active = true;
+            }
+
+            update() {
+                this.progress += this.speed;
+                if (this.progress >= 1) {
+                    this.targetNode.activated = true;
+                    this.targetNode.activationTime = Date.now();
+                    this.active = false;
+                    stats.activationCount++;
+                }
+            }
+
+            draw() {
+                const x = this.sourceNode.x + (this.targetNode.x - this.sourceNode.x) * this.progress;
+                const y = this.sourceNode.y + (this.targetNode.y - this.sourceNode.y) * this.progress;
+
+                // Draw wave particle
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
+
+                if (this.pattern === 'chaos') {
+                    ctx.fillStyle = '#ff00ff';
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = '#ff00ff';
+                } else if (this.pattern === 'explode') {
+                    ctx.fillStyle = '#ff6b6b';
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#ff6b6b';
+                } else {
+                    ctx.fillStyle = '#00f5ff';
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#00f5ff';
+                }
+
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Draw trail
+                ctx.beginPath();
+                ctx.moveTo(this.sourceNode.x, this.sourceNode.y);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = this.pattern === 'chaos' ? 'rgba(255, 0, 255, 0.5)' : 'rgba(0, 245, 255, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+
+        // Create network
+        const nodes = [];
+        const waves = [];
+        const stats = {
+            activationCount: 0,
+            cascadeCount: 0,
+            currentPattern: 'Idle'
+        };
+
+        function initializeNetwork() {
+            nodes.length = 0;
+            for (let i = 0; i < config.nodeCount; i++) {
+                const x = Math.random() * (canvas.width - 2 * config.nodeRadius) + config.nodeRadius;
+                const y = Math.random() * (canvas.height - 2 * config.nodeRadius) + config.nodeRadius;
+                nodes.push(new Node(x, y, i));
+            }
+            updateStats();
+        }
+
+        function drawConnections() {
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const distance = nodes[i].distanceTo(nodes[j]);
+
+                    if (distance < config.connectionDistance) {
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+
+                        const opacity = 1 - (distance / config.connectionDistance);
+                        ctx.strokeStyle = `rgba(0, 245, 255, ${opacity * 0.3})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('node-count').textContent = nodes.length;
+            document.getElementById('cascade-count').textContent = waves.length;
+            document.getElementById('activation-count').textContent = stats.activationCount;
+            document.getElementById('current-pattern').textContent = stats.currentPattern;
+        }
+
+        function updateIntensity(intensity) {
+            const percent = Math.min(intensity * 33.33, 100);
+            const fill = document.getElementById('intensity-fill');
+            fill.style.width = `${percent}%`;
+            fill.textContent = `Level ${intensity}`;
+        }
+
+        // CASCADE PATTERNS
+        function triggerRipple() {
+            stats.currentPattern = 'Ripple Wave';
+            stats.cascadeCount++;
+            updateIntensity(1);
+
+            const sourceNode = nodes[Math.floor(Math.random() * nodes.length)];
+            sourceNode.isCascadeSource = true;
+            sourceNode.activationTime = Date.now();
+
+            // Calculate distances and sort
+            const nodesWithDistance = nodes
+                .filter(n => n !== sourceNode)
+                .map(n => ({ node: n, distance: sourceNode.distanceTo(n) }))
+                .sort((a, b) => a.distance - b.distance);
+
+            // Create waves in order of distance
+            nodesWithDistance.forEach((item, index) => {
+                setTimeout(() => {
+                    waves.push(new CascadeWave(sourceNode, item.node, 'ripple'));
+                }, index * 50);
+            });
+
+            setTimeout(() => {
+                stats.currentPattern = 'Idle';
+                updateIntensity(0);
+            }, nodesWithDistance.length * 50 + 2000);
+        }
+
+        function triggerExplodeAll() {
+            stats.currentPattern = 'Explode All';
+            stats.cascadeCount++;
+            updateIntensity(2);
+
+            const sourceNode = nodes[Math.floor(Math.random() * nodes.length)];
+            sourceNode.isCascadeSource = true;
+            sourceNode.activationTime = Date.now();
+
+            // Activate all nodes sequentially
+            nodes.forEach((node, index) => {
+                if (node !== sourceNode) {
+                    setTimeout(() => {
+                        waves.push(new CascadeWave(sourceNode, node, 'explode'));
+                    }, index * 30);
+                }
+            });
+
+            setTimeout(() => {
+                stats.currentPattern = 'Idle';
+                updateIntensity(0);
+            }, nodes.length * 30 + 2000);
+        }
+
+        function triggerChaos() {
+            stats.currentPattern = 'TOTAL CHAOS';
+            stats.cascadeCount++;
+            updateIntensity(3);
+
+            // Multiple random sources
+            for (let i = 0; i < 5; i++) {
+                const sourceNode = nodes[Math.floor(Math.random() * nodes.length)];
+                sourceNode.isCascadeSource = true;
+                sourceNode.activationTime = Date.now();
+
+                // Random connections
+                for (let j = 0; j < 10; j++) {
+                    const targetNode = nodes[Math.floor(Math.random() * nodes.length)];
+                    if (targetNode !== sourceNode) {
+                        setTimeout(() => {
+                            waves.push(new CascadeWave(sourceNode, targetNode, 'chaos'));
+                        }, Math.random() * 2000);
+                    }
+                }
+            }
+
+            setTimeout(() => {
+                stats.currentPattern = 'Idle';
+                updateIntensity(0);
+            }, 5000);
+        }
+
+        function resetNetwork() {
+            waves.length = 0;
+            nodes.forEach(node => {
+                node.activated = false;
+                node.isCascadeSource = false;
+            });
+            stats.activationCount = 0;
+            stats.cascadeCount = 0;
+            stats.currentPattern = 'Idle';
+            updateIntensity(0);
+            updateStats();
+        }
+
+        // Animation loop
+        function animate() {
+            // Clear canvas
+            ctx.fillStyle = 'rgba(15, 12, 41, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw connections
+            drawConnections();
+
+            // Update and draw waves
+            for (let i = waves.length - 1; i >= 0; i--) {
+                waves[i].update();
+                waves[i].draw();
+
+                if (!waves[i].active) {
+                    waves.splice(i, 1);
+                }
+            }
+
+            // Update and draw nodes
+            nodes.forEach(node => {
+                node.update();
+                node.draw();
+            });
+
+            // Update stats
+            updateStats();
+
+            requestAnimationFrame(animate);
+        }
+
+        // Initialize
+        initializeNetwork();
+        animate();
+
+        // Auto-demo on load
+        setTimeout(() => {
+            triggerRipple();
+        }, 1000);
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Consciousness Revolution</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            color: #fff; padding: 20px;
+        }
+        .login-container {
+            background: rgba(0, 0, 0, 0.8); border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px; padding: 3rem; max-width: 450px; width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.2);
+        }
+        .logo { text-align: center; font-size: 3rem; margin-bottom: 1rem; }
+        h1 {
+            text-align: center; font-size: 2rem; margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .tagline { text-align: center; color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem; font-size: 0.95rem; }
+        .input-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; }
+        input {
+            width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 10px;
+            color: #fff; font-size: 1.5rem; text-align: center; letter-spacing: 0.5rem;
+            transition: all 0.3s;
+        }
+        input:focus { outline: none; border-color: #00ff88; box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+        .btn-login {
+            width: 100%; padding: 1.2rem; background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            color: #000; border: none; border-radius: 10px; font-size: 1.2rem; font-weight: bold;
+            cursor: pointer; transition: all 0.3s; margin-bottom: 1rem;
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5); }
+        .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
+        .signup-link { text-align: center; margin-top: 1.5rem; color: rgba(255, 255, 255, 0.6); }
+        .signup-link a { color: #00ff88; text-decoration: none; font-weight: bold; }
+        .signup-link a:hover { text-decoration: underline; }
+        .error-message {
+            background: rgba(255, 0, 0, 0.2); border: 1px solid rgba(255, 0, 0, 0.5);
+            padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: center; display: none;
+        }
+        .success-message {
+            background: rgba(0, 255, 136, 0.2); border: 1px solid rgba(0, 255, 136, 0.5);
+            padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: center; display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading { animation: spin 1s linear infinite; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">🌀</div>
+        <h1>Welcome Back</h1>
+        <div class="tagline">Enter your 4-digit PIN code (not a password)</div>
+        <div style="background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem; text-align: center; color: rgba(255, 255, 255, 0.8);">
+            💡 Beta testers were sent a 4-digit PIN (like 1001). Check your email!
+        </div>
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="pin">Your 4-Digit PIN Code</label>
+                <input type="text" id="pin" name="pin" maxlength="4" pattern="[0-9]{4}" placeholder="1234" required autofocus>
+            </div>
+            <button type="submit" class="btn-login" id="loginBtn">🔓 Login</button>
+        </form>
+        <div class="signup-link">Don't have a PIN? <a href="simple-gate.html">Sign up here</a></div>
+    </div>
+    <script>
+        const form = document.getElementById('loginForm');
+        const pinInput = document.getElementById('pin');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        pinInput.addEventListener('input', (e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pin = pinInput.value.trim();
+            if (pin.length !== 4) { showError('Please enter a 4-digit PIN'); return; }
+            
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<div class="loading">🔄</div> Logging in...';
+            errorMessage.style.display = 'none';
+
+            try {
+                const response = await fetch('BETA_USERS_DATABASE.json');
+                const data = await response.json();
+                const user = data.users[pin];
+
+                if (!user) {
+                    showError('❌ PIN not found. Beta testers: check your email for your 4-digit PIN (like 1001). New users: click "Sign up here" below.');
+                    loginBtn.disabled = false; loginBtn.innerHTML = '🔓 Login'; return;
+                }
+
+                if (user.status !== 'Active') {
+                    showError(`Account status: ${user.status}. Please contact support.`);
+                    loginBtn.disabled = false; loginBtn.innerHTML = '🔓 Login'; return;
+                }
+
+                showSuccess(`Welcome back, ${user.name}! 🎉`);
+                localStorage.setItem('userPIN', pin);
+                localStorage.setItem('userName', user.name);
+                localStorage.setItem('userEmail', user.email);
+                localStorage.setItem('userPermissions', JSON.stringify(user.permissions));
+                localStorage.setItem('loginTime', new Date().toISOString());
+
+                setTimeout(() => { window.location.href = 'workspace-v3.html'; }, 1000);
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('Login system error. Please try again or contact support.');
+                loginBtn.disabled = false; loginBtn.innerHTML = '🔓 Login';
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message; errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message; successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        window.addEventListener('load', () => {
+            const existingPIN = localStorage.getItem('userPIN');
+            if (existingPIN) {
+                const userName = localStorage.getItem('userName');
+                showSuccess(`Already logged in as ${userName}. Redirecting...`);
+                setTimeout(() => { window.location.href = 'workspace-v3.html'; }, 1500);
+            }
+        });
+    </script>
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+</body>
+</html>

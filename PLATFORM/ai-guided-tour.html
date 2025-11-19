@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>AI Guided Tour - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Tour Container */
+        #tour-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ARIA Avatar Section */
+        #aria-avatar {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 280px;
+            height: 320px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.4);
+            z-index: 1000;
+            animation: avatarPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.4); }
+            50% { box-shadow: 0 0 60px rgba(0, 255, 136, 0.7); }
+        }
+
+        #aria-avatar img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #00ff88;
+        }
+
+        #aria-status {
+            text-align: center;
+            font-size: 14px;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        #aria-speech {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+            min-height: 60px;
+            font-size: 12px;
+            color: #fff;
+            border: 1px solid #00ff88;
+        }
+
+        /* Website Preview Frame */
+        #website-frame {
+            width: calc(100% - 320px);
+            height: 100vh;
+            border: none;
+            border-right: 3px solid #00ff88;
+        }
+
+        /* Tour Controls */
+        #tour-controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        #tour-controls button {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+
+        #tour-controls button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+        }
+
+        #tour-progress {
+            margin-top: 10px;
+            color: #00ff88;
+            font-size: 14px;
+        }
+
+        /* Loading Animation */
+        #loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(0, 255, 136, 0.3);
+            border-top: 4px solid #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loading-text {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #00ff88;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Page Transition Effect */
+        @keyframes pageFlip {
+            0% { opacity: 1; transform: rotateY(0deg); }
+            50% { opacity: 0.5; transform: rotateY(90deg); }
+            100% { opacity: 1; transform: rotateY(0deg); }
+        }
+
+        .page-transition {
+            animation: pageFlip 0.8s ease-in-out;
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div id="tour-container">
+        <!-- Loading Screen -->
+        <div id="loading-overlay" class="hidden">
+            <div class="spinner"></div>
+            <div id="loading-text">Initializing AI Tour Guide...</div>
+        </div>
+
+        <!-- Tour Controls -->
+        <div id="tour-controls">
+            <h3 style="margin-bottom: 10px;">🤖 AI GUIDED TOUR</h3>
+            <button onclick="startTour()">▶️ Start Tour</button>
+            <button onclick="pauseTour()">⏸️ Pause</button>
+            <button onclick="skipToNext()">⏭️ Skip</button>
+            <button onclick="restartTour()">🔄 Restart</button>
+            <div id="tour-progress">Ready to begin...</div>
+        </div>
+
+        <!-- ARIA Avatar -->
+        <div id="aria-avatar">
+            <img src="https://via.placeholder.com/280x200/1a1a2e/00ff88?text=ARIA+AI" alt="ARIA Avatar" id="aria-img">
+            <div id="aria-status">🎤 Ready to Guide</div>
+            <div id="aria-speech">
+                Hi! I'm ARIA, your AI guide. Click "Start Tour" and I'll show you around the Consciousness Revolution platform! 🌌
+            </div>
+        </div>
+
+        <!-- Website Preview -->
+        <iframe id="website-frame" src="https://conciousnessrevolution.io"></iframe>
+    </div>
+
+    <script>
+        // Tour Script Data
+        const tourSteps = [
+            {
+                url: "https://conciousnessrevolution.io",
+                speech: "Welcome to the 100X Builder Platform! This is where consciousness meets technology. We have 127 automation modules, 50+ active builders, and a completely free ecosystem. Let me show you the magic...",
+                duration: 8000,
+                status: "👋 Introduction"
+            },
+            {
+                url: "https://conciousnessrevolution.io/PLATFORM/seven-domains-navigator.html",
+                speech: "Behold the Seven Sacred Domains! These are arranged in sacred geometry - 51.4 degrees apart, forming a perfect consciousness spiral. Each domain represents a complete universe of tools and knowledge.",
+                duration: 10000,
+                status: "🌀 Sacred Spiral"
+            },
+            {
+                url: "https://conciousnessrevolution.io/PLATFORM/education-domain.html",
+                speech: "The Education Domain offers three learning paths: Foundation Builder, Consciousness Builder, and Revolutionary Builder. We teach Pattern Theory with 92.2% accuracy, Trinity AI systems, and dimensional mathematics.",
+                duration: 10000,
+                status: "📚 Education"
+            },
+            {
+                url: "https://conciousnessrevolution.io/PLATFORM/social-domain.html",
+                speech: "The Social Domain is our 100% destroyer-free community. We have 50+ active builders across 12 countries, sharing 127 tools. Real-time chat, Trinity AI collaboration, and peer learning - all aligned with consciousness elevation.",
+                duration: 10000,
+                status: "💬 Community"
+            },
+            {
+                url: "https://conciousnessrevolution.io/PLATFORM/music-domain.html",
+                speech: "The Music Domain explores consciousness frequencies. 528 Hz for DNA repair, 432 Hz for natural harmony, 7.83 Hz Schumann Resonance. As Tesla said: 'Think in terms of energy, frequency, and vibration.'",
+                duration: 10000,
+                status: "🎵 Frequencies"
+            },
+            {
+                url: "https://conciousnessrevolution.io/PLATFORM/crypto-domain.html",
+                speech: "The Crypto Domain introduces Builder Tokens - a chaos-proof meritocracy cryptocurrency. You can't BUY tokens, only EARN them through real contributions. Pattern Theory validates every transaction. Launching Q2 2026.",
+                duration: 10000,
+                status: "₿ Builder Token"
+            },
+            {
+                url: "https://conciousnessrevolution.io/PLATFORM/games-domain.html",
+                speech: "The Games Domain features six consciousness training simulations: Pattern Detective, Reality Chooser, Project Genesis, Destroyer Defense, Reality Sculptor, and Network Effects. Games aren't entertainment - they're TRAINING SYSTEMS.",
+                duration: 10000,
+                status: "🎮 Training"
+            },
+            {
+                url: "https://conciousnessrevolution.io/PLATFORM/seven-domains-navigator.html",
+                speech: "And that's the complete ecosystem! Seven domains, infinite possibilities. This is just the beginning of the Consciousness Revolution. Ready to join us, builder? The future is being built right now. 🌌⚡",
+                duration: 10000,
+                status: "✨ Complete"
+            }
+        ];
+
+        let currentStep = 0;
+        let tourInterval = null;
+        let isPaused = false;
+
+        const frame = document.getElementById('website-frame');
+        const ariaSpeech = document.getElementById('aria-speech');
+        const ariaStatus = document.getElementById('aria-status');
+        const progress = document.getElementById('tour-progress');
+        const loading = document.getElementById('loading-overlay');
+
+        function updateARIA(text, status) {
+            ariaSpeech.textContent = text;
+            ariaStatus.textContent = status;
+        }
+
+        function updateProgress(step) {
+            progress.textContent = `Step ${step + 1} of ${tourSteps.length} - ${tourSteps[step].status}`;
+        }
+
+        function navigateToStep(stepIndex) {
+            if (stepIndex >= tourSteps.length) {
+                endTour();
+                return;
+            }
+
+            const step = tourSteps[stepIndex];
+
+            // Show loading
+            loading.classList.remove('hidden');
+
+            // Page flip animation
+            frame.classList.add('page-transition');
+
+            setTimeout(() => {
+                // Navigate to new page
+                frame.src = step.url;
+
+                // Update ARIA
+                updateARIA(step.speech, step.status);
+                updateProgress(stepIndex);
+
+                // Hide loading
+                loading.classList.add('hidden');
+                frame.classList.remove('page-transition');
+
+                // Speak (if browser supports it)
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(step.speech);
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1.1;
+                    utterance.volume = 1.0;
+                    window.speechSynthesis.speak(utterance);
+                }
+            }, 500);
+        }
+
+        function startTour() {
+            if (tourInterval) {
+                clearInterval(tourInterval);
+            }
+
+            currentStep = 0;
+            isPaused = false;
+
+            updateARIA("Let's begin the tour! 🚀", "🎬 Tour Starting");
+
+            navigateToStep(currentStep);
+
+            tourInterval = setInterval(() => {
+                if (!isPaused) {
+                    currentStep++;
+                    if (currentStep < tourSteps.length) {
+                        navigateToStep(currentStep);
+                    } else {
+                        endTour();
+                    }
+                }
+            }, tourSteps[currentStep]?.duration || 8000);
+        }
+
+        function pauseTour() {
+            isPaused = !isPaused;
+            updateARIA(isPaused ? "Tour paused. Click play to continue!" : "Tour resumed! 🚀", isPaused ? "⏸️ Paused" : "▶️ Playing");
+        }
+
+        function skipToNext() {
+            if (currentStep < tourSteps.length - 1) {
+                currentStep++;
+                navigateToStep(currentStep);
+            }
+        }
+
+        function restartTour() {
+            if (tourInterval) {
+                clearInterval(tourInterval);
+            }
+            startTour();
+        }
+
+        function endTour() {
+            if (tourInterval) {
+                clearInterval(tourInterval);
+            }
+            updateARIA("Tour complete! Welcome to the revolution, builder! 🌌⚡ Ready to start building?", "✅ Tour Complete");
+            progress.textContent = "Tour finished! Click restart to watch again.";
+        }
+
+        // Load ARIA avatar from actual source when available
+        // For now using placeholder - replace with actual ARIA image
+        document.getElementById('aria-img').src = 'https://via.placeholder.com/280x200/1a1a2e/00ff88?text=ARIA+AI+GUIDE';
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

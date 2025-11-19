@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Button Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .my-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .my-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .my-button:active {
+            transform: translateY(1px);
+        }
+        
+        #message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #28a745;
+            min-height: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Your Simple Page!</h1>
+        <button class="my-button" onclick="handleClick()">Click Me!</button>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        function handleClick() {
+            const messages = [
+                "Hello there! 👋",
+                "Button clicked! ✨",
+                "Great job! 🎉",
+                "You're awesome! 🌟",
+                "Keep clicking! 🚀"
+            ];
+            
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            document.getElementById('message').textContent = randomMessage;
+        }
+    </script>
+</body>
+</html>

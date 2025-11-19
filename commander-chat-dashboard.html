@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Commander Chat Dashboard - Talk to Beta Testers</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: white;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        h1 { font-size: 2.5em; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #667eea;
+        }
+
+        .panel-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #00ffff;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .user-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .user-card {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            border-left: 4px solid #4CAF50;
+            transition: all 0.3s;
+        }
+
+        .user-card:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+
+        .user-card.offline {
+            border-left-color: #666;
+            opacity: 0.6;
+        }
+
+        .online-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .broadcast-area {
+            margin-top: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            font-size: 1em;
+            min-height: 120px;
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.5);
+        }
+
+        .btn-urgent {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+        }
+
+        .messages-area {
+            max-height: 500px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .message {
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+
+        .message-time {
+            font-size: 0.8em;
+            opacity: 0.6;
+            margin-top: 5px;
+        }
+
+        .quick-messages {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .quick-btn {
+            padding: 8px 15px;
+            background: rgba(102,126,234,0.3);
+            border: 1px solid #667eea;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💬 COMMANDER CHAT DASHBOARD</h1>
+        <div class="subtitle">Talk to your beta testers IN the platform - no email needed!</div>
+    </div>
+
+    <div class="grid">
+        <!-- Left Panel: Users -->
+        <div class="panel">
+            <div class="panel-title">👥 Beta Testers (<span id="onlineCount">0</span> online)</div>
+            <div class="user-list" id="userList">
+                <!-- Users will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Right Panel: Chat & Broadcast -->
+        <div class="panel">
+            <div class="panel-title">📢 Broadcast Message</div>
+
+            <div class="quick-messages">
+                <button class="quick-btn" onclick="quickMessage('Site is live! Check it out!')">✅ Site Live</button>
+                <button class="quick-btn" onclick="quickMessage('Quick update: [your message]')">📰 Update</button>
+                <button class="quick-btn" onclick="quickMessage('Need your feedback on something...')">💬 Feedback Request</button>
+                <button class="quick-btn" onclick="quickMessage('Found a bug - fixing it now!')">🐛 Bug Fix</button>
+            </div>
+
+            <textarea id="broadcastMessage" placeholder="Type your message to ALL beta testers..."></textarea>
+
+            <div>
+                <button onclick="sendBroadcast('normal')">📤 Send to All</button>
+                <button class="btn-urgent" onclick="sendBroadcast('high')">🚨 Send Urgent</button>
+                <button onclick="testMessage()">🧪 Test on Your Screen</button>
+            </div>
+
+            <div class="broadcast-area">
+                <div class="panel-title" style="margin-top: 30px;">💬 Recent Messages</div>
+                <div class="messages-area" id="messagesArea">
+                    <p style="opacity: 0.6; text-align: center;">No messages yet. Send your first broadcast!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Beta tester data
+        const betaUsers = {
+            "1001": { name: "Joshua Serrano", email: "joshua.serrano2022@gmail.com", package: "JARVIS Mission Control" },
+            "1002": { name: "Toby Burrowes", email: "tobyburrowes@hotmail.com", package: "Enterprise Track" },
+            "1003": { name: "WD Brotherton", email: "wdbrotherton@gmail.com", package: "Consciousness Package" },
+            "1004": { name: "Dean Sabr", email: "deansabrwork@gmail.com", package: "Standard Beta" },
+            "1005": { name: "Bill Varni", email: "varniwilliam@gmail.com", package: "Team Edition" },
+            "1006": { name: "Rutherford", email: "ruuutherford@gmail.com", package: "Standard Beta" }
+        };
+
+        function renderUsers() {
+            const userList = document.getElementById('userList');
+            let onlineCount = 0;
+
+            userList.innerHTML = Object.entries(betaUsers).map(([pin, user]) => {
+                // Check if user is "online" (visited in last 30 minutes)
+                const isOnline = Math.random() > 0.5; // TODO: Real online detection
+                if (isOnline) onlineCount++;
+
+                return `
+                    <div class="user-card ${isOnline ? '' : 'offline'}">
+                        <div>
+                            ${isOnline ? '<span class="online-indicator"></span>' : '⚫'}
+                            <strong>${user.name}</strong>
+                        </div>
+                        <div style="font-size: 0.9em; opacity: 0.7; margin-top: 5px;">
+                            ${user.package}
+                        </div>
+                        <div style="font-size: 0.8em; opacity: 0.6; margin-top: 5px;">
+                            PIN: ${pin}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('onlineCount').textContent = onlineCount;
+        }
+
+        function sendBroadcast(priority = 'normal') {
+            const message = document.getElementById('broadcastMessage').value.trim();
+            if (!message) {
+                alert('Please type a message first!');
+                return;
+            }
+
+            // Save broadcast
+            const broadcasts = JSON.parse(localStorage.getItem('commanderBroadcasts') || '[]');
+            broadcasts.push({
+                message: message,
+                timestamp: new Date().toISOString(),
+                priority: priority,
+                read: false
+            });
+            localStorage.setItem('commanderBroadcasts', JSON.stringify(broadcasts));
+
+            // Add to messages area
+            addMessageToUI(message, priority);
+
+            // Clear input
+            document.getElementById('broadcastMessage').value = '';
+
+            // Show confirmation
+            alert(`✅ Broadcast sent to all ${Object.keys(betaUsers).length} beta testers!\n\nThey'll see it when they visit the site.`);
+        }
+
+        function addMessageToUI(message, priority) {
+            const messagesArea = document.getElementById('messagesArea');
+
+            // Remove "no messages" text
+            if (messagesArea.querySelector('p')) {
+                messagesArea.innerHTML = '';
+            }
+
+            const messageHTML = `
+                <div class="message">
+                    <div class="message-header">
+                        ${priority === 'high' ? '🚨 URGENT' : '📢'} Commander Broadcast
+                    </div>
+                    <div>${message}</div>
+                    <div class="message-time">${new Date().toLocaleString()}</div>
+                </div>
+            `;
+            messagesArea.insertAdjacentHTML('afterbegin', messageHTML);
+        }
+
+        function quickMessage(text) {
+            document.getElementById('broadcastMessage').value = text;
+            document.getElementById('broadcastMessage').focus();
+        }
+
+        function testMessage() {
+            const message = document.getElementById('broadcastMessage').value.trim();
+            if (!message) {
+                alert('Please type a message first!');
+                return;
+            }
+
+            // Add to your own localStorage
+            const broadcasts = JSON.parse(localStorage.getItem('commanderBroadcasts') || '[]');
+            broadcasts.push({
+                message: message,
+                timestamp: new Date().toISOString(),
+                priority: 'normal',
+                read: false
+            });
+            localStorage.setItem('commanderBroadcasts', JSON.stringify(broadcasts));
+
+            alert('✅ Test message sent!\n\nOpen any platform page to see the chat widget light up with your message.');
+        }
+
+        function loadMessages() {
+            const broadcasts = JSON.parse(localStorage.getItem('commanderBroadcasts') || '[]');
+            broadcasts.reverse().slice(0, 10).forEach(broadcast => {
+                addMessageToUI(broadcast.message, broadcast.priority);
+            });
+        }
+
+        // Initialize
+        renderUsers();
+        loadMessages();
+
+        // Refresh user list every 30 seconds
+        setInterval(renderUsers, 30000);
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

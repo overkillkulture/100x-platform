@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>📊 YOUR LIFE BUSINESS PLAN 📊</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1e3a 100%);
+            color: #00ff41;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00ff41, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .section {
+            background: rgba(0, 255, 65, 0.05);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 255, 65, 0.3);
+        }
+
+        .section-icon {
+            font-size: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .edit-btn {
+            margin-left: auto;
+            background: rgba(255, 0, 128, 0.2);
+            border: 2px solid #ff0080;
+            color: #ff0080;
+            padding: 8px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .edit-btn:hover {
+            background: rgba(255, 0, 128, 0.4);
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.6);
+        }
+
+        .content-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            border-radius: 5px;
+            padding: 20px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            min-height: 100px;
+        }
+
+        .content-box[contenteditable="true"] {
+            border-color: #ff0080;
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.3);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff0080;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 4px solid #00ff41;
+            padding: 20px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .timeline-item:before {
+            content: "→";
+            position: absolute;
+            left: -25px;
+            top: 20px;
+            font-size: 1.5rem;
+            color: #ff0080;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: #ff0080;
+            margin-bottom: 10px;
+        }
+
+        .timeline-goal {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .values-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .value-tag {
+            background: rgba(0, 255, 65, 0.2);
+            border: 2px solid #00ff41;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: rgba(0, 255, 65, 0.2);
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 15px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            background: rgba(0, 255, 65, 0.4);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+        }
+
+        .btn.primary {
+            background: rgba(255, 0, 128, 0.2);
+            border-color: #ff0080;
+            color: #ff0080;
+            font-size: 1.2rem;
+            padding: 20px 40px;
+        }
+
+        .btn.primary:hover {
+            background: rgba(255, 0, 128, 0.4);
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.6);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 2px solid rgba(0, 255, 65, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 100px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .strength-item {
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 4px solid #00ff41;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .warning-item {
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 4px solid #ff0000;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 YOUR LIFE BUSINESS PLAN 📊</h1>
+            <div class="tagline">CEO of Your Own Life - Complete Strategic Plan</div>
+        </div>
+
+        <div id="content">
+            <div class="loading">
+                🧠 Analyzing your consciousness profile...<br>
+                Generating your life business plan...
+            </div>
+        </div>
+
+        <div class="actions" id="actions" style="display: none;">
+            <button class="btn primary" onclick="exportPlan()">📥 EXPORT COMPLETE PLAN</button>
+            <button class="btn" onclick="createRoadmap()">🗺️ CREATE ROADMAP</button>
+            <button class="btn" onclick="shareProfile()">🔗 SHARE PROFILE</button>
+            <button class="btn" onclick="location.href='consciousness-profile-dump.html'">✏️ EDIT DUMP</button>
+        </div>
+    </div>
+
+    <script>
+        const profileData = {
+            past: localStorage.getItem('consciousness_past') || '',
+            present: localStorage.getItem('consciousness_present') || '',
+            future: localStorage.getItem('consciousness_future') || ''
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!profileData.past && !profileData.present && !profileData.future) {
+                window.location.href = 'onboarding-welcome.html';
+                return;
+            }
+
+            setTimeout(() => {
+                generateBusinessPlan();
+            }, 1500);
+        });
+
+        function generateBusinessPlan() {
+            const plan = analyzeProfile();
+            renderPlan(plan);
+            document.getElementById('actions').style.display = 'flex';
+        }
+
+        function analyzeProfile() {
+            const past = profileData.past.toLowerCase();
+            const present = profileData.present.toLowerCase();
+            const future = profileData.future.toLowerCase();
+            const allText = past + ' ' + present + ' ' + future;
+
+            // Extract mission from future goals
+            const mission = extractMission(profileData.future);
+
+            // Extract values
+            const values = extractValues(allText);
+
+            // Extract strengths
+            const strengths = extractStrengths(allText);
+
+            // Extract obstacles
+            const obstacles = extractObstacles(past, present);
+
+            // Extract goals
+            const goals = extractGoals(profileData.future);
+
+            // Calculate metrics
+            const metrics = calculateMetrics(allText);
+
+            return {
+                mission,
+                values,
+                strengths,
+                obstacles,
+                goals,
+                metrics,
+                timeline: buildTimeline(goals)
+            };
+        }
+
+        function extractMission(futureText) {
+            if (!futureText) return "Define your mission - what's your purpose?";
+
+            const sentences = futureText.split(/[.!?]+/).filter(s => s.trim().length > 20);
+            if (sentences.length === 0) return "Your mission is waiting to be defined.";
+
+            // Use first substantial sentence as mission statement
+            return sentences[0].trim() + ".";
+        }
+
+        function extractValues(text) {
+            const valueKeywords = {
+                'Freedom': ['freedom', 'independent', 'autonomy', 'free'],
+                'Truth': ['truth', 'honest', 'authentic', 'real'],
+                'Growth': ['grow', 'learn', 'improve', 'better'],
+                'Family': ['family', 'children', 'kids', 'parent'],
+                'Creativity': ['create', 'build', 'make', 'design'],
+                'Justice': ['justice', 'fair', 'right', 'wrong'],
+                'Strength': ['strong', 'resilient', 'tough', 'powerful'],
+                'Compassion': ['help', 'care', 'love', 'compassion']
+            };
+
+            const detected = [];
+            for (const [value, keywords] of Object.entries(valueKeywords)) {
+                if (keywords.some(keyword => text.includes(keyword))) {
+                    detected.push(value);
+                }
+            }
+
+            return detected.length > 0 ? detected : ['Define your values'];
+        }
+
+        function extractStrengths(text) {
+            const strengthPatterns = [
+                'survived', 'overcame', 'built', 'created', 'learned',
+                'fighting', 'resilient', 'strong', 'determined', 'skilled'
+            ];
+
+            const strengths = [];
+            strengthPatterns.forEach(pattern => {
+                if (text.includes(pattern)) {
+                    strengths.push(capitalize(pattern) + ' through adversity');
+                }
+            });
+
+            return strengths.length > 0 ? strengths : ['Seeking truth', 'Open to growth', 'Willing to change'];
+        }
+
+        function extractObstacles(past, present) {
+            const obstacles = [];
+
+            if (past.includes('abuse') || past.includes('trauma')) {
+                obstacles.push('Past trauma requiring healing');
+            }
+            if (past.includes('manipulat') || past.includes('control')) {
+                obstacles.push('Pattern recognition of manipulation');
+            }
+            if (present.includes('stuck') || present.includes('trap')) {
+                obstacles.push('Feeling stuck in current situation');
+            }
+            if (present.includes('money') || present.includes('financial')) {
+                obstacles.push('Financial constraints to overcome');
+            }
+
+            return obstacles.length > 0 ? obstacles : ['Defining obstacles and challenges'];
+        }
+
+        function extractGoals(futureText) {
+            if (!futureText) return ['Define your goals'];
+
+            const sentences = futureText.split(/[.!?]+/)
+                .filter(s => s.trim().length > 15)
+                .slice(0, 5);
+
+            return sentences.map(s => s.trim());
+        }
+
+        function calculateMetrics(text) {
+            const words = text.split(/\s+/).filter(w => w.length > 0).length;
+
+            return {
+                completeness: Math.min(100, Math.round((words / 3000) * 100)),
+                pastClarity: profileData.past.split(/\s+/).length > 300 ? 'High' : 'Medium',
+                presentClarity: profileData.present.split(/\s+/).length > 300 ? 'High' : 'Medium',
+                futureClarity: profileData.future.split(/\s+/).length > 300 ? 'High' : 'Medium',
+                totalWords: words
+            };
+        }
+
+        function buildTimeline(goals) {
+            const now = new Date();
+            const timeline = [
+                {
+                    date: 'IMMEDIATE (Week 1)',
+                    goal: 'Complete consciousness profile & life business plan'
+                },
+                {
+                    date: '30 DAYS',
+                    goal: goals[0] || 'Define first milestone goal'
+                },
+                {
+                    date: '90 DAYS',
+                    goal: goals[1] || 'Build foundation systems'
+                },
+                {
+                    date: '6 MONTHS',
+                    goal: goals[2] || 'Major breakthrough achieved'
+                },
+                {
+                    date: '1 YEAR',
+                    goal: goals[3] || 'Life transformation visible'
+                },
+                {
+                    date: '5 YEARS',
+                    goal: goals[4] || 'Complete mission accomplished'
+                }
+            ];
+
+            return timeline;
+        }
+
+        function renderPlan(plan) {
+            const html = `
+                <!-- Mission Statement -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-icon">🎯</span>
+                        <span class="section-title">MISSION STATEMENT</span>
+                        <button class="edit-btn" onclick="makeEditable('mission')">✏️ EDIT</button>
+                    </div>
+                    <div class="content-box" id="mission">${plan.mission}</div>
+                </div>
+
+                <!-- Core Values -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-icon">⚡</span>
+                        <span class="section-title">CORE VALUES & PRINCIPLES</span>
+                    </div>
+                    <div class="values-list">
+                        ${plan.values.map(v => `<div class="value-tag">${v}</div>`).join('')}
+                    </div>
+                </div>
+
+                <!-- Key Strengths -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-icon">💪</span>
+                        <span class="section-title">KEY STRENGTHS & ASSETS</span>
+                    </div>
+                    ${plan.strengths.map(s => `<div class="strength-item">✓ ${s}</div>`).join('')}
+                </div>
+
+                <!-- Obstacles & Challenges -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-icon">⚠️</span>
+                        <span class="section-title">OBSTACLES TO OVERCOME</span>
+                    </div>
+                    ${plan.obstacles.map(o => `<div class="warning-item">⚠ ${o}</div>`).join('')}
+                </div>
+
+                <!-- Timeline & Milestones -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-icon">📅</span>
+                        <span class="section-title">STRATEGIC TIMELINE</span>
+                    </div>
+                    <div class="timeline">
+                        ${plan.timeline.map(item => `
+                            <div class="timeline-item">
+                                <div class="timeline-date">${item.date}</div>
+                                <div class="timeline-goal">${item.goal}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Metrics -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-icon">📊</span>
+                        <span class="section-title">PROFILE METRICS</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Profile Completeness</div>
+                            <div class="metric-value">${plan.metrics.completeness}%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Past Clarity</div>
+                            <div class="metric-value">${plan.metrics.pastClarity}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Present Clarity</div>
+                            <div class="metric-value">${plan.metrics.presentClarity}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Future Vision</div>
+                            <div class="metric-value">${plan.metrics.futureClarity}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('content').innerHTML = html;
+        }
+
+        function makeEditable(elementId) {
+            const element = document.getElementById(elementId);
+            element.contentEditable = true;
+            element.focus();
+
+            element.addEventListener('blur', () => {
+                element.contentEditable = false;
+                // Save to localStorage
+                localStorage.setItem(`plan_${elementId}`, element.textContent);
+            });
+        }
+
+        function exportPlan() {
+            const timestamp = new Date().toISOString().split('T')[0];
+            const content = document.getElementById('content').innerText;
+
+            const fullPlan = `
+LIFE BUSINESS PLAN
+Generated: ${timestamp}
+=====================================
+
+${content}
+
+=====================================
+APPENDIX: CONSCIOUSNESS PROFILE DUMP
+=====================================
+
+=== PAST ===
+${profileData.past}
+
+=== PRESENT ===
+${profileData.present}
+
+=== FUTURE ===
+${profileData.future}
+
+=====================================
+Next Steps:
+1. Review and refine this plan monthly
+2. Track progress against timeline
+3. Update consciousness profile quarterly
+4. Build accountability systems
+5. Execute with full consciousness
+
+This is YOUR life. YOUR business plan. YOUR rules.
+CEO: YOU
+`;
+
+            const blob = new Blob([fullPlan], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `life-business-plan-${timestamp}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            alert('✅ Complete Life Business Plan exported!\n\nThis is YOUR strategic plan. Review it monthly and watch your life transform.');
+        }
+
+        function createRoadmap() {
+            alert('🗺️ ROADMAP BUILDER\n\n' +
+                  'This will create a Domino Cascade TODO list from your plan:\n\n' +
+                  '1. Break goals into actionable tasks\n' +
+                  '2. Organize by domino effect\n' +
+                  '3. Create timeline with deadlines\n' +
+                  '4. Track progress automatically\n\n' +
+                  'Feature coming soon!');
+        }
+
+        function shareProfile() {
+            alert('🔗 PROFILE SHARING\n\n' +
+                  'Options:\n' +
+                  '1. Generate shareable link (read-only)\n' +
+                  '2. Export as PDF portfolio\n' +
+                  '3. Create public mission page\n' +
+                  '4. Connect with accountability partners\n\n' +
+                  'Feature coming soon!');
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+    </script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

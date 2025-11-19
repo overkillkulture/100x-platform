@@ -1,0 +1,1264 @@
+{
+  "scan_date": "2025-10-17T04:31:20.924343",
+  "stats": {
+    "files_scanned": 4526,
+    "xss_vulnerabilities": 50,
+    "info_disclosure": 88,
+    "unsafe_innerHTML": 50,
+    "console_log_leaks": 88
+  },
+  "vulnerabilities": [
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "100X_DASHBOARD.html",
+      "line": 276,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "2fa-setup-tutorial.html",
+      "line": 312,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "ANALYTICS_DASHBOARD.html",
+      "line": 259,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "ANALYTICS_DASHBOARD_LIVE.html",
+      "line": 565,
+      "code": "container.innerHTML = submissions.map(sub => {",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "ANALYTICS_DASHBOARD_LIVE.html",
+      "line": 316,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "ANALYTICS_DASHBOARD_LIVE.html",
+      "line": 622,
+      "code": "console.log('\ud83d\udcca Real-time data from Airtable');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "aria-demo.html",
+      "line": 169,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "bug-report.html",
+      "line": 218,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "cockpit.html",
+      "line": 276,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "COMPLETE_WORKFLOW_ECOSYSTEM.html",
+      "line": 410,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "dashboard.html",
+      "line": 426,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "EMPLOYEE_COCKPIT.html",
+      "line": 298,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "index_airtable_backup.html",
+      "line": 203,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "index_netlify_forms.html",
+      "line": 181,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "index_old.html",
+      "line": 208,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "INSIDE_THE_MACHINE.html",
+      "line": 441,
+      "code": "div.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "META_LAYER_ANALYTICS_DASHBOARD.html",
+      "line": 464,
+      "code": "moduleEl.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "nuclear-consulting.html",
+      "line": 321,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "open-house.html",
+      "line": 229,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "OPEN_HOUSE.html",
+      "line": 172,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "OVERKILLKULTURE_BUSINESS_SITE.html",
+      "line": 210,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "OVERKOR_LANDING_PAGE.html",
+      "line": 145,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "OVERKOR_TEK_COMPLETE_CATALOG.html",
+      "line": 225,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "OVERKOR_TEK_PUBLIC_SITE.html",
+      "line": 190,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "platform.html",
+      "line": 216,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "roadmap.html",
+      "line": 210,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "SIMPLE_FRONT_DOOR.html",
+      "line": 188,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "success.html",
+      "line": 254,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "test-modules.html",
+      "line": 88,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "TRINITY_CHAT.html",
+      "line": 298,
+      "code": "div.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "TRINITY_COMMAND_CHAT.html",
+      "line": 685,
+      "code": "div.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "WELCOME_PAGE.html",
+      "line": 194,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "DOCS\\MODULE_TEMPLATE.html",
+      "line": 96,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "overkor-site\\index.html",
+      "line": 145,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\analytics-dashboard.html",
+      "line": 356,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\analytics-test-data-generator.html",
+      "line": 155,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\app-store.html",
+      "line": 387,
+      "code": "card.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\brain-council.html",
+      "line": 1116,
+      "code": "statement.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\brain-council.html",
+      "line": 1260,
+      "code": "card.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\brain-council.html",
+      "line": 699,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\business-phase-clock.html",
+      "line": 629,
+      "code": "div.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\carnival-homepage-v2.html",
+      "line": 245,
+      "code": "console.log('\ud83d\udcca Real-time stats loaded:', data);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\carnival-homepage.html",
+      "line": 245,
+      "code": "console.log('\ud83d\udcca Real-time stats loaded:', data);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\cheat-codes.html",
+      "line": 520,
+      "code": "grid.innerHTML = codes.map(cheat => `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\community-activity.html",
+      "line": 477,
+      "code": "container.innerHTML = mockUsers.map(user => `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\community-activity.html",
+      "line": 494,
+      "code": "container.innerHTML = mockActivities.map((activity, index) => `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\consciousness-speed-test.html",
+      "line": 543,
+      "code": "gameArea.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\consciousness-speed-test.html",
+      "line": 428,
+      "code": "console.log('\ud83d\udd27 Auto-repair: Initializing game data...');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\consciousness-speed-test.html",
+      "line": 471,
+      "code": "console.log('\ud83c\udf00 Trinity AI Analysis:', data);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\construction.html",
+      "line": 73,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\corporate-bloat-tracker.html",
+      "line": 451,
+      "code": "appDiv.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\crypto-domain.html",
+      "line": 592,
+      "code": "console.log('Builder Token Economy: Pure Meritocracy + Chaos-Proof Design');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\crypto-domain.html",
+      "line": 593,
+      "code": "console.log('Launch: Q2 2026 | Early Builder Advantage: 2x token multiplier');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\debugger-leaderboard.html",
+      "line": 538,
+      "code": "row.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\games-domain.html",
+      "line": 582,
+      "code": "console.log('Gamification: XP, Levels, Achievements, Token Rewards, Leaderboards');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\kaizen-builder-board.html",
+      "line": 366,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\meritocracy-dashboard.html",
+      "line": 372,
+      "code": "leaderboard.innerHTML = data.leaderboard.map(builder => {",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\meritocracy-dashboard.html",
+      "line": 423,
+      "code": "container.innerHTML = data.contributions.map(contrib => {",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\module-library.html",
+      "line": 300,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\music-player.html",
+      "line": 351,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\patent-manager.html",
+      "line": 307,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\pattern-recognition-quiz.html",
+      "line": 383,
+      "code": "quizArea.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\platform-city-map.html",
+      "line": 469,
+      "code": "buildingList.innerHTML = district.buildings.map(building => `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\privacy-policy.html",
+      "line": 200,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\quantum-pattern-filter.html",
+      "line": 695,
+      "code": "container.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\quantum-pattern-filter.html",
+      "line": 739,
+      "code": "container.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\quantum-pattern-filter.html",
+      "line": 784,
+      "code": "container.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\quantum-pattern-filter.html",
+      "line": 828,
+      "code": "container.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\quantum-pattern-filter.html",
+      "line": 872,
+      "code": "container.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\sensor-integration-dashboard.html",
+      "line": 481,
+      "code": "card.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\seven-domains-navigator.html",
+      "line": 364,
+      "code": "domainEl.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\seven-domains-navigator.html",
+      "line": 380,
+      "code": "panel.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\store-campaigns.html",
+      "line": 362,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\store-cart.html",
+      "line": 328,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\store-investments.html",
+      "line": 641,
+      "code": "grid.innerHTML = investments.map(inv => `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\store-investments.html",
+      "line": 319,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\store-products.html",
+      "line": 670,
+      "code": "grid.innerHTML = filtered.map(product => `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\store-products.html",
+      "line": 300,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\store.html",
+      "line": 258,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\template-house-starter.html",
+      "line": 127,
+      "code": "container.innerHTML = posts.map(post => `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\todo-master.html",
+      "line": 358,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\trinity-ai-interface.html",
+      "line": 907,
+      "code": "card.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\trinity-ai-interface.html",
+      "line": 521,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\trinity-chat.html",
+      "line": 552,
+      "code": "messageEl.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\trinity-cockpit.html",
+      "line": 627,
+      "code": "console.log('\u2705 Trinity API connected:', data);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\unified-character-assessment.html",
+      "line": 912,
+      "code": "container.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\unified-character-assessment.html",
+      "line": 1118,
+      "code": "careerDisplay.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\user-dashboard.html",
+      "line": 742,
+      "code": "container.innerHTML = activeKorpaks.map(korpak => `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\workspace.html",
+      "line": 509,
+      "code": "li.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PUBLIC\\access-denied.html",
+      "line": 185,
+      "code": "scoreInfo.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PUBLIC\\partnership.html",
+      "line": 141,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PUBLIC\\pattern-filter.html",
+      "line": 716,
+      "code": "document.getElementById('results-message').innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PUBLIC\\pattern-filter.html",
+      "line": 176,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PUBLIC\\pattern-filter.html",
+      "line": 660,
+      "code": "console.log('\ud83d\udebc [Baby Gate] User passed screening, returning to:', returnPath);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PUBLIC\\pattern-theory-training.html",
+      "line": 74,
+      "code": "console.log('Sync not enabled - data stays local');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "USB_PACKAGE\\DASHBOARDS\\USB_CONSCIOUSNESS_COCKPIT.html",
+      "line": 388,
+      "code": "document.getElementById('error-container').innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "BUILDER_XP_SYSTEM.js",
+      "line": 363,
+      "code": "notif.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "BUILDER_XP_SYSTEM.js",
+      "line": 373,
+      "code": "notif.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "BUILDER_XP_SYSTEM.js",
+      "line": 383,
+      "code": "notif.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "BUILDER_XP_SYSTEM.js",
+      "line": 421,
+      "code": "overlay.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "BUILDER_XP_SYSTEM.js",
+      "line": 436,
+      "code": "overlay.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "MODULE_PHASE_SYSTEM.js",
+      "line": 152,
+      "code": "badge.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "MODULE_PHASE_SYSTEM.js",
+      "line": 212,
+      "code": "grid.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "BACKEND\\consciousness-fishing-hooks.js",
+      "line": 241,
+      "code": "console.log('Response:', response.data);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "BACKEND\\consciousness-fishing-hooks.js",
+      "line": 352,
+      "code": "console.log('Posted to:', result.data.status);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "BACKEND\\stripe-checkout-api.js",
+      "line": 90,
+      "code": "console.log('\u26a0 Checkout session expired:', event.data.object.id);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "BACKEND\\stripe-checkout-api.js",
+      "line": 94,
+      "code": "console.log('\u2713 Payment intent succeeded:', event.data.object.id);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "BACKEND\\stripe-checkout-api.js",
+      "line": 98,
+      "code": "console.log('\u274c Payment failed:', event.data.object.id);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PUBLIC\\analytics.js",
+      "line": 328,
+      "code": "console.log('\ud83d\udce5 Analytics data exported');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PUBLIC\\analytics.js",
+      "line": 337,
+      "code": "console.log('\ud83d\uddd1\ufe0f Analytics data cleared');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PUBLIC\\consciousness-gate.js",
+      "line": 209,
+      "code": "console.log('\ud83d\uddd1\ufe0f Screening data cleared');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PUBLIC\\module-storage.js",
+      "line": 83,
+      "code": "console.log('\ud83d\udce5 Data imported successfully');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "USB_PACKAGE\\statistics-engine.js",
+      "line": 45,
+      "code": "console.log('\u2705 Statistics Engine: Data loaded successfully');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "USB_PACKAGE\\statistics-engine.js",
+      "line": 46,
+      "code": "console.log(`\ud83d\udcca Elevations: ${this.data.length}, Sessions: ${this.sessions.length}, Stories: ${this.stories.length}`);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\shared\\development-scaffolding.js",
+      "line": 724,
+      "code": "console.log('  Ctrl+Shift+T - Generate test data');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\shared\\reality-impact-system.js",
+      "line": 85,
+      "code": "console.log(`\ud83d\udcca Session: ${this.data.sessionId}`);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\shared\\reality-impact-system.js",
+      "line": 86,
+      "code": "console.log(`\ud83d\udc65 Active Users: ${this.data.activeUsers}`);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\shared\\reality-impact-system.js",
+      "line": 197,
+      "code": "console.log('\ud83d\udcbe Data saved to USB-like storage (IndexedDB)');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\shared\\reality-impact-system.js",
+      "line": 628,
+      "code": "console.log(`\ud83d\udc65 Active Users: ${this.data.activeUsers}`);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\shared\\reality-impact-system.js",
+      "line": 629,
+      "code": "console.log(`\ud83d\udcca Total Sessions: ${this.data.totalSessions}`);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\shared\\reality-impact-system.js",
+      "line": 630,
+      "code": "console.log(`\u2728 Consciousness Elevations: ${this.data.consciousnessElevations}`);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\shared\\reality-impact-system.js",
+      "line": 631,
+      "code": "console.log(`\ud83c\udf10 Network Size: ${this.data.networkConnections}`);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\shared\\reality-impact-system.js",
+      "line": 632,
+      "code": "console.log(`\ud83d\udd25 Emergence Score: ${this.data.emergenceScore}`);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\shared\\three-stamp-approval.js",
+      "line": 396,
+      "code": "console.log(`%c\ud83d\udc65 USER STAMP GRANTED`, 'color: #4caf50; font-size: 16px; font-weight: bold;');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "PLATFORM\\showcases\\02-triple-turbo-encryption\\encryption-engine.js",
+      "line": 109,
+      "code": "layerDiv.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\ASSETS\\js\\api-client.js",
+      "line": 326,
+      "code": "console.log('User already migrated to database');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "PLATFORM\\ASSETS\\js\\api-client.js",
+      "line": 366,
+      "code": ".then(user => console.log('API Client: Session restored for', user.email))",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "BACKEND\\philosopher-ai\\server.js",
+      "line": 833,
+      "code": "console.log(`User ${userId} upgraded to ${tier}`);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "BACKEND\\philosopher-ai\\node_modules\\braces\\index.js",
+      "line": 147,
+      "code": "* console.log(braces.create('user-{200..300}/project-{a,b,c}-{1..10}'))",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "ASSETS\\js\\auth.js",
+      "line": 292,
+      "code": "element.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "ASSETS\\js\\auth.js",
+      "line": 325,
+      "code": "element.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "ASSETS\\js\\dual-write-system.js",
+      "line": 285,
+      "code": "console.log('\ud83d\udced No data to migrate');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "ASSETS\\js\\dual-write-system.js",
+      "line": 294,
+      "code": "console.log('\u2705 Database already has data, skipping migration');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "ASSETS\\js\\dual-write-system.js",
+      "line": 361,
+      "code": "console.log(`\u2705 Data consistent: ${localCount} questions in both stores`);",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "ASSETS\\js\\dual-write-system.js",
+      "line": 381,
+      "code": "console.log('\ud83d\udd04 Force syncing ALL localStorage data to database...');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "ASSETS\\js\\dual-write-system.js",
+      "line": 450,
+      "code": "console.log('\ud83d\uddd1\ufe0f All localStorage data cleared');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "INFO_DISCLOSURE",
+      "severity": "MEDIUM",
+      "file": "ASSETS\\js\\storage.js",
+      "line": 427,
+      "code": "console.log('STORAGE: Data imported successfully');",
+      "description": "console.log may leak sensitive information",
+      "fix": "Remove or replace with console.error for production"
+    },
+    {
+      "type": "XSS_VULNERABILITY",
+      "severity": "HIGH",
+      "file": "ASSETS\\js\\trinity.js",
+      "line": 204,
+      "code": "container.innerHTML = `",
+      "description": "Unsafe innerHTML usage with user-generated content",
+      "fix": "Apply SafeDOM.escapeHTML() or use textContent instead"
+    }
+  ],
+  "summary": {
+    "total_vulnerabilities": 138,
+    "by_severity": {
+      "critical": 0,
+      "high": 50,
+      "medium": 88
+    },
+    "security_score": 0,
+    "manipulation_immunity": 0
+  }
+}

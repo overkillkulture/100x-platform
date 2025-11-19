@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>100X Mission Control - Full Team Monitoring</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            color: #0f0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .mission-control {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "screens console activity"
+                "terminal terminal terminal";
+            grid-template-rows: 60px 1fr 250px;
+            grid-template-columns: 1.5fr 1fr 300px;
+            height: 100vh;
+            gap: 2px;
+            background: #000;
+        }
+
+        .header {
+            grid-area: header;
+            background: #0a0a0a;
+            border-bottom: 2px solid #0f0;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0ff;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        /* Screen Monitor Grid */
+        .screens {
+            grid-area: screens;
+            background: #0a0a0a;
+            border: 1px solid #0f0;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+            overflow-y: auto;
+        }
+
+        .screen-monitor {
+            background: #050505;
+            border: 2px solid #0ff;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 200px;
+            position: relative;
+        }
+
+        .screen-monitor.active {
+            border-color: #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .screen-monitor.offline {
+            border-color: #f00;
+            opacity: 0.5;
+        }
+
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #0ff;
+        }
+
+        .screen-name {
+            font-weight: bold;
+            color: #0ff;
+        }
+
+        .screen-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .screen-status.online {
+            background: #0f0;
+        }
+
+        .screen-status.waiting {
+            background: #ffa500;
+        }
+
+        .screen-status.offline {
+            background: #f00;
+            animation: none;
+        }
+
+        .screen-preview {
+            background: #000;
+            border: 1px solid #0ff;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen-preview.live {
+            border-color: #0f0;
+        }
+
+        .screen-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .screen-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .control-btn {
+            padding: 8px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #0ff;
+            color: #0ff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .control-btn.danger {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: #f00;
+            color: #f00;
+        }
+
+        .control-btn.success {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #0f0;
+            color: #0f0;
+        }
+
+        /* Shared Console */
+        .console {
+            grid-area: console;
+            background: #0a0a0a;
+            border: 1px solid #0f0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .console-header {
+            color: #0ff;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #0ff;
+        }
+
+        .console-messages {
+            flex: 1;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .console-message {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 2px solid #0ff;
+            padding-left: 10px;
+        }
+
+        .console-message.from-bill {
+            border-left-color: #00f;
+            color: #00f;
+        }
+
+        .console-message.from-justin {
+            border-left-color: #ff0;
+            color: #ff0;
+        }
+
+        .console-message.from-toby {
+            border-left-color: #f0f;
+            color: #f0f;
+        }
+
+        .console-message.system {
+            border-left-color: #f00;
+            color: #f00;
+        }
+
+        .console-input {
+            display: flex;
+            gap: 5px;
+        }
+
+        .console-input input {
+            flex: 1;
+            padding: 8px;
+            background: #000;
+            border: 1px solid #0ff;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .console-input button {
+            padding: 8px 15px;
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #0f0;
+            color: #0f0;
+            cursor: pointer;
+        }
+
+        /* Activity Feed */
+        .activity {
+            grid-area: activity;
+            background: #0a0a0a;
+            border: 1px solid #0f0;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .activity-header {
+            color: #0ff;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #0ff;
+        }
+
+        .activity-item {
+            margin: 8px 0;
+            padding: 8px;
+            background: rgba(0, 255, 255, 0.1);
+            border-left: 3px solid #0ff;
+            font-size: 0.85rem;
+        }
+
+        .activity-item.error {
+            border-left-color: #f00;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        .activity-item.success {
+            border-left-color: #0f0;
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .activity-time {
+            color: #666;
+            font-size: 0.7rem;
+            margin-top: 3px;
+        }
+
+        /* Shared Terminal */
+        .terminal {
+            grid-area: terminal;
+            background: #000;
+            border-top: 2px solid #0f0;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            overflow-y: auto;
+        }
+
+        .terminal-header {
+            color: #0f0;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .terminal-output {
+            max-height: 180px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .terminal-line {
+            margin: 2px 0;
+            color: #0f0;
+        }
+
+        .terminal-line.input {
+            color: #0ff;
+        }
+
+        .terminal-line.error {
+            color: #f00;
+        }
+
+        .terminal-prompt {
+            display: flex;
+            align-items: center;
+            color: #0f0;
+        }
+
+        .terminal-prompt input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            outline: none;
+            padding: 5px;
+            font-size: 1rem;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+
+    <div class="mission-control">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 MISSION CONTROL - 100X Platform</h1>
+            <div class="header-stats">
+                <div class="stat">
+                    <div class="stat-value" id="team-count">3</div>
+                    <div class="stat-label">TEAM MEMBERS</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="online-count">0</div>
+                    <div class="stat-label">ONLINE</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="activity-count">4</div>
+                    <div class="stat-label">ACTIVITIES</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen Monitors -->
+        <div class="screens">
+            <!-- Bill's Screen -->
+            <div class="screen-monitor" id="bill-monitor">
+                <div class="screen-header">
+                    <span class="screen-name">👤 BILL</span>
+                    <span class="screen-status waiting"></span>
+                </div>
+                <div class="screen-preview">
+                    <div>📭 Waiting for connection...</div>
+                </div>
+                <div style="font-size: 0.75rem; color: #666; margin: 5px 0;">
+                    varniwilliam@gmail.com<br>
+                    Status: Package delivered
+                </div>
+                <div class="screen-controls">
+                    <button class="control-btn success" onclick="requestScreenShare('bill')">
+                        📺 Request Screen
+                    </button>
+                    <button class="control-btn" onclick="takeControl('bill')">
+                        🎮 Remote Control
+                    </button>
+                    <button class="control-btn" onclick="sendHelp('bill')">
+                        💬 Send Message
+                    </button>
+                    <button class="control-btn danger" onclick="emergencyFix('bill')">
+                        🚨 Emergency Fix
+                    </button>
+                </div>
+            </div>
+
+            <!-- Justin's Screen -->
+            <div class="screen-monitor" id="justin-monitor">
+                <div class="screen-header">
+                    <span class="screen-name">👤 JUSTIN (DABDILLA710)</span>
+                    <span class="screen-status waiting"></span>
+                </div>
+                <div class="screen-preview">
+                    <div>📭 Waiting for connection...</div>
+                </div>
+                <div style="font-size: 0.75rem; color: #666; margin: 5px 0;">
+                    jtdc7468@gmail.com<br>
+                    Status: Package delivered
+                </div>
+                <div class="screen-controls">
+                    <button class="control-btn success" onclick="requestScreenShare('justin')">
+                        📺 Request Screen
+                    </button>
+                    <button class="control-btn" onclick="takeControl('justin')">
+                        🎮 Remote Control
+                    </button>
+                    <button class="control-btn" onclick="sendHelp('justin')">
+                        💬 Send Message
+                    </button>
+                    <button class="control-btn danger" onclick="emergencyFix('justin')">
+                        🚨 Emergency Fix
+                    </button>
+                </div>
+            </div>
+
+            <!-- Toby's Screen -->
+            <div class="screen-monitor" id="toby-monitor">
+                <div class="screen-header">
+                    <span class="screen-name">👤 TOBY (iOS)</span>
+                    <span class="screen-status waiting"></span>
+                </div>
+                <div class="screen-preview">
+                    <div>📱 iOS - Dashboard only</div>
+                </div>
+                <div style="font-size: 0.75rem; color: #666; margin: 5px 0;">
+                    tobyburrowes@hotmail.com<br>
+                    Status: Package delivered (iOS)
+                </div>
+                <div class="screen-controls">
+                    <button class="control-btn success" onclick="requestScreenShare('toby')">
+                        📺 Request Screen
+                    </button>
+                    <button class="control-btn" onclick="viewDashboard('toby')">
+                        📊 View Dashboard
+                    </button>
+                    <button class="control-btn" onclick="sendHelp('toby')">
+                        💬 Send Message
+                    </button>
+                    <button class="control-btn danger" onclick="emergencyFix('toby')">
+                        🚨 Emergency Fix
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shared Console -->
+        <div class="console">
+            <div class="console-header">💬 SHARED CONSOLE - Team Communication</div>
+            <div class="console-messages" id="console-messages">
+                <div class="console-message system">[SYSTEM] Mission Control initialized</div>
+                <div class="console-message system">[SYSTEM] Monitoring 3 team members</div>
+                <div class="console-message system">[SYSTEM] Packages delivered to all recipients</div>
+            </div>
+            <div class="console-input">
+                <input type="text" id="console-input" placeholder="Type message or command..." onkeypress="handleConsoleKey(event)">
+                <button onclick="sendConsoleMessage()">SEND</button>
+            </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="activity">
+            <div class="activity-header">📊 ACTIVITY FEED</div>
+            <div id="activity-feed">
+                <div class="activity-item success">
+                    ✅ Packages sent to 3 recipients
+                    <div class="activity-time">Just now</div>
+                </div>
+                <div class="activity-item success">
+                    ✅ Bill: Package delivered
+                    <div class="activity-time">Just now</div>
+                </div>
+                <div class="activity-item success">
+                    ✅ Justin: Package delivered
+                    <div class="activity-time">Just now</div>
+                </div>
+                <div class="activity-item success">
+                    ✅ Toby: Package delivered (iOS)
+                    <div class="activity-time">Just now</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shared Terminal -->
+        <div class="terminal">
+            <div class="terminal-header">⚡ SHARED TERMINAL - Direct Connection to Team Members</div>
+            <div class="terminal-output" id="terminal-output">
+                <div class="terminal-line">[SYSTEM] Shared terminal ready</div>
+                <div class="terminal-line">[SYSTEM] Team members can connect via their Intelligent Terminal</div>
+                <div class="terminal-line">[SYSTEM] Waiting for connections...</div>
+            </div>
+            <div class="terminal-prompt">
+                <span>$ </span>
+                <input type="text" id="terminal-input" placeholder="Enter command or chat with team..." onkeypress="handleTerminalKey(event)">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const WS_URL = 'ws://localhost:5001'; // WebSocket for real-time communication
+        let ws = null;
+
+        // Initialize WebSocket connection
+        function initWebSocket() {
+            ws = new WebSocket(WS_URL);
+
+            ws.onopen = () => {
+                addActivity('✅ WebSocket connected', 'success');
+                addTerminalLine('[SYSTEM] Real-time connection established');
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                handleIncomingMessage(data);
+            };
+
+            ws.onerror = () => {
+                addActivity('⚠️ WebSocket unavailable - start MISSION_CONTROL_SERVER.py', 'error');
+                addTerminalLine('[ERROR] Cannot connect to server - run backend');
+            };
+        }
+
+        function handleIncomingMessage(data) {
+            if (data.type === 'screen_update') {
+                updateScreen(data.member, data.screenshot);
+            } else if (data.type === 'console_message') {
+                addConsoleMessage(data.from, data.message);
+            } else if (data.type === 'terminal_output') {
+                addTerminalLine(`[${data.from.toUpperCase()}] ${data.output}`);
+            } else if (data.type === 'status_update') {
+                updateStatus(data.member, data.status);
+            }
+        }
+
+        function requestScreenShare(member) {
+            addActivity(`📺 Requesting screen share from ${member}`, 'success');
+            addTerminalLine(`[SYSTEM] Sending screen share request to ${member}...`);
+
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'request_screen',
+                    target: member
+                }));
+            } else {
+                addTerminalLine('[ERROR] WebSocket not connected');
+            }
+        }
+
+        function takeControl(member) {
+            addActivity(`🎮 Taking remote control of ${member}'s computer`, 'success');
+            addTerminalLine(`[SYSTEM] Requesting remote control access from ${member}...`);
+            addConsoleMessage('SYSTEM', `${member}, Commander is requesting remote control access. Accept? (y/n)`);
+        }
+
+        function sendHelp(member) {
+            const message = prompt(`Send message to ${member}:`);
+            if (message) {
+                addConsoleMessage('Commander', `@${member}: ${message}`);
+                addActivity(`💬 Message sent to ${member}`, 'success');
+            }
+        }
+
+        function emergencyFix(member) {
+            addActivity(`🚨 Emergency fix deployed to ${member}`, 'error');
+            addTerminalLine(`[EMERGENCY] Deploying auto-fix script to ${member}...`);
+            addConsoleMessage('SYSTEM', `${member}: Emergency troubleshooting initiated`);
+        }
+
+        function viewDashboard(member) {
+            addActivity(`📊 Viewing ${member}'s dashboard`, 'success');
+            window.open(`http://localhost:8000/${member}-dashboard`, '_blank');
+        }
+
+        function updateScreen(member, screenshot) {
+            const monitor = document.getElementById(`${member}-monitor`);
+            const preview = monitor.querySelector('.screen-preview');
+            preview.innerHTML = `<img src="${screenshot}" alt="${member}'s screen">`;
+            preview.classList.add('live');
+
+            const status = monitor.querySelector('.screen-status');
+            status.classList.remove('waiting');
+            status.classList.add('online');
+        }
+
+        function updateStatus(member, status) {
+            const monitor = document.getElementById(`${member}-monitor`);
+            const statusDot = monitor.querySelector('.screen-status');
+
+            statusDot.classList.remove('waiting', 'online', 'offline');
+            statusDot.classList.add(status);
+
+            if (status === 'online') {
+                monitor.classList.add('active');
+                updateOnlineCount(1);
+            }
+        }
+
+        function addConsoleMessage(from, message) {
+            const messagesDiv = document.getElementById('console-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `console-message from-${from.toLowerCase()}`;
+            messageDiv.textContent = `[${from.toUpperCase()}] ${message}`;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function sendConsoleMessage() {
+            const input = document.getElementById('console-input');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            addConsoleMessage('Commander', message);
+            input.value = '';
+
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'console_message',
+                    from: 'commander',
+                    message: message
+                }));
+            }
+        }
+
+        function handleConsoleKey(event) {
+            if (event.key === 'Enter') {
+                sendConsoleMessage();
+            }
+        }
+
+        function addTerminalLine(line) {
+            const output = document.getElementById('terminal-output');
+            const lineDiv = document.createElement('div');
+            lineDiv.className = 'terminal-line';
+            lineDiv.textContent = line;
+            output.appendChild(lineDiv);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function handleTerminalKey(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('terminal-input');
+                const command = input.value.trim();
+
+                if (!command) return;
+
+                addTerminalLine(`$ ${command}`);
+
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: 'terminal_command',
+                        command: command
+                    }));
+                } else {
+                    addTerminalLine('[ERROR] Not connected to server');
+                }
+
+                input.value = '';
+            }
+        }
+
+        function addActivity(message, type = '') {
+            const feed = document.getElementById('activity-feed');
+            const item = document.createElement('div');
+            item.className = `activity-item ${type}`;
+            item.innerHTML = `
+                ${message}
+                <div class="activity-time">Just now</div>
+            `;
+            feed.insertBefore(item, feed.firstChild);
+
+            const count = document.getElementById('activity-count');
+            count.textContent = parseInt(count.textContent) + 1;
+        }
+
+        function updateOnlineCount(delta) {
+            const count = document.getElementById('online-count');
+            count.textContent = Math.max(0, parseInt(count.textContent) + delta);
+        }
+
+        // Try to connect WebSocket
+        setTimeout(initWebSocket, 1000);
+
+        // Simulate some activity
+        setTimeout(() => {
+            addTerminalLine('[SYSTEM] Polling for team member connections...');
+        }, 3000);
+    </script>
+
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

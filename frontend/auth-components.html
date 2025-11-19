@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consciousness Revolution - Authentication Components</title>
+    <style>
+        /* Authentication Modal Styles */
+        .cr-auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cr-auth-modal.active {
+            display: flex;
+        }
+
+        .cr-auth-container {
+            background: #1a1a1a;
+            border: 2px solid #00ff88;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.3);
+        }
+
+        .cr-auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .cr-auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00ff88;
+            margin: 0 0 10px 0;
+        }
+
+        .cr-auth-subtitle {
+            font-size: 14px;
+            color: #888;
+            margin: 0;
+        }
+
+        .cr-auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .cr-auth-tab {
+            flex: 1;
+            padding: 12px;
+            background: #252525;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .cr-auth-tab.active {
+            background: #00ff88;
+            color: #000;
+            border-color: #00ff88;
+        }
+
+        .cr-auth-form {
+            display: none;
+        }
+
+        .cr-auth-form.active {
+            display: block;
+        }
+
+        .cr-form-group {
+            margin-bottom: 20px;
+        }
+
+        .cr-form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #00ff88;
+            margin-bottom: 8px;
+        }
+
+        .cr-form-input {
+            width: 100%;
+            padding: 14px;
+            background: #252525;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .cr-form-input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .cr-form-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cr-form-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .cr-form-button:active {
+            transform: translateY(0);
+        }
+
+        .cr-form-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .cr-form-error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            border-radius: 8px;
+            padding: 12px;
+            color: #ff6666;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .cr-form-error.active {
+            display: block;
+        }
+
+        .cr-form-success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 12px;
+            color: #00ff88;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .cr-form-success.active {
+            display: block;
+        }
+
+        .cr-auth-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 28px;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.3s;
+        }
+
+        .cr-auth-close:hover {
+            color: #00ff88;
+        }
+
+        .cr-user-display {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            color: #00ff88;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .cr-user-display.active {
+            display: flex;
+        }
+
+        .cr-user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .cr-logout-btn {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid #00ff88;
+            border-radius: 6px;
+            color: #00ff88;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cr-logout-btn:hover {
+            background: #00ff88;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Authentication Modal -->
+<div id="cr-auth-modal" class="cr-auth-modal">
+    <div class="cr-auth-container">
+        <button class="cr-auth-close" onclick="closeAuthModal()">×</button>
+
+        <div class="cr-auth-header">
+            <h2 class="cr-auth-title">Join the Revolution</h2>
+            <p class="cr-auth-subtitle">One account for all 7 domains</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="cr-auth-tabs">
+            <div class="cr-auth-tab active" onclick="switchAuthTab('signup')">Sign Up</div>
+            <div class="cr-auth-tab" onclick="switchAuthTab('login')">Log In</div>
+        </div>
+
+        <!-- Error/Success Messages -->
+        <div id="cr-auth-error" class="cr-form-error"></div>
+        <div id="cr-auth-success" class="cr-form-success"></div>
+
+        <!-- Signup Form -->
+        <form id="cr-signup-form" class="cr-auth-form active" onsubmit="return handleSignup(event)">
+            <div class="cr-form-group">
+                <label class="cr-form-label">Full Name</label>
+                <input type="text" name="fullName" class="cr-form-input" placeholder="John Doe" required>
+            </div>
+
+            <div class="cr-form-group">
+                <label class="cr-form-label">Email</label>
+                <input type="email" name="email" class="cr-form-input" placeholder="you@example.com" required>
+            </div>
+
+            <div class="cr-form-group">
+                <label class="cr-form-label">Password</label>
+                <input type="password" name="password" class="cr-form-input" placeholder="••••••••" required minlength="8">
+            </div>
+
+            <button type="submit" class="cr-form-button">Create Account</button>
+        </form>
+
+        <!-- Login Form -->
+        <form id="cr-login-form" class="cr-auth-form" onsubmit="return handleLogin(event)">
+            <div class="cr-form-group">
+                <label class="cr-form-label">Email</label>
+                <input type="email" name="email" class="cr-form-input" placeholder="you@example.com" required>
+            </div>
+
+            <div class="cr-form-group">
+                <label class="cr-form-label">Password</label>
+                <input type="password" name="password" class="cr-form-input" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="cr-form-button">Log In</button>
+        </form>
+    </div>
+</div>
+
+<!-- User Display (shows when logged in) -->
+<div id="cr-user-display" class="cr-user-display">
+    <div class="cr-user-avatar" id="cr-user-avatar">U</div>
+    <span id="cr-user-email">user@example.com</span>
+    <button class="cr-logout-btn" onclick="handleLogout()">Logout</button>
+</div>
+
+<!-- Include SDK -->
+<script src="consciousness-sdk.js"></script>
+
+<script>
+    // Initialize SDK
+    const cr = new ConsciousnessRevolution({
+        apiBaseUrl: 'http://localhost:5000', // Change to production URL
+        stripePublishableKey: 'pk_live_...', // Add when Stripe configured
+        onAuthChange: (isAuthenticated) => {
+            updateUI(isAuthenticated);
+        },
+        onError: (error) => {
+            showError(error.message);
+        }
+    });
+
+    // Check if already authenticated on page load
+    if (cr.isAuthenticated()) {
+        verifyAndUpdateUI();
+    }
+
+    // =====================================================
+    // MODAL CONTROLS
+    // =====================================================
+
+    function openAuthModal(defaultTab = 'signup') {
+        document.getElementById('cr-auth-modal').classList.add('active');
+        switchAuthTab(defaultTab);
+    }
+
+    function closeAuthModal() {
+        document.getElementById('cr-auth-modal').classList.remove('active');
+        clearMessages();
+    }
+
+    function switchAuthTab(tab) {
+        // Update tabs
+        document.querySelectorAll('.cr-auth-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // Update forms
+        document.querySelectorAll('.cr-auth-form').forEach(f => f.classList.remove('active'));
+
+        if (tab === 'signup') {
+            document.getElementById('cr-signup-form').classList.add('active');
+        } else {
+            document.getElementById('cr-login-form').classList.add('active');
+        }
+
+        clearMessages();
+    }
+
+    // =====================================================
+    // AUTHENTICATION HANDLERS
+    // =====================================================
+
+    async function handleSignup(event) {
+        event.preventDefault();
+        clearMessages();
+
+        const form = event.target;
+        const button = form.querySelector('button');
+        button.disabled = true;
+        button.textContent = 'Creating account...';
+
+        try {
+            const formData = new FormData(form);
+            const result = await cr.auth.signup({
+                email: formData.get('email'),
+                password: formData.get('password'),
+                fullName: formData.get('fullName')
+            });
+
+            if (result.success) {
+                showSuccess('Account created! Welcome to the revolution.');
+                setTimeout(() => {
+                    closeAuthModal();
+                    window.location.reload(); // Reload to update UI
+                }, 1500);
+            }
+        } catch (error) {
+            showError(error.message);
+        } finally {
+            button.disabled = false;
+            button.textContent = 'Create Account';
+        }
+
+        return false;
+    }
+
+    async function handleLogin(event) {
+        event.preventDefault();
+        clearMessages();
+
+        const form = event.target;
+        const button = form.querySelector('button');
+        button.disabled = true;
+        button.textContent = 'Logging in...';
+
+        try {
+            const formData = new FormData(form);
+            const result = await cr.auth.login({
+                email: formData.get('email'),
+                password: formData.get('password')
+            });
+
+            if (result.success) {
+                showSuccess('Welcome back!');
+                setTimeout(() => {
+                    closeAuthModal();
+                    window.location.reload(); // Reload to update UI
+                }, 1500);
+            }
+        } catch (error) {
+            showError(error.message);
+        } finally {
+            button.disabled = false;
+            button.textContent = 'Log In';
+        }
+
+        return false;
+    }
+
+    function handleLogout() {
+        cr.auth.logout();
+        window.location.reload();
+    }
+
+    // =====================================================
+    // UI UPDATES
+    // =====================================================
+
+    async function verifyAndUpdateUI() {
+        try {
+            const userData = await cr.auth.verify();
+            if (userData.success) {
+                updateUserDisplay(userData.email);
+            }
+        } catch (error) {
+            // Token invalid, user not logged in
+            cr.auth.logout();
+        }
+    }
+
+    function updateUI(isAuthenticated) {
+        const userDisplay = document.getElementById('cr-user-display');
+
+        if (isAuthenticated) {
+            userDisplay.classList.add('active');
+        } else {
+            userDisplay.classList.remove('active');
+        }
+    }
+
+    function updateUserDisplay(email) {
+        document.getElementById('cr-user-email').textContent = email;
+        const initial = email.charAt(0).toUpperCase();
+        document.getElementById('cr-user-avatar').textContent = initial;
+        document.getElementById('cr-user-display').classList.add('active');
+    }
+
+    // =====================================================
+    // MESSAGING
+    // =====================================================
+
+    function showError(message) {
+        const errorEl = document.getElementById('cr-auth-error');
+        errorEl.textContent = message;
+        errorEl.classList.add('active');
+    }
+
+    function showSuccess(message) {
+        const successEl = document.getElementById('cr-auth-success');
+        successEl.textContent = message;
+        successEl.classList.add('active');
+    }
+
+    function clearMessages() {
+        document.getElementById('cr-auth-error').classList.remove('active');
+        document.getElementById('cr-auth-success').classList.remove('active');
+    }
+
+    // =====================================================
+    // GLOBAL FUNCTIONS
+    // =====================================================
+
+    // Make auth modal accessible globally
+    window.openAuthModal = openAuthModal;
+    window.closeAuthModal = closeAuthModal;
+    window.crSDK = cr; // Make SDK accessible globally
+</script>
+
+</body>
+</html>

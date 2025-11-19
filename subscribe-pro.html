@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribe to Pro - Consciousness Revolution</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.9);
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 50px rgba(0, 255, 255, 0.3);
+        }
+
+        .plan-badge {
+            background: linear-gradient(135deg, #00ffff 0%, #32ff7e 100%);
+            color: #0a0a0a;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #00ffff;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 3.5rem;
+            color: #32ff7e;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .price .period {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+        }
+
+        .founding-price {
+            background: rgba(50, 255, 126, 0.1);
+            border: 2px dashed #32ff7e;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .founding-price .label {
+            color: #32ff7e;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .founding-price .savings {
+            color: #fff;
+            font-size: 1.3rem;
+        }
+
+        .features {
+            list-style: none;
+            margin: 30px 0;
+        }
+
+        .features li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .features li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #32ff7e;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .email-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            border-radius: 10px;
+            margin: 20px 0;
+            transition: border-color 0.3s;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: #00ffff;
+        }
+
+        .subscribe-button {
+            width: 100%;
+            background: linear-gradient(135deg, #00ffff 0%, #32ff7e 100%);
+            color: #0a0a0a;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+        }
+
+        .subscribe-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 25px rgba(50, 255, 126, 0.5);
+        }
+
+        .subscribe-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .guarantee {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a0a0a0;
+            font-size: 0.95rem;
+        }
+
+        .guarantee strong {
+            color: #32ff7e;
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .secure-badge svg {
+            width: 20px;
+            height: 20px;
+            fill: #32ff7e;
+        }
+
+        .error-message {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 255, 255, 0.1);
+            border-top: 4px solid #00ffff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="plan-badge">MOST POPULAR</div>
+        <h1>Pro Plan</h1>
+
+        <div class="price">
+            $99<span class="period">/month</span>
+        </div>
+
+        <div class="founding-price">
+            <div class="label">🎉 Founding Member Price</div>
+            <div class="savings">Only $49.50/month - Save $594/year!</div>
+        </div>
+
+        <ul class="features">
+            <li><strong>Everything in Basic, plus:</strong></li>
+            <li>Araya Pro (unlimited AI conversations)</li>
+            <li>Pattern Recognition training (Levels 1-3)</li>
+            <li>Builder Terminal access (AI code generation)</li>
+            <li>Private coaching sessions (1 per month)</li>
+            <li>Early access to all new features</li>
+            <li>Priority support (responses within 24 hours)</li>
+            <li>Private Discord channel</li>
+            <li>Monthly exclusive workshops</li>
+        </ul>
+
+        <div class="error-message" id="error-message"></div>
+
+        <form id="subscription-form">
+            <input
+                type="email"
+                id="email-input"
+                class="email-input"
+                placeholder="Enter your email address"
+                required
+            />
+
+            <button type="submit" class="subscribe-button" id="subscribe-button">
+                Subscribe to Pro - $49.50/month
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; color: #00ffff;">Redirecting to secure checkout...</p>
+        </div>
+
+        <div class="guarantee">
+            <strong>7-Day Money-Back Guarantee</strong><br>
+            Try Pro risk-free. If it's not for you, we'll refund you immediately. No questions asked.
+        </div>
+
+        <div class="secure-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+            </svg>
+            Secure payment powered by Stripe
+        </div>
+    </div>
+
+    <script>
+        // Initialize Stripe (TODO: Replace with your publishable key)
+        const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY'); // Change to pk_live_ in production
+
+        const form = document.getElementById('subscription-form');
+        const emailInput = document.getElementById('email-input');
+        const subscribeButton = document.getElementById('subscribe-button');
+        const errorMessage = document.getElementById('error-message');
+        const loading = document.getElementById('loading');
+
+        // Price ID for Pro plan (TODO: Replace with your Stripe Price ID)
+        const PRICE_ID_PRO = 'price_pro_founding'; // Your Stripe Price ID here
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = emailInput.value.trim();
+            if (!email) {
+                showError('Please enter a valid email address');
+                return;
+            }
+
+            // Disable button and show loading
+            subscribeButton.disabled = true;
+            loading.classList.add('active');
+            form.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            try {
+                // Call your Netlify function to create checkout session
+                const response = await fetch('/.netlify/functions/create-checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        priceId: PRICE_ID_PRO,
+                        customerEmail: email,
+                        planName: 'Pro'
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.url) {
+                    // Redirect to Stripe Checkout
+                    window.location.href = data.url;
+                } else {
+                    throw new Error(data.error || 'Failed to create checkout session');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError(error.message || 'Something went wrong. Please try again.');
+                subscribeButton.disabled = false;
+                loading.classList.remove('active');
+                form.style.display = 'block';
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        // Track page view
+        if (window.gtag) {
+            gtag('event', 'page_view', {
+                page_title: 'Subscribe Pro',
+                page_location: window.location.href,
+                page_path: window.location.pathname
+            });
+        }
+    </script>
+</body>
+</html>

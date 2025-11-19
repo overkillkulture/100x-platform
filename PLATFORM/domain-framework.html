@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>🏗️ DOMAIN FRAMEWORK - Build Your House</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e27;
+            color: #00ff41;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0, 255, 65, 0.05);
+            border-bottom: 2px solid rgba(0, 255, 65, 0.3);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(90deg, #00ff41, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .concept-box {
+            background: rgba(255, 0, 128, 0.1);
+            border: 2px solid #ff0080;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .concept-box h2 {
+            color: #ff0080;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .concept-box p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .domains-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .domain-card {
+            background: rgba(0, 255, 65, 0.05);
+            border: 3px solid #00ff41;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .domain-card:hover {
+            background: rgba(0, 255, 65, 0.15);
+            border-color: #ff0080;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 65, 0.3);
+        }
+
+        .domain-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .domain-icon {
+            font-size: 3rem;
+        }
+
+        .domain-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .domain-phase {
+            display: inline-block;
+            background: rgba(255, 0, 128, 0.2);
+            border: 2px solid #ff0080;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .domain-desc {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .road-structure {
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 4px solid #00ff41;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .road-structure h4 {
+            color: #ff0080;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .road-structure ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .road-structure li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .road-structure li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #ff0080;
+        }
+
+        .build-btn {
+            background: rgba(0, 255, 65, 0.2);
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 12px 25px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .build-btn:hover {
+            background: rgba(0, 255, 65, 0.4);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+        }
+
+        .framework-features {
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .framework-features h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #00ff41;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ff0080;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        .example-house {
+            background: rgba(255, 0, 128, 0.05);
+            border: 2px solid #ff0080;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .example-house h4 {
+            color: #ff0080;
+            margin-bottom: 15px;
+        }
+
+        .example-house code {
+            display: block;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🏗️ DOMAIN FRAMEWORK</h1>
+        <div class="tagline">Build Your House on Our Roads</div>
+    </div>
+
+    <div class="container">
+        <div class="concept-box">
+            <h2>🛣️ THE CONCEPT: ROADS + HOUSES</h2>
+            <p>
+                <strong>We built the roads.</strong> You build the houses.
+            </p>
+            <p>
+                Each of the 7 domains has a <strong>road system</strong> (infrastructure, routing, navigation,
+                user management, data storage). Your job as a builder is to create <strong>houses</strong>
+                (content, features, experiences, tools) that sit on these roads.
+            </p>
+            <p>
+                <strong>Example:</strong> In the MUSIC domain, we provide the road (user accounts, audio player,
+                upload system, distribution channels). You create the house (your songs, albums, courses,
+                instruments, sound packs).
+            </p>
+            <p>
+                <strong>Why this works:</strong> You don't reinvent the wheel. You focus on YOUR genius (content,
+                creativity, expertise) while we handle the infrastructure (boring technical stuff).
+            </p>
+        </div>
+
+        <div class="framework-features">
+            <h3>🎯 WHAT THE ROADS PROVIDE (INFRASTRUCTURE)</h3>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🔐</div>
+                    <div class="feature-title">Authentication</div>
+                    <div class="feature-desc">User accounts, login system, profile management</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🗂️</div>
+                    <div class="feature-title">Data Storage</div>
+                    <div class="feature-desc">LocalStorage + backend, save user progress/content</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-title">UI Components</div>
+                    <div class="feature-desc">Pre-built buttons, forms, cards, navigation</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Analytics</div>
+                    <div class="feature-desc">Track usage, engagement, user behavior</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🌐</div>
+                    <div class="feature-title">Routing</div>
+                    <div class="feature-desc">Navigate between pages, deep linking</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">💳</div>
+                    <div class="feature-title">Payments</div>
+                    <div class="feature-desc">Stripe integration, subscriptions, one-time</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🎮</div>
+                    <div class="feature-title">Gamification</div>
+                    <div class="feature-desc">XP, levels, achievements, leaderboards</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🔔</div>
+                    <div class="feature-title">Notifications</div>
+                    <div class="feature-desc">Push notifications, email alerts, in-app</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 40px;">
+            🌌 THE 7 DOMAINS + THEIR ROADS
+        </h2>
+
+        <div class="domains-grid">
+            <!-- DOMAIN 1: TOOLS -->
+            <div class="domain-card">
+                <div class="domain-header">
+                    <div class="domain-icon">🛠️</div>
+                    <div class="domain-title">TOOLS</div>
+                </div>
+                <div class="domain-phase">PHASE 1 - LIVE</div>
+
+                <div class="domain-desc">
+                    Computer Consciousness, Pattern Theory, Automation Systems
+                </div>
+
+                <div class="road-structure">
+                    <h4>🛣️ ROADS PROVIDED:</h4>
+                    <ul>
+                        <li>Tool marketplace infrastructure</li>
+                        <li>API key management system</li>
+                        <li>Automation workflow builder</li>
+                        <li>Integration testing framework</li>
+                        <li>Documentation generator</li>
+                    </ul>
+                </div>
+
+                <div class="example-house">
+                    <h4>🏠 HOUSES YOU CAN BUILD:</h4>
+                    <ul>
+                        <li>• Chrome extension for [specific use case]</li>
+                        <li>• Python script marketplace</li>
+                        <li>• No-code automation templates</li>
+                        <li>• AI prompt library</li>
+                        <li>• Data analysis tools</li>
+                    </ul>
+                </div>
+
+                <button class="build-btn" onclick="buildOnDomain('TOOLS')">START BUILDING →</button>
+            </div>
+
+            <!-- DOMAIN 2: EDUCATION -->
+            <div class="domain-card">
+                <div class="domain-header">
+                    <div class="domain-icon">📚</div>
+                    <div class="domain-title">EDUCATION</div>
+                </div>
+                <div class="domain-phase">PHASE 1 - LIVE</div>
+
+                <div class="domain-desc">
+                    Builder Training, Consciousness Courses, Dimensional Mathematics
+                </div>
+
+                <div class="road-structure">
+                    <h4>🛣️ ROADS PROVIDED:</h4>
+                    <ul>
+                        <li>Course creation platform</li>
+                        <li>Video hosting & streaming</li>
+                        <li>Progress tracking system</li>
+                        <li>Certification issuance</li>
+                        <li>Discussion forums</li>
+                    </ul>
+                </div>
+
+                <div class="example-house">
+                    <h4>🏠 HOUSES YOU CAN BUILD:</h4>
+                    <ul>
+                        <li>• Your expertise taught as course</li>
+                        <li>• Interactive tutorials</li>
+                        <li>• Skill challenges & quizzes</li>
+                        <li>• Mentorship programs</li>
+                        <li>• Knowledge base/wiki</li>
+                    </ul>
+                </div>
+
+                <button class="build-btn" onclick="buildOnDomain('EDUCATION')">START BUILDING →</button>
+            </div>
+
+            <!-- DOMAIN 3: SOCIAL -->
+            <div class="domain-card">
+                <div class="domain-header">
+                    <div class="domain-icon">💬</div>
+                    <div class="domain-title">SOCIAL</div>
+                </div>
+                <div class="domain-phase">PHASE 1 - LIVE</div>
+
+                <div class="domain-desc">
+                    Consciousness Network, Builder Community, Trinity Collaboration
+                </div>
+
+                <div class="road-structure">
+                    <h4>🛣️ ROADS PROVIDED:</h4>
+                    <ul>
+                        <li>Profile system with following</li>
+                        <li>Post/comment infrastructure</li>
+                        <li>Real-time chat channels</li>
+                        <li>Group/community management</li>
+                        <li>Content moderation tools</li>
+                    </ul>
+                </div>
+
+                <div class="example-house">
+                    <h4>🏠 HOUSES YOU CAN BUILD:</h4>
+                    <ul>
+                        <li>• Your niche community</li>
+                        <li>• Q&A platform</li>
+                        <li>• Project collaboration spaces</li>
+                        <li>• Event organizing system</li>
+                        <li>• Networking tools</li>
+                    </ul>
+                </div>
+
+                <button class="build-btn" onclick="buildOnDomain('SOCIAL')">START BUILDING →</button>
+            </div>
+
+            <!-- DOMAIN 4: MUSIC -->
+            <div class="domain-card">
+                <div class="domain-header">
+                    <div class="domain-icon">🎵</div>
+                    <div class="domain-title">MUSIC</div>
+                </div>
+                <div class="domain-phase">PHASE 2 - BUILDING</div>
+
+                <div class="domain-desc">
+                    Consciousness Frequencies, Sacred Geometry Music, Production Tools
+                </div>
+
+                <div class="road-structure">
+                    <h4>🛣️ ROADS PROVIDED:</h4>
+                    <ul>
+                        <li>Audio player with waveforms</li>
+                        <li>Upload/distribution system</li>
+                        <li>Playlist creation engine</li>
+                        <li>Streaming infrastructure</li>
+                        <li>Royalty tracking system</li>
+                    </ul>
+                </div>
+
+                <div class="example-house">
+                    <h4>🏠 HOUSES YOU CAN BUILD:</h4>
+                    <ul>
+                        <li>• Your music catalog</li>
+                        <li>• Sound pack marketplace</li>
+                        <li>• Beat/loop library</li>
+                        <li>• Music production courses</li>
+                        <li>• Collaboration tools</li>
+                    </ul>
+                </div>
+
+                <button class="build-btn" onclick="buildOnDomain('MUSIC')">START BUILDING →</button>
+            </div>
+
+            <!-- DOMAIN 5: CRYPTO -->
+            <div class="domain-card">
+                <div class="domain-header">
+                    <div class="domain-icon">₿</div>
+                    <div class="domain-title">CRYPTO</div>
+                </div>
+                <div class="domain-phase">PHASE 2 - BUILDING</div>
+
+                <div class="domain-desc">
+                    Builder Tokens, Decentralized Systems, Consciousness Economy
+                </div>
+
+                <div class="road-structure">
+                    <h4>🛣️ ROADS PROVIDED:</h4>
+                    <ul>
+                        <li>Wallet connection (MetaMask)</li>
+                        <li>Smart contract templates</li>
+                        <li>Token creation wizard</li>
+                        <li>NFT minting platform</li>
+                        <li>DAO governance tools</li>
+                    </ul>
+                </div>
+
+                <div class="example-house">
+                    <h4>🏠 HOUSES YOU CAN BUILD:</h4>
+                    <ul>
+                        <li>• Your project token</li>
+                        <li>• NFT collection</li>
+                        <li>• DeFi application</li>
+                        <li>• Crypto education course</li>
+                        <li>• Trading tools</li>
+                    </ul>
+                </div>
+
+                <button class="build-btn" onclick="buildOnDomain('CRYPTO')">START BUILDING →</button>
+            </div>
+
+            <!-- DOMAIN 6: GAMES -->
+            <div class="domain-card">
+                <div class="domain-header">
+                    <div class="domain-icon">🎮</div>
+                    <div class="domain-title">GAMES</div>
+                </div>
+                <div class="domain-phase">PHASE 3 - SOON</div>
+
+                <div class="domain-desc">
+                    Consciousness Gaming, Training Simulations, Reality Manipulation Games
+                </div>
+
+                <div class="road-structure">
+                    <h4>🛣️ ROADS PROVIDED:</h4>
+                    <ul>
+                        <li>Three.js 3D engine integration</li>
+                        <li>Multiplayer infrastructure</li>
+                        <li>Leaderboard system</li>
+                        <li>Achievement tracking</li>
+                        <li>In-game economy</li>
+                    </ul>
+                </div>
+
+                <div class="example-house">
+                    <h4>🏠 HOUSES YOU CAN BUILD:</h4>
+                    <ul>
+                        <li>• Your game concept</li>
+                        <li>• Training simulations</li>
+                        <li>• Puzzle/riddle challenges</li>
+                        <li>• Competitive tournaments</li>
+                        <li>• Gamified learning</li>
+                    </ul>
+                </div>
+
+                <button class="build-btn" onclick="buildOnDomain('GAMES')">START BUILDING →</button>
+            </div>
+
+            <!-- DOMAIN 7: GOVERNANCE -->
+            <div class="domain-card">
+                <div class="domain-header">
+                    <div class="domain-icon">⚖️</div>
+                    <div class="domain-title">GOVERNANCE</div>
+                </div>
+                <div class="domain-phase">PHASE 3 - SOON</div>
+
+                <div class="domain-desc">
+                    ManifestoCharts, Legal Tools, Destroyer Accountability, Federal Case Builder
+                </div>
+
+                <div class="road-structure">
+                    <h4>🛣️ ROADS PROVIDED:</h4>
+                    <ul>
+                        <li>Timeline documentation system</li>
+                        <li>Evidence upload & storage</li>
+                        <li>Pattern analysis engine</li>
+                        <li>PDF export for legal use</li>
+                        <li>Anonymous submission option</li>
+                    </ul>
+                </div>
+
+                <div class="example-house">
+                    <h4>🏠 HOUSES YOU CAN BUILD:</h4>
+                    <ul>
+                        <li>• Your ManifestoChart template</li>
+                        <li>• Legal resource library</li>
+                        <li>• Accountability tracking tools</li>
+                        <li>• Victim support network</li>
+                        <li>• Pattern database</li>
+                    </ul>
+                </div>
+
+                <button class="build-btn" onclick="buildOnDomain('GOVERNANCE')">START BUILDING →</button>
+            </div>
+        </div>
+
+        <div class="concept-box" style="margin-top: 60px;">
+            <h2>🚀 HOW TO BUILD YOUR HOUSE</h2>
+            <p>
+                <strong>Step 1:</strong> Pick a domain where your expertise/passion lives
+            </p>
+            <p>
+                <strong>Step 2:</strong> Use our road infrastructure (copy the template files)
+            </p>
+            <p>
+                <strong>Step 3:</strong> Build your house (add YOUR content, YOUR features)
+            </p>
+            <p>
+                <strong>Step 4:</strong> Deploy to the platform (we handle hosting)
+            </p>
+            <p>
+                <strong>Step 5:</strong> People discover your house via the roads
+            </p>
+            <p>
+                <strong>Step 6:</strong> Profit from your creation (sales/subscriptions/tips)
+            </p>
+
+            <div class="example-house">
+                <h4>📝 EXAMPLE: Building a Music Course (EDUCATION + MUSIC)</h4>
+                <code>
+1. Copy education course template<br>
+2. Add your video lessons<br>
+3. Customize with your branding<br>
+4. Set your price ($97 one-time)<br>
+5. Deploy to platform<br>
+6. Students find you via EDUCATION domain<br>
+7. You earn 80% of sales (we take 20% for infrastructure)<br>
+<br>
+You didn't build authentication. You didn't build payment processing.<br>
+You didn't build video hosting. You just focused on YOUR genius: teaching.<br>
+<br>
+That's the power of roads + houses.
+                </code>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function buildOnDomain(domain) {
+            alert(`🏗️ BUILDING ON ${domain} DOMAIN\n\n` +
+                  `Next steps:\n` +
+                  `1. Access the domain template files\n` +
+                  `2. Clone the starter template\n` +
+                  `3. Add your content/features\n` +
+                  `4. Test locally\n` +
+                  `5. Submit for review\n` +
+                  `6. Go live!\n\n` +
+                  `Template repository: Coming soon!\n` +
+                  `Builder docs: consciousnessrevolution.io/docs`);
+        }
+    </script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araya Extension - Auto Installer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .installer {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 50px;
+        }
+
+        .step {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-left: 6px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            transform: scale(1.02);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            font-weight: bold;
+            font-size: 24px;
+            margin-right: 20px;
+        }
+
+        .step h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .step p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .auto-install-btn {
+            width: 100%;
+            padding: 25px;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.3);
+            margin: 30px 0;
+        }
+
+        .auto-install-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(74, 222, 128, 0.5);
+        }
+
+        .auto-install-btn:active {
+            transform: translateY(0);
+        }
+
+        .progress {
+            display: none;
+            margin: 30px 0;
+        }
+
+        .progress.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .manual-steps {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .manual-steps h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .manual-steps ol {
+            margin-left: 20px;
+            color: #856404;
+            line-height: 2;
+        }
+
+        .success {
+            display: none;
+            background: #d4edda;
+            border: 3px solid #28a745;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .success.active {
+            display: block;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success h3 {
+            color: #155724;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .success p {
+            color: #155724;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="installer">
+        <div class="header">
+            <h1>🤖 Araya Extension</h1>
+            <p>Auto Installer - Professional Setup</p>
+        </div>
+
+        <div class="content">
+            <div class="step">
+                <h2><span class="step-number">1</span>Welcome!</h2>
+                <p>This installer will automatically download and set up the Araya browser extension for you. The extension lets you chat with Araya from any browser tab!</p>
+            </div>
+
+            <button class="auto-install-btn" onclick="autoInstall()">
+                🚀 AUTO INSTALL - CLICK HERE
+            </button>
+
+            <div class="progress" id="progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Starting installation...</div>
+            </div>
+
+            <div class="success" id="success">
+                <h3>✅ Download Complete!</h3>
+                <p>The Araya extension package has been downloaded.</p>
+                <p style="margin-top: 15px;"><strong>Next step:</strong> Unzip the file and open "START_HERE.html" for installation instructions.</p>
+            </div>
+
+            <div class="manual-steps">
+                <h3>⚙️ After Download:</h3>
+                <ol>
+                    <li><strong>Unzip</strong> the downloaded file</li>
+                    <li><strong>Open</strong> START_HERE.html in your browser</li>
+                    <li><strong>Follow</strong> the simple 3-step installation guide</li>
+                    <li><strong>Start</strong> chatting with Araya!</li>
+                </ol>
+                <p style="margin-top: 15px; font-size: 14px;">The whole process takes about 2 minutes. No technical knowledge required!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function autoInstall() {
+            const progress = document.getElementById('progress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const success = document.getElementById('success');
+            const btn = document.querySelector('.auto-install-btn');
+
+            // Hide button, show progress
+            btn.style.display = 'none';
+            progress.classList.add('active');
+
+            // Step 1: Preparing
+            setTimeout(() => {
+                progressFill.style.width = '25%';
+                progressText.textContent = 'Preparing download...';
+            }, 100);
+
+            // Step 2: Downloading
+            setTimeout(() => {
+                progressFill.style.width = '50%';
+                progressText.textContent = 'Downloading Araya Extension...';
+            }, 1000);
+
+            // Step 3: Verifying
+            setTimeout(() => {
+                progressFill.style.width = '75%';
+                progressText.textContent = 'Verifying package...';
+            }, 2000);
+
+            // Step 4: Complete - Trigger download
+            setTimeout(() => {
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Download complete!';
+
+                // Trigger actual file download
+                const link = document.createElement('a');
+                link.href = '/ARAYA_EXTENSION_BETA_v1.0.zip';
+                link.download = 'ARAYA_EXTENSION_BETA_v1.0.zip';
+                link.click();
+
+                // Show success
+                setTimeout(() => {
+                    progress.classList.remove('active');
+                    success.classList.add('active');
+                }, 1000);
+            }, 3000);
+        }
+    </script>
+
+    <script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

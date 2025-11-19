@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Beta Registration - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-bottom: 15px;
+        }
+
+        .beta-badge {
+            display: inline-block;
+            background: #ff5722;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1em;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            color: #333;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group .help-text {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-top: 15px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-card {
+            display: none;
+            text-align: center;
+        }
+
+        .success-card .icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        .success-card h2 {
+            color: #4caf50;
+            margin-bottom: 15px;
+        }
+
+        .success-card p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #666;
+        }
+
+        .dashboard-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #4caf50;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .dashboard-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .info-box p {
+            color: #1565c0;
+            margin: 0;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider span {
+            background: #fff;
+            padding: 0 15px;
+            color: #999;
+            font-size: 0.9em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .alt-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .alt-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .alt-link a:hover {
+            color: #764ba2;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .error-message {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message p {
+            color: #c62828;
+            margin: 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Join the Revolution</h1>
+            <p class="subtitle">Create your beta tester account</p>
+            <span class="beta-badge">EXCLUSIVE BETA ACCESS</span>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="card" id="registration-form">
+            <h2>Beta Registration</h2>
+
+            <div class="info-box">
+                <p><strong>🎉 Welcome!</strong> You're about to join an exclusive group of beta testers shaping the future of consciousness technology.</p>
+            </div>
+
+            <div class="error-message" id="error-message">
+                <p id="error-text"></p>
+            </div>
+
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="beta-code">Beta Access Code:</label>
+                    <input type="text" id="beta-code" name="beta-code" placeholder="BETA-XXXXX" required>
+                    <p class="help-text">Check your invitation email for your unique beta code</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                    <p class="help-text">Use the same email from your invitation</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Your Name:</label>
+                    <input type="text" id="name" name="name" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Create Password (Optional):</label>
+                    <input type="password" id="password" name="password" placeholder="Create a secure password">
+                    <p class="help-text">Optional - for future dashboard access</p>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-btn">
+                    🎯 Activate Beta Access
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <div class="alt-link">
+                <p>Already have an account? <a href="dashboard.html">Go to Dashboard →</a></p>
+                <p style="margin-top: 10px;">Need help? <a href="mobile-debug.html">Report an Issue →</a></p>
+            </div>
+        </div>
+
+        <!-- Success Card -->
+        <div class="card success-card" id="success-card">
+            <div class="icon">✅</div>
+            <h2>Welcome Aboard!</h2>
+            <p>Your beta account has been created successfully. You're now part of the Consciousness Revolution!</p>
+            <p><strong>What's Next:</strong></p>
+            <p>1. Download the beta programs<br>
+            2. Explore your personalized dashboard<br>
+            3. Start testing and share feedback</p>
+            <a href="dashboard.html" class="dashboard-btn">🚀 Go to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('register-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        const registrationForm = document.getElementById('registration-form');
+        const successCard = document.getElementById('success-card');
+
+        // Simple beta code validation
+        function validateBetaCode(code) {
+            // Accept any code starting with BETA- for now
+            // Commander can add real validation later
+            return code.toUpperCase().startsWith('BETA-');
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Hide previous errors
+            errorMessage.style.display = 'none';
+
+            // Get form data
+            const betaCode = document.getElementById('beta-code').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const name = document.getElementById('name').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Validate beta code
+            if (!validateBetaCode(betaCode)) {
+                errorText.textContent = 'Invalid beta code. Please check your invitation email.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Creating Account...';
+
+            try {
+                // Create user profile
+                const profile = {
+                    betaCode: betaCode.toUpperCase(),
+                    email: email,
+                    name: name,
+                    hasPassword: !!password,
+                    registered: new Date().toISOString(),
+                    status: 'active',
+                    consciousnessLevel: 0,
+                    modulesCompleted: 0,
+                    feedbackCount: 0
+                };
+
+                // Save to localStorage (temporary until backend is ready)
+                localStorage.setItem('userProfile', JSON.stringify(profile));
+                localStorage.setItem('isLoggedIn', 'true');
+
+                // Also save to profiles list
+                const profiles = JSON.parse(localStorage.getItem('allProfiles') || '[]');
+                profiles.push(profile);
+                localStorage.setItem('allProfiles', JSON.stringify(profiles));
+
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Show success
+                registrationForm.style.display = 'none';
+                successCard.style.display = 'block';
+
+                // Redirect after 5 seconds
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 5000);
+
+            } catch (error) {
+                console.error('Registration error:', error);
+                errorText.textContent = 'Something went wrong. Please try again or contact support.';
+                errorMessage.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🎯 Activate Beta Access';
+            }
+        });
+
+        // Auto-fill beta code from URL parameter if provided
+        const urlParams = new URLSearchParams(window.location.search);
+        const codeParam = urlParams.get('code');
+        if (codeParam) {
+            document.getElementById('beta-code').value = codeParam;
+        }
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

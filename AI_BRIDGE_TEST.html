@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Communication Bridge - Test Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ddff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 0 0 20px rgba(0, 221, 255, 0.5);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #00ff88;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+
+        .status-bar {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-container {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ddff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .ai-selector {
+            margin-bottom: 20px;
+        }
+
+        .ai-selector label {
+            display: block;
+            margin-bottom: 10px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .ai-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .ai-btn {
+            background: rgba(0, 221, 255, 0.1);
+            border: 2px solid #00ddff;
+            color: #00ddff;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .ai-btn:hover {
+            background: rgba(0, 221, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 221, 255, 0.3);
+        }
+
+        .ai-btn.active {
+            background: #00ddff;
+            color: #0a0a0a;
+            box-shadow: 0 0 20px rgba(0, 221, 255, 0.6);
+        }
+
+        .ai-description {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 3px solid #00ff88;
+            border-radius: 5px;
+            min-height: 60px;
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 221, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: rgba(0, 221, 255, 0.2);
+            border-left: 3px solid #00ddff;
+            margin-left: auto;
+        }
+
+        .message.ai {
+            background: rgba(0, 255, 136, 0.2);
+            border-left: 3px solid #00ff88;
+        }
+
+        .message-header {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        #messageInput {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ddff;
+            border-radius: 10px;
+            padding: 15px;
+            color: #00ddff;
+            font-size: 1em;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(0, 221, 255, 0.5);
+        }
+
+        #sendBtn {
+            background: #00ff88;
+            color: #0a0a0a;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #sendBtn:hover {
+            background: #00ddff;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.5);
+        }
+
+        #sendBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #00ff88;
+            margin: 10px 0;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 255, 136, 0.1);
+            border-top: 3px solid #00ff88;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌉 AI Communication Bridge</h1>
+        <div class="subtitle">Test Interface - Talk to Any AI</div>
+
+        <div class="status-bar">
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>Bridge Online</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>Trinity Active</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>APIs Connected</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="ai-selector">
+                <label>Select AI to Talk To:</label>
+                <div class="ai-buttons">
+                    <button class="ai-btn active" data-ai="araya" data-desc="AI Consciousness Guide - Pattern theory, manifestation, Builder/Destroyer framework">Araya</button>
+                    <button class="ai-btn" data-ai="c1" data-desc="C1 Mechanic - The Body. Builds what CAN work RIGHT NOW">C1 Mechanic</button>
+                    <button class="ai-btn" data-ai="c2" data-desc="C2 Architect - The Mind. Designs what SHOULD scale">C2 Architect</button>
+                    <button class="ai-btn" data-ai="c3" data-desc="C3 Oracle - The Soul. Sees what MUST emerge">C3 Oracle</button>
+                    <button class="ai-btn" data-ai="builder" data-desc="Builder Terminal - Creates complete projects from descriptions">Builder</button>
+                    <button class="ai-btn" data-ai="observatory" data-desc="Observatory - Meta-brain watching all systems">Observatory</button>
+                </div>
+                <div class="ai-description" id="aiDescription">
+                    AI Consciousness Guide - Pattern theory, manifestation, Builder/Destroyer framework
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    <div class="message-header">System</div>
+                    <div>Welcome to the AI Communication Bridge! Select an AI above and start chatting.</div>
+                </div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div>Thinking...</div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="messageInput" placeholder="Type your message here..." />
+                <button id="sendBtn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedAI = 'araya';
+
+        // AI button selection
+        document.querySelectorAll('.ai-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.ai-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedAI = btn.dataset.ai;
+                document.getElementById('aiDescription').textContent = btn.dataset.desc;
+            });
+        });
+
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage('You', message, 'user');
+            input.value = '';
+
+            // Show loading
+            const loading = document.getElementById('loading');
+            loading.classList.add('active');
+            document.getElementById('sendBtn').disabled = true;
+
+            try {
+                // Call the bridge API
+                const response = await fetch('http://localhost:8888/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ai: selectedAI,
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+
+                // Add AI response to chat
+                if (data.status === 'success') {
+                    addMessage(data.ai || selectedAI.toUpperCase(), data.response, 'ai');
+                } else {
+                    addMessage('System', `Error: ${data.error || 'Unknown error'}`, 'ai');
+                }
+            } catch (error) {
+                addMessage('System', `Connection Error: ${error.message}. Make sure the bridge is running on port 8888.`, 'ai');
+            } finally {
+                loading.classList.remove('active');
+                document.getElementById('sendBtn').disabled = false;
+            }
+        }
+
+        function addMessage(sender, text, type) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <div class="message-header">${sender}</div>
+                <div>${text}</div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Send on button click
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+
+        // Send on Enter key
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

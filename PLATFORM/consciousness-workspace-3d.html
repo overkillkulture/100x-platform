@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Consciousness Workspace 3D | GTA-Style Navigation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff41;
+            overflow: hidden;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .loading-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0e27;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-text {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #00ff41;
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 20px;
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: #00ff41;
+            width: 0%;
+            transition: width 0.3s;
+            box-shadow: 0 0 20px #00ff41;
+        }
+
+        .hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff41;
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        .hud-title {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .hud-info {
+            font-size: 1em;
+            margin: 5px 0;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff41;
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        .control-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 1em;
+        }
+
+        .control-key {
+            background: #00ff41;
+            color: #000;
+            padding: 3px 10px;
+            border-radius: 3px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .interaction-prompt {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #00ff41;
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px #00ff41; }
+            50% { box-shadow: 0 0 40px #00ff41; }
+        }
+
+        .interaction-prompt.visible {
+            display: block;
+        }
+
+        .minimap {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 200px;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        #minimap-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .location-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff41;
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 10;
+            text-align: right;
+        }
+
+        .location-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #00ff41;
+        }
+
+        .location-desc {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .hud, .controls, .minimap {
+                font-size: 0.8em;
+            }
+
+            .minimap {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div id="canvas-container"></div>
+
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-text">🌀 LOADING CONSCIOUSNESS WORKSPACE 🌀</div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+        <div style="margin-top: 20px; font-size: 1.2em;">Initializing 3D Environment...</div>
+    </div>
+
+    <div class="hud">
+        <div class="hud-title">🎮 CONSCIOUSNESS HQ</div>
+        <div class="hud-info">Position: <span id="playerPos">0, 0, 0</span></div>
+        <div class="hud-info">Looking: <span id="playerRot">North</span></div>
+        <div class="hud-info">FPS: <span id="fps">60</span></div>
+    </div>
+
+    <div class="location-info" id="locationInfo">
+        <div class="location-name">Central Hub</div>
+        <div class="location-desc">Look around and explore</div>
+    </div>
+
+    <div class="controls">
+        <div style="font-weight: bold; margin-bottom: 10px; font-size: 1.2em;">CONTROLS</div>
+        <div class="control-item">
+            <span class="control-key">W A S D</span>
+            <span>Move</span>
+        </div>
+        <div class="control-item">
+            <span class="control-key">MOUSE</span>
+            <span>Look Around</span>
+        </div>
+        <div class="control-item">
+            <span class="control-key">E</span>
+            <span>Interact</span>
+        </div>
+        <div class="control-item">
+            <span class="control-key">SHIFT</span>
+            <span>Run</span>
+        </div>
+        <div class="control-item">
+            <span class="control-key">ESC</span>
+            <span>Unlock Mouse</span>
+        </div>
+    </div>
+
+    <div class="interaction-prompt" id="interactionPrompt">
+        Press <span style="background: #00ff41; color: #000; padding: 5px 10px; border-radius: 5px;">E</span> to interact
+    </div>
+
+    <div class="minimap">
+        <canvas id="minimap-canvas"></canvas>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+
+    <script>
+        // === SCENE SETUP ===
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0e27);
+        scene.fog = new THREE.Fog(0x0a0e27, 1, 50);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // === POINTER LOCK CONTROLS ===
+        const controls = new THREE.PointerLockControls(camera, document.body);
+
+        renderer.domElement.addEventListener('click', () => {
+            controls.lock();
+        });
+
+        controls.addEventListener('lock', () => {
+            console.log('Pointer locked');
+        });
+
+        controls.addEventListener('unlock', () => {
+            console.log('Pointer unlocked');
+        });
+
+        scene.add(controls.getObject());
+
+        // === LIGHTING ===
+        const ambientLight = new THREE.AmbientLight(0x404040, 1);
+        scene.add(ambientLight);
+
+        const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        mainLight.position.set(10, 20, 10);
+        mainLight.castShadow = true;
+        mainLight.shadow.camera.left = -20;
+        mainLight.shadow.camera.right = 20;
+        mainLight.shadow.camera.top = 20;
+        mainLight.shadow.camera.bottom = -20;
+        scene.add(mainLight);
+
+        // Neon accent lights
+        const neonLight1 = new THREE.PointLight(0x00ff41, 2, 15);
+        neonLight1.position.set(5, 3, 5);
+        scene.add(neonLight1);
+
+        const neonLight2 = new THREE.PointLight(0x0066ff, 2, 15);
+        neonLight2.position.set(-5, 3, -5);
+        scene.add(neonLight2);
+
+        const neonLight3 = new THREE.PointLight(0xff0066, 2, 15);
+        neonLight3.position.set(0, 3, -8);
+        scene.add(neonLight3);
+
+        // === FLOOR ===
+        const floorGeometry = new THREE.PlaneGeometry(40, 40);
+        const floorMaterial = new THREE.MeshStandardMaterial({
+            color: 0x1a1e47,
+            roughness: 0.8,
+            metalness: 0.2
+        });
+        const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        floor.rotation.x = -Math.PI / 2;
+        floor.receiveShadow = true;
+        scene.add(floor);
+
+        // Grid on floor
+        const gridHelper = new THREE.GridHelper(40, 40, 0x00ff41, 0x003311);
+        gridHelper.position.y = 0.01;
+        scene.add(gridHelper);
+
+        // === WALLS ===
+        const wallMaterial = new THREE.MeshStandardMaterial({
+            color: 0x0a0e27,
+            roughness: 0.9
+        });
+
+        // Back wall
+        const backWall = new THREE.Mesh(new THREE.BoxGeometry(40, 8, 0.5), wallMaterial);
+        backWall.position.set(0, 4, -20);
+        backWall.receiveShadow = true;
+        scene.add(backWall);
+
+        // Side walls
+        const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.5, 8, 40), wallMaterial);
+        leftWall.position.set(-20, 4, 0);
+        leftWall.receiveShadow = true;
+        scene.add(leftWall);
+
+        const rightWall = new THREE.Mesh(new THREE.BoxGeometry(0.5, 8, 40), wallMaterial);
+        rightWall.position.set(20, 4, 0);
+        rightWall.receiveShadow = true;
+        scene.add(rightWall);
+
+        // === INTERACTIVE STATIONS ===
+        const stations = [];
+
+        // Computer Station (Computer Consciousness)
+        const computerDesk = createStation(
+            'COMPUTER CONSCIOUSNESS',
+            0x00ff41,
+            { x: 5, y: 0, z: -15 },
+            'computer-consciousness.html'
+        );
+        stations.push(computerDesk);
+
+        // Analytics Wall (Kanban Board)
+        const analyticsWall = createStation(
+            'MASTER KANBAN',
+            0x0066ff,
+            { x: -10, y: 0, z: -15 },
+            'master-kanban-board.html'
+        );
+        stations.push(analyticsWall);
+
+        // Filing Cabinet (Corporate Bloat Tracker)
+        const filingCabinet = createStation(
+            'BLOAT TRACKER',
+            0xff0066,
+            { x: 15, y: 0, z: 5 },
+            'corporate-bloat-tracker.html'
+        );
+        stations.push(filingCabinet);
+
+        // Trinity Altar (Trinity System)
+        const trinityAltar = createStation(
+            'TRINITY SYSTEM',
+            0xffaa00,
+            { x: 0, y: 0, z: 5 },
+            '../TRINITY_COMMAND_CENTER.html'
+        );
+        stations.push(trinityAltar);
+
+        function createStation(label, color, position, url) {
+            const group = new THREE.Group();
+
+            // Base platform
+            const baseGeometry = new THREE.BoxGeometry(3, 0.3, 3);
+            const baseMaterial = new THREE.MeshStandardMaterial({
+                color: color,
+                emissive: color,
+                emissiveIntensity: 0.3,
+                roughness: 0.3,
+                metalness: 0.7
+            });
+            const base = new THREE.Mesh(baseGeometry, baseMaterial);
+            base.position.y = 0.15;
+            base.castShadow = true;
+            group.add(base);
+
+            // Main structure
+            const mainGeometry = new THREE.BoxGeometry(2.5, 2, 2.5);
+            const mainMaterial = new THREE.MeshStandardMaterial({
+                color: 0x1a1e47,
+                roughness: 0.5
+            });
+            const main = new THREE.Mesh(mainGeometry, mainMaterial);
+            main.position.y = 1.3;
+            main.castShadow = true;
+            group.add(main);
+
+            // Glowing screen/display
+            const screenGeometry = new THREE.PlaneGeometry(2, 1.5);
+            const screenMaterial = new THREE.MeshBasicMaterial({
+                color: color,
+                transparent: true,
+                opacity: 0.8
+            });
+            const screen = new THREE.Mesh(screenGeometry, screenMaterial);
+            screen.position.set(0, 1.5, 1.26);
+            group.add(screen);
+
+            // Floating hologram
+            const holoGeometry = new THREE.RingGeometry(0.5, 0.7, 32);
+            const holoMaterial = new THREE.MeshBasicMaterial({
+                color: color,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.6
+            });
+            const holo = new THREE.Mesh(holoGeometry, holoMaterial);
+            holo.position.y = 3;
+            holo.rotation.x = Math.PI / 2;
+            group.add(holo);
+
+            // Point light
+            const light = new THREE.PointLight(color, 1.5, 8);
+            light.position.y = 2;
+            group.add(light);
+
+            group.position.set(position.x, position.y, position.z);
+            scene.add(group);
+
+            return {
+                object: group,
+                label: label,
+                url: url,
+                color: color,
+                holo: holo
+            };
+        }
+
+        // === MOVEMENT ===
+        const moveSpeed = 0.15;
+        const runMultiplier = 2;
+        const movement = {
+            forward: false,
+            backward: false,
+            left: false,
+            right: false,
+            run: false
+        };
+
+        document.addEventListener('keydown', (e) => {
+            switch(e.code) {
+                case 'KeyW': movement.forward = true; break;
+                case 'KeyS': movement.backward = true; break;
+                case 'KeyA': movement.left = true; break;
+                case 'KeyD': movement.right = true; break;
+                case 'ShiftLeft': movement.run = true; break;
+                case 'KeyE': tryInteract(); break;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            switch(e.code) {
+                case 'KeyW': movement.forward = false; break;
+                case 'KeyS': movement.backward = false; break;
+                case 'KeyA': movement.left = false; break;
+                case 'KeyD': movement.right = false; break;
+                case 'ShiftLeft': movement.run = false; break;
+            }
+        });
+
+        // === INTERACTION ===
+        let nearestStation = null;
+
+        function checkProximity() {
+            const playerPos = controls.getObject().position;
+            let closest = null;
+            let minDistance = Infinity;
+
+            stations.forEach(station => {
+                const distance = playerPos.distanceTo(station.object.position);
+                if (distance < 4 && distance < minDistance) {
+                    minDistance = distance;
+                    closest = station;
+                }
+            });
+
+            if (closest !== nearestStation) {
+                nearestStation = closest;
+                const prompt = document.getElementById('interactionPrompt');
+                const locationInfo = document.getElementById('locationInfo');
+
+                if (nearestStation) {
+                    prompt.classList.add('visible');
+                    locationInfo.querySelector('.location-name').textContent = nearestStation.label;
+                    locationInfo.querySelector('.location-desc').textContent = 'Press E to access';
+                } else {
+                    prompt.classList.remove('visible');
+                    locationInfo.querySelector('.location-name').textContent = 'Central Hub';
+                    locationInfo.querySelector('.location-desc').textContent = 'Explore the workspace';
+                }
+            }
+        }
+
+        function tryInteract() {
+            if (nearestStation) {
+                window.location.href = nearestStation.url;
+            }
+        }
+
+        // === ANIMATION LOOP ===
+        let lastTime = performance.now();
+        let frames = 0;
+        let fps = 60;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const currentTime = performance.now();
+            const delta = (currentTime - lastTime) / 1000;
+            lastTime = currentTime;
+
+            // FPS counter
+            frames++;
+            if (frames % 60 === 0) {
+                fps = Math.round(1 / delta);
+                document.getElementById('fps').textContent = fps;
+            }
+
+            // Movement
+            if (controls.isLocked) {
+                const speed = moveSpeed * (movement.run ? runMultiplier : 1);
+
+                if (movement.forward) controls.moveForward(speed);
+                if (movement.backward) controls.moveForward(-speed);
+                if (movement.left) controls.moveRight(-speed);
+                if (movement.right) controls.moveRight(speed);
+
+                // Update HUD
+                const pos = controls.getObject().position;
+                document.getElementById('playerPos').textContent =
+                    `${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)}`;
+
+                checkProximity();
+            }
+
+            // Animate holograms
+            stations.forEach(station => {
+                station.holo.rotation.z += 0.01;
+                station.holo.position.y = 3 + Math.sin(Date.now() * 0.001) * 0.2;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // === INITIALIZATION ===
+        camera.position.set(0, 1.6, 10);
+
+        // Simulate loading
+        let progress = 0;
+        const loadingInterval = setInterval(() => {
+            progress += 10;
+            document.getElementById('loadingProgress').style.width = progress + '%';
+
+            if (progress >= 100) {
+                clearInterval(loadingInterval);
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').classList.add('hidden');
+                    animate();
+                }, 500);
+            }
+        }, 100);
+
+        // === WINDOW RESIZE ===
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // === MINIMAP ===
+        const minimapCanvas = document.getElementById('minimap-canvas');
+        const minimapCtx = minimapCanvas.getContext('2d');
+        minimapCanvas.width = 200;
+        minimapCanvas.height = 200;
+
+        function drawMinimap() {
+            minimapCtx.clearRect(0, 0, 200, 200);
+
+            // Background
+            minimapCtx.fillStyle = 'rgba(10, 14, 39, 0.9)';
+            minimapCtx.fillRect(0, 0, 200, 200);
+
+            // Grid
+            minimapCtx.strokeStyle = 'rgba(0, 255, 65, 0.2)';
+            minimapCtx.lineWidth = 1;
+            for (let i = 0; i <= 200; i += 20) {
+                minimapCtx.beginPath();
+                minimapCtx.moveTo(i, 0);
+                minimapCtx.lineTo(i, 200);
+                minimapCtx.stroke();
+                minimapCtx.beginPath();
+                minimapCtx.moveTo(0, i);
+                minimapCtx.lineTo(200, i);
+                minimapCtx.stroke();
+            }
+
+            // Stations
+            stations.forEach(station => {
+                const x = 100 + (station.object.position.x / 40) * 200;
+                const y = 100 + (station.object.position.z / 40) * 200;
+
+                minimapCtx.fillStyle = `#${station.color.toString(16).padStart(6, '0')}`;
+                minimapCtx.beginPath();
+                minimapCtx.arc(x, y, 5, 0, Math.PI * 2);
+                minimapCtx.fill();
+            });
+
+            // Player
+            if (controls.isLocked) {
+                const pos = controls.getObject().position;
+                const x = 100 + (pos.x / 40) * 200;
+                const y = 100 + (pos.z / 40) * 200;
+
+                minimapCtx.fillStyle = '#00ff41';
+                minimapCtx.beginPath();
+                minimapCtx.arc(x, y, 8, 0, Math.PI * 2);
+                minimapCtx.fill();
+
+                minimapCtx.strokeStyle = '#00ff41';
+                minimapCtx.lineWidth = 2;
+                minimapCtx.stroke();
+            }
+
+            requestAnimationFrame(drawMinimap);
+        }
+
+        drawMinimap();
+    </script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

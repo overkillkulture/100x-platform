@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .dashboard-header {
+            margin-bottom: 40px;
+        }
+
+        .dashboard-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-subtitle {
+            font-size: 16px;
+            color: #888;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, #1a1a1a, #252525);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .dashboard-card:hover {
+            border-color: #00ff88;
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #00ff88;
+        }
+
+        .card-badge {
+            padding: 4px 12px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #00ff88;
+            text-transform: uppercase;
+        }
+
+        .card-badge.pro {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+
+        .card-content {
+            color: #ccc;
+        }
+
+        .usage-bar {
+            margin: 16px 0;
+        }
+
+        .usage-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .usage-track {
+            height: 8px;
+            background: #252525;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .usage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00cc6a);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .usage-fill.warning {
+            background: linear-gradient(90deg, #ff9500, #ff6600);
+        }
+
+        .usage-fill.danger {
+            background: linear-gradient(90deg, #ff0000, #cc0000);
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 16px;
+        }
+
+        .feature-item {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .feature-icon {
+            color: #00ff88;
+            font-size: 16px;
+        }
+
+        .feature-icon.locked {
+            color: #666;
+        }
+
+        .upgrade-prompt {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 204, 106, 0.1));
+            border: 2px solid #00ff88;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .upgrade-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 12px;
+        }
+
+        .upgrade-text {
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .upgrade-button {
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upgrade-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .domain-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .domain-tab {
+            padding: 12px 24px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .domain-tab.active {
+            background: #00ff88;
+            color: #000;
+            border-color: #00ff88;
+        }
+
+        .domain-content {
+            display: none;
+        }
+
+        .domain-content.active {
+            display: block;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            flex: 1;
+            padding: 12px;
+            background: #252525;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #00ff88;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-button:hover {
+            background: #00ff88;
+            color: #000;
+            border-color: #00ff88;
+        }
+
+        .action-button.primary {
+            background: #00ff88;
+            color: #000;
+            border-color: #00ff88;
+        }
+
+        .action-button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">My Dashboard</h1>
+        <p class="dashboard-subtitle">Manage your subscriptions and access across all domains</p>
+    </div>
+
+    <!-- Domain Tabs -->
+    <div class="domain-tabs">
+        <div class="domain-tab active" onclick="switchDomain('overview')">Overview</div>
+        <div class="domain-tab" onclick="switchDomain('music')">Music</div>
+        <div class="domain-tab" onclick="switchDomain('intelligence')">Intelligence</div>
+        <div class="domain-tab" onclick="switchDomain('tools')">Tools</div>
+        <div class="domain-tab" onclick="switchDomain('education')">Education</div>
+        <div class="domain-tab" onclick="switchDomain('commerce')">Commerce</div>
+        <div class="domain-tab" onclick="switchDomain('communication')">Communication</div>
+        <div class="domain-tab" onclick="switchDomain('community')">Community</div>
+    </div>
+
+    <!-- Overview Tab -->
+    <div id="overview-content" class="domain-content active">
+        <div class="dashboard-grid">
+            <!-- Account Summary -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Account Summary</h3>
+                    <span class="card-badge" id="account-tier">Free</span>
+                </div>
+                <div class="card-content">
+                    <p>Email: <span id="user-email">loading...</span></p>
+                    <p>Member since: <span id="member-since">loading...</span></p>
+                    <p>Active domains: <span id="active-domains">0</span></p>
+                </div>
+            </div>
+
+            <!-- Active Subscriptions -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Active Subscriptions</h3>
+                </div>
+                <div class="card-content" id="subscriptions-list">
+                    <p style="color: #666;">Loading subscriptions...</p>
+                </div>
+            </div>
+
+            <!-- Total Spend -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Total Spend</h3>
+                </div>
+                <div class="card-content">
+                    <div class="stat-value" id="total-spend">$0</div>
+                    <p style="color: #888; font-size: 14px;">This month</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Domain Tab -->
+    <div id="music-content" class="domain-content">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3 class="card-title">Music Domain</h3>
+                <span class="card-badge" id="music-tier">Free</span>
+            </div>
+            <div class="card-content">
+                <!-- Usage Tracking -->
+                <div class="usage-bar">
+                    <div class="usage-label">
+                        <span>Track Monitoring</span>
+                        <span id="music-tracks-usage">0 / 100</span>
+                    </div>
+                    <div class="usage-track">
+                        <div class="usage-fill" id="music-tracks-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="music-streams">0</div>
+                        <div class="stat-label">Total Streams</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="music-revenue">$0</div>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span>Streaming analytics</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon locked">🔒</span>
+                        <span>Distribution service (Pro)</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon locked">🔒</span>
+                        <span>NFT marketplace (Pro Plus)</span>
+                    </li>
+                </ul>
+
+                <!-- Actions -->
+                <div class="action-buttons">
+                    <button class="action-button" onclick="connectSpotify()">Connect Spotify</button>
+                    <button class="action-button primary" onclick="upgradeDomain('music')">Upgrade</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upgrade Prompt (shows when usage high) -->
+        <div class="upgrade-prompt" id="music-upgrade-prompt" style="display: none;">
+            <div class="upgrade-title">You're almost at your limit!</div>
+            <div class="upgrade-text">
+                Upgrade to Pro for unlimited track monitoring and distribution service.
+            </div>
+            <button class="upgrade-button" onclick="upgradeDomain('music')">Upgrade to Pro - $29.99/mo</button>
+        </div>
+    </div>
+
+    <!-- Intelligence Domain Tab -->
+    <div id="intelligence-content" class="domain-content">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3 class="card-title">Intelligence Domain</h3>
+                <span class="card-badge" id="intelligence-tier">Free</span>
+            </div>
+            <div class="card-content">
+                <div class="usage-bar">
+                    <div class="usage-label">
+                        <span>AI Actions</span>
+                        <span id="intelligence-actions-usage">0 / 25</span>
+                    </div>
+                    <div class="usage-track">
+                        <div class="usage-fill" id="intelligence-actions-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span>25 AI actions/month</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon locked">🔒</span>
+                        <span>250 AI actions/month (Pro)</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon locked">🔒</span>
+                        <span>Advanced models (Pro Plus)</span>
+                    </li>
+                </ul>
+
+                <div class="action-buttons">
+                    <button class="action-button primary" onclick="upgradeDomain('intelligence')">Upgrade</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other domain tabs would follow same pattern -->
+</div>
+
+<!-- Include SDK -->
+<script src="consciousness-sdk.js"></script>
+<script>
+    // Initialize SDK
+    const cr = new ConsciousnessRevolution({
+        apiBaseUrl: 'http://localhost:5000',
+        onAuthChange: (isAuthenticated) => {
+            if (!isAuthenticated) {
+                window.location.href = '/';
+            }
+        }
+    });
+
+    // Load dashboard data on page load
+    loadDashboard();
+
+    async function loadDashboard() {
+        try {
+            // Verify authentication
+            const userData = await cr.auth.verify();
+            document.getElementById('user-email').textContent = userData.email;
+
+            // Load all domain access data
+            await Promise.all([
+                loadMusicDomain(),
+                loadIntelligenceDomain(),
+                // ... other domains
+            ]);
+
+        } catch (error) {
+            console.error('Dashboard load failed:', error);
+            cr.auth.logout();
+            window.location.href = '/';
+        }
+    }
+
+    async function loadMusicDomain() {
+        try {
+            const access = await cr.auth.checkAccess('music');
+
+            // Update tier badge
+            document.getElementById('music-tier').textContent = access.tier.toUpperCase();
+            if (access.tier !== 'free') {
+                document.getElementById('music-tier').classList.add('pro');
+            }
+
+            // Update usage bars
+            const usage = access.usage_current_month || {};
+            const limits = access.limits || {};
+
+            const tracksUsed = usage.track_limit || 0;
+            const tracksLimit = limits.track_limit || 100;
+            const tracksPercent = (tracksUsed / tracksLimit * 100);
+
+            document.getElementById('music-tracks-usage').textContent = `${tracksUsed} / ${tracksLimit}`;
+            document.getElementById('music-tracks-bar').style.width = `${tracksPercent}%`;
+
+            // Update bar color based on usage
+            const bar = document.getElementById('music-tracks-bar');
+            if (tracksPercent >= 90) {
+                bar.classList.add('danger');
+            } else if (tracksPercent >= 70) {
+                bar.classList.add('warning');
+            }
+
+            // Show upgrade prompt if near limit
+            if (tracksPercent >= 80) {
+                document.getElementById('music-upgrade-prompt').style.display = 'block';
+            }
+
+            // Load music stats
+            const dashboard = await cr.music.getDashboard();
+            if (dashboard.profile) {
+                document.getElementById('music-streams').textContent =
+                    dashboard.profile.total_streams.toLocaleString();
+                document.getElementById('music-revenue').textContent =
+                    `$${dashboard.profile.total_revenue.toFixed(2)}`;
+            }
+
+        } catch (error) {
+            console.error('Failed to load music domain:', error);
+        }
+    }
+
+    async function loadIntelligenceDomain() {
+        try {
+            const access = await cr.auth.checkAccess('intelligence');
+
+            document.getElementById('intelligence-tier').textContent = access.tier.toUpperCase();
+            if (access.tier !== 'free') {
+                document.getElementById('intelligence-tier').classList.add('pro');
+            }
+
+            const usage = access.usage_current_month || {};
+            const limits = access.limits || {};
+
+            const actionsUsed = usage.ai_actions_per_month || 0;
+            const actionsLimit = limits.ai_actions_per_month || 25;
+            const actionsPercent = (actionsUsed / actionsLimit * 100);
+
+            document.getElementById('intelligence-actions-usage').textContent = `${actionsUsed} / ${actionsLimit}`;
+            document.getElementById('intelligence-actions-bar').style.width = `${actionsPercent}%`;
+
+            if (actionsPercent >= 90) {
+                document.getElementById('intelligence-actions-bar').classList.add('danger');
+            } else if (actionsPercent >= 70) {
+                document.getElementById('intelligence-actions-bar').classList.add('warning');
+            }
+
+        } catch (error) {
+            console.error('Failed to load intelligence domain:', error);
+        }
+    }
+
+    function switchDomain(domain) {
+        // Update tabs
+        document.querySelectorAll('.domain-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        // Update content
+        document.querySelectorAll('.domain-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`${domain}-content`).classList.add('active');
+    }
+
+    function upgradeDomain(domain) {
+        // Redirect to upgrade flow
+        window.location.href = `/upgrade?domain=${domain}`;
+    }
+
+    function connectSpotify() {
+        // Redirect to Spotify OAuth
+        window.location.href = '/music/connect-spotify';
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Consciousness Elevation Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+        }
+        button {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+            color: #333;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        .status {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+        .metric-value {
+            font-size: 1.5rem;
+            color: #FFD700;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>✨ Consciousness Elevation Test</h1>
+        <p>This test verifies that elevation recording works correctly.</p>
+
+        <div class="status">
+            <h3>Reality Impact Status</h3>
+            <div class="metric">
+                <span>Total Sessions:</span>
+                <span class="metric-value" id="sessions">0</span>
+            </div>
+            <div class="metric">
+                <span>Consciousness Elevations:</span>
+                <span class="metric-value" id="elevations">0</span>
+            </div>
+            <div class="metric">
+                <span>Active Users:</span>
+                <span class="metric-value" id="active">0</span>
+            </div>
+            <div class="metric">
+                <span>Emergence Score:</span>
+                <span class="metric-value" id="emergence">0</span>
+            </div>
+        </div>
+
+        <button onclick="simulateElevation()">🚀 Simulate Consciousness Elevation (3 → 7)</button>
+        <button onclick="simulateElevation2()">⚡ Simulate Elevation (5 → 9)</button>
+        <button onclick="refreshStatus()">🔄 Refresh Status</button>
+        <button onclick="clearData()">❌ Clear Test Data</button>
+
+        <div id="testLog" style="margin-top: 30px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; font-family: monospace; font-size: 0.9rem;"></div>
+    </div>
+
+    <script src="PLATFORM/shared/reality-impact-system.js"></script>
+    <script>
+        let logMessages = [];
+
+        function log(message) {
+            logMessages.push(`[${new Date().toLocaleTimeString()}] ${message}`);
+            document.getElementById('testLog').innerHTML = logMessages.slice(-10).join('<br>');
+            console.log(message);
+        }
+
+        // Initialize Reality Impact System
+        log('Initializing Reality Impact System...');
+        RealityImpact.init({
+            productId: 'elevation-test',
+            productName: 'Consciousness Elevation Test',
+            showDashboard: false, // We're building our own dashboard
+            trackConsciousness: true
+        });
+        log('✅ System initialized');
+
+        function simulateElevation() {
+            log('🚀 Simulating elevation: 3 → 7');
+            RealityImpact.recordElevation(3, 7, {
+                protocol: 'Energy Boost',
+                improvement: 4,
+                improvementPercent: 133
+            });
+            log('✨ Elevation recorded!');
+            refreshStatus();
+        }
+
+        function simulateElevation2() {
+            log('⚡ Simulating elevation: 5 → 9');
+            RealityImpact.recordElevation(5, 9, {
+                protocol: 'Clarity Protocol',
+                improvement: 4,
+                improvementPercent: 80
+            });
+            log('✨ Elevation recorded!');
+            refreshStatus();
+        }
+
+        function refreshStatus() {
+            const data = RealityImpact.getImpactData();
+            document.getElementById('sessions').textContent = data.totalSessions;
+            document.getElementById('elevations').textContent = data.consciousnessElevations;
+            document.getElementById('active').textContent = data.activeUsers;
+            document.getElementById('emergence').textContent = data.emergenceScore;
+
+            log(`📊 Status: ${data.totalSessions} sessions, ${data.consciousnessElevations} elevations, ${data.activeUsers} active`);
+
+            if (data.transformationStories.length > 0) {
+                const latest = data.transformationStories[data.transformationStories.length - 1];
+                log(`📖 Latest: ${latest.before} → ${latest.after} (+${latest.improvement})`);
+            }
+        }
+
+        function clearData() {
+            localStorage.removeItem('reality_impact_elevation-test');
+            localStorage.removeItem('reality_active_sessions_elevation-test');
+            log('❌ Test data cleared! Refresh page to restart.');
+            setTimeout(() => location.reload(), 1500);
+        }
+
+        // Initial status update
+        refreshStatus();
+
+        // Auto-refresh every 5 seconds
+        setInterval(refreshStatus, 5000);
+
+        log('🎮 Test interface ready! Click buttons to test elevation recording.');
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

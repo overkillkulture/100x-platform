@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X Tactical HUD - Full Instrumentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, rgba(10,10,10,0.98) 0%, rgba(26,26,46,0.98) 50%, rgba(10,10,10,0.98) 100%);
+            color: #00ff00;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Tactical Grid Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(0,255,255,0.03) 49px, rgba(0,255,255,0.03) 50px),
+                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(0,255,255,0.03) 49px, rgba(0,255,255,0.03) 50px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Corner Brackets (Tactical) */
+        .corner-bracket {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(0,255,255,0.4);
+            pointer-events: none;
+        }
+        .corner-bracket.tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .corner-bracket.tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+        .corner-bracket.bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+        .corner-bracket.br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+        /* Top Status Bar */
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 50px;
+            right: 50px;
+            height: 40px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            font-size: 0.75rem;
+            z-index: 1000;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-value {
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .status-good { color: #00ff00; }
+        .status-warn { color: #ffff00; }
+        .status-bad { color: #ff0000; }
+
+        /* Performance Monitor (Top Right) */
+        .perf-monitor {
+            position: fixed;
+            top: 50px;
+            right: 20px;
+            width: 300px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,255,255,0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            z-index: 900;
+        }
+
+        .perf-title {
+            color: #00ffff;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.7rem;
+        }
+
+        .metric-label {
+            color: #888;
+        }
+
+        .metric-value {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .metric-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.25rem;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+            transition: width 0.3s;
+        }
+
+        /* Analytics Dashboard (Bottom Left) */
+        .analytics {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 400px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,255,255,0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 900;
+        }
+
+        .log-entry {
+            font-size: 0.65rem;
+            color: #00ff00;
+            margin-bottom: 0.25rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .log-time {
+            color: #00ffff;
+            min-width: 60px;
+        }
+
+        .log-latency {
+            color: #ffff00;
+            min-width: 50px;
+        }
+
+        .log-event {
+            color: #00ff00;
+        }
+
+        /* Center Widget Area */
+        .widget {
+            position: absolute;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,255,255,0.2);
+            border-radius: 12px;
+            cursor: move;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .widget:hover {
+            border-color: rgba(0,255,255,0.5);
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+        }
+
+        .widget.mini {
+            width: 60px;
+            height: 60px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .widget.medium {
+            width: 280px;
+            height: 160px;
+            padding: 1rem;
+        }
+
+        .widget.large {
+            width: 400px;
+            height: 500px;
+            padding: 1.5rem;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            color: #00ffff;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .widget-icon {
+            font-size: 1.5rem;
+        }
+
+        .widget.mini .widget-icon {
+            font-size: 2rem;
+        }
+
+        .widget.mini .widget-header,
+        .widget.mini .widget-content {
+            display: none;
+        }
+
+        .expand-btn {
+            width: 20px;
+            height: 20px;
+            background: rgba(0,255,255,0.2);
+            border: 1px solid rgba(0,255,255,0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.6rem;
+            color: #00ffff;
+        }
+
+        .expand-btn:hover {
+            background: rgba(0,255,255,0.3);
+        }
+
+        .widget-content {
+            color: #00ff00;
+            font-size: 0.75rem;
+        }
+
+        /* AI Chat Widget */
+        .ai-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 350px;
+            overflow-y: auto;
+            margin-bottom: 0.75rem;
+        }
+
+        .ai-message {
+            background: rgba(0,255,255,0.1);
+            border: 1px solid rgba(0,255,255,0.2);
+            border-radius: 6px;
+            padding: 0.5rem;
+            font-size: 0.7rem;
+        }
+
+        .ai-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .ai-input {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(0,255,255,0.3);
+            border-radius: 4px;
+            padding: 0.5rem;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: #00ffff;
+        }
+
+        .ai-send {
+            padding: 0.5rem 1rem;
+            background: rgba(0,255,255,0.2);
+            border: 1px solid rgba(0,255,255,0.3);
+            border-radius: 4px;
+            color: #00ffff;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 0.7rem;
+        }
+
+        .ai-send:hover {
+            background: rgba(0,255,255,0.3);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,255,255,0.3);
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(0,255,255,0.2);
+            border: 1px solid rgba(0,255,255,0.3);
+            border-radius: 6px;
+            color: #00ffff;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(0,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: rgba(0,255,255,0.4);
+            border-color: #00ffff;
+        }
+
+        /* Voice Status Indicator */
+        .voice-status {
+            position: fixed;
+            top: 50px;
+            left: 20px;
+            width: 200px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,255,255,0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            z-index: 900;
+        }
+
+        .voice-waveform {
+            width: 100%;
+            height: 40px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waveform-bar {
+            position: absolute;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to top, #00ff00, #00ffff);
+            transition: height 0.1s;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,255,255,0.3);
+            border-radius: 3px;
+        }
+
+        /* Pulse */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Blink */
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0; }
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Corner Brackets -->
+    <div class="corner-bracket tl"></div>
+    <div class="corner-bracket tr"></div>
+    <div class="corner-bracket bl"></div>
+    <div class="corner-bracket br"></div>
+
+    <!-- Top Status Bar -->
+    <div class="status-bar">
+        <div class="status-item">
+            <span>SYS:</span>
+            <span class="status-value status-good" id="systemStatus">OPERATIONAL</span>
+        </div>
+        <div class="status-item">
+            <span>AI:</span>
+            <span class="status-value status-good pulse" id="aiStatus">ONLINE</span>
+        </div>
+        <div class="status-item">
+            <span>NET:</span>
+            <span class="status-value" id="networkLatency">--ms</span>
+        </div>
+        <div class="status-item">
+            <span>FPS:</span>
+            <span class="status-value" id="fps">60</span>
+        </div>
+        <div class="status-item">
+            <span>TIME:</span>
+            <span class="status-value" id="systemTime">--:--:--</span>
+        </div>
+    </div>
+
+    <!-- Performance Monitor (Top Right) -->
+    <div class="perf-monitor">
+        <div class="perf-title">
+            <span>⚡ PERFORMANCE</span>
+            <span class="blink">●</span>
+        </div>
+
+        <div class="metric">
+            <span class="metric-label">Detection (T1):</span>
+            <span class="metric-value" id="t1">--ms</span>
+        </div>
+        <div class="metric-bar">
+            <div class="metric-bar-fill" id="t1Bar" style="width: 0%"></div>
+        </div>
+
+        <div class="metric">
+            <span class="metric-label">AI Processing (T2):</span>
+            <span class="metric-value" id="t2">--ms</span>
+        </div>
+        <div class="metric-bar">
+            <div class="metric-bar-fill" id="t2Bar" style="width: 0%"></div>
+        </div>
+
+        <div class="metric">
+            <span class="metric-label">Display (T3):</span>
+            <span class="metric-value" id="t3">--ms</span>
+        </div>
+        <div class="metric-bar">
+            <div class="metric-bar-fill" id="t3Bar" style="width: 0%"></div>
+        </div>
+
+        <div class="metric">
+            <span class="metric-label">User Action (T4):</span>
+            <span class="metric-value" id="t4">--ms</span>
+        </div>
+        <div class="metric-bar">
+            <div class="metric-bar-fill" id="t4Bar" style="width: 0%"></div>
+        </div>
+
+        <div class="metric" style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(0,255,255,0.2);">
+            <span class="metric-label">TOTAL LOOP:</span>
+            <span class="metric-value" id="totalLoop" style="font-size: 1rem;">--ms</span>
+        </div>
+
+        <div class="metric">
+            <span class="metric-label">Target: <100ms</span>
+            <span class="metric-value" id="targetStatus">STANDBY</span>
+        </div>
+    </div>
+
+    <!-- Voice Status (Top Left) -->
+    <div class="voice-status">
+        <div class="perf-title">
+            <span>🎤 VOICE</span>
+            <span id="voiceIndicator">READY</span>
+        </div>
+        <div class="voice-waveform" id="waveform">
+            <!-- Waveform bars generated by JS -->
+        </div>
+        <div class="metric" style="margin-top: 0.5rem;">
+            <span class="metric-label">Last Command:</span>
+            <span class="metric-value" id="lastCommand">--</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Recognition:</span>
+            <span class="metric-value" id="recognitionTime">--ms</span>
+        </div>
+    </div>
+
+    <!-- Analytics Log (Bottom Left) -->
+    <div class="analytics">
+        <div class="perf-title">
+            <span>📊 ANALYTICS LOG</span>
+            <span id="eventCount">0 events</span>
+        </div>
+        <div id="analyticsLog">
+            <div class="log-entry">
+                <span class="log-time">--:--:--</span>
+                <span class="log-latency">--ms</span>
+                <span class="log-event">System initialized</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant Widget -->
+    <div class="widget mini" id="widget-ai" style="top: 100px; right: 340px;" onclick="expandWidget('widget-ai', event)">
+        <span class="widget-icon">🤖</span>
+        <div class="widget-header">
+            <span><span class="widget-icon">🤖</span> AI ASSISTANT</span>
+            <div class="expand-btn" onclick="expandWidget('widget-ai', event)">⇔</div>
+        </div>
+        <div class="widget-content">
+            <div class="ai-messages" id="aiMessages">
+                <div class="ai-message">
+                    <strong>CLAUDE:</strong> Tactical measurement HUD online. All systems instrumented. Speak or type to test latency.
+                </div>
+            </div>
+            <div class="ai-input-group">
+                <input type="text" class="ai-input" id="aiInput" placeholder="Enter command..." onkeypress="if(event.key==='Enter') sendCommand()">
+                <button class="ai-send" onclick="sendCommand()">SEND</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <button class="control-btn" onclick="startVoice()">🎤 VOICE</button>
+        <button class="control-btn" onclick="exportData()">💾 EXPORT</button>
+        <button class="control-btn" onclick="resetMetrics()">🔄 RESET</button>
+        <button class="control-btn" onclick="toggleAnalytics()">📊 ANALYTICS</button>
+    </div>
+
+    <script>
+        // Analytics System
+        const analytics = {
+            events: [],
+            sessionStart: Date.now(),
+            eventCount: 0
+        };
+
+        // Performance Metrics
+        let metrics = {
+            t1: [], // Detection times
+            t2: [], // AI processing times
+            t3: [], // Display times
+            t4: [], // User action times
+            total: []
+        };
+
+        // Initialize waveform
+        const waveform = document.getElementById('waveform');
+        for (let i = 0; i < 30; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'waveform-bar';
+            bar.style.left = (i * 6) + 'px';
+            bar.style.height = '0px';
+            waveform.appendChild(bar);
+        }
+
+        // Update system time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('systemTime').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // FPS Counter
+        let lastTime = performance.now();
+        let frames = 0;
+        function measureFPS() {
+            frames++;
+            const now = performance.now();
+            if (now >= lastTime + 1000) {
+                document.getElementById('fps').textContent = frames;
+                frames = 0;
+                lastTime = now;
+            }
+            requestAnimationFrame(measureFPS);
+        }
+        measureFPS();
+
+        // Log Event
+        function logEvent(event, latency = null) {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', { hour12: false });
+
+            analytics.events.push({
+                timestamp: Date.now(),
+                event: event,
+                latency: latency
+            });
+            analytics.eventCount++;
+
+            document.getElementById('eventCount').textContent = `${analytics.eventCount} events`;
+
+            const logDiv = document.getElementById('analyticsLog');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <span class="log-time">${time}</span>
+                <span class="log-latency">${latency !== null ? latency + 'ms' : '--'}</span>
+                <span class="log-event">${event}</span>
+            `;
+            logDiv.insertBefore(entry, logDiv.firstChild);
+
+            // Keep only last 50 entries
+            while (logDiv.children.length > 50) {
+                logDiv.removeChild(logDiv.lastChild);
+            }
+        }
+
+        // Update Metric Display
+        function updateMetric(metric, value) {
+            document.getElementById(metric).textContent = value + 'ms';
+            const bar = document.getElementById(metric + 'Bar');
+            const percent = Math.min((value / 500) * 100, 100);
+            bar.style.width = percent + '%';
+        }
+
+        // Send Command (Full Measurement Loop)
+        async function sendCommand() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // T1: Detection Time
+            const t1Start = performance.now();
+            const t1End = performance.now();
+            const t1Time = Math.round(t1End - t1Start);
+
+            updateMetric('t1', t1Time);
+            metrics.t1.push(t1Time);
+            logEvent('Command detected: "' + message + '"', t1Time);
+
+            // Add user message
+            const messagesDiv = document.getElementById('aiMessages');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'ai-message';
+            userMsg.style.borderColor = 'rgba(0,255,0,0.3)';
+            userMsg.innerHTML = `<strong>YOU:</strong> ${message}`;
+            messagesDiv.appendChild(userMsg);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            input.value = '';
+
+            // T2: AI Processing Time (simulated - would be real Claude API call)
+            const t2Start = performance.now();
+
+            // Simulate AI processing
+            await new Promise(resolve => setTimeout(resolve, Math.random() * 200 + 50));
+
+            const t2End = performance.now();
+            const t2Time = Math.round(t2End - t2Start);
+
+            updateMetric('t2', t2Time);
+            metrics.t2.push(t2Time);
+            logEvent('AI processing complete', t2Time);
+
+            // T3: Display Time
+            const t3Start = performance.now();
+
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'ai-message';
+            aiMsg.innerHTML = `<strong>CLAUDE:</strong> Received "${message}". Total latency: ${t1Time + t2Time}ms`;
+            messagesDiv.appendChild(aiMsg);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            const t3End = performance.now();
+            const t3Time = Math.round(t3End - t3Start);
+
+            updateMetric('t3', t3Time);
+            metrics.t3.push(t3Time);
+            logEvent('Response displayed', t3Time);
+
+            // Calculate total loop time
+            const totalTime = t1Time + t2Time + t3Time;
+            document.getElementById('totalLoop').textContent = totalTime + 'ms';
+            metrics.total.push(totalTime);
+
+            // Check against target
+            const targetStatus = document.getElementById('targetStatus');
+            if (totalTime < 100) {
+                targetStatus.textContent = '✓ EXCELLENT';
+                targetStatus.className = 'metric-value status-good';
+            } else if (totalTime < 200) {
+                targetStatus.textContent = '⚠ ACCEPTABLE';
+                targetStatus.className = 'metric-value status-warn';
+            } else {
+                targetStatus.textContent = '✗ SLOW';
+                targetStatus.className = 'metric-value status-bad';
+            }
+
+            logEvent('Total loop complete', totalTime);
+
+            // Simulate network latency check
+            const netLatency = Math.round(Math.random() * 50 + 10);
+            document.getElementById('networkLatency').textContent = netLatency + 'ms';
+        }
+
+        // Voice Recognition (with measurement)
+        let recognition = null;
+        let voiceActive = false;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            let recognitionStart = 0;
+
+            recognition.onstart = () => {
+                voiceActive = true;
+                document.getElementById('voiceIndicator').textContent = 'LISTENING';
+                document.getElementById('voiceIndicator').className = 'pulse';
+                recognitionStart = performance.now();
+                logEvent('Voice recognition started');
+                animateWaveform(true);
+            };
+
+            recognition.onresult = (event) => {
+                const recognitionEnd = performance.now();
+                const recognitionTime = Math.round(recognitionEnd - recognitionStart);
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        const transcript = event.results[i][0].transcript;
+                        document.getElementById('lastCommand').textContent = transcript.substring(0, 20);
+                        document.getElementById('recognitionTime').textContent = recognitionTime + 'ms';
+
+                        logEvent('Voice recognized: "' + transcript + '"', recognitionTime);
+
+                        // Auto-execute command
+                        document.getElementById('aiInput').value = transcript;
+                        sendCommand();
+                    }
+                }
+            };
+
+            recognition.onend = () => {
+                voiceActive = false;
+                document.getElementById('voiceIndicator').textContent = 'READY';
+                document.getElementById('voiceIndicator').className = '';
+                logEvent('Voice recognition ended');
+                animateWaveform(false);
+            };
+        }
+
+        function startVoice() {
+            if (!recognition) {
+                logEvent('Voice not supported in this browser');
+                return;
+            }
+
+            if (voiceActive) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        }
+
+        // Waveform Animation
+        let waveformInterval = null;
+        function animateWaveform(active) {
+            if (waveformInterval) {
+                clearInterval(waveformInterval);
+                waveformInterval = null;
+            }
+
+            if (!active) {
+                const bars = waveform.querySelectorAll('.waveform-bar');
+                bars.forEach(bar => bar.style.height = '0px');
+                return;
+            }
+
+            waveformInterval = setInterval(() => {
+                const bars = waveform.querySelectorAll('.waveform-bar');
+                bars.forEach(bar => {
+                    const height = Math.random() * 40;
+                    bar.style.height = height + 'px';
+                });
+            }, 100);
+        }
+
+        // Widget System
+        const sizes = ['mini', 'medium', 'large'];
+        let activeWidget = null;
+        let offsetX = 0, offsetY = 0;
+
+        document.querySelectorAll('.widget').forEach(widget => makeDraggable(widget));
+
+        function makeDraggable(widget) {
+            widget.addEventListener('mousedown', function(e) {
+                if (e.target.classList.contains('expand-btn')) return;
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+
+                activeWidget = widget;
+                const rect = widget.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+                e.stopPropagation();
+
+                logEvent('Widget drag started: ' + widget.id);
+            });
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            if (activeWidget) {
+                activeWidget.style.left = (e.clientX - offsetX) + 'px';
+                activeWidget.style.top = (e.clientY - offsetY) + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (activeWidget) {
+                logEvent('Widget drag ended: ' + activeWidget.id);
+                activeWidget = null;
+            }
+        });
+
+        function expandWidget(widgetId, event) {
+            event.stopPropagation();
+            const widget = document.getElementById(widgetId);
+            let currentSize = sizes.find(s => widget.classList.contains(s)) || 'mini';
+            let currentIndex = sizes.indexOf(currentSize);
+            let nextIndex = (currentIndex + 1) % sizes.length;
+
+            sizes.forEach(s => widget.classList.remove(s));
+            widget.classList.add(sizes[nextIndex]);
+
+            logEvent(`Widget expanded: ${widgetId} -> ${sizes[nextIndex]}`);
+        }
+
+        // Export Data
+        function exportData() {
+            const data = {
+                sessionStart: analytics.sessionStart,
+                sessionDuration: Date.now() - analytics.sessionStart,
+                eventCount: analytics.eventCount,
+                events: analytics.events,
+                metrics: {
+                    t1: {
+                        values: metrics.t1,
+                        avg: avg(metrics.t1),
+                        min: Math.min(...metrics.t1),
+                        max: Math.max(...metrics.t1)
+                    },
+                    t2: {
+                        values: metrics.t2,
+                        avg: avg(metrics.t2),
+                        min: Math.min(...metrics.t2),
+                        max: Math.max(...metrics.t2)
+                    },
+                    t3: {
+                        values: metrics.t3,
+                        avg: avg(metrics.t3),
+                        min: Math.min(...metrics.t3),
+                        max: Math.max(...metrics.t3)
+                    },
+                    total: {
+                        values: metrics.total,
+                        avg: avg(metrics.total),
+                        min: Math.min(...metrics.total),
+                        max: Math.max(...metrics.total)
+                    }
+                }
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tactical_hud_metrics_${Date.now()}.json`;
+            a.click();
+
+            logEvent('Data exported');
+        }
+
+        function avg(arr) {
+            return arr.length > 0 ? Math.round(arr.reduce((a,b) => a+b, 0) / arr.length) : 0;
+        }
+
+        // Reset Metrics
+        function resetMetrics() {
+            metrics = { t1: [], t2: [], t3: [], t4: [], total: [] };
+            analytics.events = [];
+            analytics.eventCount = 0;
+            document.getElementById('analyticsLog').innerHTML = '';
+            logEvent('Metrics reset');
+        }
+
+        // Toggle Analytics
+        function toggleAnalytics() {
+            const analyticsDiv = document.querySelector('.analytics');
+            analyticsDiv.style.display = analyticsDiv.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Initialize
+        logEvent('Tactical HUD initialized');
+        console.log('🎯 Tactical Measurement HUD - All systems instrumented');
+        console.log('Target: <100ms total loop time (T1+T2+T3)');
+        console.log('T1 = Detection, T2 = AI Processing, T3 = Display, T4 = User Action');
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

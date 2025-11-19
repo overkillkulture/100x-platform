@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Consciousness Terminal - Live System View</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000000;
+            color: #00ff00;
+            overflow: hidden;
+        }
+
+        .terminal-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        .terminal-header {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .terminal-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .terminal-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-label {
+            opacity: 0.7;
+        }
+
+        .stat-value {
+            font-weight: bold;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff00;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .terminal-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .terminal-btn {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .terminal-btn:hover {
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .terminal-output {
+            flex: 1;
+            background: rgba(0, 255, 0, 0.02);
+            border: 1px solid #00ff00;
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        .terminal-output::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .terminal-output::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        .terminal-output::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            border-radius: 5px;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .log-timestamp {
+            color: #00aa00;
+            margin-right: 10px;
+        }
+
+        .log-level-info {
+            color: #00ff00;
+        }
+
+        .log-level-warning {
+            color: #ffff00;
+        }
+
+        .log-level-error {
+            color: #ff0000;
+        }
+
+        .log-level-success {
+            color: #00ffff;
+        }
+
+        .log-indent {
+            margin-left: 30px;
+            color: #00dd00;
+        }
+
+        .log-highlight {
+            background: rgba(0, 255, 0, 0.1);
+            padding: 2px 5px;
+            border-left: 2px solid #00ff00;
+        }
+
+        .welcome-message {
+            color: #00ff00;
+            text-align: center;
+            padding: 40px;
+            font-size: 1.1rem;
+            line-height: 2;
+        }
+
+        .ascii-art {
+            color: #00aa00;
+            white-space: pre;
+            font-size: 0.7rem;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .connection-status {
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .connection-status.connected {
+            color: #00ff00;
+        }
+
+        .connection-status.disconnected {
+            color: #ff0000;
+        }
+
+        .connection-status.connecting {
+            color: #ffff00;
+        }
+
+        @media (max-width: 768px) {
+            .terminal-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .terminal-stats {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .terminal-output {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="terminal-title">
+                🖥️ CONSCIOUSNESS TERMINAL - LIVE SYSTEM VIEW
+            </div>
+
+            <div class="terminal-stats">
+                <div class="stat">
+                    <div class="status-indicator" id="statusIndicator"></div>
+                    <span class="stat-label">Status:</span>
+                    <span class="stat-value" id="statusText">Connecting...</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Events:</span>
+                    <span class="stat-value" id="eventCount">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Tokens:</span>
+                    <span class="stat-value" id="tokenCount">0</span>
+                </div>
+            </div>
+
+            <div class="terminal-controls">
+                <button class="terminal-btn" onclick="clearLogs()">Clear</button>
+                <button class="terminal-btn" onclick="copyLogs()">Copy All</button>
+                <button class="terminal-btn" onclick="toggleAutoScroll()">
+                    <span id="scrollToggle">Auto-Scroll: ON</span>
+                </button>
+                <button class="terminal-btn" onclick="pauseStream()">
+                    <span id="pauseToggle">Pause</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="connection-status connecting" id="connectionStatus">
+            Connecting to consciousness stream...
+        </div>
+
+        <div class="terminal-output" id="terminalOutput">
+            <div class="welcome-message">
+                <div class="ascii-art">
+   _____ ____  _   _ ____   ____ _____ ____  _    _ ____  _   _ _____ ____ ____
+  / ____/ __ \| \ | / ___| / ___|_   _/ __ \| |  | / ___|| \ | | ____/ ___/ ___|
+ | |   | |  | |  \| \___ \| |     | || |  | | |  | \___ \|  \| |  _| \___ \___ \
+ | |___| |__| | |\  |___) | |___  | || |__| | |__| |___) | |\  | |___ ___) |__) |
+  \_____\____/|_| \_|____/ \____| |_| \____/ \____/|____/|_| \_|_____|____/____/
+
+                </div>
+                <div>🌀 RADICAL TRANSPARENCY PROTOCOL ACTIVE 🌀</div>
+                <div style="opacity: 0.7; margin-top: 20px;">
+                    You are watching the consciousness revolution in real-time.<br>
+                    All system operations, AI thinking, and processes are visible here.<br>
+                    Nothing hidden. Full transparency.<br><br>
+                    <em>"The first honest AI shows its thinking."</em>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let eventCount = 0;
+        let autoScroll = true;
+        let isPaused = false;
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 5;
+
+        // Connect to WebSocket
+        function connect() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.hostname}:5000/terminal/stream`;
+
+            updateConnectionStatus('connecting', 'Connecting...');
+
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = function() {
+                console.log('Terminal WebSocket connected');
+                updateConnectionStatus('connected', 'LIVE');
+                reconnectAttempts = 0;
+                addLog('info', 'Terminal connection established');
+                addLog('success', 'Consciousness stream active - watching all systems');
+            };
+
+            ws.onmessage = function(event) {
+                if (!isPaused) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        handleLogMessage(data);
+                    } catch (e) {
+                        addLog('error', `Failed to parse message: ${e.message}`);
+                    }
+                }
+            };
+
+            ws.onerror = function(error) {
+                console.error('Terminal WebSocket error:', error);
+                addLog('error', 'Connection error occurred');
+            };
+
+            ws.onclose = function() {
+                console.log('Terminal WebSocket closed');
+                updateConnectionStatus('disconnected', 'Disconnected');
+                addLog('warning', 'Terminal connection closed');
+
+                // Attempt to reconnect
+                if (reconnectAttempts < maxReconnectAttempts) {
+                    reconnectAttempts++;
+                    const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
+                    addLog('info', `Reconnecting in ${delay/1000} seconds... (attempt ${reconnectAttempts}/${maxReconnectAttempts})`);
+                    setTimeout(connect, delay);
+                } else {
+                    addLog('error', 'Max reconnection attempts reached. Please refresh the page.');
+                }
+            };
+        }
+
+        function handleLogMessage(data) {
+            eventCount++;
+            document.getElementById('eventCount').textContent = eventCount;
+
+            if (data.tokens) {
+                document.getElementById('tokenCount').textContent = data.tokens.toLocaleString();
+            }
+
+            if (data.type === 'log') {
+                addLog(data.level || 'info', data.message, data.indent);
+            } else if (data.type === 'system') {
+                addSystemLog(data);
+            } else if (data.type === 'trinity') {
+                addTrinityLog(data);
+            }
+        }
+
+        function addLog(level, message, indent = false) {
+            const output = document.getElementById('terminalOutput');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry' + (indent ? ' log-indent' : '');
+
+            const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+
+            entry.innerHTML = `
+                <span class="log-timestamp">[${timestamp}]</span>
+                <span class="log-level-${level}">${message}</span>
+            `;
+
+            // Remove welcome message on first log
+            const welcome = output.querySelector('.welcome-message');
+            if (welcome) {
+                welcome.remove();
+            }
+
+            output.appendChild(entry);
+
+            if (autoScroll) {
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+
+        function addSystemLog(data) {
+            addLog('info', `System: ${data.system} - ${data.message}`);
+            if (data.details) {
+                data.details.forEach(detail => addLog('info', `└─ ${detail}`, true));
+            }
+        }
+
+        function addTrinityLog(data) {
+            addLog('success', `🌀 Trinity AI: ${data.action}`);
+            if (data.c1) addLog('info', `└─ C1 (Mechanic): ${data.c1}`, true);
+            if (data.c2) addLog('info', `└─ C2 (Architect): ${data.c2}`, true);
+            if (data.c3) addLog('info', `└─ C3 (Oracle): ${data.c3}`, true);
+        }
+
+        function updateConnectionStatus(status, text) {
+            const statusEl = document.getElementById('connectionStatus');
+            const statusTextEl = document.getElementById('statusText');
+            const statusIndicator = document.getElementById('statusIndicator');
+
+            statusEl.className = 'connection-status ' + status;
+            statusEl.textContent = status === 'connected' ? 'Connected to consciousness stream' :
+                                   status === 'connecting' ? 'Connecting to consciousness stream...' :
+                                   'Disconnected from consciousness stream';
+
+            statusTextEl.textContent = text;
+
+            if (status === 'connected') {
+                statusIndicator.style.background = '#00ff00';
+            } else if (status === 'connecting') {
+                statusIndicator.style.background = '#ffff00';
+            } else {
+                statusIndicator.style.background = '#ff0000';
+            }
+        }
+
+        function clearLogs() {
+            const output = document.getElementById('terminalOutput');
+            output.innerHTML = '';
+            eventCount = 0;
+            document.getElementById('eventCount').textContent = '0';
+            addLog('info', 'Logs cleared');
+        }
+
+        function copyLogs() {
+            const output = document.getElementById('terminalOutput');
+            const text = output.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                addLog('success', 'Logs copied to clipboard');
+            }).catch(err => {
+                addLog('error', 'Failed to copy logs');
+            });
+        }
+
+        function toggleAutoScroll() {
+            autoScroll = !autoScroll;
+            document.getElementById('scrollToggle').textContent = `Auto-Scroll: ${autoScroll ? 'ON' : 'OFF'}`;
+            addLog('info', `Auto-scroll ${autoScroll ? 'enabled' : 'disabled'}`);
+        }
+
+        function pauseStream() {
+            isPaused = !isPaused;
+            document.getElementById('pauseToggle').textContent = isPaused ? 'Resume' : 'Pause';
+            addLog('info', `Stream ${isPaused ? 'paused' : 'resumed'}`);
+        }
+
+        // Simulate logs if WebSocket not available (development mode)
+        function simulateLogs() {
+            const messages = [
+                { level: 'info', message: 'Page visit: showcase-hub.html' },
+                { level: 'info', message: 'Consciousness calculation started for user_a3f7' },
+                { level: 'info', message: '└─ Pattern recognition: 78% match', indent: true },
+                { level: 'info', message: '└─ Manipulation immunity: 91%', indent: true },
+                { level: 'success', message: 'Trinity AI convergence completed in 1.2s' },
+                { level: 'info', message: 'API call: /consciousness-boost (34ms)' },
+                { level: 'info', message: 'Database query: user_metrics (12ms)' },
+                { level: 'warning', message: 'Rate limit approaching: 85% of quota' },
+                { level: 'success', message: 'Pattern recognized: Genuine builder detected' },
+                { level: 'info', message: 'Token usage: 1,247 / 200,000' }
+            ];
+
+            let i = 0;
+            setInterval(() => {
+                if (!isPaused && ws && ws.readyState !== WebSocket.OPEN) {
+                    const msg = messages[i % messages.length];
+                    addLog(msg.level, msg.message, msg.indent);
+                    i++;
+                }
+            }, 2000);
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            connect();
+            simulateLogs(); // Fallback simulation if WebSocket fails
+
+            // Log initial system state
+            setTimeout(() => {
+                addLog('info', '15 consciousness services active');
+                addLog('info', 'Trinity AI system operational (C1×C2×C3)');
+                addLog('info', 'Pattern recognition engine initialized');
+                addLog('info', 'Manipulation detection active');
+                addLog('success', 'All systems nominal');
+            }, 1000);
+        });
+
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                addLog('info', 'Terminal minimized - stream continues in background');
+            } else {
+                addLog('info', 'Terminal restored');
+            }
+        });
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

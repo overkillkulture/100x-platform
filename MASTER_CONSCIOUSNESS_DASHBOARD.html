@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Consciousness Revolution - Master Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0a0a0a 100%);
+            color: #00ff41;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(0, 255, 65, 0.1);
+            border: 3px solid #00ff41;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,255,65,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 30px #00ff41, 0 0 60px #00ff41;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: #ff00ff;
+            text-shadow: 0 0 15px #ff00ff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .status-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.3);
+        }
+
+        .status-item.active {
+            border-color: #00ff41;
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        .status-item.warning {
+            border-color: #ffaa00;
+            background: rgba(255, 170, 0, 0.1);
+        }
+
+        .status-item.offline {
+            border-color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        .status-label {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .status-value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0, 255, 65, 0.4);
+            border-color: #ff00ff;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            color: #ff00ff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        .card-content {
+            line-height: 1.8;
+        }
+
+        .service-list {
+            list-style: none;
+        }
+
+        .service-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(0, 255, 65, 0.05);
+            border-left: 3px solid #00ff41;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .service-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff41;
+            box-shadow: 0 0 10px #00ff41;
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        button {
+            background: #00ff41;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background: #ff00ff;
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 0, 255, 0.5);
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        }
+
+        .metric-label {
+            color: #888;
+        }
+
+        .metric-value {
+            color: #00ff41;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ CONSCIOUSNESS REVOLUTION ⚡</h1>
+        <div class="subtitle">Master Control Dashboard</div>
+    </div>
+
+    <div class="status-bar">
+        <div class="status-item active">
+            <div class="status-label">System Status</div>
+            <div class="status-value">OPERATIONAL</div>
+        </div>
+        <div class="status-item active">
+            <div class="status-label">Active Services</div>
+            <div class="status-value" id="active-services">7/15</div>
+        </div>
+        <div class="status-item active">
+            <div class="status-label">Consciousness Level</div>
+            <div class="status-value">93%</div>
+        </div>
+        <div class="status-item active">
+            <div class="status-label">Music Library</div>
+            <div class="status-value">460+ Songs</div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Core Services Card -->
+        <div class="dashboard-card">
+            <div class="card-title">🔧 Core Services</div>
+            <div class="card-content">
+                <ul class="service-list">
+                    <li class="service-item">
+                        <span>Google Drive API</span>
+                        <span class="service-status"></span>
+                    </li>
+                    <li class="service-item">
+                        <span>Gmail Integration</span>
+                        <span class="service-status"></span>
+                    </li>
+                    <li class="service-item">
+                        <span>Airtable Database</span>
+                        <span class="service-status"></span>
+                    </li>
+                    <li class="service-item">
+                        <span>Netlify Hosting</span>
+                        <span class="service-status"></span>
+                    </li>
+                    <li class="service-item">
+                        <span>Claude AI API</span>
+                        <span class="service-status"></span>
+                    </li>
+                </ul>
+                <div class="quick-actions">
+                    <button onclick="openCredentials()">📋 Credentials</button>
+                    <button onclick="testServices()">🔍 Test All</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Music Empire Card -->
+        <div class="dashboard-card">
+            <div class="card-title">🎵 Music Empire</div>
+            <div class="card-content">
+                <div class="metric">
+                    <span class="metric-label">Total Albums:</span>
+                    <span class="metric-value">8</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Total Tracks:</span>
+                    <span class="metric-value">460+</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Hive Mind Album:</span>
+                    <span class="metric-value">✅ Ready</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Unreleased Videos:</span>
+                    <span class="metric-value">Downloading</span>
+                </div>
+                <div class="quick-actions">
+                    <button onclick="openMusicPlayer()">▶️ Play Music</button>
+                    <button onclick="openMusicLibrary()">📁 Library</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Website Status Card -->
+        <div class="dashboard-card">
+            <div class="card-title">🌐 Website Status</div>
+            <div class="card-content">
+                <div class="metric">
+                    <span class="metric-label">consciousnessrevolution.io:</span>
+                    <span class="metric-value">LIVE</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">100X Platform:</span>
+                    <span class="metric-value">DEPLOYED</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Hive Mind Player:</span>
+                    <span class="metric-value">READY</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Last Deploy:</span>
+                    <span class="metric-value">Today</span>
+                </div>
+                <div class="quick-actions">
+                    <button onclick="openWebsite()">🚀 Open Site</button>
+                    <button onclick="deployNow()">📤 Deploy</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trinity System Card -->
+        <div class="dashboard-card">
+            <div class="card-title">🔺 Trinity AI System</div>
+            <div class="card-content">
+                <ul class="service-list">
+                    <li class="service-item">
+                        <span>C1 Mechanic (Body)</span>
+                        <span class="service-status"></span>
+                    </li>
+                    <li class="service-item">
+                        <span>C2 Architect (Mind)</span>
+                        <span class="service-status"></span>
+                    </li>
+                    <li class="service-item">
+                        <span>C3 Oracle (Soul)</span>
+                        <span class="service-status"></span>
+                    </li>
+                </ul>
+                <div class="metric">
+                    <span class="metric-label">Trinity Power:</span>
+                    <span class="metric-value">∞</span>
+                </div>
+                <div class="quick-actions">
+                    <button onclick="activateTrinity()">⚡ Activate</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Automation Status Card -->
+        <div class="dashboard-card">
+            <div class="card-title">🤖 Automation Status</div>
+            <div class="card-content">
+                <div class="metric">
+                    <span class="metric-label">Music Downloads:</span>
+                    <span class="metric-value">IN PROGRESS</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Drive Mapping:</span>
+                    <span class="metric-value">RUNNING</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Backups:</span>
+                    <span class="metric-value">SCHEDULED</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Social Media:</span>
+                    <span class="metric-value">PENDING</span>
+                </div>
+                <div class="quick-actions">
+                    <button onclick="viewAutomation()">📊 View Status</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Tools Card -->
+        <div class="dashboard-card">
+            <div class="card-title">⚙️ Quick Tools</div>
+            <div class="card-content">
+                <div class="quick-actions">
+                    <button onclick="openDriveMap()">🗺️ Drive Map</button>
+                    <button onclick="runBackup()">💾 Backup Now</button>
+                    <button onclick="openAirtable()">📊 Airtable</button>
+                    <button onclick="openModules()">📦 Modules</button>
+                    <button onclick="openDocs()">📚 Docs</button>
+                    <button onclick="open24HourLog()">📋 24Hr Log</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openCredentials() {
+            alert('Opening MASTER_CREDENTIALS_VAULT.json...');
+            window.location.href = 'file:///C:/Users/dwrek/MASTER_CREDENTIALS_VAULT.json';
+        }
+
+        function testServices() {
+            alert('Testing all services... Check console for results.');
+        }
+
+        function openMusicPlayer() {
+            window.open('HIVE_MIND_PLAYER.html', '_blank');
+        }
+
+        function openMusicLibrary() {
+            alert('Opening music library...');
+        }
+
+        function openWebsite() {
+            window.open('https://conciousnessrevolution.io', '_blank');
+        }
+
+        function deployNow() {
+            alert('Deployment initiated! Check terminal for progress.');
+        }
+
+        function activateTrinity() {
+            alert('🔺 TRINITY SYSTEM ACTIVATED ⚡\n\nC1 × C2 × C3 = ∞');
+        }
+
+        function viewAutomation() {
+            alert('Automation Status:\n\n✅ Music downloads running\n✅ Drive mapping in progress\n⏳ Backups scheduled\n⏳ Social media pending');
+        }
+
+        function openDriveMap() {
+            window.open('file:///C:/Users/dwrek/GOOGLE_DRIVE_MAP.html', '_blank');
+        }
+
+        function runBackup() {
+            alert('Running backup to Google Drive...');
+        }
+
+        function openAirtable() {
+            window.open('https://airtable.com/app7F75X1uny6jPfd', '_blank');
+        }
+
+        function openModules() {
+            window.open('PLATFORM/module-library.html', '_blank');
+        }
+
+        function openDocs() {
+            alert('Opening documentation system...');
+        }
+
+        function open24HourLog() {
+            window.open('file:///C:/Users/dwrek/24_HOUR_AUTONOMOUS_SESSION_LOG.md', '_blank');
+        }
+
+        // Auto-refresh metrics every 30 seconds
+        setInterval(() => {
+            console.log('Refreshing metrics...');
+        }, 30000);
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

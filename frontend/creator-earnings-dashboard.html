@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Dashboard - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        .creator-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .creator-header {
+            background: linear-gradient(135deg, #1a1a1a, #252525);
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .creator-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 12px;
+        }
+
+        .creator-subtitle {
+            font-size: 16px;
+            color: #888;
+        }
+
+        .earnings-highlight {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .earnings-card {
+            background: linear-gradient(135deg, #1a1a1a, #252525);
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 28px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .earnings-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+        }
+
+        .earnings-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .earnings-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            margin-bottom: 8px;
+        }
+
+        .earnings-detail {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .split-explainer {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .split-visual {
+            flex: 0 0 200px;
+            height: 120px;
+            background: linear-gradient(to right, #ffd700 0%, #ffd700 70%, #666 70%, #666 100%);
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .split-label {
+            position: absolute;
+            font-size: 24px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .split-label.creator {
+            left: 35%;
+            transform: translateX(-50%);
+        }
+
+        .split-label.platform {
+            right: 15%;
+            color: #fff;
+        }
+
+        .split-text {
+            flex: 1;
+        }
+
+        .split-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 8px;
+        }
+
+        .split-comparison {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 8px;
+        }
+
+        .products-section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .create-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .create-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .product-card {
+            background: linear-gradient(135deg, #1a1a1a, #252525);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            border-color: #ffd700;
+            transform: translateY(-4px);
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .product-type {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid #ffd700;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #ffd700;
+            text-transform: uppercase;
+        }
+
+        .product-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .product-stat {
+            text-align: center;
+            padding: 12px;
+            background: #1a1a1a;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .product-button {
+            flex: 1;
+            padding: 10px;
+            background: #252525;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #ffd700;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .product-button:hover {
+            background: #ffd700;
+            color: #000;
+            border-color: #ffd700;
+        }
+
+        .payouts-section {
+            background: linear-gradient(135deg, #1a1a1a, #252525);
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 32px;
+        }
+
+        .payout-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+        }
+
+        .payout-table th {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid #ffd700;
+            color: #ffd700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .payout-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #333;
+            color: #ccc;
+        }
+
+        .payout-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .payout-status.completed {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+        }
+
+        .payout-status.pending {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+        }
+
+        .onboarding-prompt {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 237, 78, 0.05));
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .onboarding-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 16px;
+        }
+
+        .onboarding-text {
+            font-size: 16px;
+            color: #ccc;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .onboarding-button {
+            padding: 16px 48px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .onboarding-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+<div class="creator-container">
+    <div class="creator-header">
+        <h1 class="creator-title">⭐ Creator Dashboard ⭐</h1>
+        <p class="creator-subtitle">70% earnings | Instant payouts | Better than Udemy</p>
+    </div>
+
+    <!-- Show onboarding if not set up -->
+    <div id="onboarding-section" style="display: none;">
+        <div class="onboarding-prompt">
+            <div class="onboarding-title">Start Earning 70% on Everything You Sell</div>
+            <div class="onboarding-text">
+                Connect your Stripe account to receive instant payouts.<br>
+                We give you 70% of every sale - that's nearly double what Udemy pays (37%).
+            </div>
+            <button class="onboarding-button" onclick="startOnboarding()">
+                Connect Stripe & Start Earning
+            </button>
+        </div>
+    </div>
+
+    <!-- Show dashboard if onboarded -->
+    <div id="dashboard-section">
+        <!-- 70/30 Split Explainer -->
+        <div class="split-explainer">
+            <div class="split-visual">
+                <div class="split-label creator">YOU<br>70%</div>
+                <div class="split-label platform">US<br>30%</div>
+            </div>
+            <div class="split-text">
+                <div class="split-title">You Keep 70% of Every Sale</div>
+                <div>
+                    We only take 30% - that covers payment processing, hosting, and platform costs.
+                    Compare that to:
+                </div>
+                <div class="split-comparison">
+                    • Udemy: ~37% to creator, 63% to platform<br>
+                    • Skillshare: ~$0.05-0.10 per minute watched<br>
+                    • YouTube: ~55% to creator, 45% to platform
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings Highlight -->
+        <div class="earnings-highlight">
+            <div class="earnings-card">
+                <div class="earnings-label">Total Earnings</div>
+                <div class="earnings-value" id="total-earnings">$0</div>
+                <div class="earnings-detail">All time (70% of GMV)</div>
+            </div>
+
+            <div class="earnings-card">
+                <div class="earnings-label">This Month</div>
+                <div class="earnings-value" id="month-earnings">$0</div>
+                <div class="earnings-detail" id="month-sales">0 sales</div>
+            </div>
+
+            <div class="earnings-card">
+                <div class="earnings-label">Total Sales</div>
+                <div class="earnings-value" id="total-sales">0</div>
+                <div class="earnings-detail">Across all products</div>
+            </div>
+
+            <div class="earnings-card">
+                <div class="earnings-label">Products Listed</div>
+                <div class="earnings-value" id="total-products">0</div>
+                <div class="earnings-detail">Active marketplace items</div>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div class="products-section">
+            <div class="section-header">
+                <h2 class="section-title">Your Products</h2>
+                <button class="create-button" onclick="createProduct()">+ Create New Product</button>
+            </div>
+
+            <div class="products-grid" id="products-grid">
+                <!-- Will be populated dynamically -->
+            </div>
+        </div>
+
+        <!-- Payouts Section -->
+        <div class="payouts-section">
+            <h2 class="section-title">Payout History</h2>
+
+            <table class="payout-table">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Amount</th>
+                        <th>Sales</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="payouts-tbody">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #666; padding: 32px;">
+                            No payouts yet. Start selling to see your earnings here!
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Include SDK -->
+<script src="consciousness-sdk.js"></script>
+<script>
+    // Initialize SDK
+    const cr = new ConsciousnessRevolution({
+        apiBaseUrl: 'http://localhost:5000'
+    });
+
+    // Load creator dashboard
+    loadCreatorDashboard();
+
+    async function loadCreatorDashboard() {
+        try {
+            // Check onboarding status
+            const status = await cr.marketplace.getCreatorStatus();
+
+            if (!status.onboarded || !status.can_receive_payouts) {
+                // Show onboarding
+                document.getElementById('onboarding-section').style.display = 'block';
+                document.getElementById('dashboard-section').style.display = 'none';
+                return;
+            }
+
+            // Show dashboard
+            document.getElementById('onboarding-section').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'block';
+
+            // Load dashboard data
+            const dashboard = await cr.marketplace.getCreatorDashboard();
+
+            // Update earnings
+            document.getElementById('total-earnings').textContent =
+                `$${dashboard.all_time.total_earnings.toLocaleString()}`;
+
+            document.getElementById('month-earnings').textContent =
+                `$${dashboard.this_month.earnings.toLocaleString()}`;
+
+            document.getElementById('month-sales').textContent =
+                `${dashboard.this_month.sales} sales`;
+
+            document.getElementById('total-sales').textContent =
+                dashboard.all_time.total_sales.toLocaleString();
+
+            // Load products
+            loadProducts(dashboard.top_items);
+
+            // Load payouts
+            loadPayouts(dashboard.recent_payouts);
+
+        } catch (error) {
+            console.error('Failed to load creator dashboard:', error);
+        }
+    }
+
+    function loadProducts(products) {
+        const grid = document.getElementById('products-grid');
+
+        if (!products || products.length === 0) {
+            grid.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1; padding: 60px;">No products yet. Create your first product to start earning!</p>';
+            document.getElementById('total-products').textContent = '0';
+            return;
+        }
+
+        document.getElementById('total-products').textContent = products.length;
+
+        grid.innerHTML = products.map(product => `
+            <div class="product-card">
+                <div class="product-header">
+                    <div>
+                        <div class="product-title">${product.title}</div>
+                        <span class="product-type">${product.type}</span>
+                    </div>
+                </div>
+
+                <div class="product-stats">
+                    <div class="product-stat">
+                        <div class="stat-value">$${product.price.toFixed(2)}</div>
+                        <div class="stat-label">Price</div>
+                    </div>
+                    <div class="product-stat">
+                        <div class="stat-value">${product.sales}</div>
+                        <div class="stat-label">Sales</div>
+                    </div>
+                    <div class="product-stat">
+                        <div class="stat-value">$${product.earnings.toFixed(2)}</div>
+                        <div class="stat-label">Earned</div>
+                    </div>
+                </div>
+
+                <div class="product-actions">
+                    <button class="product-button" onclick="editProduct(${product.id})">Edit</button>
+                    <button class="product-button" onclick="viewStats(${product.id})">Stats</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function loadPayouts(payouts) {
+        const tbody = document.getElementById('payouts-tbody');
+
+        if (!payouts || payouts.length === 0) {
+            return;
+        }
+
+        tbody.innerHTML = payouts.map(payout => `
+            <tr>
+                <td>${new Date(payout.month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</td>
+                <td style="font-weight: 600; color: #ffd700;">$${payout.amount.toLocaleString()}</td>
+                <td>${payout.sales_count}</td>
+                <td><span class="payout-status completed">Completed</span></td>
+                <td>${new Date(payout.processed_at).toLocaleDateString()}</td>
+            </tr>
+        `).join('');
+    }
+
+    async function startOnboarding() {
+        try {
+            const result = await cr.marketplace.onboardCreator({
+                email: 'creator@example.com', // Would get from current user
+                country: 'US',
+                business_type: 'individual',
+                first_name: 'Creator',
+                last_name: 'Name'
+            });
+
+            if (result.success) {
+                // Redirect to Stripe onboarding
+                window.location.href = result.onboarding_url;
+            }
+        } catch (error) {
+            alert('Failed to start onboarding: ' + error.message);
+        }
+    }
+
+    function createProduct() {
+        window.location.href = '/creator/products/new';
+    }
+
+    function editProduct(productId) {
+        window.location.href = `/creator/products/${productId}/edit`;
+    }
+
+    function viewStats(productId) {
+        window.location.href = `/creator/products/${productId}/stats`;
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Universal Sensor Integration - 100X Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 3px solid #00ffff;
+            border-radius: 15px;
+        }
+
+        h1 {
+            font-size: 42px;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #00ffff;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6b00;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #00ffff;
+            margin-top: 10px;
+        }
+
+        .sensor-categories {
+            display: grid;
+            gap: 30px;
+        }
+
+        .category {
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #00ffff;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .category-title {
+            font-size: 28px;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-icon {
+            font-size: 36px;
+        }
+
+        .category-badge {
+            background: #00ff00;
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .sensor-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #ff6b00;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .sensor-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffd700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .sensor-card.active {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .sensor-name {
+            font-size: 16px;
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .sensor-status {
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .status-active {
+            color: #00ff00;
+        }
+
+        .status-available {
+            color: #ff6b00;
+        }
+
+        .status-planned {
+            color: #00ffff;
+        }
+
+        .sensor-description {
+            font-size: 11px;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        .api-key-section {
+            background: rgba(255, 107, 0, 0.1);
+            border: 2px solid #ff6b00;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .api-key-title {
+            color: #ff6b00;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .api-key-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #ff6b00;
+            color: #00ffff;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #00ff00, #00cc00);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 0, 0.4);
+        }
+
+        .integration-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 300px;
+            box-shadow: 0 10px 40px rgba(0, 255, 0, 0.3);
+        }
+
+        .status-title {
+            font-size: 18px;
+            color: #00ff00;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .status-item {
+            font-size: 12px;
+            color: #00ffff;
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .sensor-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="header">
+        <h1>📡 UNIVERSAL SENSOR INTEGRATION</h1>
+        <div class="subtitle">Every sensor, API, and data source we can connect to the platform</div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number" id="totalSensors">0</div>
+            <div class="stat-label">Total Sensors</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="activeSensors">0</div>
+            <div class="stat-label">Active</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="availableSensors">0</div>
+            <div class="stat-label">Available</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="plannedSensors">0</div>
+            <div class="stat-label">Planned</div>
+        </div>
+    </div>
+
+    <div class="sensor-categories" id="sensorCategories"></div>
+
+    <div class="integration-status">
+        <div class="status-title">🔌 Integration Status</div>
+        <div class="status-item">Ready to connect: <span id="readyCount">0</span></div>
+        <div class="status-item">Requires keys: <span id="keyCount">0</span></div>
+        <div class="status-item">Hardware needed: <span id="hardwareCount">0</span></div>
+    </div>
+
+    <script>
+        const SENSOR_DATABASE = {
+            "DEVICE_SENSORS": {
+                icon: "📱",
+                color: "#00ff00",
+                sensors: [
+                    { name: "Accelerometer", status: "available", description: "Detect device movement and orientation", api: "DeviceMotion API" },
+                    { name: "Gyroscope", status: "available", description: "Measure device rotation", api: "DeviceOrientation API" },
+                    { name: "Magnetometer", status: "available", description: "Compass direction", api: "DeviceOrientation API" },
+                    { name: "GPS/Location", status: "available", description: "Precise geolocation data", api: "Geolocation API" },
+                    { name: "Camera", status: "available", description: "Video/photo capture, AR", api: "MediaDevices API" },
+                    { name: "Microphone", status: "active", description: "Audio input, voice commands", api: "MediaDevices API" },
+                    { name: "Screen", status: "active", description: "Screenshot, OCR, element detection", api: "Screen Capture API" },
+                    { name: "Ambient Light", status: "available", description: "Adjust UI based on lighting", api: "AmbientLightSensor API" },
+                    { name: "Proximity", status: "available", description: "Detect objects near device", api: "ProximitySensor API" },
+                    { name: "Battery", status: "available", description: "Battery level and charging status", api: "Battery API" },
+                    { name: "Network Info", status: "active", description: "Connection type, speed", api: "Network Information API" },
+                    { name: "Bluetooth", status: "available", description: "Connect to BLE devices", api: "Web Bluetooth API" },
+                    { name: "NFC", status: "available", description: "Near-field communication", api: "WebNFC API" },
+                    { name: "USB", status: "available", description: "USB device communication", api: "WebUSB API" },
+                    { name: "Vibration", status: "available", description: "Haptic feedback", api: "Vibration API" }
+                ]
+            },
+
+            "SATELLITE_&_SPACE": {
+                icon: "🛰️",
+                color: "#ffd700",
+                sensors: [
+                    { name: "Starlink", status: "planned", description: "Global satellite internet", requiresKey: false },
+                    { name: "N2YO Satellite Tracker", status: "available", description: "Track 20,000+ satellites", requiresKey: true, apiUrl: "https://www.n2yo.com/api/" },
+                    { name: "NASA APIs", status: "available", description: "Space data, images, events", requiresKey: true, apiUrl: "https://api.nasa.gov" },
+                    { name: "SpaceX API", status: "available", description: "Launches, rockets, capsules", requiresKey: false, apiUrl: "https://api.spacexdata.com/v4/" },
+                    { name: "Celestrak", status: "available", description: "Satellite orbital data (TLE)", requiresKey: false, apiUrl: "https://celestrak.org/" },
+                    { name: "Open Notify ISS", status: "available", description: "ISS location real-time", requiresKey: false, apiUrl: "http://api.open-notify.org/" },
+                    { name: "ADS-B Exchange", status: "available", description: "Real-time aircraft tracking", requiresKey: true, apiUrl: "https://www.adsbexchange.com/data/" }
+                ]
+            },
+
+            "WEATHER_&_ENVIRONMENT": {
+                icon: "🌦️",
+                color: "#00ffff",
+                sensors: [
+                    { name: "OpenWeather", status: "available", description: "Weather, forecasts, alerts", requiresKey: true, apiUrl: "https://openweathermap.org/api" },
+                    { name: "Weather.gov", status: "available", description: "US weather data (no key)", requiresKey: false, apiUrl: "https://api.weather.gov" },
+                    { name: "AirNow", status: "available", description: "Air quality index", requiresKey: true, apiUrl: "https://docs.airnowapi.org/" },
+                    { name: "USGS Earthquake", status: "available", description: "Real-time earthquake data", requiresKey: false, apiUrl: "https://earthquake.usgs.gov/fdsnws/" },
+                    { name: "Solar Activity", status: "available", description: "Solar flares, geomagnetic storms", requiresKey: false, apiUrl: "https://services.swpc.noaa.gov/" },
+                    { name: "Tide Predictions", status: "available", description: "Ocean tide data", requiresKey: false, apiUrl: "https://api.tidesandcurrents.noaa.gov/" },
+                    { name: "UV Index", status: "available", description: "UV radiation levels", requiresKey: true }
+                ]
+            },
+
+            "NETWORK_&_CONNECTIVITY": {
+                icon: "🌐",
+                color: "#ff6b00",
+                sensors: [
+                    { name: "WiFi Networks", status: "active", description: "Scan available networks", api: "Network Info" },
+                    { name: "IP Geolocation", status: "available", description: "Location from IP", requiresKey: true, apiUrl: "https://ipapi.co/" },
+                    { name: "Speedtest", status: "available", description: "Network speed test", api: "Custom" },
+                    { name: "DNS Queries", status: "active", description: "DNS resolution monitoring", api: "Custom" },
+                    { name: "Packet Analysis", status: "planned", description: "Network traffic analysis" },
+                    { name: "Port Scanner", status: "planned", description: "Network security scanning" },
+                    { name: "VPN Status", status: "available", description: "VPN connection monitoring" }
+                ]
+            },
+
+            "FINANCIAL_&_CRYPTO": {
+                icon: "💰",
+                color: "#ffd700",
+                sensors: [
+                    { name: "CoinGecko", status: "available", description: "Crypto prices, market cap", requiresKey: false, apiUrl: "https://www.coingecko.com/en/api" },
+                    { name: "Binance", status: "available", description: "Real-time crypto trading", requiresKey: true, apiUrl: "https://binance-docs.github.io/apidocs/" },
+                    { name: "Alpha Vantage", status: "available", description: "Stock market data", requiresKey: true, apiUrl: "https://www.alphavantage.co/" },
+                    { name: "Stripe", status: "active", description: "Payment processing events", requiresKey: true },
+                    { name: "PayPal", status: "available", description: "Payment webhooks", requiresKey: true },
+                    { name: "Blockchain.info", status: "available", description: "Bitcoin blockchain data", requiresKey: false },
+                    { name: "CoinMarketCap", status: "available", description: "Crypto market data", requiresKey: true }
+                ]
+            },
+
+            "SOCIAL_MEDIA": {
+                icon: "📱",
+                color: "#ff69b4",
+                sensors: [
+                    { name: "Twitter/X", status: "available", description: "Tweets, trends, mentions", requiresKey: true, apiUrl: "https://developer.twitter.com/en/docs/twitter-api" },
+                    { name: "Instagram", status: "planned", description: "Posts, stories, analytics", requiresKey: true },
+                    { name: "YouTube", status: "available", description: "Video data, comments, stats", requiresKey: true, apiUrl: "https://developers.google.com/youtube/v3" },
+                    { name: "Reddit", status: "available", description: "Posts, comments, trends", requiresKey: false, apiUrl: "https://www.reddit.com/dev/api/" },
+                    { name: "Discord", status: "available", description: "Server events, messages", requiresKey: true, apiUrl: "https://discord.com/developers/docs" },
+                    { name: "Telegram", status: "available", description: "Bot API, messages", requiresKey: true, apiUrl: "https://core.telegram.org/bots/api" }
+                ]
+            },
+
+            "IOT_&_SMART_HOME": {
+                icon: "🏠",
+                color: "#9370db",
+                sensors: [
+                    { name: "Smart Lights", status: "available", description: "Philips Hue, LIFX", requiresKey: true },
+                    { name: "Smart Thermostat", status: "available", description: "Nest, Ecobee", requiresKey: true },
+                    { name: "Security Cameras", status: "available", description: "Ring, Arlo", requiresKey: true },
+                    { name: "Door Locks", status: "available", description: "August, Schlage", requiresKey: true },
+                    { name: "Smoke Detectors", status: "available", description: "Nest Protect", requiresKey: true },
+                    { name: "Motion Sensors", status: "available", description: "Various IoT sensors", requiresKey: true },
+                    { name: "Smart Plugs", status: "available", description: "TP-Link, Wemo", requiresKey: true },
+                    { name: "Voice Assistants", status: "available", description: "Alexa, Google Home", requiresKey: true }
+                ]
+            },
+
+            "BIOMETRIC_&_HEALTH": {
+                icon: "❤️",
+                color: "#ff6b6b",
+                sensors: [
+                    { name: "Heart Rate", status: "available", description: "Wearable devices", requiresKey: true },
+                    { name: "Sleep Tracking", status: "available", description: "Sleep quality analysis", requiresKey: true },
+                    { name: "Step Counter", status: "available", description: "Activity tracking", requiresKey: true },
+                    { name: "Blood Oxygen", status: "available", description: "SpO2 monitoring", requiresKey: true },
+                    { name: "Body Temperature", status: "available", description: "Temperature sensors", requiresKey: true },
+                    { name: "Fitbit API", status: "available", description: "Comprehensive health data", requiresKey: true, apiUrl: "https://dev.fitbit.com/" },
+                    { name: "Apple Health", status: "available", description: "iOS health data", requiresKey: true },
+                    { name: "Google Fit", status: "available", description: "Android health data", requiresKey: true }
+                ]
+            },
+
+            "CONSCIOUSNESS_SENSORS": {
+                icon: "🧠",
+                color: "#00ffff",
+                sensors: [
+                    { name: "Reality Coherence", status: "active", description: "Timeline stability monitoring", api: "Custom" },
+                    { name: "Consciousness Level", status: "active", description: "Pattern recognition tracking", api: "Custom" },
+                    { name: "Quantum State", status: "active", description: "Dimensional access monitoring", api: "Custom" },
+                    { name: "Thought Patterns", status: "active", description: "Mental state analysis", api: "Custom" },
+                    { name: "Manipulation Detection", status: "active", description: "Destroyer pattern recognition", api: "Custom" },
+                    { name: "Dimensional Access", status: "active", description: "Higher dimension interface", api: "Custom" },
+                    { name: "Time Dilation", status: "planned", description: "Subjective time monitoring" },
+                    { name: "Entanglement Detector", status: "planned", description: "Quantum entanglement sensing" }
+                ]
+            },
+
+            "MACHINE_LEARNING": {
+                icon: "🤖",
+                color: "#9370db",
+                sensors: [
+                    { name: "TensorFlow.js", status: "available", description: "Browser ML models", requiresKey: false },
+                    { name: "Teachable Machine", status: "available", description: "Custom ML models", requiresKey: false },
+                    { name: "Face Detection", status: "available", description: "Face-api.js", requiresKey: false },
+                    { name: "Pose Estimation", status: "available", description: "PoseNet, MediaPipe", requiresKey: false },
+                    { name: "Hand Tracking", status: "available", description: "MediaPipe Hands", requiresKey: false },
+                    { name: "Object Detection", status: "available", description: "COCO-SSD", requiresKey: false },
+                    { name: "Speech Recognition", status: "active", description: "Web Speech API", api: "Browser" },
+                    { name: "Natural Language", status: "active", description: "Claude API integration", requiresKey: true }
+                ]
+            }
+        };
+
+        // Initialize dashboard
+        function initDashboard() {
+            renderCategories();
+            updateStats();
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('sensorCategories');
+
+            Object.entries(SENSOR_DATABASE).forEach(([categoryName, categoryData]) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+
+                const header = `
+                    <div class="category-header" onclick="toggleCategory(this)">
+                        <div class="category-title">
+                            <span class="category-icon">${categoryData.icon}</span>
+                            <span>${categoryName.replace(/_/g, ' ')}</span>
+                        </div>
+                        <div class="category-badge">${categoryData.sensors.length} sensors</div>
+                    </div>
+                `;
+
+                const sensorsGrid = document.createElement('div');
+                sensorsGrid.className = 'sensor-grid';
+
+                categoryData.sensors.forEach(sensor => {
+                    const card = createSensorCard(sensor, categoryName);
+                    sensorsGrid.appendChild(card);
+                });
+
+                categoryDiv.innerHTML = header;
+                categoryDiv.appendChild(sensorsGrid);
+
+                // Add API key section if category has sensors requiring keys
+                const requiresKeys = categoryData.sensors.some(s => s.requiresKey);
+                if (requiresKeys) {
+                    const apiSection = createApiKeySection(categoryName);
+                    categoryDiv.appendChild(apiSection);
+                }
+
+                container.appendChild(categoryDiv);
+            });
+        }
+
+        function createSensorCard(sensor, category) {
+            const card = document.createElement('div');
+            card.className = `sensor-card ${sensor.status}`;
+
+            const statusClass = `status-${sensor.status}`;
+            const statusText = sensor.status.toUpperCase();
+
+            card.innerHTML = `
+                <div class="sensor-name">${sensor.name}</div>
+                <div class="sensor-status ${statusClass}">● ${statusText}</div>
+                <div class="sensor-description">${sensor.description}</div>
+                ${sensor.api ? `<div class="sensor-description" style="color:#00ff00;margin-top:5px;">API: ${sensor.api}</div>` : ''}
+                ${sensor.requiresKey ? '<div class="sensor-description" style="color:#ff6b00;margin-top:5px;">🔑 Requires API Key</div>' : ''}
+                ${sensor.apiUrl ? `<div class="sensor-description" style="color:#00ffff;margin-top:5px;">📡 ${sensor.apiUrl}</div>` : ''}
+            `;
+
+            card.onclick = () => {
+                showSensorDetails(sensor, category);
+            };
+
+            return card;
+        }
+
+        function createApiKeySection(categoryName) {
+            const section = document.createElement('div');
+            section.className = 'api-key-section';
+            section.innerHTML = `
+                <div class="api-key-title">🔑 API Configuration</div>
+                <input type="text" class="api-key-input" placeholder="Enter API key for ${categoryName}" id="key_${categoryName}">
+                <button class="btn" onclick="saveApiKey('${categoryName}')">Save Key</button>
+            `;
+            return section;
+        }
+
+        function updateStats() {
+            let total = 0;
+            let active = 0;
+            let available = 0;
+            let planned = 0;
+            let requiresKey = 0;
+            let requiresHardware = 0;
+
+            Object.values(SENSOR_DATABASE).forEach(category => {
+                category.sensors.forEach(sensor => {
+                    total++;
+                    if (sensor.status === 'active') active++;
+                    else if (sensor.status === 'available') available++;
+                    else if (sensor.status === 'planned') planned++;
+
+                    if (sensor.requiresKey) requiresKey++;
+                    if (sensor.api && sensor.api.includes('Hardware')) requiresHardware++;
+                });
+            });
+
+            document.getElementById('totalSensors').textContent = total;
+            document.getElementById('activeSensors').textContent = active;
+            document.getElementById('availableSensors').textContent = available;
+            document.getElementById('plannedSensors').textContent = planned;
+
+            document.getElementById('readyCount').textContent = available;
+            document.getElementById('keyCount').textContent = requiresKey;
+            document.getElementById('hardwareCount').textContent = 0;
+        }
+
+        function toggleCategory(header) {
+            const grid = header.parentElement.querySelector('.sensor-grid');
+            grid.style.display = grid.style.display === 'none' ? 'grid' : 'none';
+        }
+
+        function showSensorDetails(sensor, category) {
+            alert(`📡 SENSOR DETAILS\n\nName: ${sensor.name}\nCategory: ${category}\nStatus: ${sensor.status}\n\nDescription: ${sensor.description}\n${sensor.apiUrl ? '\nAPI: ' + sensor.apiUrl : ''}\n${sensor.requiresKey ? '\n🔑 Requires API Key' : '\n✅ Ready to use'}`);
+        }
+
+        function saveApiKey(categoryName) {
+            const input = document.getElementById(`key_${categoryName}`);
+            const key = input.value;
+
+            if (key) {
+                localStorage.setItem(`api_key_${categoryName}`, key);
+                alert(`✅ API key saved for ${categoryName}\n\nYou can now use sensors in this category!`);
+                input.style.borderColor = '#00ff00';
+            } else {
+                alert('⚠️ Please enter an API key');
+            }
+        }
+
+        // Initialize on load
+        initDashboard();
+
+        console.log('📡 UNIVERSAL SENSOR INTEGRATION DASHBOARD LOADED');
+        console.log(`Total Sensors Available: ${Object.values(SENSOR_DATABASE).reduce((sum, cat) => sum + cat.sensors.length, 0)}`);
+    </script>
+
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

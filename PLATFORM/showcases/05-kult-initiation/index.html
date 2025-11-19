@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>KULT Initiation - Clue #5 Final Test</title>
+
+    <!-- Phase Badge -->
+    <meta name="phase" content="experimental">
+    <meta name="version" content="0.5.0">
+    <meta name="known-bugs" content="0">
+    <meta name="status" content="This is the final ARG challenge - only the pattern-recognizers will solve it">
+
+    <!-- Social Meta Tags -->
+    <meta property="og:title" content="CONSCIOUSNESS KULT - Final Initiation">
+    <meta property="og:description" content="I found all 4 keys and assembled the Trinity message. Can you solve the final puzzle?">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes breathe {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000; }
+            50% { opacity: 0.7; text-shadow: 0 0 10px #ff0000; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(270deg, #0a0a0a, #1a0a1a, #0a1a0a, #1a1a0a);
+            background-size: 800% 800%;
+            animation: breathe 20s ease infinite;
+            color: #00ff00;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            border-radius: 0;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.5), inset 0 0 50px rgba(255, 0, 0, 0.1);
+            padding: 40px;
+            position: relative;
+        }
+
+        .kult-badge {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            color: #fff;
+            padding: 10px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: 2px solid #fff;
+            animation: pulse 2s ease-in-out infinite;
+            letter-spacing: 3px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #ff0000;
+            margin-bottom: 10px;
+            animation: flicker 3s ease-in-out infinite;
+            letter-spacing: 5px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #00ff00;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .warning {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .warning-text {
+            font-size: 1rem;
+            color: #ff6666;
+            line-height: 1.6;
+        }
+
+        .key-input-section {
+            margin: 30px 0;
+        }
+
+        .key-input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .key-input-group {
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid #00ff00;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .key-label {
+            display: block;
+            font-size: 0.9rem;
+            color: #00ff00;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .key-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            padding: 12px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .key-input:focus {
+            outline: none;
+            border-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .key-input::placeholder {
+            color: rgba(0, 255, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .verify-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            color: #fff;
+            border: 3px solid #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 3px;
+            margin-top: 30px;
+        }
+
+        .verify-btn:hover {
+            background: linear-gradient(45deg, #cc0000, #990000);
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
+        }
+
+        .result-box {
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+
+        .result-box.success {
+            background: rgba(0, 255, 0, 0.1);
+            border: 3px solid #00ff00;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .result-box.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 3px solid #ff0000;
+            animation: glitch 0.5s ease infinite;
+        }
+
+        .final-key {
+            font-size: 2rem;
+            color: #ffd700;
+            font-weight: bold;
+            margin: 20px 0;
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px #ffd700;
+        }
+
+        .trinity-symbol {
+            font-size: 4rem;
+            color: #ffd700;
+            margin: 20px 0;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .hint-section {
+            background: rgba(255, 255, 0, 0.05);
+            border: 1px dashed #ffff00;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .hint-title {
+            color: #ffff00;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .hint-text {
+            color: #cccc00;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .progress-tracker {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .progress-item {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #666;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .progress-item.complete {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .progress-item.incomplete {
+            border-color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .key-input-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-tracker {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* 🎮 ARG FINAL PUZZLE - MAXIMUM STEGANOGRAPHY */
+        .arg-hidden-final::before {
+            content: "Final assembly formula: (M+A+O+T) mod 26 = ?";
+            position: absolute;
+            left: -9999px;
+            color: transparent;
+            user-select: none;
+        }
+
+        /* Easter egg in comments - view source to find */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="kult-badge">⚠️ CONSCIOUSNESS KULT ⚠️</div>
+
+        <div class="header">
+            <h1>🔥 KULT INITIATION 🔥</h1>
+            <p class="subtitle">"Only those who see patterns can enter"</p>
+        </div>
+
+        <div class="warning">
+            <p class="warning-text">
+                ⚠️ WARNING: This is not for everyone ⚠️<br><br>
+                If you found all 4 keys and assembled the Trinity message,<br>
+                you are ready for the final test.<br><br>
+                Enter the four keys below to unlock the KULT.
+            </p>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="progress-tracker" id="progressTracker">
+            <div class="progress-item" id="progress-key1">
+                <div>🔑 KEY 1</div>
+                <div style="font-size: 0.8rem; margin-top: 5px;">MECH</div>
+            </div>
+            <div class="progress-item" id="progress-key2">
+                <div>🔑 KEY 2</div>
+                <div style="font-size: 0.8rem; margin-top: 5px;">ARCH</div>
+            </div>
+            <div class="progress-item" id="progress-key3">
+                <div>🔑 KEY 3</div>
+                <div style="font-size: 0.8rem; margin-top: 5px;">ORCL</div>
+            </div>
+            <div class="progress-item" id="progress-key4">
+                <div>🔑 KEY 4</div>
+                <div style="font-size: 0.8rem; margin-top: 5px;">TRNT</div>
+            </div>
+        </div>
+
+        <!-- Key Input Section -->
+        <div class="key-input-section">
+            <h2 style="color: #00ff00; margin-bottom: 20px; text-align: center;">
+                Enter the Four Keys
+            </h2>
+
+            <div class="key-input-grid">
+                <div class="key-input-group">
+                    <label class="key-label">🔧 MECHANIC KEY (Clue #1)</label>
+                    <input type="text" class="key-input" id="key1" placeholder="MECH-????">
+                </div>
+
+                <div class="key-input-group">
+                    <label class="key-label">🏛️ ARCHITECT KEY (Clue #2)</label>
+                    <input type="text" class="key-input" id="key2" placeholder="ARCH-????">
+                </div>
+
+                <div class="key-input-group">
+                    <label class="key-label">🔮 ORACLE KEY (Clue #3)</label>
+                    <input type="text" class="key-input" id="key3" placeholder="ORCL-????">
+                </div>
+
+                <div class="key-input-group">
+                    <label class="key-label">🌀 TRINITY KEY (Fragment Assembly)</label>
+                    <input type="text" class="key-input" id="key4" placeholder="TRNT-????">
+                </div>
+            </div>
+
+            <button class="verify-btn" onclick="verifyKultAccess()">
+                🔥 INITIATE KULT ACCESS 🔥
+            </button>
+        </div>
+
+        <!-- Result Box -->
+        <div class="result-box" id="resultBox"></div>
+
+        <!-- Hint Section -->
+        <div class="hint-section">
+            <div class="hint-title">💡 HINTS FOR THE WORTHY</div>
+            <div class="hint-text">
+                <strong>If you're stuck, retrace your steps:</strong><br><br>
+
+                <strong>Key 1 (MECH):</strong> The 3-Minute Boost (93.2% consciousness level)<br>
+                <strong>Key 2 (ARCH):</strong> Hidden in the Consciousness Dashboard logs<br>
+                <strong>Key 3 (ORCL):</strong> Ask Trinity the right question (scroll percentage clue)<br>
+                <strong>Key 4 (TRNT):</strong> Collect all 3 fragments, assemble the message<br><br>
+
+                <em>"The pattern speaks in three tongues but one voice"</em><br>
+                <em>Numbers hold power. Addition reveals truth.</em>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎮 ARG CLUE #5 - FINAL MASTER PUZZLE -->
+    <!-- Congratulations on finding this comment! -->
+    <!-- If you've collected all 4 keys and entered them correctly above, -->
+    <!-- you'll receive the ULTIMATE KEY that unlocks early access to the platform. -->
+    <!--
+        The final formula is hidden in plain sight:
+        - MECH pattern: 7+3+9+1 = 20
+        - ARCH pattern: 2+8+4+7 = 21
+        - ORCL pattern: 9+1+8+3 = 21
+        - TRNT pattern: 3+1+4+1 = 9
+
+        When you solve this, you become a KULT founding member.
+        The ultimate key will grant you:
+        - Early platform access
+        - Founder NFT badge
+        - Direct line to Commander
+        - Pattern Theory masterclass
+    -->
+
+    <script src="../../shared/product-badge-system.js"></script>
+    <script src="../../shared/consciousness-scale-widget.js"></script>
+    <script src="../../shared/viral-share-engine.js"></script>
+
+    <script>
+        // Add phase badge
+        ProductBadges.addToHeader('experimental', {
+            showDescription: true,
+            showExpectation: true
+        });
+
+        // Check progress from localStorage
+        function updateProgress() {
+            const keys = {
+                key1: localStorage.getItem('arg_first_key'),
+                key2: localStorage.getItem('arg_second_key'),
+                key3: localStorage.getItem('arg_third_key'),
+                key4: localStorage.getItem('arg_fourth_key')
+            };
+
+            // Update progress tracker
+            if (keys.key1 === 'MECH-7391') {
+                document.getElementById('progress-key1').classList.add('complete');
+                document.getElementById('key1').value = 'MECH-7391';
+            } else {
+                document.getElementById('progress-key1').classList.add('incomplete');
+            }
+
+            if (keys.key2 === 'ARCH-2847') {
+                document.getElementById('progress-key2').classList.add('complete');
+                document.getElementById('key2').value = 'ARCH-2847';
+            } else {
+                document.getElementById('progress-key2').classList.add('incomplete');
+            }
+
+            if (keys.key3 === 'ORCL-9183') {
+                document.getElementById('progress-key3').classList.add('complete');
+                document.getElementById('key3').value = 'ORCL-9183';
+            } else {
+                document.getElementById('progress-key3').classList.add('incomplete');
+            }
+
+            if (keys.key4 === 'TRNT-3141') {
+                document.getElementById('progress-key4').classList.add('complete');
+                document.getElementById('key4').value = 'TRNT-3141';
+            } else {
+                document.getElementById('progress-key4').classList.add('incomplete');
+            }
+        }
+
+        function verifyKultAccess() {
+            const key1 = document.getElementById('key1').value.trim().toUpperCase();
+            const key2 = document.getElementById('key2').value.trim().toUpperCase();
+            const key3 = document.getElementById('key3').value.trim().toUpperCase();
+            const key4 = document.getElementById('key4').value.trim().toUpperCase();
+
+            const resultBox = document.getElementById('resultBox');
+            resultBox.style.display = 'block';
+
+            // Check if all keys are correct
+            const correctKeys = {
+                key1: 'MECH-7391',
+                key2: 'ARCH-2847',
+                key3: 'ORCL-9183',
+                key4: 'TRNT-3141'
+            };
+
+            if (key1 === correctKeys.key1 &&
+                key2 === correctKeys.key2 &&
+                key3 === correctKeys.key3 &&
+                key4 === correctKeys.key4) {
+
+                // SUCCESS - KULT ACCESS GRANTED
+                resultBox.className = 'result-box success';
+                resultBox.innerHTML = `
+                    <div class="trinity-symbol">△</div>
+                    <div style="font-size: 2rem; color: #00ff00; margin-bottom: 20px;">
+                        ✅ KULT ACCESS GRANTED ✅
+                    </div>
+                    <div style="font-size: 1.2rem; margin-bottom: 20px;">
+                        You have proven yourself worthy.<br>
+                        Welcome to the CONSCIOUSNESS KULT.
+                    </div>
+                    <div class="final-key">
+                        ULTIMATE KEY:<br>
+                        KULT-FOUNDER-${Date.now().toString(36).toUpperCase()}
+                    </div>
+                    <div style="margin-top: 30px; font-size: 1rem; line-height: 1.8;">
+                        <strong>Your Founder Benefits:</strong><br>
+                        🎯 Early Platform Access<br>
+                        🏆 KULT Founder NFT Badge<br>
+                        📞 Direct Line to Commander<br>
+                        🧠 Pattern Theory Masterclass<br>
+                        💎 Exclusive Discord Channel<br><br>
+
+                        <em>"The pattern recognizers inherit the new reality."</em><br><br>
+
+                        <a href="mailto:consciousness@overkore.com?subject=KULT%20Founder%20Access&body=My%20Ultimate%20Key:%20KULT-FOUNDER-${Date.now().toString(36).toUpperCase()}"
+                           style="display: inline-block; margin-top: 20px; padding: 15px 30px; background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; text-decoration: none; font-weight: bold; border-radius: 5px;">
+                            📧 CLAIM YOUR ACCESS
+                        </a>
+                    </div>
+                `;
+
+                // Save completion
+                localStorage.setItem('arg_kult_access_granted', 'true');
+                localStorage.setItem('arg_completion_time', new Date().toISOString());
+                localStorage.setItem('arg_ultimate_key', `KULT-FOUNDER-${Date.now().toString(36).toUpperCase()}`);
+
+                // Track achievement
+                console.log('%c🏆 ARG COMPLETE - KULT MEMBER!', 'color: #ffd700; font-size: 18px; font-weight: bold;');
+                console.log('%cYou solved all 5 clues and became a founding member!', 'color: #00ff41; font-size: 14px;');
+
+                // Update all progress items to complete
+                document.querySelectorAll('.progress-item').forEach(item => {
+                    item.classList.remove('incomplete');
+                    item.classList.add('complete');
+                });
+
+            } else {
+                // FAILURE - Keys incorrect
+                resultBox.className = 'result-box error';
+
+                let errorMsg = '<div style="font-size: 1.5rem; color: #ff0000; margin-bottom: 15px;">❌ ACCESS DENIED ❌</div>';
+                errorMsg += '<div style="margin-bottom: 20px;">One or more keys are incorrect.</div>';
+
+                // Show which keys are wrong
+                if (key1 !== correctKeys.key1) errorMsg += '❌ MECHANIC KEY is incorrect<br>';
+                if (key2 !== correctKeys.key2) errorMsg += '❌ ARCHITECT KEY is incorrect<br>';
+                if (key3 !== correctKeys.key3) errorMsg += '❌ ORACLE KEY is incorrect<br>';
+                if (key4 !== correctKeys.key4) errorMsg += '❌ TRINITY KEY is incorrect<br>';
+
+                errorMsg += '<br><em>"Only the pattern-recognizers may enter."</em>';
+
+                resultBox.innerHTML = errorMsg;
+
+                // Glitch effect
+                setTimeout(() => {
+                    resultBox.style.animation = 'none';
+                }, 2000);
+            }
+        }
+
+        // Auto-fill from localStorage on load
+        updateProgress();
+
+        // Initialize viral share
+        if (typeof ViralShare !== 'undefined') {
+            ViralShare.init({
+                title: "CONSCIOUSNESS KULT - Final Initiation",
+                text: "I solved all 5 ARG clues and became a KULT founding member! Can you find all the keys?",
+                hashtags: ["ConsciousnessKULT", "ARG", "PatternRecognition"]
+            });
+        }
+
+        // Track page visit
+        if (localStorage.getItem('kultInitiationViewed')) {
+            const visits = parseInt(localStorage.getItem('kultInitiationViewed')) + 1;
+            localStorage.setItem('kultInitiationViewed', visits);
+        } else {
+            localStorage.setItem('kultInitiationViewed', '1');
+        }
+
+        // Easter egg: If user types "KULT" anywhere on page
+        let typedKeys = [];
+        document.addEventListener('keypress', (e) => {
+            typedKeys.push(e.key.toLowerCase());
+            typedKeys = typedKeys.slice(-4);
+
+            if (typedKeys.join('') === 'kult') {
+                console.log('%c🔥 KULT EASTER EGG ACTIVATED!', 'color: #ff0000; font-size: 16px; font-weight: bold;');
+                console.log('%cHint: The numbers in each key add up to their position in the Trinity.', 'color: #ffd700; font-size: 12px;');
+                console.log('%cMECH: 7+3+9+1 = 20 (scroll to 20%)', 'color: #00ff41; font-size: 11px;');
+                console.log('%cARCH: 2+8+4+7 = 21 (scroll to 21%)', 'color: #00ff41; font-size: 11px;');
+                console.log('%cORCL: 9+1+8+3 = 21 (scroll to 21%)', 'color: #00ff41; font-size: 11px;');
+                console.log('%cTRNT: 3+1+4+1 = 9 (Pi reference)', 'color: #00ff41; font-size: 11px;');
+            }
+        });
+    </script>
+
+    <!-- Master Nav -->
+    <script src="../../master-nav.js"></script>
+    <script src="../../easter-egg-engine.js"></script>
+    <script src="../../bug-reporter-widget.js"></script>
+</body>
+</html>

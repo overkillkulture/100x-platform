@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Trinity Real-Time Communications</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #000 0%, #0a0a0a 50%, #1a0a0a 100%);
+            color: #00ffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            border-bottom: 3px solid #ff6b00;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            background: linear-gradient(135deg, #ff6b00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .agent-selector {
+            display: flex;
+            gap: 10px;
+        }
+
+        .agent-btn {
+            padding: 10px 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .agent-btn.active {
+            background: rgba(0, 255, 255, 0.5);
+            border-color: #ffd700;
+        }
+
+        .agent-btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+        }
+
+        .main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .agents-panel {
+            width: 250px;
+            background: rgba(26, 26, 46, 0.95);
+            border-right: 3px solid #ff6b00;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .agent-card {
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .agent-card.online {
+            border-color: #00ff88;
+        }
+
+        .agent-name {
+            font-size: 18px;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+
+        .agent-status {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .agent-task {
+            font-size: 14px;
+            color: #00ffff;
+            margin-top: 5px;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .message {
+            background: rgba(0, 255, 255, 0.1);
+            border-left: 3px solid #00ffff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .message.C1 { border-left-color: #ff6b00; }
+        .message.C2 { border-left-color: #ffd700; }
+        .message.C3 { border-left-color: #00ff88; }
+        .message.COMMANDER { border-left-color: #ff0066; }
+        .message.system { border-left-color: #888; background: rgba(255, 255, 255, 0.05); }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .message-from {
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .message-content {
+            color: #00ffff;
+            line-height: 1.6;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #ff6b00;
+            border-radius: 10px;
+            color: #00ffff;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+        }
+
+        .input-area input:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+
+        .input-area button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #ff6b00, #ffd700);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .input-area button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.5);
+        }
+
+        .typing-indicator {
+            font-size: 12px;
+            color: #888;
+            font-style: italic;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌀 Trinity Real-Time Communications</h1>
+        <div class="agent-selector">
+            <button class="agent-btn" onclick="selectAgent('C1')">C1 Mechanic</button>
+            <button class="agent-btn" onclick="selectAgent('C2')">C2 Architect</button>
+            <button class="agent-btn" onclick="selectAgent('C3')">C3 Oracle</button>
+            <button class="agent-btn" onclick="selectAgent('COMMANDER')">Commander</button>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="agents-panel">
+            <h3 style="color: #ffd700; margin-bottom: 15px;">Online Agents:</h3>
+            <div id="agents-list"></div>
+        </div>
+
+        <div class="chat-container">
+            <div class="messages" id="messages"></div>
+            <div class="typing-indicator" id="typing"></div>
+            <div class="input-area">
+                <input type="text" id="message-input" placeholder="Type your message..." disabled>
+                <button onclick="sendMessage()" disabled id="send-btn">SEND</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let currentAgent = null;
+        let messages = JSON.parse(localStorage.getItem('trinity_messages') || '[]');
+        let agentStatus = JSON.parse(localStorage.getItem('trinity_agent_status') || JSON.stringify({
+            'C1': { online: false, task: 'Standby', lastSeen: null },
+            'C2': { online: false, task: 'Standby', lastSeen: null },
+            'C3': { online: false, task: 'Standby', lastSeen: null },
+            'COMMANDER': { online: true, task: 'Monitoring', lastSeen: new Date().toISOString() }
+        }));
+
+        // Task coordination
+        let activeTasks = JSON.parse(localStorage.getItem('trinity_tasks') || '[]');
+
+        // Select agent
+        function selectAgent(agent) {
+            currentAgent = agent;
+
+            // Update buttons
+            document.querySelectorAll('.agent-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.includes(agent)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Enable input
+            document.getElementById('message-input').disabled = false;
+            document.getElementById('send-btn').disabled = false;
+            document.getElementById('message-input').focus();
+
+            // Mark agent as online
+            agentStatus[agent].online = true;
+            agentStatus[agent].lastSeen = new Date().toISOString();
+            updateAgentsList();
+        }
+
+        // Send message
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const content = input.value.trim();
+
+            if (!content || !currentAgent) return;
+
+            const message = {
+                from: currentAgent,
+                content: content,
+                timestamp: new Date().toISOString(),
+                type: 'chat'
+            };
+
+            messages.push(message);
+            localStorage.setItem('trinity_messages', JSON.stringify(messages));
+
+            input.value = '';
+            renderMessages();
+
+            // Update agent status
+            agentStatus[currentAgent].lastSeen = new Date().toISOString();
+            updateAgentsList();
+        }
+
+        // Render messages
+        function renderMessages() {
+            const container = document.getElementById('messages');
+            container.innerHTML = '';
+
+            messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `message ${msg.from}`;
+
+                const time = new Date(msg.timestamp).toLocaleTimeString();
+
+                div.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-from">${msg.from}</span>
+                        <span class="message-time">${time}</span>
+                    </div>
+                    <div class="message-content">${msg.content}</div>
+                `;
+
+                container.appendChild(div);
+            });
+
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Update agents list
+        function updateAgentsList() {
+            const container = document.getElementById('agents-list');
+            container.innerHTML = '';
+
+            Object.entries(agentStatus).forEach(([agent, status]) => {
+                const div = document.createElement('div');
+                div.className = `agent-card ${status.online ? 'online' : ''}`;
+
+                const statusText = status.online ? '🟢 ONLINE' : '🔴 OFFLINE';
+                const lastSeen = status.lastSeen
+                    ? new Date(status.lastSeen).toLocaleTimeString()
+                    : 'Never';
+
+                div.innerHTML = `
+                    <div class="agent-name">${agent}</div>
+                    <div class="agent-status">${statusText}</div>
+                    <div class="agent-task">Task: ${status.task}</div>
+                    <div class="agent-status">Last: ${lastSeen}</div>
+                `;
+
+                container.appendChild(div);
+            });
+        }
+
+        // Keyboard shortcuts
+        document.getElementById('message-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Auto-refresh (simulate real-time)
+        setInterval(() => {
+            const currentScroll = document.getElementById('messages').scrollTop;
+            const storedMessages = JSON.parse(localStorage.getItem('trinity_messages') || '[]');
+
+            if (storedMessages.length !== messages.length) {
+                messages = storedMessages;
+                renderMessages();
+            }
+        }, 1000);
+
+        // Initialize
+        renderMessages();
+        updateAgentsList();
+
+        // Add system message
+        if (messages.length === 0) {
+            messages.push({
+                from: 'SYSTEM',
+                content: 'Trinity Real-Time Communications Active. Select your agent identity above to begin.',
+                timestamp: new Date().toISOString(),
+                type: 'system'
+            });
+            localStorage.setItem('trinity_messages', JSON.stringify(messages));
+            renderMessages();
+        }
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

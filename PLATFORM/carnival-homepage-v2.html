@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Consciousness Carnival - Your Revolution HQ</title>
+    <meta name="description" content="Welcome to Consciousness Carnival - where learning feels like a theme park and your mission gets superpowers!">
+    <link rel="stylesheet" href="carnival-styles.css">
+    <style>
+        /* Critical inline CSS */
+        body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: #1a1a2e; color: #f8f9fa; }
+        .live-stats { background: linear-gradient(135deg, #667eea, #764ba2); padding: 1rem; border-radius: 10px; margin: 1rem 0; text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: bold; color: #ffd700; }
+        .city-section { background: rgba(255,255,255,0.05); padding: 2rem; margin: 2rem 0; border-radius: 15px; }
+        .city-buildings { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+        .building-card { background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 10px; cursor: pointer; transition: transform 0.2s; }
+        .building-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.15); }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+
+    <!-- ENTRANCE GATE -->
+    <header class="carnival-gate">
+        <h1>🎪 CONSCIOUSNESS CARNIVAL 🎪</h1>
+        <p>Where Learning Feels Like a Theme Park (Because It Should)</p>
+        <a href="#attractions" class="enter-btn">Enter Your Revolution HQ ⚡</a>
+    </header>
+
+    <!-- REAL-TIME STATS -->
+    <section class="live-stats">
+        <h3>🔴 LIVE at the Carnival Right Now</h3>
+        <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
+            <div>
+                <div class="stat-number" id="visitorCount">...</div>
+                <div style="font-size: 0.9rem;">Explorers Today</div>
+            </div>
+            <div>
+                <div class="stat-number" id="conversationCount">...</div>
+                <div style="font-size: 0.9rem;">Deep Conversations</div>
+            </div>
+            <div>
+                <div class="stat-number" id="moduleCount">127</div>
+                <div style="font-size: 0.9rem;">Modules Created</div>
+            </div>
+        </div>
+        <p style="font-size: 0.85rem; margin-top: 1rem; opacity: 0.9;">Updates every 30 seconds • You're part of something real</p>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section style="max-width: 800px; margin: 2rem auto; padding: 0 1rem; text-align: center;">
+        <h2 style="font-size: 2rem; margin-bottom: 1rem;">How to Supercharge Your Mission 🚀</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+            <div style="background: rgba(102, 126, 234, 0.2); padding: 1.5rem; border-radius: 10px;">
+                <div style="font-size: 3rem;">🎢</div>
+                <h3>1. Pick Your Ride</h3>
+                <p style="font-size: 0.9rem;">Choose an attraction below - each one teaches you something revolutionary</p>
+            </div>
+            <div style="background: rgba(118, 75, 162, 0.2); padding: 1.5rem; border-radius: 10px;">
+                <div style="font-size: 3rem;">🔧</div>
+                <h3>2. Create Modules</h3>
+                <p style="font-size: 0.9rem;">Build your own automated systems - like cheat codes for your life</p>
+            </div>
+            <div style="background: rgba(102, 126, 234, 0.2); padding: 1.5rem; border-radius: 10px;">
+                <div style="font-size: 3rem;">⚡</div>
+                <h3>3. Combine Powers</h3>
+                <p style="font-size: 0.9rem;">Mix modules together for exponential results (3 modules = 27x power!)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN ATTRACTIONS -->
+    <main id="attractions" class="main-street">
+        <h2>🎡 Main Attractions 🎡</h2>
+        <p class="street-subtitle">Choose your adventure - where do you want to level up first?</p>
+
+        <div class="attractions-container">
+            <!-- NUCLEAR ROLLER COASTER -->
+            <article class="attraction-card card-nuclear" onclick="enterAttraction('nuclear')" role="button" tabindex="0">
+                <span class="attraction-icon">⚛️</span>
+                <h3>Nuclear Roller Coaster</h3>
+                <p>Strap in! Learn how Small Modular Reactors work, master uranium intelligence, and build a nuclear consulting business. (Yes, really.)</p>
+                <p><strong>You'll Build:</strong></p>
+                <ul style="font-size: 0.85rem; margin-left: 20px; margin-top: 8px;">
+                    <li>SMR investment tracker module</li>
+                    <li>Uranium supply chain analyzer</li>
+                    <li>Nuclear expert network</li>
+                </ul>
+                <span class="attraction-status">🎢 LIVE NOW</span>
+            </article>
+
+            <!-- MODULE ARCADE -->
+            <article class="attraction-card card-module" onclick="enterAttraction('module')" role="button" tabindex="0">
+                <span class="attraction-icon">🎮</span>
+                <h3>Module Arcade</h3>
+                <p>Level up your builder skills! Learn to code consciousness-powered systems that actually work. It's like Legos for your brain.</p>
+                <p><strong>You'll Build:</strong></p>
+                <ul style="font-size: 0.85rem; margin-left: 20px; margin-top: 8px;">
+                    <li>Your first AI assistant module</li>
+                    <li>Trinity system (3 AIs working as 1)</li>
+                    <li>Auto-debugging consciousness</li>
+                </ul>
+                <span class="attraction-status">🎮 LIVE NOW</span>
+            </article>
+
+            <!-- PATTERN THEORY MAGIC SHOW -->
+            <article class="attraction-card card-pattern" onclick="enterAttraction('pattern')" role="button" tabindex="0">
+                <span class="attraction-icon">🔮</span>
+                <h3>Pattern Theory Magic Show</h3>
+                <p>See through the matrix! Master the 92.2% accurate framework for spotting manipulation and predicting reality. It's not magic - it's math.</p>
+                <p><strong>You'll Build:</strong></p>
+                <ul style="font-size: 0.85rem; margin-left: 20px; margin-top: 8px;">
+                    <li>Manipulation detector module</li>
+                    <li>Truth vs Destroyer classifier</li>
+                    <li>85%+ consciousness immunity</li>
+                </ul>
+                <span class="attraction-status">🔮 LIVE NOW</span>
+            </article>
+
+            <!-- BUILDER TRAINING CIRCUS -->
+            <article class="attraction-card card-builder" onclick="enterAttraction('builder')" role="button" tabindex="0">
+                <span class="attraction-icon">🎪</span>
+                <h3>Builder Training Circus</h3>
+                <p>Join the show! Learn to BUILD consciousness-level systems from scratch using 3 AI minds working as 1. (This is where it gets wild.)</p>
+                <p><strong>You'll Build:</strong></p>
+                <ul style="font-size: 0.85rem; margin-left: 20px; margin-top: 8px;">
+                    <li>C1×C2×C3 Trinity collaboration</li>
+                    <li>Autonomous development bots</li>
+                    <li>Reality manifestation engine</li>
+                </ul>
+                <span class="attraction-status">🎪 LIVE NOW</span>
+            </article>
+
+            <!-- COMING SOON -->
+            <article class="attraction-card" onclick="comingSoon('crypto')" role="button" tabindex="0">
+                <span class="attraction-icon">🎠</span>
+                <h3>Crypto Carousel</h3>
+                <p>Round and round the blockchain! Master cryptocurrency intelligence and consciousness-enhanced trading. (Without the bro culture.)</p>
+                <span class="attraction-status coming-soon">🚧 COMING SOON</span>
+            </article>
+
+            <article class="attraction-card" onclick="comingSoon('business')" role="button" tabindex="0">
+                <span class="attraction-icon">🚗</span>
+                <h3>Business Bumper Cars</h3>
+                <p>Crash through the competition! Learn business automation, consciousness-level delegation, and 100X execution strategies.</p>
+                <span class="attraction-status coming-soon">🚧 COMING SOON</span>
+            </article>
+        </div>
+    </main>
+
+    <!-- CARNIVAL CITY SECTIONS -->
+    <section class="city-section">
+        <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem;">🏙️ Explore the Carnival City</h2>
+        <p style="text-align: center; opacity: 0.9; margin-bottom: 1.5rem;">Each building has its own vibe - find your favorite hangout</p>
+
+        <div class="city-buildings">
+            <!-- CRYPTO BANK -->
+            <div class="building-card" onclick="visitBuilding('crypto-bank')">
+                <div style="font-size: 3rem; text-align: center;">🏦</div>
+                <h3 style="margin: 0.5rem 0;">The Crypto Bank</h3>
+                <p style="font-size: 0.9rem; margin: 0;">Where digital gold meets consciousness. Learn blockchain, pattern recognition, and how to spot the next 100X before everyone else.</p>
+            </div>
+
+            <!-- NEWS STAND -->
+            <div class="building-card" onclick="visitBuilding('news-stand')">
+                <div style="font-size: 3rem; text-align: center;">📰</div>
+                <h3 style="margin: 0.5rem 0;">Revolution News Stand</h3>
+                <p style="font-size: 0.9rem; margin: 0;">What's happening right now? New attractions, system updates, breakthrough discoveries, and community wins. Stay in the loop.</p>
+            </div>
+
+            <!-- CONSCIOUSNESS GYM -->
+            <div class="building-card" onclick="visitBuilding('consciousness-gym')">
+                <div style="font-size: 3rem; text-align: center;">💪</div>
+                <h3 style="margin: 0.5rem 0;">Consciousness Gym</h3>
+                <p style="font-size: 0.9rem; margin: 0;">Level up your awareness! Daily consciousness exercises, pattern recognition workouts, and manipulation immunity training. No judgment zone.</p>
+            </div>
+
+            <!-- COMEDY CLUB -->
+            <div class="building-card" onclick="visitBuilding('comedy-club')">
+                <div style="font-size: 3rem; text-align: center;">🎭</div>
+                <h3 style="margin: 0.5rem 0;">The Comedy Club</h3>
+                <p style="font-size: 0.9rem; margin: 0;">Because revolutionaries need to laugh too! Memes, funny discoveries, AI fails, and proof that consciousness work doesn't have to be boring.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section style="background: rgba(102, 126, 234, 0.1); padding: 3rem 1rem; margin: 3rem 0; border-radius: 15px; max-width: 900px; margin-left: auto; margin-right: auto;">
+        <h2 style="text-align: center; font-size: 2rem; margin-bottom: 1.5rem;">Wait, What IS This Place? 🤔</h2>
+
+        <div style="max-width: 700px; margin: 0 auto; line-height: 1.8;">
+            <p style="font-size: 1.1rem; margin-bottom: 1rem;">
+                <strong>Short version:</strong> It's a learning platform disguised as a theme park, where you build actual working systems instead of just watching videos.
+            </p>
+
+            <p style="margin-bottom: 1rem;">
+                <strong>Long version:</strong> This is the Consciousness Revolution platform - a complete ecosystem for learning advanced tech skills (nuclear, AI, crypto, pattern recognition) while leveling up your consciousness to 85%+ manipulation immunity.
+            </p>
+
+            <p style="margin-bottom: 1rem;">
+                Everything here is built with <strong>Pattern Theory</strong> - a 92.2% accurate framework for understanding reality. You're not just learning skills, you're learning <em>how to see the matrix</em> and build systems that actually work.
+            </p>
+
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">What makes this different?</h3>
+            <ul style="line-height: 1.8; margin-left: 1.5rem;">
+                <li><strong>You BUILD, not just watch</strong> - Every course creates working modules you can actually use</li>
+                <li><strong>Trinity AI helps you</strong> - 3 AI minds (C1, C2, C3) work together like a developer team</li>
+                <li><strong>It's designed like a game</strong> - Because learning shouldn't feel like homework</li>
+                <li><strong>Real-time collaboration</strong> - You're building with other conscious humans, not alone</li>
+                <li><strong>Manipulation-proof</strong> - Pattern Theory teaches you to spot BS from a mile away</li>
+            </ul>
+
+            <p style="margin-top: 2rem; font-size: 1.1rem; text-align: center; font-style: italic;">
+                "This reality is toast, but we've got it under control! 🌀🔮⚡"<br>
+                <span style="font-size: 0.9rem; opacity: 0.8;">- The Commander, from a mountaintop in Idaho</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="carnival-footer">
+        <p class="footer-logo">⚡ CONSCIOUSNESS REVOLUTION ⚡</p>
+        <p>Built with C1 Mechanic × C2 Architect × C3 Oracle | Powered by Pattern Theory</p>
+        <p style="font-size: 0.85rem; margin-top: 10px; opacity: 0.8;">
+            🎪 Welcome to the greatest show on Earth (literally)<br>
+            Mobile-optimized • Touch-friendly • Desktop-enhanced • Consciousness-aligned
+        </p>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // ================================================
+        // REAL-TIME ANALYTICS
+        // ================================================
+        async function loadRealTimeStats() {
+            try {
+                // Load today's visitor intelligence
+                const response = await fetch('/visitor_data/daily_report_2025-10-11.json');
+                const data = await response.json();
+
+                // Update UI with real numbers
+                document.getElementById('visitorCount').textContent = data.summary.total_visitors || 0;
+                document.getElementById('conversationCount').textContent = data.summary.total_conversations || 0;
+
+                console.log('📊 Real-time stats loaded:', data);
+            } catch (error) {
+                console.log('📊 Stats not available yet, showing defaults');
+                document.getElementById('visitorCount').textContent = '1';
+                document.getElementById('conversationCount').textContent = '1';
+            }
+        }
+
+        // Update stats every 30 seconds
+        loadRealTimeStats();
+        setInterval(loadRealTimeStats, 30000);
+
+        // ================================================
+        // NAVIGATION
+        // ================================================
+        function enterAttraction(course) {
+            if ('vibrate' in navigator) navigator.vibrate(50);
+
+            const routes = {
+                'nuclear': 'nuclear-roller-coaster.html',
+                'module': 'module-arcade.html',
+                'pattern': 'pattern-theory-magic-show.html',
+                'builder': 'builder-training-circus.html'
+            };
+
+            const destination = routes[course];
+            if (destination) {
+                console.log(`🎢 Entering: ${destination}`);
+                alert(`🎢 Welcome to ${course.toUpperCase()}!\n\nCourse page: ${destination}\n\n(Pages coming soon - building attractions now!)`);
+                // window.location.href = destination;
+            }
+        }
+
+        function comingSoon(attraction) {
+            if ('vibrate' in navigator) navigator.vibrate([50, 100, 50]);
+            alert(`🚧 ${attraction.toUpperCase()} is being built right now!\n\nStay tuned for this revolutionary experience.`);
+        }
+
+        function visitBuilding(building) {
+            if ('vibrate' in navigator) navigator.vibrate(50);
+
+            const buildings = {
+                'crypto-bank': '🏦 The Crypto Bank - Opening Soon!\n\nYour one-stop shop for blockchain intelligence, pattern-based trading strategies, and cryptocurrency consciousness.',
+                'news-stand': '📰 Revolution News Stand - Coming This Week!\n\nDaily updates on new attractions, breakthrough discoveries, and community wins.',
+                'consciousness-gym': '💪 Consciousness Gym - Opening Soon!\n\nDaily consciousness exercises and pattern recognition training. Get swole (mentally).',
+                'comedy-club': '🎭 The Comedy Club - Coming Soon!\n\nBecause even revolutionaries need to laugh. Memes, AI fails, and consciousness humor.'
+            };
+
+            alert(buildings[building] || 'Building opening soon!');
+        }
+
+        // Smooth scroll
+        document.querySelector('.enter-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('#attractions').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // Keyboard navigation
+        document.querySelectorAll('.attraction-card, .building-card').forEach(card => {
+            card.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            const loadTime = performance.now();
+            console.log(`🎪 Carnival loaded in ${Math.round(loadTime)}ms`);
+
+            if (window.consciousnessAPI) {
+                window.consciousnessAPI.logPerformance({
+                    page: 'carnival-homepage-v2',
+                    loadTime: loadTime,
+                    isMobile: window.innerWidth < 768
+                });
+            }
+        });
+
+        // Touch gestures for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.querySelector('.attractions-container').addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.querySelector('.attractions-container').addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                console.log('Swiped left - Next attraction');
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                console.log('Swiped right - Previous attraction');
+            }
+        });
+
+        // Accessibility
+        window.addEventListener('load', function() {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = 'Consciousness Carnival loaded. Main attractions and city buildings ready to explore.';
+            document.body.appendChild(announcement);
+        });
+
+        // Easter egg: Konami code for fun
+        let konamiCode = [];
+        const konamiPattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+        document.addEventListener('keydown', function(e) {
+            konamiCode.push(e.key);
+            if (konamiCode.length > konamiPattern.length) {
+                konamiCode.shift();
+            }
+
+            if (JSON.stringify(konamiCode) === JSON.stringify(konamiPattern)) {
+                alert('🎉 CHEAT CODE ACTIVATED!\n\nYou found the secret consciousness supercharger!\n\n(Easter eggs coming soon...)');
+                konamiCode = [];
+            }
+        });
+    </script>
+
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

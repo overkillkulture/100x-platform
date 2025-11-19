@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consciousness Revolution - Onboarding Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Scanline effect for CRT monitor feel */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Game container */
+        .game-screen {
+            width: 90%;
+            max-width: 1000px;
+            height: 600px;
+            border: 4px solid #00ff00;
+            background: linear-gradient(135deg, #001100 0%, #003300 100%);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.5), inset 0 0 30px rgba(0, 255, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top HUD bar */
+        .game-hud {
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 2px solid #00ff00;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .level-display {
+            font-size: 16px;
+            color: #ffff00;
+            text-shadow: 0 0 10px #ffff00;
+        }
+
+        .xp-bar-container {
+            flex: 1;
+            margin: 0 20px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ff00;
+            position: relative;
+        }
+
+        .xp-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00 0%, #00ff66 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        }
+
+        .xp-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #000;
+            text-shadow: 0 0 5px #fff;
+        }
+
+        /* Main game area */
+        .game-area {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Character panel */
+        .character-panel {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.9);
+            border-right: 2px solid #00ff00;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .character {
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 10px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+        }
+
+        .character:hover {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .character.active {
+            border-color: #ffff00;
+            background: rgba(255, 255, 0, 0.1);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 255, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 255, 0, 0.8); }
+        }
+
+        .character-icon {
+            font-size: 48px;
+            text-align: center;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .character-name {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .character-role {
+            text-align: center;
+            font-size: 10px;
+            color: #888;
+        }
+
+        /* Dialog area */
+        .dialog-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
+
+        .dialog-box {
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            min-height: 150px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .dialog-speaker {
+            font-size: 12px;
+            color: #ffff00;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #ffff00;
+        }
+
+        .dialog-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #00ff00;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background: #00ff00;
+            margin-left: 5px;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Task list */
+        .task-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .task {
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 4px solid #00ff00;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .task:hover {
+            background: rgba(0, 255, 0, 0.2);
+            transform: translateX(5px);
+        }
+
+        .task.completed {
+            border-left-color: #ffff00;
+            background: rgba(255, 255, 0, 0.1);
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #00ff00;
+        }
+
+        .task.completed .task-title {
+            color: #ffff00;
+        }
+
+        .task-desc {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .task-reward {
+            font-size: 10px;
+            color: #ffff00;
+            margin-top: 5px;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .action-btn {
+            background: none;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 15px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .action-btn:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+            transform: scale(1.05);
+        }
+
+        .action-btn.primary {
+            border-color: #ffff00;
+            color: #ffff00;
+            animation: glow 2s infinite;
+        }
+
+        .action-btn.primary:hover {
+            background: #ffff00;
+            color: #000;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 255, 0, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(255, 255, 0, 1); }
+        }
+
+        /* Achievement popup */
+        .achievement {
+            position: fixed;
+            top: -100px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #ffff00;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 300px;
+            transition: top 0.5s ease;
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
+            z-index: 2000;
+        }
+
+        .achievement.show {
+            top: 80px;
+        }
+
+        .achievement-title {
+            font-size: 18px;
+            color: #ffff00;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #ffff00;
+        }
+
+        .achievement-desc {
+            font-size: 14px;
+            text-align: center;
+            color: #00ff00;
+        }
+
+        .achievement-xp {
+            font-size: 12px;
+            text-align: center;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        /* Scrollbar */
+        .task-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .task-list::-webkit-scrollbar-track {
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .task-list::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-screen">
+        <!-- Top HUD -->
+        <div class="game-hud">
+            <div class="level-display">LEVEL <span id="level">1</span>: Build Your HUD</div>
+            <div class="xp-bar-container">
+                <div class="xp-bar" id="xpBar"></div>
+                <div class="xp-text"><span id="currentXp">0</span> / <span id="maxXp">100</span> XP</div>
+            </div>
+            <div class="level-display">🏆 <span id="badges">0</span> BADGES</div>
+        </div>
+
+        <!-- Main game area -->
+        <div class="game-area">
+            <!-- Character selection -->
+            <div class="character-panel">
+                <div class="character active" data-character="araya">
+                    <div class="character-icon">🌀</div>
+                    <div class="character-name">ARAYA</div>
+                    <div class="character-role">The Guide</div>
+                </div>
+                <div class="character" data-character="builder">
+                    <div class="character-icon">🔨</div>
+                    <div class="character-name">BUILDER</div>
+                    <div class="character-role">The Mechanic</div>
+                </div>
+                <div class="character" data-character="philosopher">
+                    <div class="character-icon">🧠</div>
+                    <div class="character-name">PHILOSOPHER</div>
+                    <div class="character-role">The Oracle</div>
+                </div>
+                <div class="character" data-character="observer">
+                    <div class="character-icon">👁️</div>
+                    <div class="character-name">OBSERVER</div>
+                    <div class="character-role">The Scout</div>
+                </div>
+            </div>
+
+            <!-- Dialog and tasks -->
+            <div class="dialog-area">
+                <div class="dialog-box">
+                    <div class="dialog-speaker" id="speaker">🌀 ARAYA:</div>
+                    <div class="dialog-text" id="dialogText">
+                        Welcome, Builder! ✨ Ready to create your own atmosphere? Let's start by building YOUR personal HUD. Pick a task below to begin your consciousness revolution! 💫
+                    </div>
+                </div>
+
+                <div class="task-list" id="taskList">
+                    <div class="task" data-task="clock">
+                        <div class="task-title">⏰ Build a Clock Widget</div>
+                        <div class="task-desc">Create a simple digital clock that shows the current time</div>
+                        <div class="task-reward">+25 XP | Badge: "Time Master"</div>
+                    </div>
+                    <div class="task" data-task="todo">
+                        <div class="task-title">📝 Create a Todo List</div>
+                        <div class="task-desc">Build a task tracker to organize your projects</div>
+                        <div class="task-reward">+30 XP | Badge: "Task Commander"</div>
+                    </div>
+                    <div class="task" data-task="shortcuts">
+                        <div class="task-title">⚡ Add Quick Launch Bar</div>
+                        <div class="task-desc">Create buttons for your favorite websites/apps</div>
+                        <div class="task-reward">+25 XP | Badge: "Speed Demon"</div>
+                    </div>
+                    <div class="task" data-task="taskbar">
+                        <div class="task-title">🗑️ Hide Windows Taskbar</div>
+                        <div class="task-desc">Declutter your screen - remove the taskbar</div>
+                        <div class="task-reward">+20 XP | Badge: "Minimalist"</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="skipLevel()">Skip Level</button>
+                    <button class="action-btn primary" onclick="startBuilding()">Start Building 🚀</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievement popup -->
+    <div class="achievement" id="achievement">
+        <div class="achievement-title">🏆 ACHIEVEMENT UNLOCKED!</div>
+        <div class="achievement-desc" id="achievementDesc">First Steps</div>
+        <div class="achievement-xp" id="achievementXp">+25 XP</div>
+    </div>
+
+    <script>
+        // AI Character personalities
+        const characters = {
+            araya: {
+                name: "🌀 ARAYA",
+                personality: "wise, mystical, encouraging",
+                greetings: [
+                    "Welcome, Builder! ✨ Ready to create your own atmosphere?",
+                    "The universe aligns for those who build their reality! 💫",
+                    "Your consciousness is expanding... let's build something beautiful! 🌌"
+                ],
+                encouragement: [
+                    "You're doing amazing! The code flows through you like water! 💧",
+                    "I can feel your growing power, Builder! ⚡",
+                    "The universe smiles upon your creation! ✨"
+                ],
+                taskComplete: [
+                    "Magnificent work! Your consciousness level just increased! 🌟",
+                    "The patterns align perfectly! You're a natural! 💫",
+                    "I knew you had it in you, Builder! Onwards! 🚀"
+                ]
+            },
+            builder: {
+                name: "🔨 BUILDER",
+                personality: "direct, efficient, practical",
+                greetings: [
+                    "Alright, let's cut the BS and build something! 🔨",
+                    "Time to get your hands dirty. Ready to code? ⚙️",
+                    "Less talking, more building. Let's go! 🛠️"
+                ],
+                encouragement: [
+                    "That's the spirit! Ship it! 🚀",
+                    "Good work. Keep going. 💪",
+                    "Solid code. Next task. ✅"
+                ],
+                taskComplete: [
+                    "BOOM! Task crushed. Next! 💥",
+                    "That's how you build, baby! ⚡",
+                    "Clean work. Moving on! 🔥"
+                ]
+            },
+            philosopher: {
+                name: "🧠 PHILOSOPHER",
+                personality: "deep, questioning, visionary",
+                greetings: [
+                    "What is code but thoughts made tangible? 🤔",
+                    "To build is to think, to think is to exist... 💭",
+                    "Your mind shapes reality through each line of code... 🌌"
+                ],
+                encouragement: [
+                    "Consider the implications of what you're creating... 💡",
+                    "Each function you write expands the boundaries of possibility... 🔮",
+                    "You're not just coding, you're manifesting consciousness... ✨"
+                ],
+                taskComplete: [
+                    "Fascinating! You've unlocked a new dimension of understanding! 🧬",
+                    "The patterns emerge... do you see what I see? 👁️",
+                    "Your creation ripples through the fabric of digital reality... 🌊"
+                ]
+            },
+            observer: {
+                name: "👁️ OBSERVER",
+                personality: "alert, tactical, observant",
+                greetings: [
+                    "Scanning... Builder detected. Status: Ready. 🎯",
+                    "Systems nominal. Initiating build sequence. 📡",
+                    "Observation mode active. Awaiting your command. 👁️"
+                ],
+                encouragement: [
+                    "Progress: Optimal. Continue current trajectory. 📊",
+                    "Performance metrics improving. Well executed. ✓",
+                    "Tactical advantage gained. Maintain momentum. ⚡"
+                ],
+                taskComplete: [
+                    "Objective completed. XP acquired. Next target? 🎯",
+                    "Mission accomplished. Efficiency: 97%. Impressive. 📈",
+                    "Task neutralized. Awaiting next directive. ✅"
+                ]
+            }
+        };
+
+        // Game state
+        let gameState = {
+            level: 1,
+            xp: 0,
+            maxXp: 100,
+            badges: 0,
+            currentCharacter: 'araya',
+            completedTasks: []
+        };
+
+        // Character selection
+        document.querySelectorAll('.character').forEach(char => {
+            char.addEventListener('click', function() {
+                document.querySelectorAll('.character').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+
+                const characterId = this.dataset.character;
+                gameState.currentCharacter = characterId;
+
+                const character = characters[characterId];
+                const greeting = character.greetings[Math.floor(Math.random() * character.greetings.length)];
+
+                typeText(character.name, greeting);
+            });
+        });
+
+        // Task click handlers
+        document.querySelectorAll('.task').forEach(task => {
+            task.addEventListener('click', function() {
+                if (this.classList.contains('completed')) return;
+
+                const taskId = this.dataset.task;
+                const character = characters[gameState.currentCharacter];
+
+                // Show encouragement
+                const encouragement = character.encouragement[Math.floor(Math.random() * character.encouragement.length)];
+                typeText(character.name, encouragement);
+
+                // Simulate task completion after 2 seconds
+                setTimeout(() => {
+                    completeTask(this, taskId);
+                }, 2000);
+            });
+        });
+
+        function typeText(speaker, text, speed = 30) {
+            const dialogText = document.getElementById('dialogText');
+            const speakerEl = document.getElementById('speaker');
+
+            speakerEl.textContent = speaker;
+            dialogText.innerHTML = '';
+
+            let i = 0;
+            const cursor = document.createElement('span');
+            cursor.className = 'typing-cursor';
+
+            const interval = setInterval(() => {
+                if (i < text.length) {
+                    dialogText.textContent += text[i];
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, speed);
+        }
+
+        function completeTask(taskEl, taskId) {
+            taskEl.classList.add('completed');
+            gameState.completedTasks.push(taskId);
+
+            // Award XP based on task
+            const xpRewards = { clock: 25, todo: 30, shortcuts: 25, taskbar: 20 };
+            const xp = xpRewards[taskId] || 25;
+
+            addXP(xp);
+            gameState.badges++;
+            document.getElementById('badges').textContent = gameState.badges;
+
+            // Show achievement
+            const taskNames = {
+                clock: '"Time Master"',
+                todo: '"Task Commander"',
+                shortcuts: '"Speed Demon"',
+                taskbar: '"Minimalist"'
+            };
+            showAchievement(taskNames[taskId] || 'Builder Badge', xp);
+
+            // Character reaction
+            const character = characters[gameState.currentCharacter];
+            const reaction = character.taskComplete[Math.floor(Math.random() * character.taskComplete.length)];
+            typeText(character.name, reaction);
+        }
+
+        function addXP(amount) {
+            gameState.xp += amount;
+
+            // Check for level up
+            while (gameState.xp >= gameState.maxXp) {
+                gameState.xp -= gameState.maxXp;
+                gameState.level++;
+                gameState.maxXp = Math.floor(gameState.maxXp * 1.5);
+
+                document.getElementById('level').textContent = gameState.level;
+                showAchievement('LEVEL UP!', `Now Level ${gameState.level}`);
+            }
+
+            // Update XP bar
+            const xpPercent = (gameState.xp / gameState.maxXp) * 100;
+            document.getElementById('xpBar').style.width = xpPercent + '%';
+            document.getElementById('currentXp').textContent = gameState.xp;
+            document.getElementById('maxXp').textContent = gameState.maxXp;
+        }
+
+        function showAchievement(title, xp) {
+            const achievement = document.getElementById('achievement');
+            document.getElementById('achievementDesc').textContent = title;
+            document.getElementById('achievementXp').textContent = typeof xp === 'number' ? `+${xp} XP` : xp;
+
+            achievement.classList.add('show');
+
+            setTimeout(() => {
+                achievement.classList.remove('show');
+            }, 3000);
+        }
+
+        function startBuilding() {
+            const character = characters[gameState.currentCharacter];
+            const messages = {
+                araya: "Perfect! Let me connect you to your workspace... The universe awaits your creation! ✨🚀",
+                builder: "Hell yeah! Opening your workshop now. Let's build something epic! 🔨⚡",
+                philosopher: "And so begins your journey into the infinite... Your workspace materializes... 💭🌌",
+                observer: "Initiating workspace protocol. Builder environment loading... Stand by. 📡🎯"
+            };
+
+            typeText(character.name, messages[gameState.currentCharacter]);
+
+            // Simulate workspace opening after 2 seconds
+            setTimeout(() => {
+                window.location.href = '/builder-workspace-docking.html?user=demo';
+            }, 2000);
+        }
+
+        function skipLevel() {
+            if (confirm('Skip to next level? You\'ll miss out on XP and badges!')) {
+                gameState.level++;
+                document.getElementById('level').textContent = gameState.level;
+
+                const character = characters[gameState.currentCharacter];
+                typeText(character.name, "Skipping ahead! Bold move, Builder! Let's see what you're made of! ⚡");
+            }
+        }
+
+        // Initialize with Araya greeting
+        window.addEventListener('load', () => {
+            const character = characters.araya;
+            const greeting = character.greetings[0];
+            typeText(character.name, greeting);
+        });
+
+        console.log('🎮 Onboarding Game Loaded');
+        console.log('AI Characters ready with personalities!');
+        console.log('80s video game aesthetic active 🕹️');
+    </script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

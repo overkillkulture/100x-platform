@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🐛 Report a Bug - 5 Easy Ways</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            color: #ff4444;
+            font-size: 36px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+
+        .method {
+            background: #f8f9fa;
+            border-left: 6px solid #667eea;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .method:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .method-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .method-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .method-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .action-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .quick-form {
+            margin-top: 20px;
+        }
+
+        .quick-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: Arial;
+            margin-bottom: 10px;
+            min-height: 100px;
+        }
+
+        .quick-form input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .success {
+            background: #44ff44;
+            color: #006600;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .error {
+            background: #ff4444;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 30px;
+            border-radius: 5px;
+        }
+
+        .emoji {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 Found a Bug?</h1>
+        <p class="subtitle">We want to fix it! Report it ANY way you want - we made it SUPER easy!</p>
+
+        <!-- METHOD 1: SIMPLE WEB FORM -->
+        <div class="method">
+            <div class="emoji">📝</div>
+            <div class="method-title">
+                <span class="method-number">1</span>
+                Fill Out This Form (Easiest!)
+            </div>
+            <div class="method-description">
+                Type your bug right here, right now. No login, no account, just hit submit!
+            </div>
+            <div class="quick-form">
+                <textarea id="bugText1" placeholder="Describe the bug... What happened? What did you expect? Which page?"></textarea>
+                <input type="email" id="bugEmail1" placeholder="Your email (optional - so we can update you)">
+                <button class="action-btn" onclick="submitForm1()">📤 Submit Bug Report</button>
+                <div id="result1"></div>
+            </div>
+        </div>
+
+        <!-- METHOD 2: GOOGLE FORM -->
+        <div class="method">
+            <div class="emoji">📋</div>
+            <div class="method-title">
+                <span class="method-number">2</span>
+                Google Form (Super Familiar)
+            </div>
+            <div class="method-description">
+                Everyone knows Google Forms! Click below to open a simple form.
+            </div>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSc-REPLACE-WITH-YOUR-FORM-ID/viewform" target="_blank" class="action-btn">
+                🔗 Open Google Form
+            </a>
+            <p style="margin-top: 10px; font-size: 12px; color: #999;">
+                (We'll create the actual form and replace this link)
+            </p>
+        </div>
+
+        <!-- METHOD 3: EMAIL -->
+        <div class="method">
+            <div class="emoji">📧</div>
+            <div class="method-title">
+                <span class="method-number">3</span>
+                Send an Email
+            </div>
+            <div class="method-description">
+                Prefer email? Just send to our bug email address. We read every single one!
+            </div>
+            <a href="mailto:bugs@conciousnessrevolution.io?subject=Bug Report&body=Describe the bug here..." class="action-btn">
+                📧 Email: bugs@conciousnessrevolution.io
+            </a>
+        </div>
+
+        <!-- METHOD 4: TEXT/SMS -->
+        <div class="method">
+            <div class="emoji">💬</div>
+            <div class="method-title">
+                <span class="method-number">4</span>
+                Text Us (Yes, Really!)
+            </div>
+            <div class="method-description">
+                Just text the bug to this number. We'll get it instantly!
+            </div>
+            <a href="sms:+1234567890&body=Bug Report: " class="action-btn">
+                📱 Text: (123) 456-7890
+            </a>
+            <p style="margin-top: 10px; font-size: 12px; color: #999;">
+                (We'll set up a real number with Twilio)
+            </p>
+        </div>
+
+        <!-- METHOD 5: INSTAGRAM DM -->
+        <div class="method">
+            <div class="emoji">📸</div>
+            <div class="method-title">
+                <span class="method-number">5</span>
+                DM Us on Instagram
+            </div>
+            <div class="method-description">
+                Already following us? Just send a DM with the bug. Screenshot it if you want!
+            </div>
+            <a href="https://instagram.com/your_instagram_handle" target="_blank" class="action-btn">
+                📸 Open Instagram
+            </a>
+        </div>
+
+        <div class="note">
+            <strong>🎯 Why 5 Ways?</strong><br>
+            Because we REALLY want to hear from you! Use whichever way is easiest for YOU.
+            Every bug report helps us make this better. Thank you! ❤️
+        </div>
+    </div>
+
+    <script>
+        async function submitForm1() {
+            const bugText = document.getElementById('bugText1').value;
+            const bugEmail = document.getElementById('bugEmail1').value;
+            const resultDiv = document.getElementById('result1');
+
+            if (!bugText.trim()) {
+                resultDiv.innerHTML = '<div class="error">Please describe the bug!</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div style="color: #667eea; padding: 15px;">📤 Sending...</div>';
+
+            try {
+                // METHOD 1A: Send to Netlify Form
+                const formData = new FormData();
+                formData.append('bug_description', bugText);
+                formData.append('email', bugEmail);
+                formData.append('timestamp', new Date().toISOString());
+                formData.append('form-name', 'bug-reports');
+
+                const response = await fetch('/', {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams(formData).toString()
+                });
+
+                if (response.ok) {
+                    resultDiv.innerHTML = '<div class="success">✅ Bug report submitted! We\'ll fix it ASAP!</div>';
+                    document.getElementById('bugText1').value = '';
+                    document.getElementById('bugEmail1').value = '';
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            } catch (error) {
+                // FALLBACK: Try Airtable
+                try {
+                    const airtableResponse = await fetch('https://api.airtable.com/v0/YOUR_BASE/Bug_Reports', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer YOUR_AIRTABLE_TOKEN',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            fields: {
+                                'Bug Description': bugText,
+                                'Email': bugEmail,
+                                'Timestamp': new Date().toISOString(),
+                                'Status': 'New'
+                            }
+                        })
+                    });
+
+                    if (airtableResponse.ok) {
+                        resultDiv.innerHTML = '<div class="success">✅ Bug report submitted! We\'ll fix it ASAP!</div>';
+                        document.getElementById('bugText1').value = '';
+                        document.getElementById('bugEmail1').value = '';
+                    } else {
+                        throw new Error('Airtable failed');
+                    }
+                } catch (airtableError) {
+                    // LAST RESORT: mailto
+                    window.location.href = `mailto:bugs@conciousnessrevolution.io?subject=Bug Report&body=${encodeURIComponent(bugText)}${bugEmail ? '%0A%0AEmail: ' + encodeURIComponent(bugEmail) : ''}`;
+                    resultDiv.innerHTML = '<div class="success">✅ Opening email client... Send the pre-filled email!</div>';
+                }
+            }
+        }
+    </script>
+
+    <!-- Hidden Netlify form for backend -->
+    <form name="bug-reports" netlify netlify-honeypot="bot-field" hidden>
+        <input type="text" name="bug_description">
+        <input type="email" name="email">
+        <input type="text" name="timestamp">
+    </form>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

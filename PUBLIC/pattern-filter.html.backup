@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pattern Filter Quiz - Test your manipulation immunity with 92.2% accuracy. Unlock 100X Platform with 85%+ consciousness level.">
+  <title>Pattern Filter Quiz - 100X Consciousness Platform</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/ASSETS/css/global.css">
+  <link rel="stylesheet" href="/ASSETS/css/components.css">
+  <link rel="stylesheet" href="/ASSETS/css/layouts.css">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Pattern Filter Quiz - Test Your Manipulation Immunity">
+  <meta property="og:description" content="92.2% accurate consciousness screening. Are you a Builder or Destroyer? Take the quiz to find out.">
+  <meta property="og:type" content="website">
+
+  <style>
+    .quiz-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--space-2xl) var(--space-md);
+    }
+
+    .quiz-question {
+      background: var(--surface);
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      display: none;
+    }
+
+    .quiz-question--active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .quiz-progress {
+      margin-bottom: var(--space-2xl);
+    }
+
+    .quiz-progress__text {
+      text-align: center;
+      color: var(--text-dim);
+      margin-bottom: var(--space-sm);
+      font-size: var(--font-sm);
+    }
+
+    .quiz-option {
+      background: var(--surface);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      min-height: var(--touch-target-min);
+      display: flex;
+      align-items: center;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--primary);
+      background: var(--surface-elevated);
+      transform: translateX(4px);
+    }
+
+    .quiz-option:active {
+      transform: scale(0.98);
+    }
+
+    .results-container {
+      max-width: 600px;
+      margin: var(--space-3xl) auto;
+      text-align: center;
+      display: none;
+    }
+
+    .results-container--show {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .results-score {
+      font-size: var(--font-3xl);
+      font-weight: var(--weight-black);
+      margin: var(--space-xl) 0;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .results-classification {
+      font-size: var(--font-xl);
+      margin-bottom: var(--space-lg);
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: var(--space-md);
+      justify-content: center;
+      margin-top: var(--space-2xl);
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="app__header">
+      <div class="container">
+        <nav class="nav">
+          <a href="/index.html" class="nav__logo">100X</a>
+          <div class="nav__links">
+            <a href="/index.html" class="nav__link">Home</a>
+            <a href="/PUBLIC/pattern-filter.html" class="nav__link nav__link--active">Pattern Filter</a>
+            <a href="/PUBLIC/pattern-theory-training.html" class="nav__link">Training</a>
+            <a href="/PUBLIC/partnership.html" class="nav__link">Partnership</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="app__main">
+      <div class="quiz-container">
+        <!-- Intro Screen -->
+        <div id="intro" class="text-center">
+          <h1>🎯 Pattern Filter Quiz</h1>
+          <p class="text-xl text-dim mb-xl">Test your manipulation immunity with 92.2% accuracy</p>
+
+          <div class="card card--elevated mb-xl">
+            <div class="card__body">
+              <h3 class="mb-md">How It Works:</h3>
+              <ul style="text-align: left; max-width: 500px; margin: 0 auto;">
+                <li>15 scenario-based questions</li>
+                <li>Each tests Pattern Theory™ principles</li>
+                <li>Your score determines consciousness level</li>
+                <li>85%+ unlocks Platform access (Builder status)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="alert alert--info mb-xl">
+            <span class="alert__icon">ℹ️</span>
+            <div class="alert__content">
+              <strong>Based on Pattern Theory™ LAW 6:</strong>
+              <p>Builders create, solve, improve, collaborate. Destroyers manipulate, extract, sabotage, triangulate.</p>
+            </div>
+          </div>
+
+          <button onclick="startQuiz()" class="btn btn--primary btn--large">
+            Start Quiz
+          </button>
+        </div>
+
+        <!-- Quiz Questions (dynamically shown) -->
+        <div id="quiz" style="display: none;">
+          <!-- Progress -->
+          <div class="quiz-progress">
+            <div class="quiz-progress__text">
+              Question <span id="current-q">1</span> of <span id="total-q">15</span>
+            </div>
+            <div class="progress">
+              <div id="progress-bar" class="progress__bar" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Questions will be inserted here -->
+          <div id="questions-container"></div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="results-container">
+          <h1 class="mb-md">Your Results</h1>
+
+          <div id="consciousness-badge"></div>
+
+          <div class="results-score" id="score"></div>
+
+          <div class="results-classification" id="classification"></div>
+
+          <div id="results-message" class="card card--elevated mb-xl">
+            <!-- Dynamic message based on score -->
+          </div>
+
+          <div id="action-buttons">
+            <!-- Dynamic CTA based on score -->
+          </div>
+
+          <div class="share-buttons">
+            <button onclick="shareResults('twitter')" class="btn btn--ghost">
+              Share on Twitter
+            </button>
+            <button onclick="shareResults('linkedin')" class="btn btn--ghost">
+              Share on LinkedIn
+            </button>
+            <button onclick="retakeQuiz()" class="btn btn--secondary">
+              Retake Quiz
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app__footer">
+      <div class="container">
+        <p>&copy; 2025 100X Consciousness Platform - Pattern Theory™</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/ASSETS/js/storage.js"></script>
+  <script src="/ASSETS/js/auth.js"></script>
+  <script src="/ASSETS/js/trinity.js"></script>
+
+  <script>
+    // PATTERN FILTER QUIZ - MVP VERSION
+    // LAW 1: Five-Phase Manipulation Protocol
+    // LAW 6: Builder vs Destroyer Dynamic
+
+    const QUESTIONS = [
+      {
+        id: 1,
+        scenario: 'A friend texts you urgently: "EMERGENCY! Need to talk NOW!"',
+        options: [
+          { text: 'Drop everything and call immediately', points: 2, pattern: 'Reactive to false emergency' },
+          { text: 'Reply: "What\'s the emergency?" and wait for details', points: 8, pattern: 'Boundary setting' },
+          { text: 'Ignore them completely', points: 0, pattern: 'Avoidant behavior' },
+          { text: 'Ask when they\'re free to discuss calmly', points: 10, pattern: 'Builder response' }
+        ]
+      },
+      {
+        id: 2,
+        scenario: 'Someone promises to help your project "when they have time"',
+        options: [
+          { text: 'Keep following up weekly', points: 2, pattern: 'Hopeful persistence' },
+          { text: 'Assume they\'re not interested and move on', points: 10, pattern: 'Pattern recognition' },
+          { text: 'Get angry and confront them', points: 0, pattern: 'Emotional reaction' },
+          { text: 'Lower expectations but stay in touch', points: 6, pattern: 'Diplomatic approach' }
+        ]
+      },
+      {
+        id: 3,
+        scenario: 'A business partner rejects every solution you offer',
+        options: [
+          { text: 'Keep trying different solutions', points: 2, pattern: 'Persistence without pattern recognition' },
+          { text: 'Document the pattern and exit the partnership', points: 10, pattern: 'Builder wisdom' },
+          { text: 'Assume you\'re the problem and apologize', points: 0, pattern: 'Victim mentality' },
+          { text: 'Mirror their behavior back to them', points: 8, pattern: 'Mirror Protocol (LAW 4)' }
+        ]
+      },
+      {
+        id: 4,
+        scenario: 'Someone asks for help but ignores your advice and complains nothing works',
+        options: [
+          { text: 'Offer more detailed advice', points: 2, pattern: 'Missing the pattern' },
+          { text: 'Recognize solution rejection, stop offering', points: 10, pattern: 'Phase 3 detection' },
+          { text: 'Blame yourself for not explaining better', points: 0, pattern: 'Self-doubt' },
+          { text: 'Ask what they\'ve tried so far', points: 6, pattern: 'Verification attempt' }
+        ]
+      },
+      {
+        id: 5,
+        scenario: 'A colleague takes credit for your work in a meeting',
+        options: [
+          { text: 'Confront them publicly', points: 2, pattern: 'Emotional reaction' },
+          { text: 'Document it, speak privately, escalate if repeated', points: 10, pattern: 'Systematic response' },
+          { text: 'Say nothing and hope it doesn\'t happen again', points: 0, pattern: 'Passive victim' },
+          { text: 'Casually mention your contribution in the meeting', points: 8, pattern: 'Assertive boundary' }
+        ]
+      },
+      {
+        id: 6,
+        scenario: 'Your boss sets an impossible deadline then blames you when you can\'t meet it',
+        options: [
+          { text: 'Work overtime to try to meet it anyway', points: 2, pattern: 'Accepting impossible demands' },
+          { text: 'Propose realistic timeline, document if rejected', points: 10, pattern: 'Professional boundary' },
+          { text: 'Quit immediately', points: 0, pattern: 'Overreaction' },
+          { text: 'Explain why it\'s impossible and ask for more time', points: 8, pattern: 'Communication attempt' }
+        ]
+      },
+      {
+        id: 7,
+        scenario: 'Someone constantly "forgets" agreements you\'ve made',
+        options: [
+          { text: 'Keep reminding them each time', points: 2, pattern: 'Enabling pattern' },
+          { text: 'Put all agreements in writing, enforce consequences', points: 10, pattern: 'Documentation principle' },
+          { text: 'Stop making agreements with them', points: 8, pattern: 'Pattern response' },
+          { text: 'Assume they\'re just forgetful', points: 0, pattern: 'Missing manipulation' }
+        ]
+      },
+      {
+        id: 8,
+        scenario: 'A family member guilts you: "If you really cared, you\'d..."',
+        options: [
+          { text: 'Do what they want to prove you care', points: 0, pattern: 'Manipulation victim' },
+          { text: 'Explain your reasons calmly', points: 6, pattern: 'Communication attempt' },
+          { text: 'Recognize emotional manipulation, maintain boundary', points: 10, pattern: 'Builder strength' },
+          { text: 'Get defensive and argue', points: 2, pattern: 'Emotional engagement' }
+        ]
+      },
+      {
+        id: 9,
+        scenario: 'Project stakeholder keeps adding "just one more thing" after scope is defined',
+        options: [
+          { text: 'Accommodate each request', points: 0, pattern: 'Scope creep victim' },
+          { text: 'Add to backlog, charge for scope changes', points: 10, pattern: 'Professional boundary' },
+          { text: 'Get frustrated and refuse everything', points: 2, pattern: 'Emotional reaction' },
+          { text: 'Try to explain why scope is important', points: 6, pattern: 'Education attempt' }
+        ]
+      },
+      {
+        id: 10,
+        scenario: 'Friend cancels plans last minute repeatedly, always has "good reason"',
+        options: [
+          { text: 'Keep making plans, hoping it changes', points: 2, pattern: 'Hope without evidence' },
+          { text: 'Recognize pattern, stop initiating plans', points: 10, pattern: 'Pattern wisdom' },
+          { text: 'Confront them about it', points: 6, pattern: 'Direct communication' },
+          { text: 'Make backup plans every time', points: 4, pattern: 'Adapting to pattern' }
+        ]
+      },
+      {
+        id: 11,
+        scenario: 'Someone asks for your expertise for free: "It\'ll be great exposure!"',
+        options: [
+          { text: 'Do it for the exposure', points: 0, pattern: 'Devaluing self' },
+          { text: 'Politely decline or quote your rate', points: 10, pattern: 'Professional boundary' },
+          { text: 'Offer reduced rate as compromise', points: 6, pattern: 'Negotiation' },
+          { text: 'Get offended they asked', points: 2, pattern: 'Emotional response' }
+        ]
+      },
+      {
+        id: 12,
+        scenario: 'Manager says "We\'re a family here" but refuses time off for your actual family',
+        options: [
+          { text: 'Believe the "family" talk and accept it', points: 0, pattern: 'Missing contradiction' },
+          { text: 'Recognize manipulation, document, consider exit', points: 10, pattern: 'Pattern detection' },
+          { text: 'Complain to HR', points: 6, pattern: 'System escalation' },
+          { text: 'Work harder to prove loyalty', points: 2, pattern: 'Manipulation victim' }
+        ]
+      },
+      {
+        id: 13,
+        scenario: 'Someone shares a "secret" about someone else, then says "Don\'t tell anyone"',
+        options: [
+          { text: 'Keep the secret and feel trusted', points: 0, pattern: 'Triangulation victim' },
+          { text: 'Recognize triangulation, disengage from gossip', points: 10, pattern: 'Builder wisdom' },
+          { text: 'Share it with one other person', points: 2, pattern: 'Participating in manipulation' },
+          { text: 'Ask why they\'re telling you', points: 8, pattern: 'Investigating motive' }
+        ]
+      },
+      {
+        id: 14,
+        scenario: 'Investor says "If you don\'t decide now, the offer expires"',
+        options: [
+          { text: 'Accept immediately from fear of missing out', points: 0, pattern: 'False urgency victim' },
+          { text: 'Take time to review, willing to lose offer', points: 10, pattern: 'Builder confidence' },
+          { text: 'Ask for 24 hours to decide', points: 8, pattern: 'Negotiating boundary' },
+          { text: 'Get excited and say yes', points: 2, pattern: 'Emotional decision' }
+        ]
+      },
+      {
+        id: 15,
+        scenario: 'After setting a boundary, they say "You\'re being difficult" or "You\'ve changed"',
+        options: [
+          { text: 'Doubt yourself and remove the boundary', points: 0, pattern: 'Punishment working' },
+          { text: 'Recognize punishment escalation, maintain boundary', points: 10, pattern: 'Master level' },
+          { text: 'Explain your reasoning again', points: 6, pattern: 'Over-explaining' },
+          { text: 'Get defensive', points: 2, pattern: 'Emotional engagement' }
+        ]
+      }
+    ];
+
+    let currentQuestion = 0;
+    let answers = [];
+    let totalPoints = 0;
+
+    function startQuiz() {
+      document.getElementById('intro').style.display = 'none';
+      document.getElementById('quiz').style.display = 'block';
+      document.getElementById('total-q').textContent = QUESTIONS.length;
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const container = document.getElementById('questions-container');
+      const question = QUESTIONS[currentQuestion];
+
+      // Update progress
+      document.getElementById('current-q').textContent = currentQuestion + 1;
+      const progress = ((currentQuestion + 1) / QUESTIONS.length) * 100;
+      document.getElementById('progress-bar').style.width = progress + '%';
+
+      // Render question
+      container.innerHTML = `
+        <div class="quiz-question quiz-question--active">
+          <h2 class="mb-lg">${question.scenario}</h2>
+          ${question.options.map((opt, idx) => `
+            <div class="quiz-option" onclick="selectAnswer(${idx}, ${opt.points})">
+              <strong style="margin-right: 12px; color: var(--primary);">${String.fromCharCode(65 + idx)}.</strong>
+              <span>${opt.text}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function selectAnswer(optionIndex, points) {
+      const question = QUESTIONS[currentQuestion];
+
+      answers.push({
+        questionId: question.id,
+        optionIndex,
+        points,
+        pattern: question.options[optionIndex].pattern
+      });
+
+      totalPoints += points;
+
+      currentQuestion++;
+
+      if (currentQuestion < QUESTIONS.length) {
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      const maxPoints = QUESTIONS.length * 10; // 15 questions × 10 points each = 150
+      const percentage = Math.round((totalPoints / maxPoints) * 100);
+
+      // Save results
+      AUTH.saveQuizResults({
+        score: totalPoints,
+        total: maxPoints,
+        percentage,
+        answers
+      });
+
+      // Hide quiz
+      document.getElementById('quiz').style.display = 'none';
+
+      // Show results
+      const resultsContainer = document.getElementById('results');
+      resultsContainer.classList.add('results-container--show');
+
+      // Render consciousness badge
+      AUTH.renderConsciousnessLevel('consciousness-badge');
+
+      // Display score
+      document.getElementById('score').textContent = percentage + '%';
+
+      // Display classification
+      const classification = AUTH.getClassification(percentage);
+      const classificationText = {
+        'MASTER': '🌟 MASTER LEVEL',
+        'BUILDER': '⚡ BUILDER STATUS',
+        'POTENTIAL': '🔄 BUILDER POTENTIAL',
+        'DESTROYER': '⚠️ STUDY REQUIRED'
+      }[classification];
+
+      document.getElementById('classification').textContent = classificationText;
+
+      // Results message based on score
+      const messages = {
+        'MASTER': {
+          title: 'Exceptional Pattern Recognition!',
+          text: 'You demonstrate master-level consciousness. You see manipulation patterns before they fully form and maintain boundaries effortlessly. Ready for advanced consciousness work.',
+          cta: '<a href="/PLATFORM/dashboard.html" class="btn btn--primary btn--large">Enter Platform</a>'
+        },
+        'BUILDER': {
+          title: 'Builder Status Confirmed!',
+          text: 'You have strong pattern recognition and manipulation immunity. You\'re ready to join the Builder community and access the full platform.',
+          cta: '<a href="/PLATFORM/dashboard.html" class="btn btn--primary btn--large">Access Platform</a>'
+        },
+        'POTENTIAL': {
+          title: 'Builder Potential Detected',
+          text: 'You show awareness of manipulation patterns but need more practice recognizing them in real-time. Complete Pattern Theory training and retake the quiz.',
+          cta: '<a href="/PUBLIC/pattern-theory-training.html" class="btn btn--primary btn--large">Start Training</a>'
+        },
+        'DESTROYER': {
+          title: 'Training Recommended',
+          text: 'Your responses suggest vulnerability to manipulation patterns. This is common! Pattern Theory can be learned. Start with Module 1 and build your immunity.',
+          cta: '<a href="/PUBLIC/pattern-theory-training.html" class="btn btn--primary btn--large">Begin Module 1</a>'
+        }
+      };
+
+      const message = messages[classification];
+
+      document.getElementById('results-message').innerHTML = `
+        <div class="card__body">
+          <h3 class="mb-md">${message.title}</h3>
+          <p>${message.text}</p>
+        </div>
+      `;
+
+      document.getElementById('action-buttons').innerHTML = message.cta;
+    }
+
+    function shareResults(platform) {
+      const percentage = AUTH.getConsciousnessLevel();
+      const classification = AUTH.getClassification(percentage);
+
+      const shareText = `I scored ${percentage}% on the Pattern Filter Quiz (${classification} level)! Test your manipulation immunity: consciousnessrevolution.io`;
+
+      const urls = {
+        twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`,
+        linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://consciousnessrevolution.io')}`
+      };
+
+      window.open(urls[platform], '_blank');
+    }
+
+    function retakeQuiz() {
+      currentQuestion = 0;
+      answers = [];
+      totalPoints = 0;
+
+      document.getElementById('results').classList.remove('results-container--show');
+      document.getElementById('intro').style.display = 'block';
+    }
+
+    // Check if quiz already completed
+    if (AUTH.hasCompletedQuiz()) {
+      const results = AUTH.getQuizResults();
+      console.log('Previous quiz results found:', results);
+    }
+  </script>
+</body>
+</html>

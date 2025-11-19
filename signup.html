@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join the Consciousness Revolution - Sign Up</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .signup-container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo h1 {
+            font-size: 32px;
+            background: linear-gradient(135deg, #00ff00 0%, #00ffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .tier-display {
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .tier-display h2 {
+            font-size: 28px;
+            color: #00ff00;
+            margin-bottom: 10px;
+        }
+
+        .tier-display .price {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .tier-display .period {
+            font-size: 16px;
+            color: #888;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #00ff00;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .form-group input::placeholder {
+            color: #666;
+        }
+
+        .features-included {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .features-included h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #00ff00;
+        }
+
+        .features-included ul {
+            list-style: none;
+        }
+
+        .features-included li {
+            padding: 8px 0;
+            border-bottom: 1px solid #333;
+            font-size: 14px;
+        }
+
+        .features-included li:last-child {
+            border-bottom: none;
+        }
+
+        .features-included li:before {
+            content: "✓ ";
+            color: #00ff00;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .payment-info {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .payment-info h4 {
+            color: #00ffff;
+            margin-bottom: 10px;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 20px;
+            background: #00ff00;
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+        }
+
+        .submit-button:hover {
+            background: #00ffff;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.7);
+            transform: scale(1.05);
+        }
+
+        .submit-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .guarantee {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .guarantee strong {
+            color: #00ff00;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #333;
+            border-top: 4px solid #00ff00;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .success-message h2 {
+            font-size: 36px;
+            color: #00ff00;
+            margin-bottom: 20px;
+        }
+
+        .success-message p {
+            font-size: 18px;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        .success-message .next-steps {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .success-message .next-steps h3 {
+            color: #00ff00;
+            margin-bottom: 15px;
+        }
+
+        .success-message .next-steps ol {
+            padding-left: 20px;
+        }
+
+        .success-message .next-steps li {
+            padding: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo">
+            <h1>Consciousness Revolution</h1>
+            <p>Join the Builders. Break Free from Manipulation.</p>
+        </div>
+
+        <div id="signup-form">
+            <div class="tier-display" id="tier-display">
+                <h2 id="tier-name">Builder</h2>
+                <div class="price" id="tier-price">$99</div>
+                <div class="period" id="tier-period">per month</div>
+            </div>
+
+            <div class="features-included" id="features-list">
+                <h3>✨ What You Get:</h3>
+                <ul id="features">
+                    <li>Trinity AI Access (3 AI perspectives)</li>
+                    <li>Legal Defense Tools (Automated demand letters)</li>
+                    <li>Pattern Recognition Training</li>
+                    <li>528 Hz Frequency Library</li>
+                    <li>Revenue System Templates</li>
+                    <li>Builder Network Access</li>
+                    <li>Priority Support</li>
+                </ul>
+            </div>
+
+            <form id="payment-form">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Create Password *</label>
+                    <input type="password" id="password" name="password" placeholder="Minimum 8 characters" required minlength="8">
+                </div>
+
+                <div class="payment-info">
+                    <h4>🔒 Secure Payment</h4>
+                    <p>Your payment is processed securely through Stripe. We never see your card details.</p>
+                    <p style="margin-top: 10px;">Next step: Enter payment information (Stripe Checkout)</p>
+                </div>
+
+                <button type="submit" class="submit-button" id="submit-button">
+                    COMPLETE SIGNUP & PAY
+                </button>
+
+                <div class="guarantee">
+                    <strong>30-Day Money-Back Guarantee</strong><br>
+                    Try risk-free. Cancel anytime. No questions asked.
+                </div>
+            </form>
+
+            <div class="back-link">
+                <a href="/funnel-start.html">&larr; Back to pricing</a>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 20px;">Processing your signup...</p>
+        </div>
+
+        <div class="success-message" id="success">
+            <h2>🎉 Welcome to the Revolution!</h2>
+            <p>Your account has been created successfully.</p>
+            <div class="next-steps">
+                <h3>What Happens Next:</h3>
+                <ol>
+                    <li>Check your email for login credentials</li>
+                    <li>Access your Builder Dashboard</li>
+                    <li>Complete consciousness assessment</li>
+                    <li>Start using Trinity AI</li>
+                    <li>Join the Builder community</li>
+                </ol>
+            </div>
+            <button class="submit-button" onclick="window.location.href='/login.html'" style="margin-top: 30px;">
+                GO TO DASHBOARD →
+            </button>
+        </div>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Get tier from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const tier = urlParams.get('tier') || 'builder';
+
+        // Tier configurations
+        const tiers = {
+            free: {
+                name: 'Explorer',
+                price: 'FREE',
+                priceNum: 0,
+                period: 'Forever',
+                features: [
+                    'Battle Map access',
+                    'Consciousness manifesto',
+                    '7 Domains overview',
+                    'Community forum',
+                    'Weekly newsletter'
+                ]
+            },
+            builder: {
+                name: 'Builder',
+                price: '$99',
+                priceNum: 99,
+                period: 'per month',
+                features: [
+                    'Trinity AI Access (3 AI perspectives)',
+                    'Legal Defense Tools',
+                    'Pattern Recognition Training',
+                    '528 Hz Frequency Library',
+                    'Revenue System Templates',
+                    'Builder Network Access',
+                    'Priority Support'
+                ]
+            },
+            revolutionary: {
+                name: 'Revolutionary',
+                price: '$999',
+                priceNum: 999,
+                period: 'per month',
+                features: [
+                    'Everything in Builder',
+                    'White-label Platform',
+                    'Custom Domain Integration',
+                    'Direct Commander Access',
+                    'Custom AI Training',
+                    'Revenue Share Program',
+                    'Co-build New Domains'
+                ]
+            }
+        };
+
+        // Display selected tier
+        const selectedTier = tiers[tier];
+        document.getElementById('tier-name').textContent = selectedTier.name;
+        document.getElementById('tier-price').textContent = selectedTier.price;
+        document.getElementById('tier-period').textContent = selectedTier.period;
+
+        // Display features
+        const featuresList = document.getElementById('features');
+        featuresList.innerHTML = '';
+        selectedTier.features.forEach(feature => {
+            const li = document.createElement('li');
+            li.textContent = feature;
+            featuresList.appendChild(li);
+        });
+
+        // Handle form submission
+        document.getElementById('payment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                tier: tier,
+                price: selectedTier.priceNum
+            };
+
+            // Show loading
+            document.getElementById('signup-form').style.display = 'none';
+            document.getElementById('loading').classList.add('active');
+
+            try {
+                // Call backend to create checkout session
+                const response = await fetch('/.netlify/functions/create-checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Signup failed');
+                }
+
+                // Track conversion initiation
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'begin_checkout', {
+                        'event_category': 'conversion',
+                        'event_label': tier,
+                        'value': selectedTier.priceNum
+                    });
+                }
+
+                // For FREE tier, show success immediately
+                if (tier === 'free' || selectedTier.priceNum === 0) {
+                    localStorage.setItem('user', JSON.stringify(formData));
+                    document.getElementById('loading').classList.remove('active');
+                    document.getElementById('success').classList.add('active');
+                } else {
+                    // For paid tiers, redirect to Stripe Checkout
+                    if (data.url) {
+                        window.location.href = data.url;
+                    } else {
+                        throw new Error('No checkout URL received');
+                    }
+                }
+
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert('There was an error processing your signup: ' + error.message);
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('signup-form').style.display = 'block';
+            }
+        });
+
+        // Track page view
+        window.addEventListener('load', () => {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'signup_view', {
+                    'event_category': 'engagement',
+                    'event_label': tier
+                });
+            }
+        });
+    </script>
+</body>
+</html>

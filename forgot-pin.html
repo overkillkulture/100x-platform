@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Forgot PIN - Consciousness Revolution</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .recovery-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .back-btn {
+            background: linear-gradient(135deg, #888 0%, #666 100%);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        .result.success {
+            background: #e8f5e9;
+            border: 2px solid #4CAF50;
+            color: #2e7d32;
+        }
+        .result.error {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            color: #c62828;
+        }
+        .result h2 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        .pin-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+            letter-spacing: 8px;
+        }
+        .user-info {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: left;
+        }
+        .user-info div {
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        .label {
+            font-weight: bold;
+            color: #667eea;
+        }
+        .info-box {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.85em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="recovery-box">
+        <h1>🔑 Forgot Your PIN?</h1>
+        <div class="subtitle">Enter your email or name to recover your PIN</div>
+
+        <input type="email" id="emailInput" placeholder="Your email address" autofocus>
+        <div style="text-align: center; color: #999; margin: 10px 0;">- OR -</div>
+        <input type="text" id="nameInput" placeholder="Your full name">
+
+        <button onclick="recoverPin()">FIND MY PIN</button>
+        <button class="back-btn" onclick="window.location.href='/login.html'">← Back to Login</button>
+
+        <div id="result" class="result"></div>
+
+        <div class="info-box">
+            💡 <strong>Tip:</strong> Your PIN was sent to your email when you joined the beta.<br>
+            Still can't find it? Contact the Commander for help!
+        </div>
+    </div>
+
+    <script>
+        // Beta user database (matches BETA_USERS_DATABASE.json)
+        const betaUsers = {
+            "1001": {
+                "pin": "1001",
+                "name": "Joshua Serrano",
+                "email": "joshua.serrano2022@gmail.com",
+                "status": "Active",
+                "role": "Beta Tester",
+                "package": "JARVIS Mission Control"
+            },
+            "1002": {
+                "pin": "1002",
+                "name": "Toby Burrowes",
+                "email": "tobyburrowes@hotmail.com",
+                "status": "Active",
+                "role": "Beta Tester - Enterprise",
+                "package": "Enterprise Track"
+            },
+            "1003": {
+                "pin": "1003",
+                "name": "WD Brotherton",
+                "email": "wdbrotherton@gmail.com",
+                "status": "Setup Issue",
+                "role": "Beta Tester",
+                "package": "Consciousness Package"
+            },
+            "1004": {
+                "pin": "1004",
+                "name": "Dean Sabr",
+                "email": "deansabrwork@gmail.com",
+                "status": "Active",
+                "role": "Beta Tester",
+                "package": "Standard Beta"
+            },
+            "1005": {
+                "pin": "1005",
+                "name": "Bill Varni",
+                "email": "varniwilliam@gmail.com",
+                "status": "Active",
+                "role": "Beta Tester - Team",
+                "package": "Team Edition"
+            },
+            "1006": {
+                "pin": "1006",
+                "name": "Rutherford",
+                "email": "ruuutherford@gmail.com",
+                "status": "Active",
+                "role": "Beta Tester",
+                "package": "Standard Beta"
+            }
+        };
+
+        function recoverPin() {
+            const email = document.getElementById('emailInput').value.trim().toLowerCase();
+            const name = document.getElementById('nameInput').value.trim().toLowerCase();
+            const resultDiv = document.getElementById('result');
+
+            // Search for matching user
+            let foundUser = null;
+            let foundPin = null;
+
+            for (const [pin, user] of Object.entries(betaUsers)) {
+                const matchEmail = email && user.email.toLowerCase() === email;
+                const matchName = name && user.name.toLowerCase().includes(name);
+
+                if (matchEmail || matchName) {
+                    foundUser = user;
+                    foundPin = pin;
+                    break;
+                }
+            }
+
+            if (foundUser) {
+                // Success!
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <h2>✅ Found Your Account!</h2>
+                    <div class="pin-display">${foundPin}</div>
+                    <p style="font-size: 1.1em; margin-bottom: 10px;">That's your PIN code!</p>
+
+                    <div class="user-info">
+                        <div><span class="label">Name:</span> ${foundUser.name}</div>
+                        <div><span class="label">Email:</span> ${foundUser.email}</div>
+                        <div><span class="label">Status:</span> ${foundUser.status}</div>
+                        <div><span class="label">Package:</span> ${foundUser.package}</div>
+                    </div>
+
+                    <button style="margin-top: 20px;" onclick="window.location.href='/login.html'">
+                        Go to Login →
+                    </button>
+                `;
+                resultDiv.style.display = 'block';
+            } else {
+                // Not found
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h2>❌ Account Not Found</h2>
+                    <p>We couldn't find an account matching:</p>
+                    ${email ? `<p><strong>Email:</strong> ${email}</p>` : ''}
+                    ${name ? `<p><strong>Name:</strong> ${name}</p>` : ''}
+                    <p style="margin-top: 15px;">
+                        <strong>Double-check your info and try again!</strong><br>
+                        Or contact the Commander for help.
+                    </p>
+                `;
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        // Allow Enter key on both inputs
+        document.getElementById('emailInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') recoverPin();
+        });
+        document.getElementById('nameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') recoverPin();
+        });
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

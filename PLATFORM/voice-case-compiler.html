@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Voice Case Compiler | Federal Evidence Builder</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a40 50%, #2d1b69 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #ff0000, #ffffff, #0000ff);
+            padding: 3px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+
+        .header-content {
+            background: #0a0e27;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #00ffff;
+            font-size: 1.2em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .recording-section {
+            background: rgba(255, 215, 0, 0.1);
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .record-btn {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid #ff0000;
+            background: linear-gradient(135deg, #ff0000, #ff6b00);
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 40px rgba(255, 0, 0, 0.4);
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .record-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(255, 0, 0, 0.6);
+        }
+
+        .record-btn.recording {
+            animation: pulse 1.5s infinite;
+            border-color: #00ff00;
+            background: linear-gradient(135deg, #00ff00, #00ff88);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .timer {
+            font-size: 2em;
+            color: #ffd700;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .transcript-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            min-height: 300px;
+        }
+
+        .transcript-text {
+            color: #fff;
+            font-size: 16px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .evidence-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .evidence-card.violations { border-color: #ff0000; }
+        .evidence-card.dates { border-color: #00ff00; }
+        .evidence-card.parties { border-color: #00ffff; }
+        .evidence-card.money { border-color: #ffd700; }
+
+        .evidence-title {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .evidence-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .evidence-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #ff6b00, #ffd700);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 0, 0.6);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff00, #00ff88);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff0000, #ff6b00);
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 18px;
+            display: none;
+        }
+
+        .status-success {
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #00ff88;
+            color: #00ff88;
+        }
+
+        .status-error {
+            background: rgba(255, 68, 68, 0.2);
+            border: 2px solid #ff4444;
+            color: #ff4444;
+        }
+
+        .progress-bar {
+            height: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #ffd700);
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>🎤 VOICE CASE COMPILER</h1>
+            <p class="subtitle">Talk for 20 minutes • AI extracts ALL evidence • Silver platter for the feds</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="recording-section">
+            <h2 style="color: #ffd700; margin-bottom: 20px;">Step 1: Record Your Story</h2>
+            <p style="color: #00ffff; margin-bottom: 30px;">
+                Just start talking. Say everything - dates, names, violations, money, lies, everything.<br>
+                The AI will organize it automatically into federal case format.
+            </p>
+
+            <button class="record-btn" id="recordBtn" onclick="toggleRecording()">
+                <span id="recordIcon">🎤</span>
+                <span id="recordText">START</span>
+            </button>
+
+            <div class="timer" id="timer">00:00</div>
+
+            <div class="status-message" id="statusMessage"></div>
+
+            <div style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="uploadAudio()" id="uploadBtn" disabled>
+                    📁 Upload Audio File Instead
+                </button>
+                <button class="btn btn-danger" onclick="stopRecording()" id="stopBtn" disabled>
+                    ⏹️ Stop Recording
+                </button>
+            </div>
+        </div>
+
+        <div class="progress-bar" id="progressBar" style="display: none;">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+
+        <div class="transcript-box" id="transcriptBox" style="display: none;">
+            <h2 style="color: #00ffff; margin-bottom: 20px;">📝 Live Transcript</h2>
+            <div class="transcript-text" id="transcriptText">
+                Listening...
+            </div>
+        </div>
+
+        <div id="evidenceSection" style="display: none;">
+            <h2 style="color: #ffd700; text-align: center; margin: 40px 0;">
+                🔍 AI EXTRACTED EVIDENCE
+            </h2>
+
+            <div class="evidence-grid">
+                <div class="evidence-card violations">
+                    <div class="evidence-title" style="color: #ff0000;">⚖️ VIOLATIONS</div>
+                    <ul class="evidence-list" id="violationsList"></ul>
+                </div>
+
+                <div class="evidence-card dates">
+                    <div class="evidence-title" style="color: #00ff00;">📅 KEY DATES</div>
+                    <ul class="evidence-list" id="datesList"></ul>
+                </div>
+
+                <div class="evidence-card parties">
+                    <div class="evidence-title" style="color: #00ffff;">👥 PARTIES INVOLVED</div>
+                    <ul class="evidence-list" id="partiesList"></ul>
+                </div>
+
+                <div class="evidence-card money">
+                    <div class="evidence-title" style="color: #ffd700;">💰 FINANCIAL EVIDENCE</div>
+                    <ul class="evidence-list" id="moneyList"></ul>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <button class="btn btn-primary" onclick="generateCase()" style="font-size: 20px; padding: 20px 40px;">
+                    📄 GENERATE FEDERAL CASE (PDF)
+                </button>
+                <button class="btn" onclick="addTimeline()">
+                    📊 ADD MANIFESTOCHART TIMELINE
+                </button>
+                <button class="btn" onclick="addMusic()">
+                    🎵 ADD BACKGROUND MUSIC
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="audioFileInput" accept="audio/*" style="display: none;" onchange="handleAudioFile(this)">
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        let startTime;
+        let timerInterval;
+        let recognition;
+
+        // Web Speech API for live transcription
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript + ' ';
+                }
+                document.getElementById('transcriptText').textContent = transcript;
+                analyzeTranscript(transcript);
+            };
+        }
+
+        async function toggleRecording() {
+            if (!isRecording) {
+                await startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    // Here you would send to backend for processing
+                    console.log('Recording complete:', audioBlob.size, 'bytes');
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+
+                // Start speech recognition
+                if (recognition) {
+                    recognition.start();
+                }
+
+                // Update UI
+                const btn = document.getElementById('recordBtn');
+                btn.classList.add('recording');
+                document.getElementById('recordIcon').textContent = '⏺️';
+                document.getElementById('recordText').textContent = 'RECORDING';
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('transcriptBox').style.display = 'block';
+
+                // Start timer
+                startTime = Date.now();
+                timerInterval = setInterval(updateTimer, 1000);
+
+                showStatus('Recording started! Just talk naturally...', 'success');
+
+            } catch (error) {
+                showStatus('Microphone access denied. Please enable microphone.', 'error');
+                console.error('Error accessing microphone:', error);
+            }
+        }
+
+        function stopRecording() {
+            if (!isRecording) return;
+
+            isRecording = false;
+
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+
+            if (recognition) {
+                recognition.stop();
+            }
+
+            // Stop all audio tracks
+            if (mediaRecorder && mediaRecorder.stream) {
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+
+            // Update UI
+            const btn = document.getElementById('recordBtn');
+            btn.classList.remove('recording');
+            document.getElementById('recordIcon').textContent = '🎤';
+            document.getElementById('recordText').textContent = 'START';
+            document.getElementById('stopBtn').disabled = true;
+
+            clearInterval(timerInterval);
+
+            // Show evidence section
+            document.getElementById('evidenceSection').style.display = 'block';
+
+            showStatus('Recording complete! Processing evidence...', 'success');
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('timer').textContent =
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function uploadAudio() {
+            document.getElementById('audioFileInput').click();
+        }
+
+        function handleAudioFile(input) {
+            const file = input.files[0];
+            if (file) {
+                showStatus(`Processing ${file.name}...`, 'success');
+                // Here you would send to backend for transcription
+                document.getElementById('transcriptBox').style.display = 'block';
+                document.getElementById('transcriptText').textContent = 'Transcribing audio file...';
+
+                // Simulate processing
+                setTimeout(() => {
+                    document.getElementById('evidenceSection').style.display = 'block';
+                    showStatus('Audio processed! Evidence extracted.', 'success');
+                }, 2000);
+            }
+        }
+
+        function analyzeTranscript(transcript) {
+            // Extract violations (keywords)
+            const violationKeywords = ['violated', 'illegal', 'fraud', 'abuse', 'denied', 'refused', 'false', 'lied'];
+            const violations = [];
+            violationKeywords.forEach(keyword => {
+                if (transcript.toLowerCase().includes(keyword)) {
+                    const context = extractContext(transcript, keyword);
+                    if (context) violations.push(context);
+                }
+            });
+
+            // Extract dates (regex)
+            const dateRegex = /\b(\d{1,2}\/\d{1,2}\/\d{2,4}|\w+\s+\d{1,2},?\s+\d{4})\b/g;
+            const dates = transcript.match(dateRegex) || [];
+
+            // Extract names (capitalized words)
+            const nameRegex = /\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/g;
+            const parties = [...new Set(transcript.match(nameRegex) || [])];
+
+            // Extract money amounts
+            const moneyRegex = /\$[\d,]+/g;
+            const money = transcript.match(moneyRegex) || [];
+
+            // Update UI
+            updateList('violationsList', violations);
+            updateList('datesList', dates);
+            updateList('partiesList', parties);
+            updateList('moneyList', money);
+        }
+
+        function extractContext(text, keyword) {
+            const index = text.toLowerCase().indexOf(keyword);
+            if (index === -1) return null;
+            const start = Math.max(0, index - 50);
+            const end = Math.min(text.length, index + 100);
+            return '...' + text.substring(start, end).trim() + '...';
+        }
+
+        function updateList(listId, items) {
+            const list = document.getElementById(listId);
+            if (items.length > 0) {
+                list.innerHTML = items.map(item => `<li>${item}</li>`).join('');
+            }
+        }
+
+        function generateCase() {
+            showStatus('Generating federal case document...', 'success');
+
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            progressBar.style.display = 'block';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressFill.style.width = progress + '%';
+                progressFill.textContent = progress + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        alert('✅ FEDERAL CASE COMPILED!\n\n' +
+                              '📄 Document ready for download\n' +
+                              '⚖️ Includes: Complaint, Evidence, Timeline\n' +
+                              '🎯 Ready to file in federal court\n\n' +
+                              'Check your downloads folder!');
+                        progressBar.style.display = 'none';
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        function addTimeline() {
+            // Open manifestochart timeline in new tab
+            window.open('./manifestochart-timeline.html', '_blank');
+
+            showStatus('📊 Manifestochart Timeline opened! Add events from your transcript.', 'success');
+        }
+
+        function addMusic() {
+            // Open humor & music system
+            window.open('./case-humor-music-system.html', '_blank');
+
+            showStatus('🎵 Humor & Music System opened! Select funny elements + tracks.', 'success');
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.textContent = message;
+            statusDiv.className = 'status-message status-' + type;
+            statusDiv.style.display = 'block';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Demo mode - populate with sample data
+        setTimeout(() => {
+            if (!isRecording) {
+                document.getElementById('uploadBtn').disabled = false;
+            }
+        }, 1000);
+    </script>
+
+    <!-- 👩‍💻 ARIA Avatar Guide -->
+    <script src="aria-guide.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

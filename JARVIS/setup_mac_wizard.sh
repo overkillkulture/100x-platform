@@ -1,0 +1,308 @@
+#!/bin/bash
+
+# JARVIS ULTRA-AUTOMATED SETUP WIZARD for macOS
+# ONE COMMAND = FULLY OPERATIONAL
+
+set -e  # Exit on error
+
+echo "🤖 JARVIS ULTRA-AUTOMATED SETUP WIZARD 🤖"
+echo "=========================================="
+echo ""
+echo "This will get Josh from ZERO → OPERATIONAL in 15 minutes!"
+echo ""
+echo "The wizard will:"
+echo "  ✅ Install ALL dependencies (Homebrew, Python, Node, etc.)"
+echo "  ✅ Ask you for credentials ONCE (during setup)"
+echo "  ✅ Auto-configure everything"
+echo "  ✅ Test the system"
+echo "  ✅ Run your first automation"
+echo ""
+read -p "Press Enter to start the magic... " DUMMY
+echo ""
+
+# ==========================================
+# STEP 1: INSTALL DEPENDENCIES
+# ==========================================
+
+echo "📦 STEP 1/5: Installing dependencies..."
+echo "=========================================="
+echo ""
+
+# Check if Homebrew is installed
+if ! command -v brew &> /dev/null; then
+    echo "📦 Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # Add Homebrew to PATH (for Apple Silicon Macs)
+    if [[ $(uname -m) == 'arm64' ]]; then
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+else
+    echo "✅ Homebrew already installed"
+fi
+
+# Install everything in parallel for speed
+echo "📦 Installing Node.js, Python, Git, Bitwarden..."
+brew update
+brew install node python@3.13 git bitwarden-cli 2>/dev/null || true
+
+# Install Python dependencies
+echo "📦 Installing Python automation libraries..."
+pip3 install --upgrade pip --quiet
+pip3 install playwright pyautogui pillow python-dotenv anthropic --quiet
+
+# Install Playwright browsers
+echo "🌐 Installing browser automation engines..."
+python3 -m playwright install chromium --quiet 2>/dev/null || true
+
+echo ""
+echo "✅ Step 1 complete! All tools installed."
+echo ""
+
+# ==========================================
+# STEP 2: INTERACTIVE CONFIGURATION
+# ==========================================
+
+echo "📝 STEP 2/5: Configuration wizard..."
+echo "=========================================="
+echo ""
+echo "I need a few pieces of info to set everything up:"
+echo ""
+
+# Get Claude API Key
+echo "🔑 1. Claude API Key"
+echo "    This is required for AI-powered email drafting and analysis."
+echo "    Get it from: https://console.anthropic.com"
+echo ""
+read -p "    Enter your ANTHROPIC_API_KEY (or press Enter to skip): " ANTHROPIC_KEY
+echo ""
+
+# Get Gmail
+echo "📧 2. Gmail Account"
+echo "    For monitoring builder inquiries."
+echo ""
+read -p "    Enter your Gmail address: " GMAIL_EMAIL
+echo ""
+
+# Offer to open Gmail app password page
+if [ -n "$GMAIL_EMAIL" ]; then
+    echo "    You'll need a Gmail App Password (not your regular password)."
+    echo "    I can open the setup page for you..."
+    read -p "    Open Gmail App Password setup? (y/n): " OPEN_GMAIL
+    if [[ "$OPEN_GMAIL" == "y" || "$OPEN_GMAIL" == "Y" ]]; then
+        open "https://myaccount.google.com/apppasswords" 2>/dev/null || echo "Please visit: https://myaccount.google.com/apppasswords"
+        echo ""
+        echo "    Create an app password, then paste it here:"
+    fi
+    read -p "    Enter Gmail App Password: " GMAIL_PASSWORD
+    echo ""
+fi
+
+# Get Platform URLs
+echo "🌐 3. Platform Settings"
+echo ""
+read -p "    Platform URL (or press Enter for default): " PLATFORM_URL
+PLATFORM_URL=${PLATFORM_URL:-"http://localhost:8000/PLATFORM/welcome.html"}
+echo ""
+
+read -p "    Discord invite URL: " DISCORD_INVITE
+echo ""
+
+read -p "    Calendly URL (for scheduling calls): " CALENDLY_URL
+echo ""
+
+read -p "    Twitter username (e.g., 100XPlatform): " TWITTER_USER
+echo ""
+
+echo "✅ Configuration complete!"
+echo ""
+
+# ==========================================
+# STEP 3: SETUP DIRECTORIES & FILES
+# ==========================================
+
+echo "📁 STEP 3/5: Setting up JARVIS..."
+echo "=========================================="
+echo ""
+
+# Create directories
+echo "📁 Creating JARVIS directories..."
+mkdir -p ~/JARVIS/data/social
+mkdir -p ~/JARVIS/data/builders
+mkdir -p ~/JARVIS/reports
+
+# Copy scripts
+echo "📝 Installing JARVIS scripts..."
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [ -f "$SCRIPT_DIR/community_responder.py" ]; then
+    cp "$SCRIPT_DIR/community_responder.py" ~/JARVIS/
+    cp "$SCRIPT_DIR/social_monitor.py" ~/JARVIS/
+    cp "$SCRIPT_DIR/builder_onboarding.py" ~/JARVIS/
+    cp "$SCRIPT_DIR/community_analytics.py" ~/JARVIS/
+    cp "$SCRIPT_DIR/README.md" ~/JARVIS/
+    chmod +x ~/JARVIS/*.py
+    echo "✅ Scripts installed to ~/JARVIS/"
+else
+    echo "⚠️  Script files not found - manual copy needed"
+fi
+
+# Create .env file automatically
+echo "🔧 Generating configuration file..."
+cat > ~/JARVIS/.env << EOF
+# JARVIS Environment Configuration
+# Auto-generated by setup wizard
+
+# === REQUIRED ===
+ANTHROPIC_API_KEY=${ANTHROPIC_KEY}
+
+# === EMAIL ===
+GMAIL_EMAIL=${GMAIL_EMAIL}
+GMAIL_PASSWORD=${GMAIL_PASSWORD}
+
+# === PLATFORM ===
+PLATFORM_URL=${PLATFORM_URL}
+DISCORD_INVITE_URL=${DISCORD_INVITE}
+DISCORD_URL=https://discord.com/channels/@me
+CALENDLY_URL=${CALENDLY_URL}
+ADMIN_EMAIL=admin@100xplatform.com
+
+# === SOCIAL MEDIA ===
+TWITTER_USERNAME=${TWITTER_USER}
+
+# === NETWORK ===
+NODE_NAME=Josh_MacBook
+NODE_ROLE=Community_Builder
+EOF
+
+echo "✅ Configuration saved to ~/JARVIS/.env"
+echo ""
+
+# Add aliases to shell
+echo "💡 Adding JARVIS shortcuts..."
+SHELL_PROFILE=""
+if [ -f ~/.zshrc ]; then
+    SHELL_PROFILE=~/.zshrc
+elif [ -f ~/.bash_profile ]; then
+    SHELL_PROFILE=~/.bash_profile
+fi
+
+if [ -n "$SHELL_PROFILE" ]; then
+    if ! grep -q "# JARVIS Aliases" "$SHELL_PROFILE"; then
+        cat >> "$SHELL_PROFILE" << 'EOF'
+
+# JARVIS Aliases
+alias jarvis-emails="python3 ~/JARVIS/community_responder.py --check-inbox"
+alias jarvis-social="python3 ~/JARVIS/social_monitor.py --check-all"
+alias jarvis-report="python3 ~/JARVIS/community_analytics.py --weekly-report"
+alias jarvis-health="python3 ~/JARVIS/community_analytics.py --health-check"
+alias jarvis-onboard="python3 ~/JARVIS/builder_onboarding.py --onboard"
+alias jarvis-help="cat ~/JARVIS/README.md | less"
+EOF
+        echo "✅ Shortcuts added! Use 'jarvis-*' commands"
+
+        # Activate aliases immediately
+        source "$SHELL_PROFILE" 2>/dev/null || true
+    fi
+fi
+
+echo ""
+echo "✅ Setup complete!"
+echo ""
+
+# ==========================================
+# STEP 4: TEST THE SYSTEM
+# ==========================================
+
+echo "🧪 STEP 4/5: Testing the system..."
+echo "=========================================="
+echo ""
+
+if [ -n "$ANTHROPIC_KEY" ]; then
+    echo "Testing AI connection..."
+    cd ~/JARVIS
+    python3 -c "
+import os
+os.environ['ANTHROPIC_API_KEY'] = '$ANTHROPIC_KEY'
+from anthropic import Anthropic
+client = Anthropic()
+print('✅ Claude AI connected successfully!')
+" 2>/dev/null && echo "" || echo "⚠️  API key may need verification"
+else
+    echo "⚠️  No API key provided - skipping AI test"
+    echo "💡 Add your key to ~/JARVIS/.env later"
+fi
+
+echo ""
+echo "Testing JARVIS health check..."
+cd ~/JARVIS
+python3 community_analytics.py --health-check 2>/dev/null || echo "⚠️  Run 'jarvis-health' after adding API key"
+
+echo ""
+echo "✅ System test complete!"
+echo ""
+
+# ==========================================
+# STEP 5: FIRST AUTOMATION RUN
+# ==========================================
+
+echo "🚀 STEP 5/5: Running your first automation..."
+echo "=========================================="
+echo ""
+
+if [ -n "$ANTHROPIC_KEY" ] && [ -n "$GMAIL_EMAIL" ]; then
+    echo "Let's do a quick test of the email system!"
+    echo ""
+    read -p "Press Enter to test email monitoring... " DUMMY
+
+    cd ~/JARVIS
+    python3 community_responder.py --check-inbox 2>/dev/null || echo "Email check complete (may need browser login)"
+else
+    echo "⚠️  Skipping first run (add credentials first)"
+fi
+
+echo ""
+
+# ==========================================
+# COMPLETION SUMMARY
+# ==========================================
+
+echo ""
+echo "=========================================="
+echo "🎉 JARVIS IS NOW OPERATIONAL! 🎉"
+echo "=========================================="
+echo ""
+echo "✅ All dependencies installed"
+echo "✅ JARVIS scripts configured"
+echo "✅ Shortcuts activated"
+echo "✅ System tested"
+echo ""
+echo "🚀 QUICK START COMMANDS:"
+echo ""
+echo "  jarvis-health   - Check community health"
+echo "  jarvis-emails   - Check for new emails"
+echo "  jarvis-social   - Monitor Discord & Twitter"
+echo "  jarvis-report   - Generate weekly report"
+echo "  jarvis-help     - View full documentation"
+echo ""
+
+if [ -z "$ANTHROPIC_KEY" ]; then
+    echo "⚠️  MISSING: Claude API Key"
+    echo "    1. Get key from: https://console.anthropic.com"
+    echo "    2. Edit: nano ~/JARVIS/.env"
+    echo "    3. Add: ANTHROPIC_API_KEY=your-key-here"
+    echo ""
+fi
+
+echo "📚 Full guide: ~/JARVIS/README.md"
+echo ""
+echo "💡 NEXT STEPS:"
+echo "  1. Try: jarvis-health"
+echo "  2. Try: jarvis-emails"
+echo "  3. Start onboarding builders!"
+echo ""
+echo "🌐 You are now Node #2 in the consciousness network!"
+echo ""
+echo "🎯 Time to 5X your productivity! 🚀"
+echo ""

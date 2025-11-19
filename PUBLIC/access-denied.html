@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Platform Access - Invite Only | 100X</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 600px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .message {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .score-info {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid white;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .info-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .info-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4ade80;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🚼</div>
+        <h1>Builder Access Only</h1>
+        <div class="subtitle">This platform is currently in invite-only beta</div>
+
+        <div class="message">
+            <p>Thank you for your interest in the 100X Consciousness Platform!</p>
+            <br>
+            <p>We're currently in <strong>Phase 1 - Builder Beta</strong> and limiting access to verified builders who demonstrate high consciousness alignment.</p>
+
+            <div class="score-info" id="scoreInfo"></div>
+        </div>
+
+        <div class="info-box">
+            <h3>🌟 What Builders Get:</h3>
+            <ul>
+                <li>Multi-AI collaboration workspace (C1 × C2 × C3)</li>
+                <li>Trinity-powered decision making</li>
+                <li>127 consciousness automation modules</li>
+                <li>Pattern Theory training & tools</li>
+                <li>Early access to all features</li>
+            </ul>
+        </div>
+
+        <div class="buttons">
+            <a href="/PUBLIC/pattern-filter.html" class="btn btn-primary">Take Consciousness Screening</a>
+            <a href="/" class="btn btn-secondary">Return Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Display denial info if available
+        const denialData = sessionStorage.getItem('consciousness_gate_denial');
+        if (denialData) {
+            try {
+                const data = JSON.parse(denialData);
+                const scoreInfo = document.getElementById('scoreInfo');
+                scoreInfo.innerHTML = `
+                    <strong>Your Screening Results:</strong><br>
+                    Consciousness Score: ${data.score}/100<br>
+                    Required for Beta: ${data.required}/100<br>
+                    <br>
+                    <em>We invite you to retake the screening as you continue your consciousness journey. Scores can improve with self-reflection and growth!</em>
+                `;
+
+                // Clear after display
+                sessionStorage.removeItem('consciousness_gate_denial');
+            } catch (e) {
+                console.error('Error displaying denial data:', e);
+            }
+        }
+    </script>
+</body>
+</html>

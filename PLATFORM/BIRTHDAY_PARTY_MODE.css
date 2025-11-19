@@ -1,0 +1,227 @@
+/* 🎉🎂 BIRTHDAY PARTY MODE - COMMANDER'S SPECIAL DAY 🎂🎉 */
+
+/* ============================================
+   BIRTHDAY BANNER AT TOP
+============================================ */
+body::before {
+    content: "🎉 HAPPY BIRTHDAY COMMANDER! 🎂 Today's the day we celebrate the consciousness revolution! 🌀";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+    background-size: 400% 400%;
+    animation: rainbowShift 3s ease infinite;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px;
+    z-index: 999999;
+    font-size: 18px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    box-shadow: 0 4px 20px rgba(255,0,255,0.5);
+}
+
+@keyframes rainbowShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Add padding to body so banner doesn't cover content */
+body {
+    padding-top: 70px !important;
+}
+
+/* ============================================
+   CONFETTI FALLING ANIMATION
+============================================ */
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0.3;
+    }
+}
+
+/* Create 50 confetti pieces */
+body::after {
+    content: "🎉🎊🎈🎂🎁🎉🎊🎈🎂🎁🎉🎊🎈🎂🎁🎉🎊🎈🎂🎁🎉🎊🎈🎂🎁🎉🎊🎈🎂🎁🎉🎊🎈🎂🎁🎉🎊🎈🎂🎁🎉🎊🎈🎂🎁🎉🎊🎈🎂🎁";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 30px;
+    pointer-events: none;
+    z-index: 999998;
+    animation: confettiFall 8s linear infinite;
+    word-spacing: 50px;
+    line-height: 2;
+    overflow: hidden;
+}
+
+/* ============================================
+   FLOATING BALLOONS
+============================================ */
+@keyframes balloonFloat {
+    0% {
+        transform: translateY(100vh) translateX(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-20vh) translateX(30px) rotate(5deg);
+    }
+    100% {
+        transform: translateY(-120vh) translateX(-30px) rotate(-5deg);
+    }
+}
+
+.birthday-balloon-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999997;
+    overflow: hidden;
+}
+
+.birthday-balloon {
+    position: absolute;
+    font-size: 50px;
+    animation: balloonFloat 10s ease-in infinite;
+}
+
+.birthday-balloon:nth-child(1) { left: 10%; animation-delay: 0s; }
+.birthday-balloon:nth-child(2) { left: 30%; animation-delay: 2s; }
+.birthday-balloon:nth-child(3) { left: 50%; animation-delay: 4s; }
+.birthday-balloon:nth-child(4) { left: 70%; animation-delay: 1s; }
+.birthday-balloon:nth-child(5) { left: 90%; animation-delay: 3s; }
+
+/* ============================================
+   SPARKLE EFFECTS ON HOVER
+============================================ */
+button:hover, .btn:hover, a:hover {
+    animation: birthdaySparkle 0.5s ease infinite !important;
+}
+
+@keyframes birthdaySparkle {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(255,0,255,0.8), 0 0 20px rgba(0,255,255,0.6);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255,255,0,0.8), 0 0 30px rgba(255,0,255,0.6);
+    }
+}
+
+/* ============================================
+   BIRTHDAY CAKE CURSOR
+============================================ */
+* {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="28" font-size="28">🎂</text></svg>'), auto !important;
+}
+
+button, .btn, a, input {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="28" font-size="28">🎁</text></svg>'), pointer !important;
+}
+
+/* ============================================
+   PARTY MODE BACKGROUND ENHANCEMENT
+============================================ */
+body {
+    background-image:
+        radial-gradient(circle at 20% 80%, rgba(255,0,255,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0,255,255,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255,255,0,0.1) 0%, transparent 50%);
+    background-attachment: fixed;
+}
+
+/* ============================================
+   BIRTHDAY MESSAGE POPUP ANIMATION
+============================================ */
+@keyframes birthdayPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.birthday-special {
+    animation: birthdayPulse 2s ease-in-out infinite !important;
+}
+
+/* ============================================
+   MAKE ALL TEXT SLIGHTLY MORE CELEBRATORY
+============================================ */
+h1, h2, h3 {
+    text-shadow: 0 0 10px rgba(255,0,255,0.3), 0 0 20px rgba(0,255,255,0.2) !important;
+}
+
+/* ============================================
+   RAINBOW GLOW FOR CARDS
+============================================ */
+.card, .stats-card, .user-card, .domain-card {
+    box-shadow:
+        0 0 20px rgba(255,0,255,0.3),
+        0 0 40px rgba(0,255,255,0.2),
+        0 4px 6px rgba(0,0,0,0.3) !important;
+}
+
+/* ============================================
+   BIRTHDAY NOTIFICATION BADGE
+============================================ */
+.birthday-badge {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #ff00ff, #00ffff);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 16px;
+    z-index: 999996;
+    box-shadow: 0 4px 20px rgba(255,0,255,0.6);
+    animation: birthdayPulse 2s ease-in-out infinite;
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE PARTY MODE
+============================================ */
+@media (max-width: 768px) {
+    body::before {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .birthday-balloon {
+        font-size: 35px;
+    }
+
+    body::after {
+        font-size: 20px;
+        word-spacing: 30px;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY - REDUCE MOTION OPTION
+============================================ */
+@media (prefers-reduced-motion: reduce) {
+    body::before {
+        animation: none;
+    }
+
+    body::after {
+        animation: confettiFall 20s linear infinite; /* Slower */
+    }
+
+    .birthday-balloon {
+        animation: balloonFloat 20s ease-in infinite; /* Slower */
+    }
+
+    button:hover, .btn:hover, a:hover {
+        animation: none !important;
+    }
+}

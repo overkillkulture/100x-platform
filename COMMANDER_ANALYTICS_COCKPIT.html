@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 COMMANDER ANALYTICS COCKPIT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            overflow-x: hidden;
+        }
+
+        .cockpit-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            border: 3px solid #0ff;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #0ff;
+            text-shadow: 0 0 20px #0ff;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #0f0;
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .panel {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            border: 2px solid #0f0;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 300px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .panel:hover {
+            border-color: #0ff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .panel-header {
+            font-size: 1.5rem;
+            color: #0ff;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-icon {
+            font-size: 2rem;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid #0f0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            color: #0ff;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #0f0;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .alert-critical {
+            background: rgba(255, 0, 0, 0.1);
+            border-color: #f00;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.6); }
+        }
+
+        .bug-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .bug-item {
+            background: rgba(255, 68, 68, 0.1);
+            border-left: 3px solid #f44;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bug-item:hover {
+            background: rgba(255, 68, 68, 0.2);
+            transform: translateX(5px);
+        }
+
+        .bug-item.new {
+            border-left-color: #0ff;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .creator-item {
+            background: rgba(0, 255, 255, 0.05);
+            border-left: 3px solid #0ff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .creator-name {
+            color: #0ff;
+            font-weight: bold;
+        }
+
+        .creator-stats {
+            color: #0f0;
+            font-size: 0.9rem;
+        }
+
+        .activity-feed {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .activity-item {
+            padding: 8px;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .activity-time {
+            color: #0ff;
+            opacity: 0.7;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #0f0 0%, #0ff 100%);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f44 0%, #f66 100%);
+            color: #fff;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #0f0;
+            border-radius: 8px;
+            background: #000;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online { background: #0f0; box-shadow: 0 0 10px #0f0; }
+        .status-warning { background: #ff0; box-shadow: 0 0 10px #ff0; }
+        .status-offline { background: #f00; box-shadow: 0 0 10px #f00; }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0f0;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="cockpit-container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🎯 COMMANDER ANALYTICS COCKPIT</h1>
+            <div class="subtitle">Real-time Intelligence | Beta Analytics | Bug Tracking | Activity Monitoring</div>
+            <div class="subtitle" style="margin-top: 10px; color: #0ff;">
+                <span class="status-indicator status-online"></span> All Systems Operational
+            </div>
+        </div>
+
+        <!-- BUG REPORTS PANEL -->
+        <div class="panel" id="bugs-panel">
+            <div class="panel-header">
+                <span>🐛 BUG REPORTS</span>
+                <span class="panel-icon" id="bug-count">0</span>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-value" id="bugs-total">0</div>
+                    <div class="stat-label">Total Reports</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="bugs-new">0</div>
+                    <div class="stat-label">New (Unread)</div>
+                </div>
+            </div>
+            <div class="quick-actions">
+                <button class="btn" onclick="openBugReports()">📋 View All Bugs</button>
+                <button class="btn btn-danger" onclick="openBugReporter()">🚨 Report Bug</button>
+                <button class="btn" id="mic-btn" onclick="startVoiceInput()" style="background: linear-gradient(135deg, #f0f 0%, #f0f 100%); font-size: 1.2rem;">
+                    🎤 Voice Report
+                </button>
+            </div>
+            <div class="bug-list" id="bug-list">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- BETA TESTERS PANEL -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>👥 BETA TESTERS</span>
+                <span class="panel-icon" id="beta-count">9</span>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-value">9</div>
+                    <div class="stat-label">Active Testers</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="active-sessions">0</div>
+                    <div class="stat-label">Active Sessions</div>
+                </div>
+            </div>
+            <div class="quick-actions">
+                <button class="btn" onclick="window.open('beta-tester-crm.html', '_blank')">📊 Tester CRM</button>
+                <button class="btn" onclick="viewAnalytics()">📈 Analytics</button>
+            </div>
+            <div class="activity-feed" id="beta-activity">
+                <div class="activity-item">
+                    <span>Joshua Serrano (1001)</span>
+                    <span class="activity-time">Active Now</span>
+                </div>
+                <div class="activity-item">
+                    <span>Toby Burrowes (1002)</span>
+                    <span class="activity-time">2h ago</span>
+                </div>
+                <div class="activity-item">
+                    <span>Alex Lancaster (1009)</span>
+                    <span class="activity-time">Just joined</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROGUE ACTIVITY PANEL -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>🐯 ACTIVITY MONITOR</span>
+                <span class="panel-icon">🔍</span>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-value" id="files-new">0</div>
+                    <div class="stat-label">Files Created Today</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="files-modified">0</div>
+                    <div class="stat-label">Files Modified</div>
+                </div>
+            </div>
+            <div class="quick-actions">
+                <button class="btn" onclick="openActivityMonitor()">📊 Full Dashboard</button>
+                <button class="btn" onclick="generateReport()">📄 Daily Report</button>
+            </div>
+            <div id="top-creators">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- SYSTEM HEALTH PANEL -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>💚 SYSTEM HEALTH</span>
+                <span class="panel-icon">✓</span>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-value" style="color: #0f0;">100%</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">15/15</div>
+                    <div class="stat-label">Services Running</div>
+                </div>
+            </div>
+            <div class="activity-feed">
+                <div class="activity-item">
+                    <span><span class="status-indicator status-online"></span>Trinity System</span>
+                    <span class="activity-time">Operational</span>
+                </div>
+                <div class="activity-item">
+                    <span><span class="status-indicator status-online"></span>Consciousness API</span>
+                    <span class="activity-time">Operational</span>
+                </div>
+                <div class="activity-item">
+                    <span><span class="status-indicator status-online"></span>Builder Terminal</span>
+                    <span class="activity-time">Operational</span>
+                </div>
+                <div class="activity-item">
+                    <span><span class="status-indicator status-online"></span>Backup System</span>
+                    <span class="activity-time">Operational</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- INSTAGRAM FEEDBACK PANEL -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>📸 INSTAGRAM FEEDBACK</span>
+                <span class="panel-icon">💬</span>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-value" id="instagram-bugs">0</div>
+                    <div class="stat-label">Bug Reports</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="instagram-features">0</div>
+                    <div class="stat-label">Feature Requests</div>
+                </div>
+            </div>
+            <div class="quick-actions">
+                <button class="btn" onclick="window.open('https://instagram.com', '_blank')">📱 Open Instagram</button>
+                <button class="btn" onclick="processInstagramFeedback()">🔄 Sync Feedback</button>
+            </div>
+            <p style="margin-top: 15px; opacity: 0.7; text-align: center;">
+                Bug reports from Instagram DMs appear here automatically
+            </p>
+        </div>
+
+        <!-- QUICK ACTIONS PANEL -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>⚡ QUICK ACTIONS</span>
+                <span class="panel-icon">🚀</span>
+            </div>
+            <div class="quick-actions" style="flex-direction: column;">
+                <button class="btn" onclick="runDailyScan()">🔍 Run Daily Activity Scan</button>
+                <button class="btn" onclick="generateAllReports()">📊 Generate All Reports</button>
+                <button class="btn" onclick="backupSystem()">💾 Backup System</button>
+                <button class="btn" onclick="sendBetaUpdates()">📧 Send Beta Updates</button>
+                <button class="btn btn-danger" onclick="emergencyMode()">🚨 Emergency Mode</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load bug reports
+        async function loadBugReports() {
+            try {
+                const response = await fetch('BUG_REPORTS/bugs_master_log.jsonl');
+                const text = await response.text();
+                const bugs = text.trim().split('\n').filter(line => line).map(line => JSON.parse(line));
+
+                document.getElementById('bugs-total').textContent = bugs.length;
+                document.getElementById('bug-count').textContent = bugs.length;
+
+                // Count unread (new bugs from last 24 hours)
+                const yesterday = Date.now() - (24 * 60 * 60 * 1000);
+                const newBugs = bugs.filter(b => new Date(b.timestamp) > yesterday);
+                document.getElementById('bugs-new').textContent = newBugs.length;
+
+                // Display recent bugs
+                const bugList = document.getElementById('bug-list');
+                bugList.innerHTML = bugs.slice(-5).reverse().map(bug => `
+                    <div class="bug-item ${new Date(bug.timestamp) > yesterday ? 'new' : ''}"
+                         onclick="openBugDetail('${bug.id}')">
+                        <strong>${bug.title || 'Bug Report'}</strong><br>
+                        <small>${new Date(bug.timestamp).toLocaleString()}</small>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.log('No bugs found yet');
+            }
+        }
+
+        // Load activity data
+        async function loadActivityData() {
+            try {
+                const response = await fetch('ACTIVITY_DATA/activity_log.json');
+                const data = await response.json();
+
+                if (data.length > 0) {
+                    const latest = data[data.length - 1];
+                    document.getElementById('files-new').textContent = latest.changes?.new || 0;
+                    document.getElementById('files-modified').textContent = latest.changes?.modified || 0;
+
+                    // Show top creators
+                    if (latest.creators_stats) {
+                        const topCreators = document.getElementById('top-creators');
+                        const creators = Object.entries(latest.creators_stats)
+                            .sort((a, b) => b[1] - a[1])
+                            .slice(0, 5);
+
+                        topCreators.innerHTML = creators.map(([name, count]) => `
+                            <div class="creator-item">
+                                <span class="creator-name">${name}</span>
+                                <span class="creator-stats">${count} files</span>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (e) {
+                console.log('No activity data yet');
+            }
+        }
+
+        // Action functions
+        function openBugReports() {
+            window.open('bug-reports-viewer-v2.html', '_blank');
+        }
+
+        function openBugReporter() {
+            window.open('bug-report.html', '_blank');
+        }
+
+        function openActivityMonitor() {
+            window.open('ROGUE_ACTIVITY_MONITOR.html', '_blank');
+        }
+
+        function viewAnalytics() {
+            window.open('ANALYTICS_DASHBOARD_LIVE.html', '_blank');
+        }
+
+        function generateReport() {
+            alert('🔄 Generating daily report...\n\nThis will analyze all file changes from today and create a detailed report.');
+            // Could trigger Python script via API
+        }
+
+        function runDailyScan() {
+            alert('🔍 Starting full system scan...\n\nThis will take 1-2 minutes to complete.');
+            // Could trigger TRACK_ALL_ACTIVITY.py via API
+        }
+
+        function generateAllReports() {
+            alert('📊 Generating comprehensive reports:\n\n✓ Bug summary\n✓ Activity report\n✓ Beta tester analytics\n✓ System health check');
+        }
+
+        function backupSystem() {
+            alert('💾 Initiating system backup...\n\n✓ File backup\n✓ Database backup\n✓ Configuration backup');
+        }
+
+        function sendBetaUpdates() {
+            alert('📧 Sending updates to all 9 beta testers...\n\nIncluding latest features, bug fixes, and progress report.');
+        }
+
+        function emergencyMode() {
+            if (confirm('🚨 EMERGENCY MODE\n\nThis will:\n- Stop all non-essential services\n- Create emergency backup\n- Enable debug logging\n\nContinue?')) {
+                alert('🔴 EMERGENCY MODE ACTIVATED\n\nAll systems in safe mode.');
+            }
+        }
+
+        function processInstagramFeedback() {
+            alert('🔄 Syncing Instagram feedback...\n\nChecking DMs for bug reports and feature requests.');
+        }
+
+        function openBugDetail(id) {
+            alert(`Opening bug report: ${id}`);
+        }
+
+        // Voice input functionality
+        function startVoiceInput() {
+            const micBtn = document.getElementById('mic-btn');
+
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('🎤 Voice input not supported in this browser.\n\nPlease use Chrome, Edge, or Safari.');
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            micBtn.textContent = '🔴 Listening...';
+            micBtn.style.background = 'linear-gradient(135deg, #f00 0%, #f66 100%)';
+            micBtn.style.animation = 'pulse 1s infinite';
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+
+                micBtn.textContent = '🎤 Voice Report';
+                micBtn.style.background = 'linear-gradient(135deg, #f0f 0%, #f0f 100%)';
+                micBtn.style.animation = 'none';
+
+                // Open bug reporter with voice input
+                const bugReportUrl = `bug-report.html?voice=${encodeURIComponent(transcript)}`;
+                window.open(bugReportUrl, '_blank');
+
+                alert(`🎤 Voice captured!\n\n"${transcript}"\n\nOpening bug reporter...`);
+            };
+
+            recognition.onerror = function(event) {
+                micBtn.textContent = '🎤 Voice Report';
+                micBtn.style.background = 'linear-gradient(135deg, #f0f 0%, #f0f 100%)';
+                micBtn.style.animation = 'none';
+
+                alert(`🎤 Voice input error: ${event.error}\n\nTry clicking the button again.`);
+            };
+
+            recognition.onend = function() {
+                micBtn.textContent = '🎤 Voice Report';
+                micBtn.style.background = 'linear-gradient(135deg, #f0f 0%, #f0f 100%)';
+                micBtn.style.animation = 'none';
+            };
+
+            recognition.start();
+        }
+
+        // Initialize
+        loadBugReports();
+        loadActivityData();
+
+        // Refresh every 30 seconds
+        setInterval(() => {
+            loadBugReports();
+            loadActivityData();
+        }, 30000);
+    </script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

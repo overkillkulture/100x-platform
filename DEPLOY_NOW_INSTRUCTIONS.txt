@@ -1,0 +1,70 @@
+🚀 BUILDER TERMINAL - DEPLOY NOW (2 MINUTES)
+
+Your Builder Terminal is ready to deploy!
+
+════════════════════════════════════════════════════════════
+
+OPTION 1: RAILWAY DASHBOARD (EASIEST - DO THIS ONE!)
+
+1. Browser should open to Railway: https://railway.com/project/ba4ad921-3553-43a0-8064-3b01f27e7a87
+
+2. Click "+ New" → "+ Deploy from GitHub repo"
+
+3. If asked to connect GitHub:
+   - Click "Configure GitHub App"
+   - Allow Railway access
+   - Come back and select "builder-terminal-deploy" folder
+
+4. WAIT 2 MINUTES - Railway builds automatically!
+
+5. Once deployed, click on the service → "Settings" tab → Get your URL
+
+6. Copy the URL (looks like: https://builder-terminal-production-abc123.up.railway.app)
+
+7. Click "Variables" tab → Add variable:
+   Name: ANTHROPIC_API_KEY
+   Value: [paste your Claude API key]
+
+8. Service restarts automatically - YOU'RE LIVE!
+
+════════════════════════════════════════════════════════════
+
+OPTION 2: RENDER.COM (IF RAILWAY DOESN'T WORK)
+
+1. Go to: https://render.com/deploy
+
+2. Click "New +" → "Web Service"
+
+3. Select "Build and deploy from a Git repository"
+
+4. Or choose "Deploy without Git" and upload files from:
+   C:\Users\dwrek\100X_DEPLOYMENT\builder-terminal-deploy
+
+5. Settings:
+   - Name: builder-terminal
+   - Build Command: pip install -r requirements.txt
+   - Start Command: gunicorn BUILDER_TERMINAL_API:app
+
+6. Add environment variable:
+   ANTHROPIC_API_KEY = [your key]
+
+7. Click "Create Web Service"
+
+8. Get your URL from Render dashboard
+
+════════════════════════════════════════════════════════════
+
+AFTER DEPLOYMENT:
+
+Once you have your cloud URL, tell me and I'll:
+1. Update builder-terminal.html to use it
+2. Deploy to Netlify
+3. Test the full beta tester experience
+4. Give you the final beta tester onboarding link!
+
+════════════════════════════════════════════════════════════
+
+FILES READY IN:
+C:\Users\dwrek\100X_DEPLOYMENT\builder-terminal-deploy\
+
+Everything is prepared and waiting for you!

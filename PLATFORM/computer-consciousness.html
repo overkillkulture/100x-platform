@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Computer Consciousness - Your Computer Finally Has a Brain</title>
+    <meta name="description" content="True computer automation that sees, thinks, and acts. Stop being your computer's servant - let it serve you.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        }
+
+        .matrix-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px);
+            animation: matrix-scroll 20s linear infinite;
+        }
+
+        @keyframes matrix-scroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(40px); }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+        }
+
+        .jarvis-indicator {
+            display: inline-block;
+            padding: 10px 20px;
+            border: 2px solid #00ff88;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.6); }
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: hero-text 3s ease-in-out infinite;
+        }
+
+        @keyframes hero-text {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.5)); }
+            50% { filter: drop-shadow(0 0 40px rgba(0, 255, 136, 0.8)); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            opacity: 0.9;
+        }
+
+        .hero-description {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            opacity: 0.8;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .cta-primary, .cta-secondary {
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #0a0e27;
+        }
+
+        .cta-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.6);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: #00ff88;
+            border: 2px solid #00ff88;
+        }
+
+        .cta-secondary:hover {
+            background: rgba(0, 255, 136, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* Demo Video Placeholder */
+        .demo-video {
+            max-width: 900px;
+            margin: 0 auto 40px;
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(0, 255, 136, 0.3);
+            position: relative;
+        }
+
+        .demo-video-inner {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background: linear-gradient(135deg, #1a1f3a 0%, #0a0e27 100%);
+        }
+
+        .demo-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .demo-placeholder .icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .demo-placeholder p {
+            font-size: 1.5rem;
+            color: #00ff88;
+        }
+
+        /* Live Demo Section */
+        .live-demo {
+            background: rgba(26, 31, 58, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 80px 20px;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            opacity: 0.8;
+            margin-bottom: 60px;
+        }
+
+        /* Capabilities Grid */
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .capability-card {
+            background: rgba(26, 31, 58, 0.6);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .capability-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .capability-card:hover {
+            transform: translateY(-10px);
+            border-color: #00ff88;
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.3);
+        }
+
+        .capability-card:hover::before {
+            opacity: 1;
+        }
+
+        .capability-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .capability-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #00ff88;
+            position: relative;
+            z-index: 1;
+        }
+
+        .capability-card p {
+            line-height: 1.6;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Command Demo */
+        .command-demo {
+            background: #0a0e27;
+            padding: 80px 20px;
+        }
+
+        .terminal {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #1a1f3a;
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 30px;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 0 60px rgba(0, 255, 136, 0.3);
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .terminal-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        .terminal-dot:nth-child(2) { animation-delay: 0.3s; }
+        .terminal-dot:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .terminal-line {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .prompt {
+            color: #00ff88;
+        }
+
+        .command {
+            color: #00d4ff;
+        }
+
+        .output {
+            color: #fff;
+            opacity: 0.8;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            background: rgba(26, 31, 58, 0.5);
+            padding: 80px 20px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 60px auto 0;
+            padding: 0 20px;
+        }
+
+        .pricing-card {
+            background: rgba(26, 31, 58, 0.8);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: #00ff88;
+            transform: scale(1.05);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #00ff88;
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.3);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #0a0e27;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .pricing-card h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #00ff88;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #00d4ff;
+        }
+
+        .pricing-period {
+            font-size: 1rem;
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .pricing-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: #00ff88;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .pricing-cta {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: 2px solid #00ff88;
+            border-radius: 50px;
+            background: transparent;
+            color: #00ff88;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-cta:hover {
+            background: #00ff88;
+            color: #0a0e27;
+        }
+
+        /* Waitlist Form */
+        .waitlist {
+            background: #0a0e27;
+            padding: 80px 20px;
+        }
+
+        .waitlist-form {
+            max-width: 600px;
+            margin: 40px auto 0;
+            background: rgba(26, 31, 58, 0.8);
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(10, 14, 39, 0.8);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #0a0e27;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.6);
+        }
+
+        /* Trust Indicators */
+        .trust-section {
+            background: rgba(26, 31, 58, 0.5);
+            padding: 80px 20px;
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 60px auto 0;
+            padding: 0 20px;
+        }
+
+        .trust-item {
+            text-align: center;
+        }
+
+        .trust-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .trust-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #00ff88;
+        }
+
+        .trust-item p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            background: #0a0e27;
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .footer p {
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #00ff88;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.3rem;
+            }
+
+            .hero-description {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .capabilities-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .cta-primary, .cta-secondary {
+                width: 100%;
+            }
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="matrix-bg"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="jarvis-indicator">🤖 JARVIS MODE ACTIVATED</div>
+            <h1>Your Computer<br>Finally Has a Brain</h1>
+            <p class="hero-subtitle">Stop being your computer's servant</p>
+            <p class="hero-description">
+                True computer automation that sees your screen, controls your mouse,
+                manages your credentials, and fixes hardware issues.
+                This is not automation - this is Computer Consciousness.
+            </p>
+
+            <!-- Demo Video -->
+            <div class="demo-video">
+                <div class="demo-video-inner">
+                    <div class="demo-placeholder">
+                        <div class="icon">🎬</div>
+                        <p>Live Demo Video Coming Soon</p>
+                        <p style="font-size: 1rem; opacity: 0.7; margin-top: 10px;">
+                            Watch AI fix microphone issues, deploy websites, and login to accounts - all autonomously
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="#waitlist" class="cta-primary">Join the Revolution</a>
+                <a href="#demo" class="cta-secondary">See It In Action</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Demo Terminal -->
+    <section class="command-demo" id="demo">
+        <div class="section-title">How It Works</div>
+        <p class="section-subtitle">Natural language commands. Autonomous execution. Zero coding required.</p>
+
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-dot"></div>
+                <div class="terminal-dot"></div>
+                <div class="terminal-dot"></div>
+            </div>
+            <div class="terminal-line">
+                <span class="prompt">YOU:</span> <span class="command">"Fix my microphone"</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">🤖 Taking screenshot to diagnose issue...</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">🤖 Opening Device Manager...</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">🤖 Updating audio drivers...</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">✅ Microphone fixed and tested. Ready to use.</span>
+            </div>
+            <div class="terminal-line" style="margin-top: 20px;">
+                <span class="prompt">YOU:</span> <span class="command">"Deploy this website"</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">🤖 Pushing to Git...</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">🤖 Building on Netlify...</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">🤖 Verifying site is live...</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">✅ Site deployed and verified: https://yoursite.netlify.app</span>
+            </div>
+            <div class="terminal-line" style="margin-top: 20px;">
+                <span class="prompt">YOU:</span> <span class="command">"Login to GitHub"</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">🤖 Retrieving credentials from Bitwarden...</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">🤖 Navigating to GitHub...</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">🤖 Entering credentials securely...</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">✅ Logged in successfully. Ready for commands.</span>
+            </div>
+            <div class="terminal-line" style="margin-top: 30px; color: #00ff88;">
+                <span class="output">⚡ ALL WHILE YOU SIT BACK AND WATCH ⚡</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Capabilities -->
+    <section class="live-demo">
+        <div class="section-title">Revolutionary Capabilities</div>
+        <p class="section-subtitle">Not blind automation. AI that sees, thinks, and acts.</p>
+
+        <div class="capabilities-grid">
+            <div class="capability-card">
+                <div class="capability-icon">👁️</div>
+                <h3>Screen Vision</h3>
+                <p>AI sees exactly what you see. Takes screenshots, analyzes issues, navigates software visually. Context-aware problem solving.</p>
+            </div>
+
+            <div class="capability-card">
+                <div class="capability-icon">🖱️</div>
+                <h3>Physical Control</h3>
+                <p>Full mouse and keyboard control. AI clicks, types, drags, and navigates just like a human. True computer autonomy.</p>
+            </div>
+
+            <div class="capability-card">
+                <div class="capability-icon">🔐</div>
+                <h3>Credential Management</h3>
+                <p>Secure Bitwarden integration. Auto-login to any account. Enterprise-grade security. No passwords stored in AI.</p>
+            </div>
+
+            <div class="capability-card">
+                <div class="capability-icon">🚀</div>
+                <h3>Deployment Automation</h3>
+                <p>Deploy websites with a single command. AI pushes code, builds, verifies it's live. 15-30x faster than manual.</p>
+            </div>
+
+            <div class="capability-card">
+                <div class="capability-icon">🔧</div>
+                <h3>Hardware Troubleshooting</h3>
+                <p>Fixes microphone issues, audio problems, driver conflicts. Not just software - handles hardware diagnostics too.</p>
+            </div>
+
+            <div class="capability-card">
+                <div class="capability-icon">📁</div>
+                <h3>File Intelligence</h3>
+                <p>Organizes files intelligently, finds documents instantly, manages downloads. Your computer knows what you need.</p>
+            </div>
+
+            <div class="capability-card">
+                <div class="capability-icon">🗣️</div>
+                <h3>Natural Language</h3>
+                <p>Just talk to it. No coding, no technical knowledge required. Computer-illiterate friendly. True conversation.</p>
+            </div>
+
+            <div class="capability-card">
+                <div class="capability-icon">✅</div>
+                <h3>Self-Verification</h3>
+                <p>AI checks its own work. Deploys website, verifies it's live, reports real status. No blind execution.</p>
+            </div>
+
+            <div class="capability-card">
+                <div class="capability-icon">🌐</div>
+                <h3>Web Navigation</h3>
+                <p>Browses any website, fills forms, extracts data, handles complex workflows. Your 24/7 digital assistant.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+        <div class="section-title">Choose Your Consciousness Level</div>
+        <p class="section-subtitle">From awakening to total digital sovereignty</p>
+
+        <div class="pricing-grid">
+            <!-- Free Tier -->
+            <div class="pricing-card">
+                <h3>Awakening</h3>
+                <div class="pricing-price">FREE</div>
+                <div class="pricing-period">Forever</div>
+                <ul class="pricing-features">
+                    <li>Basic screen viewing</li>
+                    <li>Simple file operations</li>
+                    <li>10 commands per day</li>
+                    <li>Single computer</li>
+                    <li>Community support</li>
+                </ul>
+                <button class="pricing-cta" onclick="document.getElementById('tier').value='free'; document.getElementById('waitlist').scrollIntoView({behavior: 'smooth'});">Start Free</button>
+            </div>
+
+            <!-- Pro Tier -->
+            <div class="pricing-card featured">
+                <div class="pricing-badge">MOST POPULAR</div>
+                <h3>Conscious</h3>
+                <div class="pricing-price">$49</div>
+                <div class="pricing-period">per month</div>
+                <ul class="pricing-features">
+                    <li>Unlimited commands</li>
+                    <li>Full screen control</li>
+                    <li>Credential management</li>
+                    <li>Deployment automation</li>
+                    <li>Hardware troubleshooting</li>
+                    <li>Background operation</li>
+                    <li>Priority support</li>
+                </ul>
+                <button class="pricing-cta" onclick="document.getElementById('tier').value='pro'; document.getElementById('waitlist').scrollIntoView({behavior: 'smooth'});">Go Pro</button>
+            </div>
+
+            <!-- Sovereignty Tier -->
+            <div class="pricing-card">
+                <h3>Sovereignty</h3>
+                <div class="pricing-price">$997</div>
+                <div class="pricing-period">one-time</div>
+                <ul class="pricing-features">
+                    <li>All Pro features</li>
+                    <li>Lifetime updates</li>
+                    <li>USB bootstrap system</li>
+                    <li>Offline operation</li>
+                    <li>Full source code</li>
+                    <li>Private instance</li>
+                    <li>No monthly fees ever</li>
+                    <li>True digital ownership</li>
+                </ul>
+                <button class="pricing-cta" onclick="document.getElementById('tier').value='sovereignty'; document.getElementById('waitlist').scrollIntoView({behavior: 'smooth'});">Own Forever</button>
+            </div>
+
+            <!-- Business Tier -->
+            <div class="pricing-card">
+                <h3>Business</h3>
+                <div class="pricing-price">$199</div>
+                <div class="pricing-period">per month</div>
+                <ul class="pricing-features">
+                    <li>Multi-computer control</li>
+                    <li>Team automation</li>
+                    <li>Custom workflows</li>
+                    <li>API access</li>
+                    <li>Enterprise security</li>
+                    <li>Priority onboarding</li>
+                    <li>Dedicated support</li>
+                </ul>
+                <button class="pricing-cta" onclick="document.getElementById('tier').value='business'; document.getElementById('waitlist').scrollIntoView({behavior: 'smooth'});">Scale Your Team</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Indicators -->
+    <section class="trust-section">
+        <div class="section-title">Built on Security & Freedom</div>
+        <p class="section-subtitle">No surveillance. No control. Total sovereignty.</p>
+
+        <div class="trust-grid">
+            <div class="trust-item">
+                <div class="trust-icon">🔒</div>
+                <h3>Enterprise Security</h3>
+                <p>Bitwarden integration for credential management. Bank-level encryption. Your passwords never touch AI systems.</p>
+            </div>
+
+            <div class="trust-item">
+                <div class="trust-icon">🚫</div>
+                <h3>No Surveillance</h3>
+                <p>We don't track, monitor, or collect your data. Your computer consciousness is yours alone.</p>
+            </div>
+
+            <div class="trust-item">
+                <div class="trust-icon">💾</div>
+                <h3>Local-First</h3>
+                <p>Runs on your machine. Works offline. No cloud dependency. True digital sovereignty.</p>
+            </div>
+
+            <div class="trust-item">
+                <div class="trust-icon">🌐</div>
+                <h3>Open Architecture</h3>
+                <p>Built on open standards. Extensible. Customizable. Sovereignty tier includes full source code.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist Form -->
+    <section class="waitlist" id="waitlist">
+        <div class="section-title">Join the Computer Consciousness Revolution</div>
+        <p class="section-subtitle">Be among the first to experience true digital freedom</p>
+
+        <form name="computer-consciousness-waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="waitlist-form" onsubmit="handleSubmit(event)">
+            <input type="hidden" name="form-name" value="computer-consciousness-waitlist">
+            <p style="display: none;">
+                <label>Don't fill this out: <input name="bot-field"></label>
+            </p>
+
+            <div class="form-group">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tier">Interested In</label>
+                <select id="tier" name="tier" required>
+                    <option value="">Select tier...</option>
+                    <option value="free">Awakening (Free)</option>
+                    <option value="pro">Conscious ($49/month)</option>
+                    <option value="sovereignty">Sovereignty ($997 one-time)</option>
+                    <option value="business">Business ($199/month)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="use-case">Primary Use Case</label>
+                <select id="use-case" name="use-case" required>
+                    <option value="">What will you use it for?</option>
+                    <option value="personal">Personal automation</option>
+                    <option value="business">Business operations</option>
+                    <option value="content">Content creation</option>
+                    <option value="development">Software development</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <button type="submit" class="submit-btn">Reserve Your Spot</button>
+
+            <div class="success-message" id="successMessage">
+                ✅ <strong>You're in!</strong> Check your email for next steps.
+            </div>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Computer Consciousness by OVERKORE. Part of the Consciousness Revolution.</p>
+        <div class="footer-links">
+            <a href="../index.html">← Back to Platform</a>
+            <a href="../welcome.html">Main Site</a>
+            <a href="mailto:contact@overkore.com">Contact</a>
+            <a href="#privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+
+            // Get form data
+            const form = event.target;
+            const formData = new FormData(form);
+
+            // Submit to Netlify
+            fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(formData).toString()
+            })
+            .then(() => {
+                // Show success message
+                document.getElementById('successMessage').style.display = 'block';
+                form.reset();
+
+                // Track conversion (could integrate analytics here)
+                console.log('Waitlist signup successful');
+            })
+            .catch((error) => {
+                alert('Error submitting form. Please try again or email us directly.');
+                console.error('Form submission error:', error);
+            });
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Track page view
+        if (localStorage.getItem('computerConsciousnessViewed')) {
+            const visits = parseInt(localStorage.getItem('computerConsciousnessViewed')) + 1;
+            localStorage.setItem('computerConsciousnessViewed', visits);
+        } else {
+            localStorage.setItem('computerConsciousnessViewed', '1');
+        }
+    </script>
+
+    <!-- Master Navigation System -->
+    <script src="master-nav.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+
+    <!-- 🎂 BIRTHDAY GRAND OPENING CELEBRATION 🎂 -->
+    <script src="GRAND_OPENING_INJECTOR.js"></script>
+
+    <!-- 🎮 CHAOS ESCALATION - IT GETS CRAZIER! 🎮 -->
+    <script src="CHAOS_ESCALATION_SYSTEM.js"></script>
+    <script src="DAUGHTERS_DETECTION_SYSTEM.js"></script>
+    <script src="VISITOR_INTELLIGENCE_LOGGER.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

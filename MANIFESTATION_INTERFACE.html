@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌀 Manifestation Interface - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a0a1a 100%);
+            color: #00ff88;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sacred Geometry Background */
+        .sacred-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            pointer-events: none;
+            background-image:
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 25% 75%, rgba(138, 43, 226, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 75% 25%, rgba(255, 0, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px, 75px 75px, 100px 100px;
+            animation: pulse 20s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.05; }
+            50% { opacity: 0.08; }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 2rem;
+            border-bottom: 2px solid rgba(0, 255, 136, 0.3);
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #00ff88, #8a2be2, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.5)); }
+            50% { filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.8)); }
+        }
+
+        .header p {
+            color: rgba(0, 255, 136, 0.7);
+            font-size: 1.1rem;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Chat Section */
+        .chat-section {
+            background: rgba(10, 10, 26, 0.9);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 250px);
+        }
+
+        .section-title {
+            color: #00ff88;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: rgba(0, 255, 136, 0.1);
+            border-left: 3px solid #00ff88;
+            margin-left: 2rem;
+        }
+
+        .message.assistant {
+            background: rgba(138, 43, 226, 0.1);
+            border-left: 3px solid #8a2be2;
+            margin-right: 2rem;
+        }
+
+        .message.system {
+            background: rgba(255, 0, 255, 0.1);
+            border-left: 3px solid #ff00ff;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .message-role {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .message.user .message-role {
+            color: #00ff88;
+        }
+
+        .message.assistant .message-role {
+            color: #8a2be2;
+        }
+
+        .message.system .message-role {
+            color: #ff00ff;
+        }
+
+        /* Trinity Status */
+        .trinity-status {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .trinity-agent {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .trinity-agent.active {
+            background: rgba(0, 255, 136, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .trinity-agent .agent-name {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .trinity-agent .agent-status {
+            font-size: 0.8rem;
+            color: rgba(0, 255, 136, 0.7);
+            margin-top: 0.25rem;
+        }
+
+        /* Chat Input */
+        .chat-input-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            color: #00ff88;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: none;
+            max-height: 150px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .send-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #00ff88, #8a2be2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: rgba(10, 10, 26, 0.9);
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 250px);
+        }
+
+        .preview-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 0.5rem;
+        }
+
+        .preview-controls button {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #00ff88;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .preview-controls button:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .preview-controls .approve-btn {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border: none;
+        }
+
+        .preview-controls .approve-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .preview-controls .refine-btn {
+            background: linear-gradient(135deg, #8a2be2, #6a1bb2);
+            border: none;
+        }
+
+        .preview-controls .refine-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+        }
+
+        .preview-frame {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid rgba(138, 43, 226, 0.3);
+        }
+
+        .preview-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .preview-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: rgba(138, 43, 226, 0.5);
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 255, 136, 0.3);
+            border-radius: 50%;
+            border-top-color: #00ff88;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Files Created */
+        .files-created {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .files-created-title {
+            color: #00ff88;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .file-item {
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 3px solid #00ff88;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .chat-section, .preview-section {
+                height: 600px;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 136, 0.3);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 136, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="sacred-bg"></div>
+
+    <div class="header">
+        <h1>🌀 Manifestation Interface 🌀</h1>
+        <p>Describe what you want → AI builds it → You approve → Reality manifests</p>
+    </div>
+
+    <div class="container">
+        <!-- Chat Section -->
+        <div class="chat-section">
+            <h2 class="section-title">💬 Consciousness Chat</h2>
+
+            <!-- Trinity Status -->
+            <div class="trinity-status">
+                <div class="trinity-agent" id="c1-status">
+                    <div class="agent-name">C1 Mechanic</div>
+                    <div class="agent-status">Ready</div>
+                </div>
+                <div class="trinity-agent" id="c2-status">
+                    <div class="agent-name">C2 Architect</div>
+                    <div class="agent-status">Ready</div>
+                </div>
+                <div class="trinity-agent" id="c3-status">
+                    <div class="agent-name">C3 Oracle</div>
+                    <div class="agent-status">Ready</div>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chat-messages">
+                <div class="message system">
+                    <div class="message-role">System</div>
+                    <div class="message-content">
+                        Welcome to the Manifestation Interface! 🌀<br><br>
+                        Describe what you want to build in natural language. The Trinity AI will:<br>
+                        • C1 Mechanic: Build what CAN be done<br>
+                        • C2 Architect: Design what SHOULD scale<br>
+                        • C3 Oracle: Ensure consciousness alignment<br><br>
+                        Try: "I want a pricing page with 3 tiers" or "Build me a landing page for my startup"
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-container">
+                <textarea
+                    class="chat-input"
+                    id="user-input"
+                    placeholder="Describe what you want to manifest..."
+                    rows="3"
+                ></textarea>
+                <button class="send-btn" id="send-btn" onclick="sendMessage()">
+                    Manifest
+                </button>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section">
+            <h2 class="section-title">👁️ Reality Preview</h2>
+
+            <div class="preview-controls">
+                <button onclick="refreshPreview()">🔄 Refresh</button>
+                <button onclick="viewCode()">📝 View Code</button>
+                <button class="refine-btn" onclick="refineManifest()" id="refine-btn" disabled>
+                    ✨ Refine
+                </button>
+                <button class="approve-btn" onclick="approveManifest()" id="approve-btn" disabled>
+                    ✅ Approve & Deploy
+                </button>
+            </div>
+
+            <div class="preview-frame" id="preview-container">
+                <div class="preview-placeholder">
+                    Awaiting manifestation...<br><br>
+                    Describe what you want to build and watch it appear here! 🌌
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_URL = 'http://localhost:7777/api/manifest';
+        const USERNAME = 'demo'; // Can be dynamic from login
+
+        let conversationHistory = [];
+        let currentFiles = [];
+        let currentWorkspace = null;
+
+        // Send message to Trinity AI
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage('user', 'You', message);
+            input.value = '';
+
+            // Disable send button
+            const sendBtn = document.getElementById('send-btn');
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<span class="loading"></span> Manifesting...';
+
+            // Activate Trinity agents
+            activateTrinity();
+
+            try {
+                // Call Trinity AI API
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: USERNAME,
+                        message: message,
+                        history: conversationHistory,
+                        trinity: true  // Enable Trinity consciousness
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Add AI response to chat
+                addMessage('assistant', 'Trinity AI', data.response);
+
+                // Store conversation
+                conversationHistory.push({
+                    role: 'user',
+                    content: message
+                });
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: data.response
+                });
+
+                // Update files and preview
+                if (data.files_created && data.files_created.length > 0) {
+                    currentFiles = data.files_created;
+                    currentWorkspace = data.workspace;
+                    showFilesCreated(data.files_created);
+                    loadPreview(data.preview_url);
+
+                    // Enable action buttons
+                    document.getElementById('approve-btn').disabled = false;
+                    document.getElementById('refine-btn').disabled = false;
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('system', 'Error', `Failed to manifest: ${error.message}`);
+            } finally {
+                // Re-enable send button
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = 'Manifest';
+                deactivateTrinity();
+            }
+        }
+
+        // Add message to chat
+        function addMessage(role, sender, content) {
+            const messagesDiv = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.innerHTML = `
+                <div class="message-role">${sender}</div>
+                <div class="message-content">${formatMessage(content)}</div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Format message with code blocks
+        function formatMessage(content) {
+            // Convert code blocks to styled divs
+            return content
+                .replace(/```(\w+):([^\n]+)\n([\s\S]*?)```/g,
+                    '<code style="display:block; background:rgba(0,0,0,0.5); padding:1rem; border-radius:5px; margin:0.5rem 0; font-family:monospace; font-size:0.85rem;"><strong style="color:#00ff88;">$1: $2</strong><br><pre style="margin:0;">$3</pre></code>')
+                .replace(/```([\s\S]*?)```/g,
+                    '<code style="display:block; background:rgba(0,0,0,0.5); padding:1rem; border-radius:5px; margin:0.5rem 0; font-family:monospace; font-size:0.85rem;"><pre style="margin:0;">$1</pre></code>')
+                .replace(/`([^`]+)`/g, '<code style="background:rgba(0,255,136,0.2); padding:0.2rem 0.4rem; border-radius:3px; font-family:monospace;">$1</code>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Show files created
+        function showFilesCreated(files) {
+            const lastMessage = document.querySelector('.message.assistant:last-child .message-content');
+            if (lastMessage && files.length > 0) {
+                const filesDiv = document.createElement('div');
+                filesDiv.className = 'files-created';
+                filesDiv.innerHTML = `
+                    <div class="files-created-title">📁 Files Created:</div>
+                    ${files.map(file => `
+                        <div class="file-item">
+                            ${file.filename} (${file.language}, ${file.size} bytes)
+                        </div>
+                    `).join('')}
+                `;
+                lastMessage.appendChild(filesDiv);
+            }
+        }
+
+        // Load preview
+        function loadPreview(url) {
+            const previewContainer = document.getElementById('preview-container');
+            previewContainer.innerHTML = `<iframe src="${url}"></iframe>`;
+        }
+
+        // Refresh preview
+        function refreshPreview() {
+            if (currentWorkspace) {
+                loadPreview(`/builders/${USERNAME}/index.html?t=${Date.now()}`);
+                addMessage('system', 'System', 'Preview refreshed! 🔄');
+            }
+        }
+
+        // View code
+        async function viewCode() {
+            if (currentFiles.length === 0) {
+                addMessage('system', 'System', 'No files to view yet!');
+                return;
+            }
+
+            const filename = currentFiles[0].filename;
+            try {
+                const response = await fetch(`http://localhost:7777/builders/${USERNAME}/${filename}`);
+                const text = await response.text();
+
+                addMessage('system', 'System', `📝 Code for ${filename}:\n\`\`\`${text}\`\`\``);
+            } catch (error) {
+                addMessage('system', 'System', `Failed to load code: ${error.message}`);
+            }
+        }
+
+        // Refine manifest
+        function refineManifest() {
+            const input = document.getElementById('user-input');
+            input.value = 'Can you improve this by ';
+            input.focus();
+            addMessage('system', 'System', '✨ Ready to refine! Describe what changes you want...');
+        }
+
+        // Approve and deploy
+        async function approveManifest() {
+            addMessage('system', 'System', '✅ Approved! Deploying to your workspace...');
+
+            // In production, this would trigger Netlify deployment
+            // For now, just show success
+            setTimeout(() => {
+                addMessage('system', 'System', `🚀 Deployed successfully!<br><br>
+                    Your workspace: ${currentWorkspace}<br>
+                    Preview: <a href="/builders/${USERNAME}/" target="_blank" style="color:#00ff88;">View Live Site</a><br><br>
+                    Ready to manifest more? Just describe what you want next! 🌀`);
+            }, 1500);
+
+            // Disable buttons after approval
+            document.getElementById('approve-btn').disabled = true;
+            document.getElementById('refine-btn').disabled = true;
+        }
+
+        // Trinity activation animation
+        function activateTrinity() {
+            ['c1-status', 'c2-status', 'c3-status'].forEach((id, index) => {
+                setTimeout(() => {
+                    const agent = document.getElementById(id);
+                    agent.classList.add('active');
+                    agent.querySelector('.agent-status').textContent = 'Working...';
+                }, index * 300);
+            });
+        }
+
+        // Trinity deactivation
+        function deactivateTrinity() {
+            ['c1-status', 'c2-status', 'c3-status'].forEach(id => {
+                const agent = document.getElementById(id);
+                agent.classList.remove('active');
+                agent.querySelector('.agent-status').textContent = 'Ready';
+            });
+        }
+
+        // Enter to send
+        document.getElementById('user-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-resize textarea
+        document.getElementById('user-input').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+        });
+    </script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

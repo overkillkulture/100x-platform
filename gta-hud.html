@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X GTA HUD - Modular Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Segoe UI Emoji', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><rect fill="%230a0a0a" width="1920" height="1080"/><circle cx="960" cy="540" r="400" fill="%231a1a2e" opacity="0.3"/></svg>') no-repeat center center fixed;
+            background-size: cover;
+            color: #e8e8e8;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Video background simulation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(10,10,10,0.7) 0%, rgba(26,26,46,0.7) 50%, rgba(10,10,10,0.7) 100%);
+            z-index: -1;
+        }
+
+        /* Grid Container */
+        .hud-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 10px;
+            padding: 10px;
+            pointer-events: none;
+        }
+
+        /* Widget Base */
+        .widget {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            position: absolute;
+            pointer-events: auto;
+            cursor: move;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .widget:hover {
+            border-color: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
+        }
+
+        .widget.active {
+            border-color: rgba(0, 255, 255, 0.6);
+            box-shadow: 0 12px 40px rgba(0, 255, 255, 0.4);
+        }
+
+        /* Widget Header */
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            user-select: none;
+        }
+
+        .widget-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #00ffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .widget-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .widget-btn {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .widget-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.5);
+        }
+
+        /* Widget Content */
+        .widget-content {
+            color: #e8e8e8;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-height: calc(100% - 50px);
+            overflow-y: auto;
+        }
+
+        /* Size Classes */
+        .size-1x1 { width: 200px; height: 200px; }
+        .size-2x1 { width: 420px; height: 200px; }
+        .size-1x2 { width: 200px; height: 420px; }
+        .size-2x2 { width: 420px; height: 420px; }
+        .size-3x2 { width: 640px; height: 420px; }
+        .size-4x2 { width: 860px; height: 420px; }
+        .size-full { width: calc(100vw - 40px); height: calc(100vh - 40px); }
+
+        /* Stats Widget */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #00ffff;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* AI Chat Widget */
+        .ai-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .ai-message {
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 0.75rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .ai-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: #00ffff;
+        }
+
+        .ai-send {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-radius: 8px;
+            color: #00ffff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-send:hover {
+            background: rgba(0, 255, 255, 0.3);
+        }
+
+        /* Module Grid */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .module-card {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .module-card:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .module-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #00ffff;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 1rem 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .control-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-radius: 10px;
+            color: #00ffff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: rgba(0, 255, 255, 0.4);
+            border-color: #00ffff;
+        }
+
+        /* Resize Handle */
+        .resize-handle {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            cursor: nwse-resize;
+            background: rgba(0, 255, 255, 0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #00ffff;
+        }
+
+        .resize-handle:hover {
+            background: rgba(0, 255, 255, 0.5);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 255, 0.5);
+        }
+
+        /* Position Indicators */
+        .position-indicator {
+            position: fixed;
+            background: rgba(0, 255, 255, 0.2);
+            border: 2px dashed rgba(0, 255, 255, 0.5);
+            border-radius: 10px;
+            pointer-events: none;
+            display: none;
+            z-index: 9998;
+        }
+
+        .position-indicator.show {
+            display: block;
+        }
+
+        /* Pulse Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Stats Widget -->
+    <div class="widget size-2x1" id="widget-stats" style="top: 20px; left: 20px;">
+        <div class="widget-header">
+            <div class="widget-title">📊 System Status</div>
+            <div class="widget-controls">
+                <div class="widget-btn" onclick="resizeWidget('widget-stats', 'next')" title="Resize">⇔</div>
+                <div class="widget-btn" onclick="toggleWidget('widget-stats')" title="Minimize">−</div>
+            </div>
+        </div>
+        <div class="widget-content">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">93%</div>
+                    <div class="stat-label">Consciousness</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">7</div>
+                    <div class="stat-label">Modules</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">12/20</div>
+                    <div class="stat-label">Tasks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value pulse">✓</div>
+                    <div class="stat-label">All Systems</div>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle">⋰</div>
+    </div>
+
+    <!-- AI Assistant Widget -->
+    <div class="widget size-2x2" id="widget-ai" style="top: 20px; right: 20px;">
+        <div class="widget-header">
+            <div class="widget-title">🤖 AI Assistant</div>
+            <div class="widget-controls">
+                <div class="widget-btn" onclick="resizeWidget('widget-ai', 'next')" title="Resize">⇔</div>
+                <div class="widget-btn" onclick="toggleWidget('widget-ai')" title="Minimize">−</div>
+            </div>
+        </div>
+        <div class="widget-content">
+            <div class="ai-messages" id="aiMessages">
+                <div class="ai-message">
+                    <strong>Claude:</strong> Welcome to GTA-style HUD! Drag me anywhere, resize me, or move me to different sides. 🎮
+                </div>
+            </div>
+            <div class="ai-input-group">
+                <input type="text" class="ai-input" id="aiInput" placeholder="Ask anything..." onkeypress="if(event.key==='Enter') sendMessage()">
+                <button class="ai-send" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+        <div class="resize-handle">⋰</div>
+    </div>
+
+    <!-- Modules Widget -->
+    <div class="widget size-2x2" id="widget-modules" style="bottom: 100px; left: 20px;">
+        <div class="widget-header">
+            <div class="widget-title">🎯 Quick Launch</div>
+            <div class="widget-controls">
+                <div class="widget-btn" onclick="resizeWidget('widget-modules', 'next')" title="Resize">⇔</div>
+                <div class="widget-btn" onclick="toggleWidget('widget-modules')" title="Minimize">−</div>
+            </div>
+        </div>
+        <div class="widget-content">
+            <div class="module-grid">
+                <div class="module-card" onclick="window.open('workspace-v3.html', '_blank')">
+                    <div class="module-icon">🚨</div>
+                    <div class="module-name">Builder</div>
+                </div>
+                <div class="module-card" onclick="window.open('consciousness-workspace.html', '_blank')">
+                    <div class="module-icon">💼</div>
+                    <div class="module-name">Workspace</div>
+                </div>
+                <div class="module-card" onclick="addWidget('trinity')">
+                    <div class="module-icon">🌀</div>
+                    <div class="module-name">Trinity</div>
+                </div>
+                <div class="module-card" onclick="addWidget('analytics')">
+                    <div class="module-icon">📈</div>
+                    <div class="module-name">Analytics</div>
+                </div>
+                <div class="module-card" onclick="window.open('jarvis.html', '_blank')">
+                    <div class="module-icon">🤖</div>
+                    <div class="module-name">JARVIS</div>
+                </div>
+                <div class="module-card" onclick="addWidget('docs')">
+                    <div class="module-icon">📄</div>
+                    <div class="module-name">Documents</div>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle">⋰</div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <button class="control-btn" onclick="addNewWidget()">
+            ➕ Add Widget
+        </button>
+        <button class="control-btn" onclick="resetLayout()">
+            🔄 Reset Layout
+        </button>
+        <button class="control-btn" onclick="saveLayout()">
+            💾 Save Layout
+        </button>
+        <button class="control-btn" onclick="toggleEditMode()">
+            ✏️ Edit Mode
+        </button>
+    </div>
+
+    <!-- Position Indicator -->
+    <div class="position-indicator" id="positionIndicator"></div>
+
+    <script>
+        // Widget dragging
+        let activeWidget = null;
+        let offsetX = 0;
+        let offsetY = 0;
+        let editMode = false;
+        let widgetCounter = 0;
+
+        const sizes = ['size-1x1', 'size-2x1', 'size-1x2', 'size-2x2', 'size-3x2', 'size-4x2'];
+
+        // Make all widgets draggable
+        document.querySelectorAll('.widget').forEach(widget => {
+            makeDraggable(widget);
+        });
+
+        function makeDraggable(widget) {
+            widget.addEventListener('mousedown', function(e) {
+                if (e.target.classList.contains('resize-handle')) return;
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+
+                activeWidget = widget;
+                widget.classList.add('active');
+
+                const rect = widget.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+
+                e.preventDefault();
+            });
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            if (activeWidget) {
+                let x = e.clientX - offsetX;
+                let y = e.clientY - offsetY;
+
+                // Snap to edges
+                const threshold = 30;
+                const width = activeWidget.offsetWidth;
+                const height = activeWidget.offsetHeight;
+
+                if (x < threshold) x = 20; // Left edge
+                if (x + width > window.innerWidth - threshold) x = window.innerWidth - width - 20; // Right edge
+                if (y < threshold) y = 20; // Top edge
+                if (y + height > window.innerHeight - threshold) y = window.innerHeight - height - 20; // Bottom edge
+
+                activeWidget.style.left = x + 'px';
+                activeWidget.style.top = y + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (activeWidget) {
+                activeWidget.classList.remove('active');
+                activeWidget = null;
+            }
+        });
+
+        // Resize widget
+        function resizeWidget(widgetId, direction) {
+            const widget = document.getElementById(widgetId);
+            let currentSize = null;
+
+            sizes.forEach(size => {
+                if (widget.classList.contains(size)) {
+                    currentSize = size;
+                }
+            });
+
+            const currentIndex = sizes.indexOf(currentSize);
+            const nextIndex = (currentIndex + 1) % sizes.length;
+
+            widget.classList.remove(currentSize);
+            widget.classList.add(sizes[nextIndex]);
+        }
+
+        // Toggle widget
+        function toggleWidget(widgetId) {
+            const widget = document.getElementById(widgetId);
+            const content = widget.querySelector('.widget-content');
+
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                widget.querySelector('.widget-btn[title="Minimize"]').textContent = '−';
+            } else {
+                content.style.display = 'none';
+                widget.querySelector('.widget-btn[title="Minimize"]').textContent = '+';
+            }
+        }
+
+        // AI Chat
+        function sendMessage() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messagesDiv = document.getElementById('aiMessages');
+
+            // User message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'ai-message';
+            userMsg.style.background = 'rgba(0, 255, 255, 0.2)';
+            userMsg.innerHTML = `<strong>You:</strong> ${message}`;
+            messagesDiv.appendChild(userMsg);
+
+            input.value = '';
+
+            // AI response
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'ai-message';
+                aiMsg.innerHTML = `<strong>Claude:</strong> I can help you with "${message}". This is a demo response!`;
+                messagesDiv.appendChild(aiMsg);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 1000);
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Add new widget
+        function addNewWidget() {
+            widgetCounter++;
+            const widget = document.createElement('div');
+            widget.className = 'widget size-2x1';
+            widget.id = `widget-custom-${widgetCounter}`;
+            widget.style.top = (100 + widgetCounter * 50) + 'px';
+            widget.style.left = (100 + widgetCounter * 50) + 'px';
+            widget.innerHTML = `
+                <div class="widget-header">
+                    <div class="widget-title">📦 New Widget ${widgetCounter}</div>
+                    <div class="widget-controls">
+                        <div class="widget-btn" onclick="resizeWidget('widget-custom-${widgetCounter}', 'next')" title="Resize">⇔</div>
+                        <div class="widget-btn" onclick="removeWidget('widget-custom-${widgetCounter}')" title="Close">✕</div>
+                    </div>
+                </div>
+                <div class="widget-content">
+                    <p>Drag me around! Click the resize button to change my size.</p>
+                </div>
+                <div class="resize-handle">⋰</div>
+            `;
+            document.body.appendChild(widget);
+            makeDraggable(widget);
+        }
+
+        function removeWidget(widgetId) {
+            const widget = document.getElementById(widgetId);
+            widget.style.animation = 'slideIn 0.3s ease reverse';
+            setTimeout(() => widget.remove(), 300);
+        }
+
+        // Add specific widget
+        function addWidget(type) {
+            widgetCounter++;
+            const widgets = {
+                trinity: {
+                    icon: '🌀',
+                    title: 'Trinity System',
+                    content: '<p>C1 × C2 × C3 collaboration system. Connect three AI minds for exponential problem solving.</p>'
+                },
+                analytics: {
+                    icon: '📈',
+                    title: 'Analytics',
+                    content: '<p>Real-time system monitoring and performance metrics.</p>'
+                },
+                docs: {
+                    icon: '📄',
+                    title: 'Documents',
+                    content: '<p>All your generated documents and files.</p>'
+                }
+            };
+
+            const widgetData = widgets[type];
+            const widget = document.createElement('div');
+            widget.className = 'widget size-2x2';
+            widget.id = `widget-${type}-${widgetCounter}`;
+            widget.style.top = '240px';
+            widget.style.right = '20px';
+            widget.innerHTML = `
+                <div class="widget-header">
+                    <div class="widget-title">${widgetData.icon} ${widgetData.title}</div>
+                    <div class="widget-controls">
+                        <div class="widget-btn" onclick="resizeWidget('widget-${type}-${widgetCounter}', 'next')" title="Resize">⇔</div>
+                        <div class="widget-btn" onclick="removeWidget('widget-${type}-${widgetCounter}')" title="Close">✕</div>
+                    </div>
+                </div>
+                <div class="widget-content">
+                    ${widgetData.content}
+                </div>
+                <div class="resize-handle">⋰</div>
+            `;
+            document.body.appendChild(widget);
+            makeDraggable(widget);
+        }
+
+        // Save layout
+        function saveLayout() {
+            const layout = [];
+            document.querySelectorAll('.widget').forEach(widget => {
+                const size = sizes.find(s => widget.classList.contains(s));
+                layout.push({
+                    id: widget.id,
+                    left: widget.style.left,
+                    top: widget.style.top,
+                    size: size
+                });
+            });
+            localStorage.setItem('gtaHudLayout', JSON.stringify(layout));
+
+            // Show confirmation
+            const msg = document.createElement('div');
+            msg.className = 'ai-message';
+            msg.innerHTML = '<strong>System:</strong> ✅ Layout saved!';
+            document.getElementById('aiMessages').appendChild(msg);
+        }
+
+        // Reset layout
+        function resetLayout() {
+            localStorage.removeItem('gtaHudLayout');
+            location.reload();
+        }
+
+        // Toggle edit mode
+        function toggleEditMode() {
+            editMode = !editMode;
+            document.querySelectorAll('.widget').forEach(widget => {
+                if (editMode) {
+                    widget.style.opacity = '0.8';
+                } else {
+                    widget.style.opacity = '1';
+                }
+            });
+        }
+
+        // Load saved layout
+        window.addEventListener('load', function() {
+            const saved = localStorage.getItem('gtaHudLayout');
+            if (saved) {
+                const layout = JSON.parse(saved);
+                layout.forEach(item => {
+                    const widget = document.getElementById(item.id);
+                    if (widget) {
+                        widget.style.left = item.left;
+                        widget.style.top = item.top;
+                        sizes.forEach(s => widget.classList.remove(s));
+                        widget.classList.add(item.size);
+                    }
+                });
+            }
+        });
+
+        console.log('🎮 GTA-style HUD loaded - Drag widgets anywhere!');
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- UNIVERSAL NAVIGATION SYSTEM - Auto-injected -->
+<script src="/UNIVERSAL_NAVIGATION.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

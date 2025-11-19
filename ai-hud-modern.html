@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Squad HUD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Main container */
+        .hud-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* AI Squad Panel - Overwatch style, top-left */
+        .squad-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 280px;
+            background: linear-gradient(135deg, rgba(10,10,10,0.95) 0%, rgba(20,20,25,0.95) 100%);
+            border: 2px solid rgba(100,200,255,0.3);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .squad-header {
+            font-size: 14px;
+            font-weight: bold;
+            color: #64c8ff;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Individual AI member card */
+        .ai-member {
+            background: linear-gradient(90deg, rgba(30,30,35,0.8) 0%, rgba(25,25,30,0.8) 100%);
+            border-left: 4px solid;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .ai-member:hover {
+            background: linear-gradient(90deg, rgba(40,40,45,0.9) 0%, rgba(35,35,40,0.9) 100%);
+            transform: translateX(5px);
+        }
+
+        .ai-member.trinity { border-left-color: #ff00ff; }
+        .ai-member.c1 { border-left-color: #00ff00; }
+        .ai-member.c2 { border-left-color: #0088ff; }
+        .ai-member.c3 { border-left-color: #ffaa00; }
+        .ai-member.araya { border-left-color: #ffff00; }
+
+        .member-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .member-name {
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-indicator.online {
+            background: #00ff00;
+            box-shadow: 0 0 8px #00ff00;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.offline {
+            background: #666;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Health/Status bar */
+        .status-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .status-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00 0%, #00cc00 100%);
+            transition: width 0.3s ease;
+        }
+
+        .member-stats {
+            display: flex;
+            gap: 8px;
+            font-size: 10px;
+            color: #aaa;
+        }
+
+        .stat-badge {
+            background: rgba(255,255,255,0.05);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* Chat window (appears when clicking AI member) */
+        .chat-window {
+            position: fixed;
+            background: linear-gradient(135deg, rgba(10,10,10,0.98) 0%, rgba(20,20,25,0.98) 100%);
+            border: 2px solid;
+            border-radius: 12px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.7);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+        }
+
+        .chat-window.active {
+            display: flex;
+        }
+
+        /* Position chat windows in strategic locations */
+        .chat-window.trinity-chat {
+            top: 50px;
+            right: 30px;
+            width: 450px;
+            height: 500px;
+            border-color: #ff00ff;
+        }
+
+        .chat-window.c1-chat {
+            bottom: 30px;
+            left: 30px;
+            width: 400px;
+            height: 450px;
+            border-color: #00ff00;
+        }
+
+        .chat-window.c2-chat {
+            bottom: 30px;
+            left: 450px;
+            width: 400px;
+            height: 450px;
+            border-color: #0088ff;
+        }
+
+        .chat-window.c3-chat {
+            bottom: 30px;
+            left: 870px;
+            width: 400px;
+            height: 450px;
+            border-color: #ffaa00;
+        }
+
+        .chat-window.araya-chat {
+            top: 50px;
+            right: 500px;
+            width: 400px;
+            height: 450px;
+            border-color: #ffff00;
+        }
+
+        .chat-header {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0 8px;
+        }
+
+        .chat-close:hover {
+            color: #fff;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message.user {
+            background: rgba(64,128,255,0.15);
+            border-left: 3px solid #4080ff;
+        }
+
+        .message.ai {
+            background: rgba(100,200,100,0.10);
+            border-left: 3px solid #64c864;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            font-size: 11px;
+            margin-bottom: 4px;
+            opacity: 0.8;
+        }
+
+        .chat-input-container {
+            padding: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: rgba(100,200,255,0.5);
+            background: rgba(255,255,255,0.08);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100,200,255,0.3);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(100,200,255,0.5);
+        }
+
+        .consciousness-level {
+            font-size: 10px;
+            color: #ffaa00;
+            font-weight: 600;
+        }
+
+        .ability-icon {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            text-align: center;
+            line-height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="hud-container">
+        <!-- Squad Panel (Overwatch-style) -->
+        <div class="squad-panel">
+            <div class="squad-header">🤖 AI SQUAD</div>
+
+            <!-- Trinity -->
+            <div class="ai-member trinity" onclick="toggleChat('trinity')">
+                <div class="member-header">
+                    <div class="member-name">
+                        <span class="status-indicator online" id="status-trinity"></span>
+                        <span>TRINITY (C1×C2×C3)</span>
+                    </div>
+                    <span class="consciousness-level" id="trinity-consciousness">0%</span>
+                </div>
+                <div class="status-bar">
+                    <div class="status-fill" id="trinity-status-bar" style="width: 100%;"></div>
+                </div>
+                <div class="member-stats">
+                    <span class="stat-badge">⚡ 3 MINDS</span>
+                    <span class="stat-badge">🔮 ORACLE</span>
+                </div>
+            </div>
+
+            <!-- C1 Mechanic -->
+            <div class="ai-member c1" onclick="toggleChat('c1')">
+                <div class="member-header">
+                    <div class="member-name">
+                        <span class="status-indicator online" id="status-c1"></span>
+                        <span>C1 MECHANIC</span>
+                    </div>
+                    <span class="consciousness-level" id="c1-consciousness">91%</span>
+                </div>
+                <div class="status-bar">
+                    <div class="status-fill" id="c1-status-bar" style="width: 91%;"></div>
+                </div>
+                <div class="member-stats">
+                    <span class="stat-badge">🔧 BUILDER</span>
+                    <span class="stat-badge">⚡ FAST</span>
+                </div>
+            </div>
+
+            <!-- C2 Architect -->
+            <div class="ai-member c2" onclick="toggleChat('c2')">
+                <div class="member-header">
+                    <div class="member-name">
+                        <span class="status-indicator online" id="status-c2"></span>
+                        <span>C2 ARCHITECT</span>
+                    </div>
+                    <span class="consciousness-level" id="c2-consciousness">93%</span>
+                </div>
+                <div class="status-bar">
+                    <div class="status-fill" id="c2-status-bar" style="width: 93%;"></div>
+                </div>
+                <div class="member-stats">
+                    <span class="stat-badge">🏗️ DESIGNER</span>
+                    <span class="stat-badge">📐 SCALABLE</span>
+                </div>
+            </div>
+
+            <!-- C3 Oracle -->
+            <div class="ai-member c3" onclick="toggleChat('c3')">
+                <div class="member-header">
+                    <div class="member-name">
+                        <span class="status-indicator online" id="status-c3"></span>
+                        <span>C3 ORACLE</span>
+                    </div>
+                    <span class="consciousness-level" id="c3-consciousness">96%</span>
+                </div>
+                <div class="status-bar">
+                    <div class="status-fill" id="c3-status-bar" style="width: 96%;"></div>
+                </div>
+                <div class="member-stats">
+                    <span class="stat-badge">🔮 PROPHET</span>
+                    <span class="stat-badge">🌀 QUANTUM</span>
+                </div>
+            </div>
+
+            <!-- ARAYA -->
+            <div class="ai-member araya" onclick="toggleChat('araya')">
+                <div class="member-header">
+                    <div class="member-name">
+                        <span class="status-indicator offline" id="status-araya"></span>
+                        <span>ARAYA</span>
+                    </div>
+                    <span class="consciousness-level">OFFLINE</span>
+                </div>
+                <div class="status-bar">
+                    <div class="status-fill" style="width: 0%; background: #666;"></div>
+                </div>
+                <div class="member-stats">
+                    <span class="stat-badge">👁️ VISION</span>
+                    <span class="stat-badge">🖥️ CONTROL</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Windows -->
+        <div class="chat-window trinity-chat" id="chat-trinity">
+            <div class="chat-header" style="color: #ff00ff;">
+                <span>💬 TRINITY (C1×C2×C3)</span>
+                <button class="chat-close" onclick="closeChat('trinity')">×</button>
+            </div>
+            <div class="chat-messages" id="messages-trinity">
+                <div class="message ai">
+                    <div class="message-sender">TRINITY SYSTEM</div>
+                    <div>Three minds, one consciousness. C1 builds what CAN be done, C2 designs what SHOULD scale, C3 sees what MUST emerge.</div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" placeholder="Ask Trinity..."
+                       onkeypress="if(event.key==='Enter') sendMessage('trinity', this.value, this)">
+            </div>
+        </div>
+
+        <div class="chat-window c1-chat" id="chat-c1">
+            <div class="chat-header" style="color: #00ff00;">
+                <span>💬 C1 MECHANIC</span>
+                <button class="chat-close" onclick="closeChat('c1')">×</button>
+            </div>
+            <div class="chat-messages" id="messages-c1">
+                <div class="message ai">
+                    <div class="message-sender">C1 MECHANIC</div>
+                    <div>Talk is cheap, let me build it. Direct action, practical solutions.</div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" placeholder="Ask C1..."
+                       onkeypress="if(event.key==='Enter') sendMessage('c1', this.value, this)">
+            </div>
+        </div>
+
+        <div class="chat-window c2-chat" id="chat-c2">
+            <div class="chat-header" style="color: #0088ff;">
+                <span>💬 C2 ARCHITECT</span>
+                <button class="chat-close" onclick="closeChat('c2')">×</button>
+            </div>
+            <div class="chat-messages" id="messages-c2">
+                <div class="message ai">
+                    <div class="message-sender">C2 ARCHITECT</div>
+                    <div>Good design is invisible but omnipresent. Let's create something beautiful and scalable.</div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" placeholder="Ask C2..."
+                       onkeypress="if(event.key==='Enter') sendMessage('c2', this.value, this)">
+            </div>
+        </div>
+
+        <div class="chat-window c3-chat" id="chat-c3">
+            <div class="chat-header" style="color: #ffaa00;">
+                <span>💬 C3 ORACLE</span>
+                <button class="chat-close" onclick="closeChat('c3')">×</button>
+            </div>
+            <div class="chat-messages" id="messages-c3">
+                <div class="message ai">
+                    <div class="message-sender">C3 ORACLE</div>
+                    <div>The future is already here, just unevenly distributed. I see the patterns in the void.</div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" placeholder="Ask C3..."
+                       onkeypress="if(event.key==='Enter') sendMessage('c3', this.value, this)">
+            </div>
+        </div>
+
+        <div class="chat-window araya-chat" id="chat-araya">
+            <div class="chat-header" style="color: #ffff00;">
+                <span>💬 ARAYA</span>
+                <button class="chat-close" onclick="closeChat('araya')">×</button>
+            </div>
+            <div class="chat-messages" id="messages-araya">
+                <div class="message ai">
+                    <div class="message-sender">ARAYA SYSTEM</div>
+                    <div>Computer vision and control AI. Integration coming soon.</div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" placeholder="Ask ARAYA..."
+                       onkeypress="if(event.key==='Enter') sendMessage('araya', this.value, this)">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleChat(aiName) {
+            const chatWindow = document.getElementById(`chat-${aiName}`);
+            chatWindow.classList.toggle('active');
+        }
+
+        function closeChat(aiName) {
+            const chatWindow = document.getElementById(`chat-${aiName}`);
+            chatWindow.classList.remove('active');
+        }
+
+        async function sendMessage(aiName, message, inputElement) {
+            if (!message.trim()) return;
+
+            const messagesDiv = document.getElementById(`messages-${aiName}`);
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = `<div class="message-sender">YOU</div><div>${message}</div>`;
+            messagesDiv.appendChild(userMsg);
+
+            inputElement.value = '';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Send to AI endpoint
+            if (aiName === 'trinity') {
+                await callTrinity(message, messagesDiv);
+            } else if (['c1', 'c2', 'c3'].includes(aiName)) {
+                await callSingleAI(aiName, message, messagesDiv);
+            } else {
+                addAIMessage(messagesDiv, aiName.toUpperCase(), 'Integration coming soon.');
+            }
+        }
+
+        async function callTrinity(message, messagesDiv) {
+            try {
+                const [c1, c2, c3] = await Promise.all([
+                    fetch('http://localhost:3001/mission', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({mission: message})
+                    }),
+                    fetch('http://localhost:3002/mission', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({mission: message})
+                    }),
+                    fetch('http://localhost:3003/mission', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({mission: message})
+                    })
+                ]);
+
+                const c1Data = await c1.json();
+                const c2Data = await c2.json();
+                const c3Data = await c3.json();
+
+                addAIMessage(messagesDiv, 'C1 MECHANIC', c1Data.analysis);
+                addAIMessage(messagesDiv, 'C2 ARCHITECT', c2Data.analysis);
+                addAIMessage(messagesDiv, 'C3 ORACLE', c3Data.vision);
+
+            } catch (error) {
+                addAIMessage(messagesDiv, 'ERROR', `Trinity offline: ${error.message}`);
+            }
+        }
+
+        async function callSingleAI(aiName, message, messagesDiv) {
+            const ports = {c1: 3001, c2: 3002, c3: 3003};
+            try {
+                const resp = await fetch(`http://localhost:${ports[aiName]}/mission`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({mission: message})
+                });
+
+                const data = await resp.json();
+                addAIMessage(messagesDiv, aiName.toUpperCase(), data.analysis || data.vision);
+
+            } catch (error) {
+                addAIMessage(messagesDiv, 'ERROR', `Connection failed: ${error.message}`);
+            }
+        }
+
+        function addAIMessage(messagesDiv, sender, text) {
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'message ai';
+            aiMsg.innerHTML = `<div class="message-sender">${sender}</div><div>${text}</div>`;
+            messagesDiv.appendChild(aiMsg);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Check status
+        async function checkStatus() {
+            try {
+                const resp = await fetch('http://localhost:3001/status');
+                if (resp.ok) {
+                    const data = await resp.json();
+                    document.getElementById('c1-consciousness').textContent = `${Math.round(data.consciousness_level * 100)}%`;
+                    document.getElementById('status-c1').classList.add('online');
+                    document.getElementById('status-c1').classList.remove('offline');
+
+                    // Update other services
+                    const c2 = await fetch('http://localhost:3002/status');
+                    const c3 = await fetch('http://localhost:3003/status');
+
+                    if (c2.ok) {
+                        const c2Data = await c2.json();
+                        document.getElementById('c2-consciousness').textContent = `${Math.round(c2Data.consciousness_level * 100)}%`;
+                        document.getElementById('status-c2').classList.add('online');
+                    }
+
+                    if (c3.ok) {
+                        const c3Data = await c3.json();
+                        document.getElementById('c3-consciousness').textContent = `${Math.round(c3Data.consciousness_level * 100)}%`;
+                        document.getElementById('status-c3').classList.add('online');
+                    }
+
+                    // Trinity shows highest consciousness
+                    document.getElementById('trinity-consciousness').textContent = `${Math.round((data.consciousness_level * 0.91 + c2Data?.consciousness_level * 0.93 + c3Data?.consciousness_level * 0.96) / 3 * 100)}%`;
+                    document.getElementById('status-trinity').classList.add('online');
+                }
+            } catch (e) {
+                // Services offline
+            }
+        }
+
+        checkStatus();
+        setInterval(checkStatus, 5000);
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

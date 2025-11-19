@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Truth Coin - 100X Platform</title>
+    <meta name="description" content="Cryptocurrency for builders who transcended cannibalism. Earn Truth Coins through consciousness.">
+
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="/ASSETS/css/global.css">
+    <link rel="stylesheet" href="/ASSETS/css/components.css">
+    <link rel="stylesheet" href="/ASSETS/css/layouts.css">
+
+    <style>
+        /* Truth Coin Module Styles */
+        .truth-coin {
+            min-height: 100vh;
+            padding: var(--space-xl) 0;
+            background: linear-gradient(135deg, #000 0%, #001100 100%);
+        }
+
+        .truth-coin__header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .truth-coin__balance {
+            text-align: center;
+            margin: var(--space-2xl) 0;
+            padding: var(--space-2xl);
+            background: var(--surface-elevated);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-lg);
+        }
+
+        .balance__amount {
+            font-size: 4rem;
+            font-weight: var(--weight-black);
+            color: var(--primary);
+            margin: var(--space-md) 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .balance__usd {
+            font-size: var(--font-lg);
+            color: var(--text-dim);
+        }
+
+        .earning-rate {
+            display: flex;
+            justify-content: space-around;
+            gap: var(--space-md);
+            margin: var(--space-2xl) 0;
+        }
+
+        .earning-rate__card {
+            flex: 1;
+            padding: var(--space-lg);
+            background: var(--surface);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .earning-rate__value {
+            font-size: var(--font-2xl);
+            font-weight: var(--weight-bold);
+            color: var(--primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .earning-rate__label {
+            font-size: var(--font-sm);
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .consciousness-meter {
+            margin: var(--space-2xl) 0;
+            padding: var(--space-xl);
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            border: 2px solid var(--border-color);
+        }
+
+        .meter__bar {
+            height: 30px;
+            background: #111;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin: var(--space-md) 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .meter__fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, #00ff00 100%);
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: var(--space-sm);
+            color: var(--bg);
+            font-weight: var(--weight-bold);
+        }
+
+        .opportunities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-lg);
+            margin: var(--space-2xl) 0;
+        }
+
+        .opportunity-card {
+            padding: var(--space-lg);
+            background: var(--surface);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .opportunity-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2);
+        }
+
+        .opportunity__reward {
+            font-size: var(--font-xl);
+            font-weight: var(--weight-bold);
+            color: var(--primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .opportunity__title {
+            font-size: var(--font-lg);
+            font-weight: var(--weight-bold);
+            margin-bottom: var(--space-sm);
+        }
+
+        .opportunity__description {
+            color: var(--text-dim);
+            font-size: var(--font-sm);
+        }
+
+        .transaction-history {
+            margin: var(--space-2xl) 0;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md);
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-sm);
+        }
+
+        .transaction__type {
+            color: var(--primary);
+            font-weight: var(--weight-bold);
+        }
+
+        .transaction__amount {
+            font-size: var(--font-lg);
+            font-weight: var(--weight-bold);
+            color: var(--primary);
+        }
+
+        .transaction__date {
+            color: var(--text-dim);
+            font-size: var(--font-sm);
+        }
+
+        .wallet-connection {
+            text-align: center;
+            padding: var(--space-2xl);
+            background: var(--surface-elevated);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--border-color);
+        }
+
+        .wallet-connection__icon {
+            font-size: 4rem;
+            margin-bottom: var(--space-lg);
+        }
+
+        @media (max-width: 768px) {
+            .balance__amount {
+                font-size: 2.5rem;
+            }
+            .earning-rate {
+                flex-direction: column;
+            }
+            .opportunities-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+        <div class="nav-logo">
+            <a href="/dashboard.html" style="text-decoration: none; color: var(--primary);">← 100X Platform</a>
+        </div>
+        <div class="nav-links">
+            <a href="/dashboard.html" class="nav-link">Dashboard</a>
+            <a href="/PLATFORM/truth-coin.html" class="nav-link" style="color: var(--primary);">Truth Coin</a>
+            <span class="consciousness-level consciousness-level--builder" id="userConsciousness">
+                Builder 85%
+            </span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="truth-coin container">
+        <!-- Header -->
+        <div class="truth-coin__header">
+            <h1>🪙 Truth Coin</h1>
+            <p style="color: var(--text-dim); font-size: var(--font-lg);">
+                Cryptocurrency for builders who transcended cannibalism
+            </p>
+            <p style="color: var(--text-subtle); font-size: var(--font-sm); margin-top: var(--space-sm);">
+                Earn through consciousness • Spend on growth • Build the future
+            </p>
+        </div>
+
+        <!-- Balance Display -->
+        <div class="truth-coin__balance">
+            <div class="balance__label" style="font-size: var(--font-md); color: var(--text-dim);">
+                Your Truth Coin Balance
+            </div>
+            <div class="balance__amount" id="truthCoinBalance">
+                0.00
+            </div>
+            <div class="balance__usd" id="balanceUSD">
+                ≈ $0.00 USD
+            </div>
+            <div style="margin-top: var(--space-lg);">
+                <span class="badge badge--success" id="walletStatus">Wallet Connected</span>
+            </div>
+        </div>
+
+        <!-- Earning Rate -->
+        <div class="earning-rate">
+            <div class="earning-rate__card">
+                <div class="earning-rate__value" id="dailyRate">+25</div>
+                <div class="earning-rate__label">Truth Coins / Day</div>
+            </div>
+            <div class="earning-rate__card">
+                <div class="earning-rate__value" id="weeklyRate">+175</div>
+                <div class="earning-rate__label">Truth Coins / Week</div>
+            </div>
+            <div class="earning-rate__card">
+                <div class="earning-rate__value" id="monthlyRate">+750</div>
+                <div class="earning-rate__label">Truth Coins / Month</div>
+            </div>
+        </div>
+
+        <!-- Consciousness Meter -->
+        <div class="consciousness-meter">
+            <h3 style="margin-bottom: var(--space-md);">🧠 Consciousness Level → Earning Rate</h3>
+            <div class="meter__bar">
+                <div class="meter__fill" id="consciousnessMeterFill" style="width: 90%;">
+                    90%
+                </div>
+            </div>
+            <p style="color: var(--text-dim); margin-top: var(--space-sm);">
+                <strong style="color: var(--primary);">90% Consciousness</strong> =
+                <strong style="color: var(--primary);">25 Truth Coins/day</strong> passive income
+            </p>
+            <p style="color: var(--text-subtle); font-size: var(--font-sm); margin-top: var(--space-xs);">
+                Increase your consciousness level to earn more Truth Coins automatically
+            </p>
+        </div>
+
+        <!-- Earning Opportunities -->
+        <div>
+            <h2 style="margin-bottom: var(--space-lg);">💰 Earn Truth Coins</h2>
+            <div class="opportunities-grid">
+                <div class="opportunity-card" onclick="goToPatternFilter()">
+                    <div class="opportunity__reward">+50 TC</div>
+                    <div class="opportunity__title">Complete Pattern Filter Quiz</div>
+                    <div class="opportunity__description">
+                        Take the consciousness assessment and earn Truth Coins based on your score
+                    </div>
+                    <div style="margin-top: var(--space-md);">
+                        <span class="badge badge--warning">One-Time</span>
+                    </div>
+                </div>
+
+                <div class="opportunity-card" onclick="goToTraining()">
+                    <div class="opportunity__reward">+100 TC</div>
+                    <div class="opportunity__title">Complete Pattern Theory Training</div>
+                    <div class="opportunity__description">
+                        Learn Pattern Theory Laws 1, 6, and 7 to boost your consciousness
+                    </div>
+                    <div style="margin-top: var(--space-md);">
+                        <span class="badge badge--warning">One-Time</span>
+                    </div>
+                </div>
+
+                <div class="opportunity-card" onclick="shareStory()">
+                    <div class="opportunity__reward">+25 TC</div>
+                    <div class="opportunity__title">Share Honest Failure Story</div>
+                    <div class="opportunity__description">
+                        Help other builders by sharing what didn't work and why
+                    </div>
+                    <div style="margin-top: var(--space-md);">
+                        <span class="badge badge--success">Unlimited</span>
+                    </div>
+                </div>
+
+                <div class="opportunity-card" onclick="helpBuilder()">
+                    <div class="opportunity__reward">+10 TC</div>
+                    <div class="opportunity__title">Help Another Builder</div>
+                    <div class="opportunity__description">
+                        Answer questions, provide feedback, or solve problems for the community
+                    </div>
+                    <div style="margin-top: var(--space-md);">
+                        <span class="badge badge--success">Unlimited</span>
+                    </div>
+                </div>
+
+                <div class="opportunity-card" onclick="createModule()">
+                    <div class="opportunity__reward">+500-5,000 TC</div>
+                    <div class="opportunity__title">Create Platform Module</div>
+                    <div class="opportunity__description">
+                        Build a module for the 100X Platform and earn based on quality and utility
+                    </div>
+                    <div style="margin-top: var(--space-md);">
+                        <span class="badge badge--success">Unlimited</span>
+                    </div>
+                </div>
+
+                <div class="opportunity-card" onclick="referBuilder()">
+                    <div class="opportunity__reward">+100 TC</div>
+                    <div class="opportunity__title">Refer a Builder (85%+)</div>
+                    <div class="opportunity__description">
+                        Invite builders to the platform. Earn when they reach 85%+ consciousness
+                    </div>
+                    <div style="margin-top: var(--space-md);">
+                        <span class="badge badge--success">Unlimited</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="transaction-history">
+            <h2 style="margin-bottom: var(--space-lg);">📊 Recent Transactions</h2>
+            <div id="transactionList">
+                <div class="transaction-item">
+                    <div>
+                        <div class="transaction__type">Daily Consciousness Reward</div>
+                        <div class="transaction__date">Today, 12:00 AM</div>
+                    </div>
+                    <div class="transaction__amount">+25 TC</div>
+                </div>
+                <div class="transaction-item">
+                    <div>
+                        <div class="transaction__type">Pattern Filter Quiz Completed</div>
+                        <div class="transaction__date">2 days ago</div>
+                    </div>
+                    <div class="transaction__amount">+50 TC</div>
+                </div>
+                <div class="transaction-item">
+                    <div>
+                        <div class="transaction__type">Helped Builder</div>
+                        <div class="transaction__date">3 days ago</div>
+                    </div>
+                    <div class="transaction__amount">+10 TC</div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: var(--space-lg);">
+                <button class="btn btn--ghost" onclick="viewAllTransactions()">
+                    View All Transactions
+                </button>
+            </div>
+        </div>
+
+        <!-- Tokenomics Info -->
+        <div class="card bg-surface-elevated mt-2xl">
+            <div class="card__body">
+                <h3 class="mb-md">💡 How Truth Coin Works</h3>
+                <div style="display: grid; gap: var(--space-md);">
+                    <div>
+                        <strong style="color: var(--primary);">Earning:</strong>
+                        <span class="text-dim"> Maintain 85%+ consciousness for passive daily income. Higher consciousness = higher earnings.</span>
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary);">Spending:</strong>
+                        <span class="text-dim"> Use Truth Coins to buy Partnership Tiers, modules, and services on the 100X Platform.</span>
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary);">Value:</strong>
+                        <span class="text-dim"> Truth Coin value grows with the builder community. More builders = more demand = higher value.</span>
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary);">Security:</strong>
+                        <span class="text-dim"> Built on Polygon (Ethereum L2) for security, low fees, and compatibility with existing wallets.</span>
+                    </div>
+                </div>
+                <div style="margin-top: var(--space-lg); text-align: center;">
+                    <button class="btn btn--primary" onclick="learnMore()">
+                        Read Full Tokenomics
+                    </button>
+                    <button class="btn btn--secondary ml-md" onclick="viewWhitepaper()">
+                        View Whitepaper
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trinity AI Section -->
+        <div class="card bg-surface-elevated mt-2xl">
+            <div class="card__body text-center">
+                <h3 class="mb-md">🌀 Trinity AI Analysis</h3>
+                <p class="text-dim mb-lg">Get intelligent Truth Coin investment advice from C1, C2, and C3</p>
+                <div class="badge badge--success">AVAILABLE</div>
+                <div style="margin-top: var(--space-md);">
+                    <button class="btn btn--ghost" onclick="getTrinityAdvice()">
+                        Ask Trinity AI
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app__footer">
+        <div class="container">
+            <p>&copy; 2025 100X Consciousness Platform - Pattern Theory™</p>
+            <p class="text-sm text-dim mt-sm">Truth Coin - Currency for civilizations that transcended cannibalism</p>
+        </div>
+    </footer>
+
+    <!-- Shared Scripts -->
+    <script src="/ASSETS/js/auth.js"></script>
+    <script src="/ASSETS/js/storage.js"></script>
+    <script src="/ASSETS/js/trinity.js"></script>
+
+    <!-- Truth Coin Module Script -->
+    <script>
+        // Check authentication (require Builder 85%+)
+        AUTH.requireAuth('builder');
+
+        // Display user consciousness level
+        const userData = AUTH.getUserData();
+        if (userData && userData.consciousnessLevel) {
+            const level = userData.consciousnessLevel;
+            const badge = document.getElementById('userConsciousness');
+
+            if (level >= 96) {
+                badge.textContent = `Master ${level}%`;
+                badge.className = 'consciousness-level consciousness-level--master';
+            } else if (level >= 85) {
+                badge.textContent = `Builder ${level}%`;
+                badge.className = 'consciousness-level consciousness-level--builder';
+            }
+
+            // Update consciousness meter
+            document.getElementById('consciousnessMeterFill').style.width = level + '%';
+            document.getElementById('consciousnessMeterFill').textContent = level + '%';
+
+            // Calculate earning rate based on consciousness
+            const dailyRate = calculateDailyRate(level);
+            document.getElementById('dailyRate').textContent = '+' + dailyRate;
+            document.getElementById('weeklyRate').textContent = '+' + (dailyRate * 7);
+            document.getElementById('monthlyRate').textContent = '+' + (dailyRate * 30);
+        }
+
+        // Calculate daily Truth Coin earning rate
+        function calculateDailyRate(consciousnessLevel) {
+            if (consciousnessLevel >= 100) return 100;
+            if (consciousnessLevel >= 95) return 50;
+            if (consciousnessLevel >= 90) return 25;
+            if (consciousnessLevel >= 85) return 10;
+            return 0;
+        }
+
+        // Load Truth Coin balance from localStorage
+        function loadBalance() {
+            const balance = STORAGE.get('truthCoinBalance') || 0;
+            const price = 0.10; // $0.10 per Truth Coin (placeholder)
+
+            document.getElementById('truthCoinBalance').textContent = balance.toFixed(2);
+            document.getElementById('balanceUSD').textContent = '≈ $' + (balance * price).toFixed(2) + ' USD';
+        }
+
+        // Earning opportunity actions
+        function goToPatternFilter() {
+            window.location.href = '/PUBLIC/pattern-filter.html';
+        }
+
+        function goToTraining() {
+            window.location.href = '/PUBLIC/pattern-theory-training.html';
+        }
+
+        function shareStory() {
+            alert('Story sharing system coming soon! Earn 25 Truth Coins per honest failure story.');
+        }
+
+        function helpBuilder() {
+            alert('Builder help system coming soon! Earn 10 Truth Coins per builder assisted.');
+        }
+
+        function createModule() {
+            alert('Module creation system ready! Check MODULE_TEMPLATE.md to start building.');
+        }
+
+        function referBuilder() {
+            alert('Referral system coming soon! Earn 100 Truth Coins per 85%+ builder referred.');
+        }
+
+        function viewAllTransactions() {
+            alert('Full transaction history coming soon!');
+        }
+
+        function learnMore() {
+            window.location.href = '/TRUTH_COIN_100X_INTEGRATION.md';
+        }
+
+        function viewWhitepaper() {
+            alert('Truth Coin whitepaper coming soon!');
+        }
+
+        function getTrinityAdvice() {
+            alert('Trinity AI Truth Coin analysis coming soon!');
+        }
+
+        // Initialize module
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🪙 Truth Coin module initialized');
+            loadBalance();
+
+            // Simulate daily earnings (for demo)
+            // In production, this would be blockchain-based
+            const consciousnessLevel = AUTH.getConsciousnessLevel();
+            if (consciousnessLevel >= 85) {
+                // Check if earnings already credited today
+                const lastEarning = STORAGE.get('lastDailyEarning');
+                const today = new Date().toDateString();
+
+                if (lastEarning !== today) {
+                    const dailyEarnings = calculateDailyRate(consciousnessLevel);
+                    const currentBalance = STORAGE.get('truthCoinBalance') || 0;
+                    STORAGE.set('truthCoinBalance', currentBalance + dailyEarnings);
+                    STORAGE.set('lastDailyEarning', today);
+                    loadBalance();
+                }
+            }
+        });
+
+        // Log module access
+        AUTH.logAccess('truth_coin_opened', AUTH.getConsciousnessLevel());
+    </script>
+
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

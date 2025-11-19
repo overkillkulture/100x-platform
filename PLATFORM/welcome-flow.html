@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Welcome to 100X! 🚀</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .flow-container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ddff;
+            border-radius: 50px;
+            padding: 10px;
+            margin-bottom: 40px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: rgba(0, 221, 255, 0.2);
+            z-index: 1;
+        }
+
+        .progress-line-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ddff, #00ff00);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px #00ddff;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid rgba(0, 221, 255, 0.3);
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-circle {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 20px #00ff00;
+            transform: scale(1.2);
+        }
+
+        .step.completed .step-circle {
+            border-color: #00ddff;
+            background: rgba(0, 221, 255, 0.3);
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: rgba(0, 221, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        .step.active .step-label {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        /* Content Card */
+        .content-card {
+            background: rgba(10, 10, 10, 0.95);
+            border: 3px solid #00ddff;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 221, 255, 0.3);
+            text-align: center;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 48px;
+            background: linear-gradient(135deg, #ff6b00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: #00ddff;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        /* Quick Win Cards */
+        .quick-wins {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .quick-win-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ddff;
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .quick-win-card:hover {
+            transform: translateY(-10px);
+            border-color: #00ff00;
+            box-shadow: 0 15px 40px rgba(0, 255, 0, 0.4);
+        }
+
+        .quick-win-card.selected {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+        }
+
+        .win-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .win-title {
+            font-size: 18px;
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .win-description {
+            font-size: 14px;
+            color: #00ddff;
+            line-height: 1.5;
+        }
+
+        .win-benefit {
+            font-size: 12px;
+            color: #00ff00;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* Builder Type Cards */
+        .builder-types {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .builder-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ddff;
+            border-radius: 15px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .builder-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff00;
+            box-shadow: 0 15px 40px rgba(0, 255, 0, 0.4);
+        }
+
+        .builder-card.selected {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #00ddff, #00ff00);
+            color: #0a0a0a;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 221, 255, 0.5);
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 0, 0.7);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #00ddff;
+            color: #00ddff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 221, 255, 0.1);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ddff;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            color: #00ff00;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #00ddff;
+        }
+
+        /* Checklist */
+        .checklist {
+            text-align: left;
+            margin: 30px 0;
+        }
+
+        .checklist-item {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ddff;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .checklist-item.completed {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .checkbox {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #00ddff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #00ff00;
+        }
+
+        .checklist-item.completed .checkbox {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.2);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .content-card { padding: 30px 20px; }
+            h1 { font-size: 32px; }
+            .subtitle { font-size: 18px; }
+            .quick-wins { grid-template-columns: 1fr; }
+            .builder-types { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .step-label { font-size: 10px; }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="flow-container">
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-steps">
+                <div class="progress-line">
+                    <div class="progress-line-fill" id="progressFill"></div>
+                </div>
+                <div class="step active" data-step="1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Welcome</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Your Path</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Quick Win</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Community</div>
+                </div>
+                <div class="step" data-step="5">
+                    <div class="step-circle">5</div>
+                    <div class="step-label">Daily System</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Card -->
+        <div class="content-card">
+            <!-- STEP 1: Welcome & Quick Win -->
+            <div class="step-content active" id="step1">
+                <h1>🚀 Welcome to 100X!</h1>
+                <div class="subtitle">
+                    You just joined <span class="highlight">50+ builders</span> using
+                    <span class="highlight">127 automation modules</span> to ship projects
+                    <span class="highlight">10x faster</span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value">2-3h</div>
+                        <div class="stat-label">Saved Per Day</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">127</div>
+                        <div class="stat-label">Tools Available</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Coding Required</div>
+                    </div>
+                </div>
+
+                <p style="font-size: 20px; color: #ffd700; margin: 30px 0;">
+                    Let's get you your first quick win! Pick what you need most:
+                </p>
+
+                <div class="quick-wins">
+                    <div class="quick-win-card" onclick="selectQuickWin('todo')">
+                        <div class="win-icon">📋</div>
+                        <div class="win-title">Save Time</div>
+                        <div class="win-description">Auto-prioritize your tasks</div>
+                        <div class="win-benefit">Save 2-3 hrs/week</div>
+                    </div>
+                    <div class="quick-win-card" onclick="selectQuickWin('pattern')">
+                        <div class="win-icon">🔍</div>
+                        <div class="win-title">Spot Patterns</div>
+                        <div class="win-description">Detect helpers vs destroyers</div>
+                        <div class="win-benefit">Avoid bad people</div>
+                    </div>
+                    <div class="quick-win-card" onclick="selectQuickWin('brain')">
+                        <div class="win-icon">🧠</div>
+                        <div class="win-title">Better Decisions</div>
+                        <div class="win-description">AI analyzes your options</div>
+                        <div class="win-benefit">Stop overthinking</div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="nextStep()" id="step1Btn" disabled>
+                    Let's Go! →
+                </button>
+            </div>
+
+            <!-- STEP 2: Choose Your Path -->
+            <div class="step-content" id="step2">
+                <h1>👤 What Kind of Builder Are You?</h1>
+                <div class="subtitle">
+                    This helps us recommend the <span class="highlight">perfect modules</span> for you
+                </div>
+
+                <div class="builder-types">
+                    <div class="builder-card" onclick="selectBuilderType('solopreneur')">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🚀</div>
+                        <div style="font-size: 20px; color: #ffd700; font-weight: bold; margin-bottom: 10px;">
+                            Solopreneur
+                        </div>
+                        <div style="font-size: 14px; color: #00ddff; line-height: 1.6;">
+                            Building products alone. Want to move faster and stop wasting time on repetitive tasks.
+                        </div>
+                    </div>
+
+                    <div class="builder-card" onclick="selectBuilderType('team-leader')">
+                        <div style="font-size: 48px; margin-bottom: 15px;">👥</div>
+                        <div style="font-size: 20px; color: #ffd700; font-weight: bold; margin-bottom: 10px;">
+                            Team Leader
+                        </div>
+                        <div style="font-size: 14px; color: #00ddff; line-height: 1.6;">
+                            Managing others. Need systems to track contributions and keep team aligned.
+                        </div>
+                    </div>
+
+                    <div class="builder-card" onclick="selectBuilderType('explorer')">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🔍</div>
+                        <div style="font-size: 20px; color: #ffd700; font-weight: bold; margin-bottom: 10px;">
+                            Explorer
+                        </div>
+                        <div style="font-size: 14px; color: #00ddff; line-height: 1.6;">
+                            Trying to understand consciousness and patterns. Want to see through manipulation.
+                        </div>
+                    </div>
+
+                    <div class="builder-card" onclick="selectBuilderType('creator')">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🎨</div>
+                        <div style="font-size: 20px; color: #ffd700; font-weight: bold; margin-bottom: 10px;">
+                            Creator
+                        </div>
+                        <div style="font-size: 14px; color: #00ddff; line-height: 1.6;">
+                            Making content, art, or products. Need tools to produce more and stay organized.
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <button class="btn-secondary btn" onclick="prevStep()">← Back</button>
+                    <button class="btn" onclick="nextStep()" id="step2Btn" disabled>Continue →</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: First Module Success -->
+            <div class="step-content" id="step3">
+                <h1>✅ Let's Get Your First Win!</h1>
+                <div class="subtitle">
+                    We're going to walk through <span class="highlight" id="chosenModule">your chosen tool</span> together
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.7); border: 2px solid #00ddff; border-radius: 15px; padding: 30px; margin: 30px 0; text-align: left;">
+                    <div style="font-size: 20px; color: #ffd700; margin-bottom: 20px; font-weight: bold;">
+                        🎯 Quick Tutorial
+                    </div>
+                    <div id="tutorialContent" style="color: #00ddff; line-height: 1.8;">
+                        <!-- Dynamic content based on selection -->
+                    </div>
+                </div>
+
+                <button class="btn" onclick="launchModule()" id="launchBtn">
+                    🚀 Launch Module →
+                </button>
+
+                <div style="margin-top: 20px;">
+                    <button class="btn-secondary btn" onclick="prevStep()">← Back</button>
+                </div>
+            </div>
+
+            <!-- STEP 4: Community Connection -->
+            <div class="step-content" id="step4">
+                <h1>👥 Welcome to the Community!</h1>
+                <div class="subtitle">
+                    You're now part of a <span class="highlight">builder network</span> that supports each other
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value">50+</div>
+                        <div class="stat-label">Active Builders</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">24/7</div>
+                        <div class="stat-label">Community Chat</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">Real Humans</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.7); border: 2px solid #00ddff; border-radius: 15px; padding: 30px; margin: 30px 0;">
+                    <div style="font-size: 20px; color: #ffd700; margin-bottom: 20px; font-weight: bold;">
+                        🌟 What You Get
+                    </div>
+                    <div style="text-align: left; color: #00ddff; line-height: 2;">
+                        ✅ Ask questions and get real answers<br>
+                        ✅ Share what you're building<br>
+                        ✅ Find collaboration partners<br>
+                        ✅ Get feedback on your ideas<br>
+                        ✅ Celebrate wins together<br>
+                        ✅ Support when things get hard
+                    </div>
+                </div>
+
+                <button class="btn" onclick="nextStep()">
+                    Let's Connect! →
+                </button>
+
+                <div style="margin-top: 20px;">
+                    <button class="btn-secondary btn" onclick="prevStep()">← Back</button>
+                </div>
+            </div>
+
+            <!-- STEP 5: Daily Return System -->
+            <div class="step-content" id="step5">
+                <h1>🔥 Your Daily 100X System</h1>
+                <div class="subtitle">
+                    Here's how to get the most value every single day
+                </div>
+
+                <div class="checklist">
+                    <div class="checklist-item completed">
+                        <div class="checkbox">✓</div>
+                        <div>
+                            <div style="font-size: 16px; color: #00ff00; font-weight: bold;">Account Created</div>
+                            <div style="font-size: 14px; color: #00ddff;">You're officially a 100X builder!</div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item completed">
+                        <div class="checkbox">✓</div>
+                        <div>
+                            <div style="font-size: 16px; color: #00ff00; font-weight: bold;">First Module Launched</div>
+                            <div style="font-size: 14px; color: #00ddff;">You've experienced the power!</div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div>
+                            <div style="font-size: 16px; color: #ffd700; font-weight: bold;">Bookmark the Dashboard</div>
+                            <div style="font-size: 14px; color: #00ddff;">Come back here daily for your tools</div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div>
+                            <div style="font-size: 16px; color: #ffd700; font-weight: bold;">Join Community Chat</div>
+                            <div style="font-size: 14px; color: #00ddff;">Connect with other builders</div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <div>
+                            <div style="font-size: 16px; color: #ffd700; font-weight: bold;">Explore More Modules</div>
+                            <div style="font-size: 14px; color: #00ddff;">Find tools for your specific needs</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(255, 107, 0, 0.2), rgba(255, 215, 0, 0.2)); border: 2px solid #ffd700; border-radius: 15px; padding: 30px; margin: 30px 0;">
+                    <div style="font-size: 24px; color: #ffd700; margin-bottom: 15px; font-weight: bold;">
+                        🎁 Pro Tip
+                    </div>
+                    <div style="font-size: 16px; color: #00ddff; line-height: 1.8;">
+                        The builders who get the most value check in daily, try new modules weekly, and share what they're building with the community. You're already ahead by completing this flow!
+                    </div>
+                </div>
+
+                <button class="btn" onclick="enterPlatform()" style="font-size: 24px; padding: 25px 50px;">
+                    🚀 Enter 100X Platform
+                </button>
+
+                <div style="margin-top: 20px;">
+                    <button class="btn-secondary btn" onclick="prevStep()">← Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let currentStep = 1;
+        let selectedQuickWin = null;
+        let selectedBuilderType = null;
+
+        const userData = {
+            quickWin: null,
+            builderType: null,
+            completedAt: null
+        };
+
+        // Tutorial content for each quick win
+        const tutorials = {
+            todo: {
+                name: "Todo Automation",
+                content: `
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #00ff00;">What it does:</strong><br>
+                        Automatically organizes your tasks by priority, deadlines, and impact.
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #00ff00;">How it saves time:</strong><br>
+                        Instead of spending 30 minutes planning your day, get instant priorities in 3 seconds.
+                    </div>
+                    <div>
+                        <strong style="color: #00ff00;">Try it now:</strong><br>
+                        Click "Launch Module" to see your personalized todo dashboard!
+                    </div>
+                `,
+                url: 'todo-master.html'
+            },
+            pattern: {
+                name: "Pattern Detector",
+                content: `
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #00ff00;">What it does:</strong><br>
+                        Analyzes people's behavior to spot helpers vs destroyers automatically.
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #00ff00;">How it saves time:</strong><br>
+                        Stop wasting months on toxic people. Know within minutes who's genuine.
+                    </div>
+                    <div>
+                        <strong style="color: #00ff00;">Try it now:</strong><br>
+                        Click "Launch Module" to test the pattern detector!
+                    </div>
+                `,
+                url: '../PUBLIC/pattern-filter.html'
+            },
+            brain: {
+                name: "AI Decision Helper",
+                content: `
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #00ff00;">What it does:</strong><br>
+                        Analyzes tough decisions with AI that considers all angles.
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #00ff00;">How it saves time:</strong><br>
+                        Stop overthinking for hours. Get clear analysis in minutes.
+                    </div>
+                    <div>
+                        <strong style="color: #00ff00;">Try it now:</strong><br>
+                        Click "Launch Module" to make your first AI-powered decision!
+                    </div>
+                `,
+                url: 'brain-council.html'
+            }
+        };
+
+        // Step Navigation
+        function nextStep() {
+            if (currentStep < 5) {
+                // Mark current step as completed
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('completed');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+
+                currentStep++;
+
+                // Activate next step
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+
+                // Update content
+                updateStepContent();
+
+                // Update progress bar
+                updateProgress();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+
+                currentStep--;
+
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('completed');
+
+                updateStepContent();
+                updateProgress();
+            }
+        }
+
+        function updateStepContent() {
+            // Hide all content
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Show current step content
+            document.getElementById(`step${currentStep}`).classList.add('active');
+
+            // Special handling for step 3
+            if (currentStep === 3 && selectedQuickWin) {
+                const tutorial = tutorials[selectedQuickWin];
+                document.getElementById('chosenModule').textContent = tutorial.name;
+                document.getElementById('tutorialContent').innerHTML = tutorial.content;
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentStep - 1) / 4) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Quick Win Selection
+        function selectQuickWin(type) {
+            selectedQuickWin = type;
+            userData.quickWin = type;
+
+            // Visual feedback
+            document.querySelectorAll('.quick-win-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+
+            // Enable next button
+            document.getElementById('step1Btn').disabled = false;
+        }
+
+        // Builder Type Selection
+        function selectBuilderType(type) {
+            selectedBuilderType = type;
+            userData.builderType = type;
+
+            // Visual feedback
+            document.querySelectorAll('.builder-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+
+            // Enable next button
+            document.getElementById('step2Btn').disabled = false;
+        }
+
+        // Launch Module
+        function launchModule() {
+            if (selectedQuickWin) {
+                const tutorial = tutorials[selectedQuickWin];
+                // Open in new tab
+                window.open(tutorial.url, '_blank');
+                // Move to next step after a brief delay
+                setTimeout(() => {
+                    nextStep();
+                }, 1000);
+            }
+        }
+
+        // Enter Platform
+        function enterPlatform() {
+            // Save completion data
+            userData.completedAt = new Date().toISOString();
+            localStorage.setItem('welcomeFlowCompleted', JSON.stringify(userData));
+
+            // Redirect to 7 Domains Navigator (Sacred Geometry entry)
+            window.location.href = 'seven-domains-navigator.html';
+        }
+
+        // Auto-save progress
+        setInterval(() => {
+            localStorage.setItem('welcomeFlowProgress', JSON.stringify({
+                currentStep,
+                selectedQuickWin,
+                selectedBuilderType,
+                timestamp: Date.now()
+            }));
+        }, 5000);
+
+        // Restore progress on load
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('welcomeFlowProgress');
+            if (saved) {
+                const data = JSON.parse(saved);
+                // Only restore if less than 1 hour old
+                if (Date.now() - data.timestamp < 3600000) {
+                    if (data.selectedQuickWin) {
+                        selectedQuickWin = data.selectedQuickWin;
+                    }
+                    if (data.selectedBuilderType) {
+                        selectedBuilderType = data.selectedBuilderType;
+                    }
+                }
+            }
+        });
+    </script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

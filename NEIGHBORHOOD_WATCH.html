@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏘️ Neighborhood Watch - Who's Online?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #0f0;
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #0f0;
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+        }
+
+        .search-bar input::placeholder {
+            color: #666;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+        }
+
+        .neighborhood {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .person-card {
+            background: linear-gradient(135deg, rgba(30, 30, 50, 0.9) 0%, rgba(20, 20, 40, 0.9) 100%);
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .person-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 0, 0.2);
+            border-color: #0f0;
+        }
+
+        .person-card.online {
+            border-color: #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .person-card.away {
+            border-color: #ff0;
+        }
+
+        .person-card.offline {
+            border-color: #666;
+            opacity: 0.7;
+        }
+
+        .person-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .person-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.online {
+            background: #0f0;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        .status-indicator.away {
+            background: #ff0;
+            box-shadow: 0 0 10px #ff0;
+        }
+
+        .status-indicator.offline {
+            background: #666;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .person-status {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .person-status.online {
+            color: #0f0;
+        }
+
+        .channels {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .channel {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .channel.active {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #0f0;
+        }
+
+        .channel-icon {
+            font-size: 1.2rem;
+            margin-right: 5px;
+        }
+
+        .channel-status {
+            color: #888;
+            font-size: 0.8rem;
+        }
+
+        .channel-status.online {
+            color: #0f0;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .action-btn.message {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+        .action-btn.message:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .action-btn.email {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: #fff;
+        }
+
+        .action-btn.sms {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: #fff;
+        }
+
+        .last-seen {
+            text-align: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .stats-bar {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-around;
+            max-width: 1400px;
+            margin: 0 auto 30px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0f0;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏘️ NEIGHBORHOOD WATCH</h1>
+        <p>See who's online, where they are, and how to reach them</p>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for someone... (e.g., 'Joshua')" onkeyup="filterPeople()">
+        <span class="search-icon">🔍</span>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat">
+            <div class="stat-value" id="onlineCount">0</div>
+            <div class="stat-label">Online Now</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="awayCount">0</div>
+            <div class="stat-label">Away</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="offlineCount">0</div>
+            <div class="stat-label">Offline</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="totalCount">0</div>
+            <div class="stat-label">Total People</div>
+        </div>
+    </div>
+
+    <div class="neighborhood" id="neighborhood">
+        <!-- People cards will be dynamically added here -->
+    </div>
+
+    <script>
+        // SAMPLE DATA (Replace with real data from APIs)
+        let people = [
+            {
+                name: 'Joshua',
+                pin: '1234',
+                instagram_username: 'joshua',  // Add Instagram username here
+                status: 'online',  // online, away, offline
+                currentPage: '/workspace',
+                lastSeen: '2 minutes ago',
+                channels: {
+                    website: { active: true, status: 'On /workspace' },
+                    email: { active: false, status: 'Read 1hr ago' },
+                    sms: { active: false, status: 'Replied 3hrs ago' },
+                    instagram: { active: false, status: 'Checking...' }
+                }
+            },
+            {
+                name: 'Sarah',
+                pin: '5678',
+                instagram_username: 'sarah',  // Add Instagram username here
+                status: 'away',
+                currentPage: null,
+                lastSeen: '30 minutes ago',
+                channels: {
+                    website: { active: false, status: 'Last visit: 30m ago' },
+                    email: { active: true, status: 'Inbox open' },
+                    sms: { active: false, status: 'No reply' },
+                    instagram: { active: false, status: 'Checking...' }
+                }
+            },
+            {
+                name: 'Mike',
+                pin: '9012',
+                instagram_username: 'mike',  // Add Instagram username here
+                status: 'offline',
+                currentPage: null,
+                lastSeen: '2 days ago',
+                channels: {
+                    website: { active: false, status: 'Last visit: 2d ago' },
+                    email: { active: false, status: 'Sent 1d ago' },
+                    sms: { active: false, status: 'Sent 2d ago' },
+                    instagram: { active: false, status: 'Checking...' }
+                }
+            }
+        ];
+
+        function renderNeighborhood() {
+            const neighborhood = document.getElementById('neighborhood');
+            neighborhood.innerHTML = '';
+
+            let onlineCount = 0;
+            let awayCount = 0;
+            let offlineCount = 0;
+
+            people.forEach(person => {
+                // Count status
+                if (person.status === 'online') onlineCount++;
+                else if (person.status === 'away') awayCount++;
+                else offlineCount++;
+
+                const card = document.createElement('div');
+                card.className = `person-card ${person.status}`;
+                card.innerHTML = `
+                    <div class="person-header">
+                        <div class="person-name">${person.name}</div>
+                        <div class="status-indicator ${person.status}"></div>
+                    </div>
+                    <div class="person-status ${person.status}">
+                        ${person.status === 'online' ? `🟢 On ${person.currentPage || 'website'}` :
+                          person.status === 'away' ? '🟡 Away' :
+                          '⚪ Offline'}
+                    </div>
+                    <div class="channels">
+                        <div class="channel ${person.channels.website.active ? 'active' : ''}">
+                            <div><span class="channel-icon">🌐</span>Website</div>
+                            <div class="channel-status ${person.channels.website.active ? 'online' : ''}">${person.channels.website.status}</div>
+                        </div>
+                        <div class="channel ${person.channels.email.active ? 'active' : ''}">
+                            <div><span class="channel-icon">📧</span>Email</div>
+                            <div class="channel-status ${person.channels.email.active ? 'online' : ''}">${person.channels.email.status}</div>
+                        </div>
+                        <div class="channel ${person.channels.sms.active ? 'active' : ''}">
+                            <div><span class="channel-icon">💬</span>SMS</div>
+                            <div class="channel-status ${person.channels.sms.active ? 'online' : ''}">${person.channels.sms.status}</div>
+                        </div>
+                        <div class="channel ${person.channels.instagram.active ? 'active' : ''}">
+                            <div><span class="channel-icon">📷</span>Instagram</div>
+                            <div class="channel-status ${person.channels.instagram.active ? 'online' : ''}">${person.channels.instagram.status}</div>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="action-btn message" onclick="messageViaWebsite('${person.pin}')">
+                            💬 Web
+                        </button>
+                        <button class="action-btn email" onclick="sendEmail('${person.name}')">
+                            📧 Email
+                        </button>
+                        <button class="action-btn sms" onclick="sendSMS('${person.name}')">
+                            📱 SMS
+                        </button>
+                        ${person.instagram_username ?
+                            `<button class="action-btn message" onclick="sendInstagramDM('${person.name}', '${person.instagram_username}')">
+                                📷 DM
+                            </button>` : ''}
+                    </div>
+                    <div class="last-seen">Last seen: ${person.lastSeen}</div>
+                `;
+                neighborhood.appendChild(card);
+            });
+
+            // Update stats
+            document.getElementById('onlineCount').textContent = onlineCount;
+            document.getElementById('awayCount').textContent = awayCount;
+            document.getElementById('offlineCount').textContent = offlineCount;
+            document.getElementById('totalCount').textContent = people.length;
+        }
+
+        function filterPeople() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.person-card');
+
+            cards.forEach(card => {
+                const name = card.querySelector('.person-name').textContent.toLowerCase();
+                if (name.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function messageViaWebsite(pin) {
+            const message = prompt('Message to send:');
+            if (!message) return;
+
+            fetch('http://localhost:6000/api/intercom/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    pin: pin,
+                    from: 'Commander',
+                    message: message
+                })
+            }).then(() => {
+                alert('Message sent via website popup!');
+            }).catch(err => {
+                alert('Error sending message: ' + err.message);
+            });
+        }
+
+        function sendEmail(name) {
+            alert(`Opening email client for ${name}...`);
+            // TODO: Integrate with email system
+        }
+
+        function sendSMS(name) {
+            const message = prompt(`Text message to ${name}:`);
+            if (!message) return;
+
+            alert(`Sending SMS to ${name}: "${message}"`);
+            // TODO: Integrate with Twilio SMS system
+        }
+
+        function sendInstagramDM(name, instagram_username) {
+            if (!instagram_username) {
+                alert('No Instagram username configured for ' + name);
+                return;
+            }
+
+            const message = prompt(`Instagram DM to @${instagram_username}:`);
+            if (!message) return;
+
+            fetch('http://localhost:6000/api/instagram/send-dm', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: instagram_username,
+                    message: message
+                })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === 'sent') {
+                      alert(`✅ Instagram DM sent to @${instagram_username}`);
+                  } else if (data.status === 'rate_limited') {
+                      alert('⚠️ Rate limit reached. Try again later.');
+                  } else {
+                      alert('❌ Failed to send DM: ' + (data.error || 'Unknown error'));
+                  }
+              })
+              .catch(err => {
+                  alert('❌ Instagram service offline: ' + err.message);
+              });
+        }
+
+        // Update Instagram status for a person
+        async function updateInstagramStatus(person) {
+            if (!person.instagram_username) {
+                person.channels.instagram.status = 'No username';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:6000/api/instagram/status/${person.instagram_username}`);
+                const data = await response.json();
+
+                if (data.online !== null) {
+                    person.channels.instagram.active = data.online;
+                    person.channels.instagram.status = data.status || (data.online ? 'Active now' : 'Offline');
+                    console.log(`📷 Instagram: @${person.instagram_username} -> ${data.status}`);
+                } else {
+                    person.channels.instagram.status = 'Unknown';
+                }
+            } catch (err) {
+                person.channels.instagram.status = 'Service offline';
+                console.log('Instagram check failed:', err.message);
+            }
+        }
+
+        // Check Instagram status for all people (runs every 30 seconds)
+        async function updateAllInstagramStatuses() {
+            for (const person of people) {
+                if (person.instagram_username) {
+                    await updateInstagramStatus(person);
+                }
+            }
+            renderNeighborhood();
+        }
+
+        // Fetch live data from local nerve collector
+        async function updateLiveData() {
+            try {
+                const response = await fetch('http://localhost:6000/api/visitor/active');
+                const visitors = await response.json();
+
+                // Update people array with live website data
+                visitors.forEach(visitor => {
+                    let person = people.find(p => p.pin === visitor.pin);
+                    if (!person) {
+                        // Add new person
+                        person = {
+                            name: visitor.name || visitor.pin,
+                            pin: visitor.pin,
+                            status: 'online',
+                            currentPage: visitor.page,
+                            lastSeen: 'Just now',
+                            channels: {
+                                website: { active: true, status: `On ${visitor.page}` },
+                                email: { active: false, status: 'Unknown' },
+                                sms: { active: false, status: 'Unknown' },
+                                instagram: { active: false, status: 'Unknown' }
+                            }
+                        };
+                        people.push(person);
+                    } else {
+                        // Update existing person
+                        person.status = visitor.isActive ? 'online' : 'away';
+                        person.currentPage = visitor.page;
+                        person.lastSeen = 'Just now';
+                        person.channels.website.active = true;
+                        person.channels.website.status = `On ${visitor.page}`;
+                    }
+                });
+
+                renderNeighborhood();
+            } catch (err) {
+                console.log('Waiting for live data...');
+            }
+        }
+
+        // Initial render
+        renderNeighborhood();
+
+        // Update website data every 5 seconds
+        setInterval(updateLiveData, 5000);
+        updateLiveData();
+
+        // Check Instagram status every 30 seconds
+        setInterval(updateAllInstagramStatuses, 30000);
+        updateAllInstagramStatuses(); // Initial check
+
+        console.log('🏘️ NEIGHBORHOOD WATCH: Monitoring all channels');
+        console.log('💬 Type a name (e.g., "Joshua") to find someone');
+        console.log('📷 Instagram status checking enabled (every 30 seconds)');
+    </script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

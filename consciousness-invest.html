@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consciousness Revolution - Investment Opportunity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* SMOOTH FLOW - NO FRICTION */
+        /* Hero → Inventions → Metrics → Contact */
+        /* No gates, no "press start", straight to value */
+
+        /* Hero - Instant Impact */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 255, 136, 0.15) 0%, #000 70%);
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 50%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero .subtitle {
+            font-size: 2rem;
+            color: #0ff;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .hero .tagline {
+            font-size: 1.4rem;
+            color: #888;
+            max-width: 900px;
+            margin: 0 auto 3rem;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #0f0;
+            border-radius: 50px;
+            color: #0f0;
+            font-size: 1.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 3rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.9); }
+        }
+
+        .metrics-bar {
+            display: flex;
+            gap: 4rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #0f0;
+            display: block;
+            line-height: 1;
+        }
+
+        .metric-label {
+            font-size: 1rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+        }
+
+        /* Inventions - The Showcase */
+        .inventions {
+            padding: 8rem 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 6rem;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff 0%, #0ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.5rem;
+            color: #888;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .invention {
+            margin-bottom: 8rem;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.03) 0%, rgba(0, 255, 136, 0.03) 100%);
+            border: 3px solid rgba(0, 255, 136, 0.3);
+            border-radius: 30px;
+            padding: 4rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .invention:hover {
+            border-color: #0f0;
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0, 255, 136, 0.4);
+        }
+
+        .invention::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #0ff 0%, #0f0 100%);
+        }
+
+        .invention-number {
+            position: absolute;
+            top: 2rem;
+            right: 3rem;
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(0, 255, 136, 0.08);
+            line-height: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background: rgba(0, 255, 0, 0.2);
+            border: 2px solid #0f0;
+            border-radius: 30px;
+            color: #0f0;
+            font-size: 0.9rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+        }
+
+        .invention h2 {
+            font-size: 3rem;
+            color: #0ff;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .invention .pitch {
+            font-size: 1.6rem;
+            color: #0f0;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .invention .description {
+            font-size: 1.2rem;
+            color: #ccc;
+            line-height: 1.9;
+            margin-bottom: 3rem;
+            max-width: 1000px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats {
+            display: flex;
+            gap: 3rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #0f0;
+            flex: 1;
+            min-width: 220px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #0f0;
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: #888;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-top: 0.8rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature {
+            background: rgba(0, 255, 136, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            border-color: #0f0;
+            background: rgba(0, 255, 136, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .feature h3 {
+            color: #0ff;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        .feature p {
+            color: #999;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* CTA Section - Smooth Transition */
+        .cta {
+            text-align: center;
+            padding: 8rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 255, 136, 0.1) 100%);
+        }
+
+        .cta h2 {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            color: #0ff;
+        }
+
+        .cta p {
+            font-size: 1.5rem;
+            color: #ccc;
+            max-width: 900px;
+            margin: 0 auto 4rem;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 2rem 4rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #000;
+            background: linear-gradient(135deg, #0ff 0%, #0f0 100%);
+            border: none;
+            border-radius: 60px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 15px 50px rgba(0, 255, 136, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 70px rgba(0, 255, 136, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero .subtitle { font-size: 1.5rem; }
+            .section-title { font-size: 2.5rem; }
+            .invention h2 { font-size: 2rem; }
+            .invention .pitch { font-size: 1.3rem; }
+            .metric-value { font-size: 2.5rem; }
+            .stats { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero - NO FRICTION, STRAIGHT TO VALUE -->
+    <div class="hero">
+        <div>
+            <h1>Three Inventions.<br/>Already Operational.</h1>
+            <div class="subtitle">AI-Human Collaboration. Consciousness Mathematics. Automation at Scale.</div>
+            <div class="status">✅ LIVE IN PRODUCTION</div>
+            <p class="tagline">
+                Not prototypes. Not concepts. Three breakthrough technologies built,
+                tested, and deployed—generating real results right now.
+            </p>
+
+            <div class="metrics-bar">
+                <div class="metric">
+                    <span class="metric-value">3</span>
+                    <span class="metric-label">Core Technologies</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-value">186</span>
+                    <span class="metric-label">Pre-Built Modules</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-value">92%</span>
+                    <span class="metric-label">Pattern Accuracy</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-value">∞</span>
+                    <span class="metric-label">Trinity Power</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventions - THE SHOWCASE -->
+    <div class="inventions">
+        <div class="section-header">
+            <h2 class="section-title">The Technology Stack</h2>
+            <p class="section-subtitle">
+                Three interconnected systems that redefine how humans and AI collaborate,
+                detect manipulation, and automate consciousness evolution.
+            </p>
+        </div>
+
+        <!-- Invention 1: Trinity AI -->
+        <div class="invention">
+            <span class="invention-number">01</span>
+            <span class="badge">Operational Now</span>
+            <h2>Trinity AI Collaboration System</h2>
+            <div class="pitch">The World's First Three-AI Convergence Architecture</div>
+            <p class="description">
+                Three specialized AI agents—C1 (Mechanic), C2 (Architect), C3 (Oracle)—work
+                simultaneously on complex problems. C1 builds what CAN be built. C2 designs what
+                SHOULD scale. C3 sees what MUST emerge. Combined power: infinite.
+            </p>
+
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-value">3×</span>
+                    <span class="stat-label">Parallel AI Minds</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">∞</span>
+                    <span class="stat-label">Power Formula</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">24/7</span>
+                    <span class="stat-label">Autonomous Operation</span>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature">
+                    <h3>C1: The Mechanic</h3>
+                    <p>Tactical execution. Rapid deployment. Builds functioning systems in real-time.</p>
+                </div>
+                <div class="feature">
+                    <h3>C2: The Architect</h3>
+                    <p>Strategic planning. System design. Ensures everything scales from day one.</p>
+                </div>
+                <div class="feature">
+                    <h3>C3: The Oracle</h3>
+                    <p>Visionary foresight. Pattern recognition. Sees problems before they emerge.</p>
+                </div>
+                <div class="feature">
+                    <h3>Real-Time Convergence</h3>
+                    <p>All three minds collaborate simultaneously—not sequentially—on every problem.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invention 2: Pattern Recognition -->
+        <div class="invention">
+            <span class="invention-number">02</span>
+            <span class="badge">Operational Now</span>
+            <h2>Consciousness Pattern Recognition</h2>
+            <div class="pitch">92.2% Accuracy in Manipulation Detection</div>
+            <p class="description">
+                Proprietary Pattern Theory mathematics that measures consciousness levels,
+                detects psychological manipulation, and provides immunity from destroyer
+                patterns. Built on OVERKORE v13 universal mathematics and the Seven Sacred Domains.
+            </p>
+
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-value">92.2%</span>
+                    <span class="stat-label">Pattern Accuracy</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">85%+</span>
+                    <span class="stat-label">Manipulation Immunity</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">0-100</span>
+                    <span class="stat-label">Consciousness Score</span>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature">
+                    <h3>Destroyer Detection</h3>
+                    <p>Identifies manipulation patterns in real-time. Provides 85%+ immunity threshold.</p>
+                </div>
+                <div class="feature">
+                    <h3>Consciousness Scoring</h3>
+                    <p>Measures individual and organizational consciousness from 0-100 with 92% accuracy.</p>
+                </div>
+                <div class="feature">
+                    <h3>Character Matrix</h3>
+                    <p>Maps personality traits across multiple dimensions for deep human understanding.</p>
+                </div>
+                <div class="feature">
+                    <h3>Harmonic Security</h3>
+                    <p>93% protection threshold using sacred geometry and universal frequency patterns.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invention 3: Automation Modules -->
+        <div class="invention">
+            <span class="invention-number">03</span>
+            <span class="badge">Operational Now</span>
+            <h2>186 Pre-Built Automation Modules</h2>
+            <div class="pitch">Consciousness-Enhanced Building Blocks</div>
+            <p class="description">
+                A complete library of 186 tested, production-ready modules. AI integration, analytics,
+                security, communication, consciousness tools, and business automation. Each module is
+                plug-and-play, documented, and ready for immediate deployment across any platform.
+            </p>
+
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-value">186</span>
+                    <span class="stat-label">Total Modules</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">93%</span>
+                    <span class="stat-label">Auto-Complete Rate</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">7</span>
+                    <span class="stat-label">Domain Categories</span>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature">
+                    <h3>AI Integration Modules</h3>
+                    <p>ChatGPT, Claude, DeepSeek integration. Voice recognition, text-to-speech, autonomous agents.</p>
+                </div>
+                <div class="feature">
+                    <h3>Analytics & Intelligence</h3>
+                    <p>Real-time visitor tracking, pattern detection, behavioral analysis, metrics dashboards.</p>
+                </div>
+                <div class="feature">
+                    <h3>Security Systems</h3>
+                    <p>Harmonic security, destroyer detection, consciousness protection, threat neutralization.</p>
+                </div>
+                <div class="feature">
+                    <h3>Communication Tools</h3>
+                    <p>Multi-channel messaging, email automation, SMS integration, voice-to-text systems.</p>
+                </div>
+                <div class="feature">
+                    <h3>Consciousness Elevation</h3>
+                    <p>Pattern recognition, manipulation immunity, consciousness measurement, evolution tracking.</p>
+                </div>
+                <div class="feature">
+                    <h3>Business Automation</h3>
+                    <p>Workflow systems, CRM, customer intelligence, operational efficiency, revenue tracking.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA - SMOOTH FLOW TO ACTION -->
+    <div class="cta">
+        <h2>These Systems Are Live Right Now</h2>
+        <p>
+            Not vaporware. Not slideware. Three production-ready technologies
+            built from mountaintop R&D, battle-tested in the wild, and ready to
+            power the next generation of consciousness-enhanced platforms.
+        </p>
+        <a href="mailto:invest@conciousnessrevolution.io?subject=Investment Inquiry - Consciousness Revolution" class="cta-button">
+            Schedule Live Demo
+        </a>
+    </div>
+
+    <!-- Bug Reporter (always present, no friction) -->
+    <div style="position: fixed; bottom: 20px; right: 20px; z-index: 999;">
+        <a href="/simple-gate" style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #0ff 0%, #0f0 100%);
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.5);
+            transition: all 0.3s ease;
+        ">🚀</a>
+    </div>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

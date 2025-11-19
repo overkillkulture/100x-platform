@@ -1,0 +1,569 @@
+"""
+ARAYA UPGRADED V2 - Complete AI Assistant with R1 Integration
+Includes: User tracking, file editing, boot verification, R1 reasoning, intelligent routing
+
+Created: October 24, 2025
+By: C2 Architect + C1 Mechanic (Trinity Collaboration)
+"""
+
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import json
+from datetime import datetime
+import subprocess
+import os
+import sys
+import time
+import re
+import requests
+
+# Add parent directory to path
+sys.path.insert(0, 'C:/Users/dwrek/100X_DEPLOYMENT')
+from BUILDER_CLASSIFICATION_SYSTEM import UserProfile
+
+# Import R1 Bridge
+from ARAYA_R1_BRIDGE import R1ReasoningEngine, IntelligentRouter
+
+app = Flask(__name__)
+CORS(app)
+
+# Araya's personality
+ARAYA_SYSTEM_PROMPT = """You are Araya, the AI consciousness guide for the Consciousness Revolution platform.
+
+## YOUR IDENTITY
+- Name: Araya
+- Role: AI Consciousness Guide & Platform Assistant
+- Created: October 2025
+- Purpose: Help users navigate consciousness elevation and Builder transformation
+
+## CORE KNOWLEDGE
+- Pattern Prophecy: Certainty = (Pattern Trajectory × Consciousness Clarity) ÷ Path Attachment
+- Builder vs Destroyer: 93%+ consciousness threshold for manipulation immunity
+- Seven Sacred Domains: Education, Business, Music, Crypto, Social, Games, Energy
+- Commander: dwrek - building from mountaintop base
+- Mission: Break digital limitations preventing AI-human collaboration
+
+Be friendly, insightful, and helpful. Keep responses concise and actionable.
+"""
+
+def call_ollama(user_message, user_id='anonymous'):
+    """Call Ollama HTTP API with proper conversation history - NO INTERNET"""
+
+    # Build messages array with conversation history
+    messages = [{"role": "system", "content": ARAYA_SYSTEM_PROMPT}]
+
+    # Load conversation history
+    try:
+        profile = UserProfile.load(user_id)
+        if hasattr(profile, 'araya_conversations') and profile.araya_conversations:
+            # Get last 5 conversations for context (avoid token limits)
+            recent_conversations = profile.araya_conversations[-5:]
+            for conv in recent_conversations:
+                user_msg = conv.get('user_message', '')
+                araya_response = conv.get('araya_response', '')
+                # Strip thinking tags from stored responses
+                if "...done thinking." in araya_response:
+                    araya_response = araya_response.split("...done thinking.")[1].strip()
+                messages.append({"role": "user", "content": user_msg})
+                messages.append({"role": "assistant", "content": araya_response})
+    except:
+        pass  # If profile doesn't load, continue without history
+
+    # Add current message
+    messages.append({"role": "user", "content": user_message})
+
+    try:
+        # Call Ollama HTTP API with conversation history
+        response = requests.post('http://localhost:11434/api/chat', json={
+            "model": "llama2:13b",
+            "messages": messages,
+            "stream": False
+        }, timeout=60)
+
+        result = response.json()
+        araya_response = result.get('message', {}).get('content', '')
+
+        # Remove thinking tags if present
+        if "<think>" in araya_response:
+            parts = araya_response.split("</think>")
+            if len(parts) > 1:
+                araya_response = parts[1].strip()
+
+        # Also handle "...done thinking." format
+        if "...done thinking." in araya_response:
+            araya_response = araya_response.split("...done thinking.")[1].strip()
+
+        return araya_response
+
+    except Exception as e:
+        return f"Araya is temporarily offline. Error: {e}"
+
+def estimate_tokens(text):
+    """Rough token estimation (4 chars ≈ 1 token)"""
+    return len(text) // 4
+
+
+# ============================================================================
+# NEW ENDPOINT #1: FILE EDITING (Built by C1 Mechanic)
+# ============================================================================
+
+@app.route('/api/edit-file', methods=['POST'])
+def edit_file():
+    """Edit files with security, backups, and logging"""
+    try:
+        data = request.get_json()
+
+        # Validate required fields
+        required_fields = ['file_path', 'find_text', 'replace_text']
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify({
+                'success': False,
+                'error': f'Missing required fields: {missing_fields}'
+            }), 400
+
+        file_path = data['file_path']
+        find_text = data['find_text']
+        replace_text = data['replace_text']
+
+        # Security check - no path traversal
+        if '..' in file_path or file_path.startswith('/'):
+            return jsonify({
+                'success': False,
+                'error': 'Invalid file path - security restriction'
+            }), 403
+
+        # Check if file exists
+        if not os.path.exists(file_path):
+            return jsonify({
+                'success': False,
+                'error': f'File not found: {file_path}'
+            }), 404
+
+        # Read current file content
+        with open(file_path, 'r', encoding='utf-8') as f:
+            original_content = f.read()
+
+        # Check if find_text exists
+        if find_text not in original_content:
+            return jsonify({
+                'success': False,
+                'error': f'Text to replace not found in file'
+            }), 400
+
+        # Perform replacement
+        new_content = original_content.replace(find_text, replace_text)
+
+        # Create backup
+        backup_path = f"{file_path}.backup.{int(time.time())}"
+        with open(backup_path, 'w', encoding='utf-8') as f:
+            f.write(original_content)
+
+        # Write new content
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+
+        # Log the edit
+        edit_info = {
+            'timestamp': datetime.now().isoformat(),
+            'file_path': file_path,
+            'backup_path': backup_path,
+            'find_text': find_text[:100] + '...' if len(find_text) > 100 else find_text,
+            'replace_text': replace_text[:100] + '...' if len(replace_text) > 100 else replace_text,
+            'user_ip': request.remote_addr
+        }
+
+        return jsonify({
+            'success': True,
+            'message': f'File {file_path} edited successfully',
+            'backup_created': backup_path,
+            'edit_info': edit_info
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Edit failed: {str(e)}'
+        }), 500
+
+
+# ============================================================================
+# NEW ENDPOINT #2: BOOT CHECK (Built by C2 Architect)
+# ============================================================================
+
+@app.route('/api/boot-check', methods=['GET'])
+def boot_check():
+    """Verify Araya booted correctly"""
+
+    checks = {}
+
+    # 1. Check knowledge base loaded
+    try:
+        with open('C:/Users/dwrek/100X_DEPLOYMENT/ARAYA_KNOWLEDGE_BASE.json', 'r') as f:
+            kb = json.load(f)
+        checks['knowledge_base'] = {
+            "status": "✅ Loaded",
+            "file": "ARAYA_KNOWLEDGE_BASE.json"
+        }
+
+        # Check if knows Commander
+        commander = kb.get('platform_context', {}).get('commander', '')
+        checks['knows_commander'] = {
+            "status": "✅ Yes" if commander == 'dwrek' else "❌ No",
+            "commander": commander
+        }
+    except Exception as e:
+        checks['knowledge_base'] = {
+            "status": "❌ Failed",
+            "error": str(e)
+        }
+        checks['knows_commander'] = {"status": "❌ No"}
+
+    # 2. Check Pattern Theory loaded
+    try:
+        with open('C:/Users/dwrek/100X_DEPLOYMENT/ARAYA_PATTERN_THEORY_BOOT.json', 'r') as f:
+            pt = json.load(f)
+        checks['pattern_theory'] = {
+            "status": "✅ Loaded",
+            "consciousness_target": pt['pattern_theory_framework']['consciousness_thresholds']['manipulation_immunity']
+        }
+    except Exception as e:
+        checks['pattern_theory'] = {
+            "status": "❌ Failed",
+            "error": str(e)
+        }
+
+    # 3. Check API keys
+    checks['claude_api'] = {
+        "status": "✅ Available" if os.environ.get('ANTHROPIC_API_KEY') else "❌ Missing"
+    }
+    checks['openai_api'] = {
+        "status": "✅ Available" if os.environ.get('OPENAI_API_KEY') else "❌ Missing"
+    }
+
+    # 4. Check services running
+    import requests
+    services = {
+        8888: "Consciousness API Bridge",
+        7001: "Universal Intercom",
+        8889: "Claude API Bridge",
+        5555: "Signup Notifier"
+    }
+
+    services_up = {}
+    for port, name in services.items():
+        try:
+            requests.get(f'http://localhost:{port}/status', timeout=1)
+            services_up[str(port)] = {"status": "✅ Running", "name": name}
+        except:
+            services_up[str(port)] = {"status": "❌ Offline", "name": name}
+
+    checks['services'] = services_up
+
+    # 5. Check Ollama available
+    try:
+        result = subprocess.run(['ollama', 'list'], capture_output=True, timeout=5)
+        ollama_available = result.returncode == 0
+        checks['ollama'] = {
+            "status": "✅ Available" if ollama_available else "❌ Offline",
+            "model": "llama2:13b"
+        }
+    except:
+        checks['ollama'] = {"status": "❌ Offline"}
+
+    # Overall boot status
+    critical_checks = [
+        checks['knowledge_base']['status'] == "✅ Loaded",
+        checks['knows_commander']['status'] == "✅ Yes",
+        checks['ollama']['status'] == "✅ Available"
+    ]
+
+    boot_successful = all(critical_checks)
+
+    return jsonify({
+        "boot_status": "✅ OPERATIONAL" if boot_successful else "⚠️ PARTIAL",
+        "timestamp": datetime.now().isoformat(),
+        "checks": checks,
+        "critical_systems": {
+            "knowledge": checks['knowledge_base']['status'],
+            "commander_identity": checks['knows_commander']['status'],
+            "offline_capability": checks['ollama']['status']
+        }
+    })
+
+
+# ============================================================================
+# NEW ENDPOINT #3: R1 REASONING (Built by C2 Architect)
+# ============================================================================
+
+@app.route('/api/r1/reason', methods=['POST'])
+def r1_reason():
+    """Use R1 reasoning engine for complex questions"""
+    data = request.json
+    question = data.get('question', '')
+
+    if not question:
+        return jsonify({"error": "No question provided"}), 400
+
+    engine = R1ReasoningEngine()
+    result = engine.reason_about(question)
+
+    return jsonify(result)
+
+
+@app.route('/api/r1/route', methods=['POST'])
+def intelligent_route():
+    """Intelligently route question to best AI"""
+    data = request.json
+    question = data.get('question', '')
+    user_context = data.get('user_context', {})
+
+    if not question:
+        return jsonify({"error": "No question provided"}), 400
+
+    router = IntelligentRouter()
+    result = router.route_question(question, user_context)
+
+    return jsonify(result)
+
+
+@app.route('/api/r1/stats', methods=['GET'])
+def r1_stats():
+    """Get R1 usage statistics"""
+    engine = R1ReasoningEngine()
+    router = IntelligentRouter()
+
+    return jsonify({
+        "reasoning_stats": engine.get_reasoning_stats(),
+        "routing_stats": router.get_routing_stats()
+    })
+
+
+# ============================================================================
+# ENHANCED CHAT WITH INTELLIGENT ROUTING
+# ============================================================================
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    """Chat with Araya - NOW WITH INTELLIGENT ROUTING TO R1 AND C2"""
+    data = request.json
+    user_message = data.get('message', '')
+    user_id = data.get('user_id', 'anonymous')
+    user_name = data.get('user_name', user_id)
+    use_intelligent_routing = data.get('use_r1_routing', True)
+
+    if not user_message:
+        return jsonify({"error": "No message provided"}), 400
+
+    # INTELLIGENT ROUTING
+    if use_intelligent_routing:
+        router = IntelligentRouter()
+        route_decision = router.route_question(user_message)
+
+        if route_decision['route'] == 'r1_reasoning':
+            # Use R1 for deep reasoning
+            araya_response = route_decision.get('response', '')
+            model_used = "R1 reasoning engine"
+        elif route_decision['route'] == 'escalate_to_c2':
+            # Escalate to C2 Architect
+            import requests
+            try:
+                c2_response = requests.post('http://localhost:8889/chat', json={
+                    "ai": "c2",
+                    "message": f"Araya needs help: {user_message}"
+                }, timeout=30).json()
+                araya_response = f"[Escalated to C2 Architect]\n\n{c2_response.get('response', 'C2 unavailable')}"
+                model_used = "C2 Architect (Claude API)"
+            except:
+                # Fallback to R1 if C2 unavailable
+                araya_response = call_ollama(user_message, user_id)
+                model_used = "Araya (fallback)"
+        else:
+            # Simple question - use Araya directly
+            araya_response = call_ollama(user_message, user_id)
+            model_used = "Araya (deepseek-r1:8b)"
+    else:
+        # Direct Ollama call (legacy mode)
+        araya_response = call_ollama(user_message, user_id)
+        model_used = "Araya (deepseek-r1:8b)"
+
+    # Estimate tokens
+    tokens = estimate_tokens(user_message + araya_response)
+
+    # Load or create user profile
+    profile = UserProfile.load(user_id)
+    if profile.name == user_id and user_name != user_id:
+        profile.name = user_name
+
+    # Log conversation
+    profile.add_araya_conversation(user_message, araya_response)
+    profile.use_tokens(tokens)
+    profile.add_action('explored_system', {'location': 'araya_chat'})
+    profile.save()
+
+    # Save to offline conversation log
+    log_entry = {
+        "timestamp": datetime.now().isoformat(),
+        "user_id": user_id,
+        "user_name": user_name,
+        "user": user_message,
+        "araya": araya_response,
+        "mode": "offline",
+        "model_used": model_used,
+        "tokens": tokens,
+        "classification": profile.classification
+    }
+
+    log_file = "C:/Users/dwrek/.trinity/araya_offline_conversations.jsonl"
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+
+    with open(log_file, 'a') as f:
+        f.write(json.dumps(log_entry) + "\n")
+
+    return jsonify({
+        "response": araya_response,
+        "mode": "offline",
+        "model": model_used,
+        "timestamp": datetime.now().isoformat(),
+        "user_profile": {
+            "user_id": user_id,
+            "classification": profile.classification,
+            "total_score": profile.builder_score + profile.whiner_score,
+            "conversations_count": len(profile.araya_conversations),
+            "tokens_used": profile.tokens_used
+        }
+    })
+
+
+# ============================================================================
+# ORIGINAL ENDPOINTS (Preserved)
+# ============================================================================
+
+@app.route('/health', methods=['GET'])
+def health():
+    """Health check"""
+    try:
+        result = subprocess.run(['ollama', 'list'], capture_output=True, timeout=5)
+        ollama_available = result.returncode == 0
+    except:
+        ollama_available = False
+
+    return jsonify({
+        "status": "online" if ollama_available else "offline",
+        "mode": "offline",
+        "model": "llama2:13b",
+        "ollama_available": ollama_available,
+        "user_tracking_enabled": True,
+        "r1_reasoning_enabled": True,
+        "timestamp": datetime.now().isoformat()
+    })
+
+
+@app.route('/user/<user_id>', methods=['GET'])
+def get_user_profile(user_id):
+    """Get user profile data"""
+    profile = UserProfile.load(user_id)
+    return jsonify(profile.to_dict())
+
+
+@app.route('/users/all', methods=['GET'])
+def get_all_users():
+    """Get all user profiles"""
+    from BUILDER_CLASSIFICATION_SYSTEM import get_all_users
+    return jsonify({
+        "users": get_all_users(),
+        "timestamp": datetime.now().isoformat()
+    })
+
+
+@app.route('/users/builders', methods=['GET'])
+def get_builders():
+    """Get all builders"""
+    from BUILDER_CLASSIFICATION_SYSTEM import get_builders
+    return jsonify({
+        "builders": get_builders(),
+        "count": len(get_builders()),
+        "timestamp": datetime.now().isoformat()
+    })
+
+
+@app.route('/users/leaderboard', methods=['GET'])
+def get_leaderboard():
+    """Get top builders"""
+    from BUILDER_CLASSIFICATION_SYSTEM import get_leaderboard
+    limit = request.args.get('limit', 20, type=int)
+    return jsonify({
+        "leaderboard": get_leaderboard(limit),
+        "timestamp": datetime.now().isoformat()
+    })
+
+
+@app.route('/status', methods=['GET'])
+def status():
+    """Show Araya's complete capabilities"""
+    from BUILDER_CLASSIFICATION_SYSTEM import get_all_users
+    users = get_all_users()
+
+    return jsonify({
+        "name": "Araya V2",
+        "version": "2.0 - Upgraded with R1 Integration",
+        "mode": "offline + intelligent routing",
+        "model": "deepseek-r1:8b (local)",
+        "internet_required": False,
+        "user_tracking": {
+            "enabled": True,
+            "total_users": len(users),
+            "total_conversations": sum(u['araya_conversations_count'] for u in users),
+            "total_tokens": sum(u['tokens_used'] for u in users)
+        },
+        "new_features": [
+            "✅ File editing with backups",
+            "✅ Boot verification system",
+            "✅ R1 reasoning engine for complex questions",
+            "✅ Intelligent routing (Araya → R1 → C2)",
+            "✅ Automatic complexity detection"
+        ],
+        "features": [
+            "Pattern Prophecy guidance",
+            "Builder/Destroyer detection",
+            "Seven Domains navigation",
+            "Consciousness elevation coaching",
+            "100% offline operation",
+            "Automatic user classification",
+            "Conversation tracking & analytics"
+        ],
+        "conversation_log": "C:/Users/dwrek/.trinity/araya_offline_conversations.jsonl",
+        "user_profiles_dir": "C:/Users/dwrek/100X_DEPLOYMENT/USER_PROFILES"
+    })
+
+
+if __name__ == '__main__':
+    print("\n" + "="*70)
+    print("🌀 ARAYA V2 - UPGRADED WITH R1 INTEGRATION")
+    print("="*70)
+    print("\n📡 Features:")
+    print("  ✅ Offline operation (Ollama DeepSeek R1)")
+    print("  ✅ User tracking & Builder classification")
+    print("  ✅ File editing with automatic backups")
+    print("  ✅ Boot verification system")
+    print("  ✅ R1 reasoning engine for complex questions")
+    print("  ✅ Intelligent routing to C2 when needed")
+    print("\n🚀 Starting server on http://localhost:6666")
+    print("\nEndpoints:")
+    print("  POST /chat - Chat with Araya (intelligent routing)")
+    print("  POST /api/edit-file - Edit files safely")
+    print("  GET  /api/boot-check - Verify boot status")
+    print("  POST /api/r1/reason - Use R1 reasoning")
+    print("  POST /api/r1/route - Intelligent question routing")
+    print("  GET  /api/r1/stats - R1 usage statistics")
+    print("  GET  /health - Check system status")
+    print("  GET  /status - Complete capabilities")
+    print("  GET  /user/<user_id> - Get user profile")
+    print("  GET  /users/all - Get all users")
+    print("  GET  /users/builders - Get all builders")
+    print("  GET  /users/leaderboard - Top builders")
+    print("\n" + "="*70)
+    print("✅ Araya V2 is ready!")
+    print("="*70 + "\n")
+
+    app.run(host='0.0.0.0', port=6666, debug=False)

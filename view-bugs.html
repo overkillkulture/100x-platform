@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Reports - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            color: #00ff88;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .bug-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .bug-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #ff4444;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .bug-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(255, 68, 68, 0.3);
+        }
+
+        .bug-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .bug-title {
+            font-size: 1.2em;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .bug-id {
+            color: #888;
+            font-size: 0.8em;
+        }
+
+        .bug-description {
+            color: #ddd;
+            margin: 15px 0;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .bug-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.9em;
+            color: #aaa;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .meta-label {
+            color: #00ff88;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.5em;
+            color: #00ff88;
+        }
+
+        .error {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px;
+            color: #888;
+            font-size: 1.2em;
+        }
+
+        .refresh-btn {
+            background: #00ff88;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #00cc6a;
+            transform: scale(1.05);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 Bug Reports Dashboard</h1>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="total-bugs">0</div>
+                <div class="stat-label">Total Reports</div>
+            </div>
+            <div class="stat-item">
+                <button class="refresh-btn" onclick="loadBugs()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <div id="bug-container">
+            <div class="loading">Loading bug reports...</div>
+        </div>
+    </div>
+
+    <script>
+        async function loadBugs() {
+            const container = document.getElementById('bug-container');
+            container.innerHTML = '<div class="loading">Loading bug reports...</div>';
+
+            try {
+                const response = await fetch('/api/get-bugs');
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to load bugs');
+                }
+
+                document.getElementById('total-bugs').textContent = data.count;
+
+                if (data.bugs.length === 0) {
+                    container.innerHTML = '<div class="empty">No bugs reported yet. System is clean! ✨</div>';
+                    return;
+                }
+
+                const bugListHTML = data.bugs.map(bug => {
+                    const timestamp = new Date(bug.timestamp || bug.received_at).toLocaleString();
+                    const title = bug.title || bug.description?.substring(0, 50) || 'Untitled Bug';
+                    const description = bug.description || 'No description provided';
+                    const reporter = bug.reporter || bug.email || 'Anonymous';
+                    const url = bug.url || 'N/A';
+
+                    return `
+                        <div class="bug-card">
+                            <div class="bug-header">
+                                <div class="bug-title">${escapeHtml(title)}</div>
+                                <div class="bug-id">${bug.id}</div>
+                            </div>
+                            <div class="bug-description">${escapeHtml(description)}</div>
+                            <div class="bug-meta">
+                                <div class="meta-item">
+                                    <span class="meta-label">📅 Reported:</span>
+                                    <span>${timestamp}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">👤 Reporter:</span>
+                                    <span>${escapeHtml(reporter)}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">🔗 URL:</span>
+                                    <span>${escapeHtml(url)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = `<div class="bug-list">${bugListHTML}</div>`;
+
+            } catch (error) {
+                console.error('Error loading bugs:', error);
+                container.innerHTML = `
+                    <div class="error">
+                        <h2>⚠️ Error Loading Bugs</h2>
+                        <p>${error.message}</p>
+                        <button class="refresh-btn" onclick="loadBugs()">Try Again</button>
+                    </div>
+                `;
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load bugs on page load
+        loadBugs();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadBugs, 30000);
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

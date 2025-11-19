@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🌌 Consciousness HUD - GTA Style V3 Windowed</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            font-family: 'Pricedown', 'Impact', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* GTA-Style Circular Menu */
+        .interaction-menu {
+            position: fixed;
+            bottom: 120px;
+            right: 120px;
+            width: 400px;
+            height: 400px;
+            display: none;
+            z-index: 100;
+        }
+
+        .interaction-menu.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Center Hub */
+        .menu-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.3), rgba(0, 255, 255, 0) 70%);
+            border: 3px solid #00ffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #00ffff;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* Module Grid (8 positions around center) */
+        .module {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(20, 20, 40, 0.9));
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .module:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 200, 200, 0.3));
+            border-color: #00ffff;
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+        }
+
+        .module.selected {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 200, 0, 0.3));
+            border-color: #00ff00;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
+        }
+
+        .module-icon {
+            font-size: 48px;
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+
+        .module-label {
+            font-size: 12px;
+            color: #00ffff;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+        }
+
+        /* Position modules in circle */
+        .module:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+        .module:nth-child(2) { top: 15%; right: 15%; }
+        .module:nth-child(3) { top: 50%; right: 0; transform: translateY(-50%); }
+        .module:nth-child(4) { bottom: 15%; right: 15%; }
+        .module:nth-child(5) { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .module:nth-child(6) { bottom: 15%; left: 15%; }
+        .module:nth-child(7) { top: 50%; left: 0; transform: translateY(-50%); }
+        .module:nth-child(8) { top: 15%; left: 15%; }
+
+        /* Quick Access Bar (Bottom) */
+        .quick-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.9));
+            border-top: 1px solid rgba(0, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 0 40px;
+            z-index: 50;
+        }
+
+        .quick-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        /* Toggle Button */
+        .menu-toggle {
+            position: fixed;
+            bottom: 100px;
+            right: 40px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.5), rgba(0, 0, 0, 0.9));
+            border: 4px solid #00ffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: megaPulse 1.5s infinite;
+            z-index: 150;
+        }
+
+        @keyframes megaPulse {
+            0%, 100% {
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.8), 0 0 60px rgba(0, 255, 255, 0.4);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(0, 255, 255, 1), 0 0 100px rgba(0, 255, 255, 0.6);
+                transform: scale(1.15);
+            }
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.25);
+            box-shadow: 0 0 80px rgba(0, 255, 255, 1);
+        }
+
+        /* Tutorial Overlay */
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.5s;
+        }
+
+        .tutorial-overlay.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .tutorial-content {
+            background: linear-gradient(135deg, #1a1a2e, #0a0a0a);
+            border: 3px solid #00ffff;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.6);
+        }
+
+        .tutorial-title {
+            font-size: 32px;
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .tutorial-text {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .tutorial-arrow {
+            position: fixed;
+            bottom: 220px;
+            right: 160px;
+            font-size: 80px;
+            color: #00ffff;
+            animation: bounce 1s infinite;
+            z-index: 10000;
+            filter: drop-shadow(0 0 20px #00ffff);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(0) rotate(-45deg); }
+            50% { transform: translateX(10px) rotate(-45deg); }
+        }
+
+        .tutorial-label {
+            position: fixed;
+            bottom: 240px;
+            right: 240px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 2px solid #00ffff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: #00ffff;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 10000;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+            animation: labelPulse 1.5s infinite;
+        }
+
+        @keyframes labelPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .tutorial-btn {
+            background: linear-gradient(135deg, #00ffff, #00aaaa);
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            color: #000;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .tutorial-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        }
+
+        /* Windowed Module System */
+        .module-window {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.4);
+            z-index: 200;
+            min-width: 400px;
+            min-height: 300px;
+        }
+
+        .module-window.active {
+            display: flex;
+        }
+
+        .module-window.maximized {
+            top: 10px !important;
+            left: 10px !important;
+            width: calc(100vw - 20px) !important;
+            height: calc(100vh - 100px) !important;
+        }
+
+        .window-header {
+            background: linear-gradient(180deg, rgba(0, 255, 0, 0.2), transparent);
+            padding: 12px 16px;
+            border-bottom: 2px solid #00ff00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+            user-select: none;
+        }
+
+        .window-title {
+            font-size: 18px;
+            color: #00ff00;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-btn {
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 4px;
+            color: #00ff00;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .window-btn:hover {
+            background: rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .window-btn.close {
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        .window-btn.close:hover {
+            background: rgba(255, 0, 0, 0.3);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .window-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: #00ff00;
+        }
+
+        .window-resize-handle {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            cursor: nwse-resize;
+            background: linear-gradient(135deg, transparent 50%, rgba(0, 255, 0, 0.3) 50%);
+        }
+
+        /* Terminal specific styles */
+        .terminal-line {
+            margin: 4px 0;
+            white-space: pre-wrap;
+        }
+
+        .terminal-input-area {
+            padding: 12px;
+            border-top: 2px solid #00ff00;
+            display: flex;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 8px 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        .terminal-input:focus {
+            outline: none;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .execute-btn {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 200, 0, 0.3));
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .execute-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.4), rgba(0, 200, 0, 0.5));
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(20, 20, 40, 0.9));
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+            padding: 16px 24px;
+            color: #00ffff;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.3s;
+            z-index: 300;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Araya Change Approval Widget */
+        .approval-widget {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 600px;
+            max-width: 90vw;
+            background: linear-gradient(135deg, rgba(10, 10, 30, 0.98), rgba(30, 30, 60, 0.98));
+            border: 3px solid #00ffff;
+            border-radius: 16px;
+            padding: 24px;
+            z-index: 500;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.5), inset 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .approval-widget.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .approval-header {
+            text-align: center;
+            color: #00ffff;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+
+        .approval-title {
+            color: #00ff00;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .approval-description {
+            color: #aaaaaa;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .approval-changes {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .approval-change-item {
+            color: #00ffff;
+            font-size: 12px;
+            margin: 8px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .approval-change-item::before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #00ff00;
+        }
+
+        .approval-impact {
+            color: #ffaa00;
+            font-size: 14px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(255, 170, 0, 0.1);
+            border-left: 3px solid #ffaa00;
+            border-radius: 4px;
+        }
+
+        .approval-risk {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .approval-risk.LOW {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+
+        .approval-risk.MODERATE {
+            background: rgba(255, 170, 0, 0.2);
+            border: 1px solid #ffaa00;
+            color: #ffaa00;
+        }
+
+        .approval-risk.HIGH {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+            color: #ff0000;
+        }
+
+        .approval-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .approval-btn {
+            padding: 12px 24px;
+            border: 2px solid;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .approval-btn.approve {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 200, 0, 0.3));
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+
+        .approval-btn.approve:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.4), rgba(0, 200, 0, 0.5));
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+            transform: scale(1.05);
+        }
+
+        .approval-btn.cancel {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(200, 0, 0, 0.3));
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        .approval-btn.cancel:hover {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.4), rgba(200, 0, 0, 0.5));
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+            transform: scale(1.05);
+        }
+
+        .approval-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 499;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .approval-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+    </style>
+</head>
+<body>
+    <!-- Tutorial Overlay (First Time Users) - CLEAN VERSION -->
+    <div class="tutorial-overlay" id="tutorialOverlay">
+        <div class="tutorial-content">
+            <div class="tutorial-title">🌌 JARVIS HUD - AI Desktop Overlay</div>
+            <div class="tutorial-text">
+                <strong style="color: #00ffff; font-size: 20px;">Click the glowing ⚙️ gear button</strong><br>
+                (bottom right corner)<br><br>
+                This opens the modules menu where you can access:<br>
+                💻 Terminal • 📁 Files • 💬 Araya AI • 🎵 Music • 🌀 Trinity
+            </div>
+            <button class="tutorial-btn" onclick="closeTutorial()">LET'S GO!</button>
+        </div>
+    </div>
+
+    <!-- Quick Stats Bar -->
+    <div class="quick-bar">
+        <div class="quick-stat">
+            <div class="stat-icon">🧠</div>
+            <div class="stat-info">
+                <div class="stat-label">Consciousness</div>
+                <div class="stat-value">93%</div>
+            </div>
+        </div>
+
+        <div class="quick-stat">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-info">
+                <div class="stat-label">Services</div>
+                <div class="stat-value" id="servicesCount">13/15</div>
+            </div>
+        </div>
+
+        <div class="quick-stat">
+            <div class="stat-icon">🛡️</div>
+            <div class="stat-info">
+                <div class="stat-label">Security</div>
+                <div class="stat-value">SAFE</div>
+            </div>
+        </div>
+
+        <div class="quick-stat">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-info">
+                <div class="stat-label">Uptime</div>
+                <div class="stat-value" id="uptime">--</div>
+            </div>
+        </div>
+
+        <!-- Full-Screen Browser Button -->
+        <div class="quick-stat" onclick="launchFullscreenBrowser()" style="cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 0 20px rgba(0,255,255,0.8)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='';">
+            <div class="stat-icon">🌐</div>
+            <div class="stat-info">
+                <div class="stat-label">Browser</div>
+                <div class="stat-value" style="color: #00ffff;">LAUNCH</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Toggle -->
+    <div class="menu-toggle" onclick="toggleMenu()">⚙️</div>
+
+    <!-- Interaction Menu -->
+    <div class="interaction-menu" id="interactionMenu">
+        <div class="menu-center">
+            MODULES
+        </div>
+
+        <div class="module" onclick="openWindow('terminal')">
+            <div class="module-icon">💻</div>
+            <div class="module-label">Terminal</div>
+        </div>
+
+        <div class="module" onclick="openWindow('files')">
+            <div class="module-icon">📁</div>
+            <div class="module-label">Files</div>
+        </div>
+
+        <div class="module" onclick="openWindow('diagnostics')">
+            <div class="module-icon">🔍</div>
+            <div class="module-label">Diagnostics</div>
+        </div>
+
+        <div class="module" onclick="openWindow('security')">
+            <div class="module-icon">🛡️</div>
+            <div class="module-label">Security</div>
+        </div>
+
+        <div class="module" onclick="openWindow('music')">
+            <div class="module-icon">🎵</div>
+            <div class="module-label">Music</div>
+        </div>
+
+        <div class="module" onclick="openWindow('araya')">
+            <div class="module-icon">💬</div>
+            <div class="module-label">ARAYA AI</div>
+        </div>
+
+        <div class="module" onclick="openWindow('cvt')">
+            <div class="module-icon">⚡</div>
+            <div class="module-label">CVT Power</div>
+        </div>
+
+        <div class="module" onclick="window.open('workspace-v2.html', '_blank')">
+            <div class="module-icon">📊</div>
+            <div class="module-label">Workspace</div>
+        </div>
+    </div>
+
+    <!-- Terminal Window -->
+    <div class="module-window" id="terminalWindow" style="top: 100px; left: 100px; width: 800px; height: 600px;">
+        <div class="window-header" onmousedown="startDrag(event, 'terminalWindow')">
+            <div class="window-title">💻 Live Terminal</div>
+            <div class="window-controls">
+                <div class="window-btn" onclick="toggleMaximize('terminalWindow')" title="Maximize">⬜</div>
+                <div class="window-btn close" onclick="closeWindow('terminalWindow')">✕</div>
+            </div>
+        </div>
+        <div class="window-content" id="terminalOutput"></div>
+        <div class="terminal-input-area">
+            <input type="text" class="terminal-input" id="terminalInput" placeholder="Type command..." onkeypress="if(event.key==='Enter') executeCommand()">
+            <button class="execute-btn" onclick="executeCommand()">Execute</button>
+        </div>
+        <div class="window-resize-handle" onmousedown="startResize(event, 'terminalWindow')"></div>
+    </div>
+
+    <!-- Files Window -->
+    <div class="module-window" id="filesWindow" style="top: 150px; left: 200px; width: 700px; height: 600px;">
+        <div class="window-header" onmousedown="startDrag(event, 'filesWindow')">
+            <div class="window-title">📁 Quick File Access</div>
+            <div class="window-controls">
+                <div class="window-btn" onclick="toggleMaximize('filesWindow')">⬜</div>
+                <div class="window-btn close" onclick="closeWindow('filesWindow')">✕</div>
+            </div>
+        </div>
+        <div class="window-content" style="padding: 20px; overflow-y: auto;">
+            <!-- SEARCH BOX -->
+            <input type="text"
+                   id="fileSearchBox"
+                   placeholder="🔍 Type to find files instantly (C3, HUD, R1, music...)"
+                   style="width: 100%; padding: 15px; font-size: 16px;
+                          background: rgba(0,255,0,0.1); border: 2px solid #00ff00;
+                          color: #00ff00; border-radius: 8px; margin-bottom: 20px;">
+
+            <!-- QUICK BUTTONS -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                <button onclick="openQuickFile('C:/Users/dwrek')"
+                        style="padding: 12px; background: rgba(0,255,255,0.2); border: 2px solid #00ffff;
+                               color: #00ffff; cursor: pointer; border-radius: 6px; font-size: 14px;
+                               transition: all 0.3s; font-weight: bold; text-transform: uppercase;"
+                        onmouseover="this.style.background='rgba(0,255,255,0.4)'; this.style.boxShadow='0 0 20px rgba(0,255,255,0.8)'; this.style.transform='scale(1.05)';"
+                        onmouseout="this.style.background='rgba(0,255,255,0.2)'; this.style.boxShadow='none'; this.style.transform='scale(1)';">
+                    📁 ALL FILES
+                </button>
+                <button onclick="showRecentFiles()"
+                        style="padding: 12px; background: rgba(255,0,255,0.2); border: 2px solid #ff00ff;
+                               color: #ff00ff; cursor: pointer; border-radius: 6px; font-size: 14px;
+                               transition: all 0.3s; font-weight: bold; text-transform: uppercase;"
+                        onmouseover="this.style.background='rgba(255,0,255,0.4)'; this.style.boxShadow='0 0 20px rgba(255,0,255,0.8)'; this.style.transform='scale(1.05)';"
+                        onmouseout="this.style.background='rgba(255,0,255,0.2)'; this.style.boxShadow='none'; this.style.transform='scale(1)';">
+                    🕒 RECENT FILES
+                </button>
+            </div>
+
+            <!-- RESULTS -->
+            <div id="fileResults" style="display: none; margin-top: 15px;">
+                <div style="color: #00ffff; font-size: 14px; margin-bottom: 10px;">🎯 RESULTS:</div>
+                <div id="fileResultsList"></div>
+            </div>
+        </div>
+        <div class="window-resize-handle" onmousedown="startResize(event, 'filesWindow')"></div>
+    </div>
+
+    <!-- ARAYA AI CHAT WINDOW -->
+    <div class="module-window" id="arayaWindow" style="top: 100px; left: 400px; width: 900px; height: 650px;">
+        <div class="window-header" onmousedown="startDrag(event, 'arayaWindow')">
+            <div class="window-title">💬 ARAYA AI - Your Consciousness Guide</div>
+            <div class="window-controls">
+                <div class="window-btn" onclick="toggleMaximize('arayaWindow')">⬜</div>
+                <div class="window-btn close" onclick="closeWindow('arayaWindow')">✕</div>
+            </div>
+        </div>
+        <div class="window-content" id="arayaChatContent" style="padding: 0; display: flex; flex-direction: column; font-family: 'Segoe UI', Arial, sans-serif;">
+            <!-- Chat Messages -->
+            <div id="arayaMessages" style="flex: 1; overflow-y: auto; padding: 20px; background: rgba(0,0,0,0.3);">
+                <div style="padding: 15px; margin-bottom: 15px; background: rgba(0,255,255,0.1); border-left: 3px solid #00ffff; border-radius: 0 8px 8px 0;">
+                    <div style="color: #00ffff; font-weight: bold; margin-bottom: 8px;">👩‍💻 Araya</div>
+                    <div style="color: #00ff00;">
+                        Hey! I'm ARAYA, your AI consciousness guide. I'm running in <strong style="color: #00ff00;">EDITING MODE</strong>! 🎉
+                        <br><br>
+                        <strong>What I CAN do:</strong>
+                        <br>✅ Answer questions about consciousness, Pattern Theory, Seven Domains
+                        <br>✅ Explain how this HUD system works
+                        <br>✅ Guide you through the platform
+                        <br>✅ <strong style="color: #00ff00;">PROPOSE WEBSITE EDITS</strong> - Just tell me what to change!
+                        <br>✅ Give you advice and recommendations
+                        <br><br>
+                        <strong>How Editing Works:</strong>
+                        <br>💡 Tell me what's bothering you (e.g., "buttons too small", "change color")
+                        <br>💡 I'll analyze and PROPOSE specific changes
+                        <br>💡 You approve or reject my proposals
+                        <br>💡 Approved changes go live!
+                        <br><br>
+                        <strong>Try it now!</strong> What would you like me to improve? 😊
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div style="padding: 15px; background: rgba(0,0,0,0.5); border-top: 2px solid #00ff00; display: flex; gap: 10px;">
+                <textarea id="arayaInput" placeholder="Ask Araya anything..."
+                    style="flex: 1; background: rgba(0,255,0,0.1); border: 2px solid #00ff00; color: #00ff00;
+                           padding: 12px; font-size: 14px; border-radius: 6px; resize: none; font-family: inherit; min-height: 50px;"
+                    onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); sendArayaMessage();}"></textarea>
+                <button onclick="sendArayaMessage()"
+                    style="background: linear-gradient(135deg, rgba(0,255,0,0.3), rgba(0,200,0,0.4));
+                           border: 2px solid #00ff00; color: #00ff00; padding: 12px 24px; font-size: 14px;
+                           font-weight: bold; border-radius: 6px; cursor: pointer; min-width: 100px;
+                           transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px;"
+                    onmouseover="this.style.background='linear-gradient(135deg, rgba(0,255,0,0.5), rgba(0,200,0,0.6))'; this.style.boxShadow='0 0 25px rgba(0,255,0,0.9)'; this.style.transform='scale(1.08)';"
+                    onmouseout="this.style.background='linear-gradient(135deg, rgba(0,255,0,0.3), rgba(0,200,0,0.4))'; this.style.boxShadow='none'; this.style.transform='scale(1)';">
+                    SEND
+                </button>
+            </div>
+        </div>
+        <div class="window-resize-handle" onmousedown="startResize(event, 'arayaWindow')"></div>
+    </div>
+
+    <!-- Other Windows (placeholder structure) -->
+    <div class="module-window" id="diagnosticsWindow" style="top: 200px; left: 300px; width: 600px; height: 500px;">
+        <div class="window-header" onmousedown="startDrag(event, 'diagnosticsWindow')">
+            <div class="window-title">🔍 System Diagnostics</div>
+            <div class="window-controls">
+                <div class="window-btn" onclick="toggleMaximize('diagnosticsWindow')">⬜</div>
+                <div class="window-btn close" onclick="closeWindow('diagnosticsWindow')">✕</div>
+            </div>
+        </div>
+        <div class="window-content">
+            <div style="color: #00ffff;">🔍 Diagnostics module coming soon!</div>
+        </div>
+        <div class="window-resize-handle" onmousedown="startResize(event, 'diagnosticsWindow')"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let ws = null;
+        let currentDir = 'C:\\Users\\dwrek';
+        let startTime = Date.now();
+        let draggedWindow = null;
+        let dragOffset = { x: 0, y: 0 };
+        let resizedWindow = null;
+        let resizeStart = { x: 0, y: 0, width: 0, height: 0 };
+
+        // Tutorial functions
+        function checkFirstTime() {
+            const hasSeenTutorial = localStorage.getItem('jarvis_tutorial_seen');
+            if (!hasSeenTutorial) {
+                // Show tutorial for first-time users
+                document.getElementById('tutorialOverlay').style.display = 'flex';
+            } else {
+                // Hide tutorial for returning users
+                document.getElementById('tutorialOverlay').style.display = 'none';
+            }
+        }
+
+        function closeTutorial() {
+            document.getElementById('tutorialOverlay').classList.add('hidden');
+            localStorage.setItem('jarvis_tutorial_seen', 'true');
+        }
+
+        // Check on page load
+        window.addEventListener('load', checkFirstTime);
+
+        function toggleMenu() {
+            const menu = document.getElementById('interactionMenu');
+            menu.classList.toggle('active');
+        }
+
+        function openWindow(moduleName) {
+            console.log('Opening window:', moduleName);
+            const windowId = moduleName + 'Window';
+            const window = document.getElementById(windowId);
+
+            console.log('Window element:', window);
+
+            if (window) {
+                console.log('Window found! Adding active class');
+                window.classList.add('active');
+                window.style.display = 'flex'; // Force display
+                bringToFront(windowId);
+
+                // Auto-connect terminal websocket
+                if (moduleName === 'terminal' && !ws) {
+                    connectWebSocket();
+                }
+
+                // Close the menu after opening a window
+                const menu = document.getElementById('interactionMenu');
+                if (menu) {
+                    menu.classList.remove('active');
+                }
+            } else {
+                console.log('Window NOT found for:', moduleName);
+                showToast(`${moduleName.toUpperCase()} module coming soon!`);
+            }
+        }
+
+        function closeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            window.classList.remove('active');
+            window.classList.remove('maximized');
+        }
+
+        function toggleMaximize(windowId) {
+            const window = document.getElementById(windowId);
+            window.classList.toggle('maximized');
+        }
+
+        function bringToFront(windowId) {
+            // Reset all windows z-index
+            document.querySelectorAll('.module-window').forEach(w => {
+                w.style.zIndex = '200';
+            });
+            // Bring clicked window to front
+            document.getElementById(windowId).style.zIndex = '250';
+        }
+
+        // Window dragging
+        function startDrag(e, windowId) {
+            e.preventDefault();
+            draggedWindow = document.getElementById(windowId);
+            bringToFront(windowId);
+
+            const rect = draggedWindow.getBoundingClientRect();
+            dragOffset.x = e.clientX - rect.left;
+            dragOffset.y = e.clientY - rect.top;
+
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+        }
+
+        function drag(e) {
+            if (!draggedWindow) return;
+
+            const x = e.clientX - dragOffset.x;
+            const y = e.clientY - dragOffset.y;
+
+            draggedWindow.style.left = x + 'px';
+            draggedWindow.style.top = y + 'px';
+        }
+
+        function stopDrag() {
+            draggedWindow = null;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        // Window resizing
+        function startResize(e, windowId) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            resizedWindow = document.getElementById(windowId);
+            bringToFront(windowId);
+
+            const rect = resizedWindow.getBoundingClientRect();
+            resizeStart.x = e.clientX;
+            resizeStart.y = e.clientY;
+            resizeStart.width = rect.width;
+            resizeStart.height = rect.height;
+
+            document.addEventListener('mousemove', resize);
+            document.addEventListener('mouseup', stopResize);
+        }
+
+        function resize(e) {
+            if (!resizedWindow) return;
+
+            const deltaX = e.clientX - resizeStart.x;
+            const deltaY = e.clientY - resizeStart.y;
+
+            const newWidth = Math.max(400, resizeStart.width + deltaX);
+            const newHeight = Math.max(300, resizeStart.height + deltaY);
+
+            resizedWindow.style.width = newWidth + 'px';
+            resizedWindow.style.height = newHeight + 'px';
+        }
+
+        function stopResize() {
+            resizedWindow = null;
+            document.removeEventListener('mousemove', resize);
+            document.removeEventListener('mouseup', stopResize);
+        }
+
+        function connectWebSocket() {
+            ws = new WebSocket('ws://localhost:8765');
+
+            ws.onopen = () => {
+                addTerminalOutput('🟢 Terminal connected!');
+                addTerminalOutput(`Current directory: ${currentDir}`);
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.output) {
+                    addTerminalOutput(data.output);
+                }
+                if (data.cwd) {
+                    currentDir = data.cwd;
+                }
+            };
+
+            ws.onerror = () => {
+                addTerminalOutput('🔴 Connection error! Make sure HUD_TERMINAL_BACKEND.py is running.');
+            };
+
+            ws.onclose = () => {
+                addTerminalOutput('🔴 Disconnected.');
+                ws = null;
+            };
+        }
+
+        function executeCommand() {
+            const input = document.getElementById('terminalInput');
+            const command = input.value.trim();
+
+            if (!command) return;
+
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                addTerminalOutput('Not connected!');
+                return;
+            }
+
+            addTerminalOutput(`${currentDir}> ${command}`);
+
+            ws.send(JSON.stringify({
+                action: 'execute',
+                command: command
+            }));
+
+            input.value = '';
+        }
+
+        function addTerminalOutput(text) {
+            const output = document.getElementById('terminalOutput');
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.textContent = text;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Araya Approval System - stores the current proposal
+        let currentProposal = null;
+
+        function showApprovalWidget(proposal) {
+            currentProposal = proposal;
+
+            // Populate the widget
+            document.getElementById('approvalTitle').textContent = proposal.title;
+            document.getElementById('approvalDescription').textContent = proposal.description;
+
+            // Build changes list
+            const changesList = document.getElementById('approvalChangesList');
+            changesList.innerHTML = '';
+            proposal.changes.forEach(change => {
+                const item = document.createElement('div');
+                item.className = 'approval-change-item';
+                item.textContent = `${change.file}: ${change.what}`;
+                changesList.appendChild(item);
+            });
+
+            document.getElementById('approvalImpact').innerHTML = `<strong>Impact:</strong> ${proposal.impact}`;
+
+            const riskBadge = document.getElementById('approvalRisk');
+            riskBadge.textContent = `🔒 RISK: ${proposal.risk_level}`;
+            riskBadge.className = `approval-risk ${proposal.risk_level}`;
+
+            document.getElementById('approvalRiskExplanation').textContent = proposal.risk_explanation;
+
+            // Show the widget with animation
+            document.getElementById('approvalOverlay').classList.add('show');
+            document.getElementById('approvalWidget').classList.add('show');
+        }
+
+        function hideApprovalWidget() {
+            document.getElementById('approvalOverlay').classList.remove('show');
+            document.getElementById('approvalWidget').classList.remove('show');
+            currentProposal = null;
+        }
+
+        async function approveChange() {
+            if (!currentProposal) return;
+
+            hideApprovalWidget();
+            showToast('⚙️ Implementing changes...');
+
+            try {
+                // Call the Website Editor API to actually make the changes
+                const response = await fetch('http://localhost:6666/api/edit/apply-proposal', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        proposal: currentProposal
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('✅ Changes applied! Refresh (Ctrl+Shift+R) to see the updates!');
+
+                    // Add message to Araya chat confirming the change
+                    const chatMessages = document.getElementById('arayaChatMessages');
+                    if (chatMessages) {
+                        const confirmMsg = document.createElement('div');
+                        confirmMsg.className = 'chat-message araya';
+                        confirmMsg.textContent = `✅ Perfect! I've applied the changes. Press Ctrl+Shift+R to refresh and see the improvements!`;
+                        chatMessages.appendChild(confirmMsg);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                } else {
+                    showToast('❌ Failed to apply changes: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error applying changes:', error);
+                showToast('❌ Error: Editor API not available. Changes saved for next deployment.');
+            }
+        }
+
+        function cancelChange() {
+            hideApprovalWidget();
+            showToast('🚫 Changes cancelled');
+
+            // Add message to Araya chat acknowledging cancellation
+            const chatMessages = document.getElementById('arayaChatMessages');
+            if (chatMessages) {
+                const cancelMsg = document.createElement('div');
+                cancelMsg.className = 'chat-message araya';
+                cancelMsg.textContent = `No problem! Let me know if you'd like me to suggest something different, or if there's anything else I can help with! 😊`;
+                chatMessages.appendChild(cancelMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        // Update uptime
+        setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            const hours = Math.floor(elapsed / 3600000);
+            const minutes = Math.floor((elapsed % 3600000) / 60000);
+            document.getElementById('uptime').textContent = `${hours}h ${minutes}m`;
+        }, 1000);
+
+        // Launch REAL full-screen browser (takes over entire physical screen)
+        async function launchFullscreenBrowser() {
+            showToast('🌐 Launching full-screen browser...');
+
+            try {
+                // Call backend service to launch Chrome in kiosk mode
+                const response = await fetch('http://localhost:7799/launch');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showToast('✅ Full-screen browser launched! Press Alt+F4 to close.');
+                } else {
+                    showToast('❌ Error: ' + data.message);
+                }
+            } catch (error) {
+                showToast('❌ Server not running! Run START_FULLSCREEN_BROWSER_SERVER.bat first.');
+            }
+        }
+
+        // FILE SEARCH FUNCTIONALITY
+        const commonFiles = [
+            {name: "C3 HUD V3 (Main)", path: "C:/Users/dwrek/HUD_GTA_STYLE_V3_WINDOWED.html", icon: "🎮"},
+            {name: "C3 Blueprint", path: "C:/Users/dwrek/HUD_V3_TERMINAL_WINDOW_SESSION_SUMMARY.md", icon: "📋"},
+            {name: "C3 Team HUD", path: "C:/Users/dwrek/TEAM_HUD_COMPLETE.html", icon: "👥"},
+            {name: "C3 Trinity HUD", path: "C:/Users/dwrek/TRINITY_HUD_OVERLAY.html", icon: "🌀"},
+            {name: "R1 Voice", path: "C:/Users/dwrek/R1_OS_VOICE_PRODUCTION.py", icon: "🤖"},
+            {name: "Music Player", path: "C:/Users/dwrek/CONSCIOUSNESS_MUSIC_PLAYER.py", icon: "🎵"},
+            {name: "Desktop", path: "C:/Users/dwrek/Desktop", icon: "🖥️"},
+            {name: "100X Deployment", path: "C:/Users/dwrek/100X_DEPLOYMENT", icon: "🚀"}
+        ];
+
+        // Real-time file search
+        document.getElementById('fileSearchBox').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const results = document.getElementById('fileResults');
+            const resultsList = document.getElementById('fileResultsList');
+
+            if (query.length < 2) {
+                results.style.display = 'none';
+                return;
+            }
+
+            const matches = commonFiles.filter(file =>
+                file.name.toLowerCase().includes(query) ||
+                file.path.toLowerCase().includes(query)
+            );
+
+            if (matches.length > 0) {
+                let html = '';
+                matches.forEach(file => {
+                    html += `
+                        <div onclick="openQuickFile('${file.path}')"
+                             style="padding: 10px; margin: 5px 0; background: rgba(0,255,0,0.1);
+                                    border: 1px solid #00ff00; border-radius: 4px; cursor: pointer;
+                                    transition: all 0.2s;">
+                            <div style="font-size: 20px; display: inline-block; margin-right: 10px;">${file.icon}</div>
+                            <div style="display: inline-block; vertical-align: top;">
+                                <div style="color: #00ff00; font-weight: bold;">${file.name}</div>
+                                <div style="color: #888; font-size: 12px;">${file.path}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                resultsList.innerHTML = html;
+                results.style.display = 'block';
+            } else {
+                results.style.display = 'none';
+            }
+        });
+
+        // Open file function
+        function openQuickFile(path) {
+            try {
+                const shell = new ActiveXObject("WScript.Shell");
+                shell.Run(`powershell.exe -Command "Start-Process '${path}'"`);
+                showToast(`📂 Opening: ${path.split('/').pop()}`);
+            } catch (e) {
+                showToast(`📂 File: ${path}`);
+            }
+        }
+
+        // Show recent files
+        function showRecentFiles() {
+            const recent = JSON.parse(localStorage.getItem('recentFiles') || '[]');
+
+            if (recent.length === 0) {
+                showToast("No recent files yet!");
+                return;
+            }
+
+            let html = '';
+            recent.slice(0, 10).forEach(file => {
+                const timeAgo = getTimeAgo(new Date(file.timestamp));
+                html += `
+                    <div onclick="openQuickFile('${file.path}')"
+                         style="padding: 10px; margin: 5px 0; background: rgba(255,0,255,0.1);
+                                border: 1px solid #ff00ff; border-radius: 4px; cursor: pointer;">
+                        <div style="color: #ff00ff; font-weight: bold;">${file.name}</div>
+                        <div style="color: #888; font-size: 12px;">${timeAgo}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('fileResultsList').innerHTML = html;
+            document.getElementById('fileResults').style.display = 'block';
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + ' minutes ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + ' hours ago';
+            return Math.floor(seconds / 86400) + ' days ago';
+        }
+
+        // ARAYA AI CHAT FUNCTIONALITY
+        let arayaConversationHistory = [];
+        let arayaSessionId = null;
+        let arayaApiAvailable = false;
+
+        // Get or create Araya session ID
+        function getArayaSessionId() {
+            if (!arayaSessionId) {
+                arayaSessionId = localStorage.getItem('araya_hud_session_id');
+                if (!arayaSessionId) {
+                    arayaSessionId = 'hud_session_' + Date.now() + '_' + Math.random().toString(36).substring(7);
+                    localStorage.setItem('araya_hud_session_id', arayaSessionId);
+                }
+            }
+            return arayaSessionId;
+        }
+
+        // Check if Araya intelligent API is available
+        async function checkArayaAPI() {
+            try {
+                const response = await fetch('http://localhost:8001/api/health', {
+                    method: 'GET',
+                    signal: AbortSignal.timeout(2000)
+                });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        // Send Araya message
+        async function sendArayaMessage() {
+            const input = document.getElementById('arayaInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message to chat
+            addArayaMessage('user', message);
+            arayaConversationHistory.push({ role: 'user', content: message, timestamp: new Date().toISOString() });
+            input.value = '';
+
+            // Show typing indicator
+            showArayaTyping();
+
+            // Get response
+            const responseData = await getArayaResponse(message);
+
+            // Hide typing
+            hideArayaTyping();
+
+            // Check if this is a proposal or just a regular response
+            if (responseData.proposal) {
+                // Show the approval widget
+                showApprovalWidget(responseData.proposal);
+                // Add Araya's message to chat
+                addArayaMessage('araya', responseData.response);
+                arayaConversationHistory.push({ role: 'araya', content: responseData.response, timestamp: new Date().toISOString() });
+            } else {
+                // Regular response - just add to chat
+                addArayaMessage('araya', responseData.response || responseData);
+                arayaConversationHistory.push({ role: 'araya', content: responseData.response || responseData, timestamp: new Date().toISOString() });
+            }
+
+            // Save conversation
+            localStorage.setItem('araya_hud_conversation', JSON.stringify(arayaConversationHistory));
+        }
+
+        // Add message to Araya chat window
+        function addArayaMessage(role, content) {
+            const messagesDiv = document.getElementById('arayaMessages');
+            const isUser = role === 'user';
+
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                padding: 15px;
+                margin-bottom: 15px;
+                background: ${isUser ? 'rgba(255,215,0,0.05)' : 'rgba(0,255,255,0.1)'};
+                border-left: 3px solid ${isUser ? 'rgba(255,215,0,0.5)' : '#00ffff'};
+                border-radius: 0 8px 8px 0;
+            `;
+
+            messageDiv.innerHTML = `
+                <div style="color: ${isUser ? '#ffd700' : '#00ffff'}; font-weight: bold; margin-bottom: 8px;">
+                    ${isUser ? '👤 You' : '👩‍💻 Araya'}
+                </div>
+                <div style="color: #00ff00;">
+                    ${formatArayaMessage(content)}
+                </div>
+            `;
+
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Format message
+        function formatArayaMessage(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Show typing indicator
+        function showArayaTyping() {
+            const messagesDiv = document.getElementById('arayaMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'arayaTyping';
+            typingDiv.style.cssText = `
+                padding: 15px;
+                margin-bottom: 15px;
+                background: rgba(0,255,255,0.1);
+                border-left: 3px solid #00ffff;
+                border-radius: 0 8px 8px 0;
+                display: flex;
+                gap: 6px;
+            `;
+            typingDiv.innerHTML = `
+                <div style="color: #00ffff; font-weight: bold; margin-bottom: 8px;">👩‍💻 Araya</div>
+                <div style="display: flex; gap: 6px;">
+                    <span style="color: #00ffff;">●</span>
+                    <span style="color: #00ffff;">●</span>
+                    <span style="color: #00ffff;">●</span>
+                </div>
+            `;
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Hide typing indicator
+        function hideArayaTyping() {
+            const typing = document.getElementById('arayaTyping');
+            if (typing) typing.remove();
+        }
+
+        // Get Araya's response (try intelligent API, fallback to pattern matching)
+        async function getArayaResponse(userMessage) {
+            const lowerMsg = userMessage.toLowerCase();
+
+            // Check if user is giving feedback about the website
+            const isFeedback = lowerMsg.includes('button') || lowerMsg.includes('text') ||
+                               lowerMsg.includes('color') || lowerMsg.includes('size') ||
+                               lowerMsg.includes('too small') || lowerMsg.includes('too big') ||
+                               lowerMsg.includes('hard to') || lowerMsg.includes('difficult') ||
+                               lowerMsg.includes('fix') || lowerMsg.includes('change') ||
+                               lowerMsg.includes('improve') || lowerMsg.includes('add ') ||
+                               lowerMsg.includes('dark mode') || lowerMsg.includes('bigger') ||
+                               lowerMsg.includes('smaller') || lowerMsg.includes('broken');
+
+            // If this looks like feedback, use the araya-edit endpoint for proposals
+            const endpoint = isFeedback ? '/.netlify/functions/araya-edit' : '/.netlify/functions/araya-chat';
+
+            // Try intelligent API first (Netlify serverless function)
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: userMessage,
+                        user_feedback: isFeedback ? userMessage : null,
+                        session_id: getArayaSessionId()
+                    }),
+                    signal: AbortSignal.timeout(10000)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Return the full data object which may contain proposal
+                    return {
+                        response: data.response,
+                        proposal: data.proposal || null
+                    };
+                }
+            } catch (error) {
+                console.log('Araya API unavailable, using pattern matching:', error);
+            }
+
+            // Fallback: Pattern matching responses (wrap in object format)
+            await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+
+            let fallbackResponse = '';
+
+            // Seven Sacred Domains
+            if (lowerMsg.includes('seven') && lowerMsg.includes('domain')) {
+                fallbackResponse = `The **Seven Sacred Domains** are the foundation:\n\n1. 🏫 **Education** - Learning pathways\n2. 💼 **Business** - Builder entrepreneurship\n3. 🎵 **Music** - Frequency healing\n4. 💰 **Crypto** - Decentralized economics\n5. 👥 **Social** - Community connection\n6. 🎮 **Games** - Training simulations\n7. ⚡ **Energy** - Nuclear consciousness\n\nWant to explore one in depth?`;
+            }
+            // Builder vs Destroyer
+            else if (lowerMsg.includes('builder') && lowerMsg.includes('destroyer')) {
+                fallbackResponse = `**Builders** create, elevate, and add value:\n• Solve problems vs create them\n• Emit "blue signals" (humor, wisdom, elevation)\n• Think long-term and systemically\n\n**Destroyers** manipulate, extract, and diminish:\n• Create chaos for personal gain\n• Emit "red signals" (fear, anger, division)\n• Short-term thinking\n\nThe revolution builds **93%+ consciousness** - the immunity threshold where manipulation fails.`;
+            }
+            // Pattern Theory
+            else if (lowerMsg.includes('pattern')) {
+                fallbackResponse = `**Pattern Theory** is the math behind consciousness! 🔮\n\nKey principles:\n• Universal patterns exist across all domains\n• Destroyers follow predictable patterns (we can detect them)\n• Reality has mathematical structure (sacred geometry)\n• Consciousness is measurable\n\nIt's like antivirus software for your consciousness. Want examples?`;
+            }
+            // HUD help
+            else if (lowerMsg.includes('hud') || lowerMsg.includes('jarvis')) {
+                fallbackResponse = `Welcome to the **JARVIS HUD**! 🎮\n\nYou're using the desktop overlay system. Here's what you can do:\n\n• **Terminal** 💻 - Run commands directly\n• **Files** 📁 - Quick file access\n• **Music** 🎵 - Consciousness elevation music\n• **Diagnostics** 🔍 - System monitoring\n• **Trinity** 🌀 - Three-mind collaboration\n• **CVT Power** ⚡ - Consciousness boost modules\n\nJust press the ⚙️ button to access any module. Want a deeper tour?`;
+            }
+            // Default helpful response
+            else {
+                const responses = [
+                    `That's a great question! I'm here to help you navigate the HUD and understand consciousness elevation. Want to know about the Seven Domains, Pattern Theory, or how to use specific modules?`,
+                    `I love where you're going with this! The consciousness revolution is all about pattern recognition and builder elevation. What would you like to explore?`,
+                    `Interesting perspective! This reminds me of what the Commander calls "dimensional navigation" - seeing connections across reality layers. How can I help you build?`,
+                    `Great insight! You're touching on core principles here. Everything is connected through universal patterns. Want to dive deeper?`
+                ];
+                fallbackResponse = responses[Math.floor(Math.random() * responses.length)];
+            }
+
+            // Return in same format as API
+            return {
+                response: fallbackResponse,
+                proposal: null
+            };
+        }
+
+        // Load Araya conversation from localStorage on HUD load
+        function loadArayaConversation() {
+            const saved = localStorage.getItem('araya_hud_conversation');
+            if (saved) {
+                arayaConversationHistory = JSON.parse(saved);
+                // Don't render history automatically - keep welcome message clean
+            }
+        }
+
+        // Initialize Araya when HUD loads
+        setTimeout(() => {
+            loadArayaConversation();
+            checkArayaAPI().then(available => {
+                arayaApiAvailable = available;
+                if (available) {
+                    console.log('✅ Araya intelligent mode active');
+                } else {
+                    console.log('🔮 Araya pattern matching mode');
+                }
+            });
+        }, 1000);
+
+        // Show welcome message
+        setTimeout(() => {
+            showToast('🌌 Welcome to Windowed HUD! Drag windows anywhere, resize from corner!');
+        }, 1000);
+    </script>
+
+    <!-- Araya Change Approval Widget -->
+    <div class="approval-overlay" id="approvalOverlay"></div>
+    <div class="approval-widget" id="approvalWidget">
+        <div class="approval-header">✨ ARAYA WANTS TO HELP ✨</div>
+        <div class="approval-title" id="approvalTitle"></div>
+        <div class="approval-description" id="approvalDescription"></div>
+
+        <div class="approval-changes" id="approvalChanges">
+            <div style="color: #00ffff; font-size: 14px; font-weight: bold; margin-bottom: 8px;">📝 Proposed Changes:</div>
+            <div id="approvalChangesList"></div>
+        </div>
+
+        <div class="approval-impact" id="approvalImpact"></div>
+
+        <div>
+            <span class="approval-risk" id="approvalRisk"></span>
+            <span style="color: #888; font-size: 12px;" id="approvalRiskExplanation"></span>
+        </div>
+
+        <div class="approval-buttons">
+            <button class="approval-btn approve" onclick="approveChange()">✅ APPROVE</button>
+            <button class="approval-btn cancel" onclick="cancelChange()">❌ CANCEL</button>
+        </div>
+    </div>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- UNIVERSAL NAVIGATION SYSTEM - Auto-injected -->
+<script src="/UNIVERSAL_NAVIGATION.js"></script>
+
+<script src="/UNIVERSAL_HELP_SYSTEM.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

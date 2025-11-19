@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>100X Platform - Login</title>
+
+    <!-- Plausible Analytics - Privacy-friendly, GDPR compliant -->
+    <script defer data-domain="consciousnessrevolution.io" src="https://plausible.io/js/script.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #000 0%, #0a0a0a 50%, #1a0a0a 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(26, 26, 46, 0.95);
+            border: 3px solid #ff6b00;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(255, 107, 0, 0.4);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 72px;
+            background: linear-gradient(135deg, #ff6b00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #00ffff;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #ffd700;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #ff6b00;
+            border-radius: 10px;
+            color: #00ffff;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        input::placeholder {
+            color: rgba(0, 255, 255, 0.5);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #ff6b00, #ffd700);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 0, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .toggle-mode {
+            text-align: center;
+            margin-top: 20px;
+            color: #00ffff;
+            font-size: 14px;
+        }
+
+        .toggle-mode a {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .toggle-mode a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            background: rgba(255, 68, 68, 0.2);
+            border: 2px solid #ff4444;
+            color: #ff4444;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .success {
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #00ff88;
+            color: #00ff88;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .quick-start {
+            background: rgba(255, 170, 0, 0.1);
+            border: 2px solid #ffaa00;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .quick-start h3 {
+            color: #ffaa00;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .quick-start p {
+            color: #00ffff;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .forgot-password a {
+            color: #ff6b00;
+            text-decoration: none;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .recovery-mode {
+            display: none;
+        }
+
+        .recovery-mode.active {
+            display: block;
+        }
+
+        .back-to-login {
+            text-align: center;
+            margin-top: 15px;
+            color: #00ffff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .back-to-login:hover {
+            color: #ffd700;
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>100X</h1>
+            <p id="mode-title">Welcome Back</p>
+        </div>
+
+        <div class="error" id="error-msg"></div>
+        <div class="success" id="success-msg"></div>
+
+        <!-- LOGIN/SIGNUP FORM -->
+        <form id="auth-form">
+            <div class="form-group" id="username-group" style="display: none;">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Choose a username">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="your@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn" id="submit-btn">LOGIN</button>
+        </form>
+
+        <div class="forgot-password">
+            <a id="forgot-password-link">Forgot Password?</a>
+        </div>
+
+        <div class="toggle-mode">
+            <span id="toggle-text">Don't have an account?</span>
+            <a id="toggle-link">Sign Up</a>
+        </div>
+
+        <!-- PASSWORD RECOVERY FORM -->
+        <div id="recovery-form" class="recovery-mode">
+            <div class="form-group">
+                <label for="recovery-email">Enter your email</label>
+                <input type="email" id="recovery-email" placeholder="your@email.com" required>
+            </div>
+
+            <button class="btn" id="send-recovery-btn">Send Recovery Code</button>
+
+            <div class="form-group" id="code-group" style="display: none; margin-top: 20px;">
+                <label for="recovery-code">Enter 6-digit code</label>
+                <input type="text" id="recovery-code" placeholder="000000" maxlength="6" required>
+            </div>
+
+            <div class="form-group" id="new-password-group" style="display: none;">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password" placeholder="••••••••" required>
+            </div>
+
+            <button class="btn" id="verify-code-btn" style="display: none; margin-top: 10px;">Verify Code</button>
+            <button class="btn" id="reset-password-btn" style="display: none; margin-top: 10px;">Reset Password</button>
+
+            <div class="back-to-login" id="back-to-login">
+                ← Back to Login
+            </div>
+        </div>
+
+        <div class="quick-start">
+            <h3>🚀 Quick Start</h3>
+            <p>Just enter any email and create a password. Your account is created instantly!</p>
+        </div>
+    </div>
+
+    <!-- API Client - Backend Connection -->
+    <script src="./ASSETS/js/api-client.js"></script>
+
+    <script>
+        let isSignupMode = false;
+        let isRecoveryMode = false;
+        let recoveryCode = '';
+        let recoveryEmail = '';
+
+        const form = document.getElementById('auth-form');
+        const usernameGroup = document.getElementById('username-group');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const usernameInput = document.getElementById('username');
+        const submitBtn = document.getElementById('submit-btn');
+        const toggleLink = document.getElementById('toggle-link');
+        const toggleText = document.getElementById('toggle-text');
+        const modeTitle = document.getElementById('mode-title');
+        const errorMsg = document.getElementById('error-msg');
+        const successMsg = document.getElementById('success-msg');
+
+        // Password Recovery Elements
+        const forgotPasswordLink = document.getElementById('forgot-password-link');
+        const recoveryForm = document.getElementById('recovery-form');
+        const backToLoginBtn = document.getElementById('back-to-login');
+        const sendRecoveryBtn = document.getElementById('send-recovery-btn');
+        const verifyCodeBtn = document.getElementById('verify-code-btn');
+        const resetPasswordBtn = document.getElementById('reset-password-btn');
+        const recoveryEmailInput = document.getElementById('recovery-email');
+        const recoveryCodeInput = document.getElementById('recovery-code');
+        const newPasswordInput = document.getElementById('new-password');
+        const codeGroup = document.getElementById('code-group');
+        const newPasswordGroup = document.getElementById('new-password-group');
+
+        // Toggle between login and signup
+        toggleLink.addEventListener('click', () => {
+            isSignupMode = !isSignupMode;
+
+            if (isSignupMode) {
+                // Switch to signup mode
+                usernameGroup.style.display = 'block';
+                submitBtn.textContent = 'CREATE ACCOUNT';
+                toggleText.textContent = 'Already have an account?';
+                toggleLink.textContent = 'Log In';
+                modeTitle.textContent = 'Create Account';
+                usernameInput.required = true;
+            } else {
+                // Switch to login mode
+                usernameGroup.style.display = 'none';
+                submitBtn.textContent = 'LOGIN';
+                toggleText.textContent = "Don't have an account?";
+                toggleLink.textContent = 'Sign Up';
+                modeTitle.textContent = 'Welcome Back';
+                usernameInput.required = false;
+            }
+
+            hideMessages();
+        });
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessages();
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            const username = usernameInput.value.trim();
+
+            // Basic validation
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (isSignupMode && !username) {
+                showError('Please enter a username');
+                return;
+            }
+
+            if (password.length < 4) {
+                showError('Password must be at least 4 characters');
+                return;
+            }
+
+            try {
+                if (isSignupMode) {
+                    // SIGNUP
+                    await signup(email, password, username);
+                } else {
+                    // LOGIN
+                    await login(email, password);
+                }
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+
+        async function signup(email, password, username) {
+            try {
+                // Use secure backend API only
+                const user = await window.api.register(email, password, username);
+
+                // Mark as new user for welcome flow
+                localStorage.setItem('isNewUser', 'true');
+
+                showSuccess('Account created! Starting your welcome journey...');
+                setTimeout(() => {
+                    window.location.href = './welcome-flow.html';
+                }, 1500);
+
+            } catch (apiError) {
+                console.error('Signup failed:', apiError.message);
+                throw new Error('Unable to create account. Please ensure the backend server is running and try again.');
+            }
+        }
+
+        async function login(email, password) {
+            try {
+                // Use secure backend API only
+                const user = await window.api.login(email, password);
+
+                showSuccess('Login successful! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = './user-dashboard.html';
+                }, 1000);
+
+            } catch (apiError) {
+                console.error('Login failed:', apiError.message);
+                throw new Error('Invalid email or password. Please ensure the backend server is running and try again.');
+            }
+        }
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+            setTimeout(() => hideMessages(), 5000);
+        }
+
+        function showSuccess(message) {
+            successMsg.textContent = message;
+            successMsg.style.display = 'block';
+        }
+
+        function hideMessages() {
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+        }
+
+        // Check if already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const authToken = localStorage.getItem('auth_token');
+            if (authToken) {
+                // Check if they've completed welcome flow
+                const welcomeCompleted = localStorage.getItem('welcomeFlowCompleted');
+                if (welcomeCompleted) {
+                    window.location.href = './user-dashboard.html';
+                } else {
+                    // Returning user who hasn't done welcome flow - send them there
+                    window.location.href = './welcome-flow.html';
+                }
+            }
+        });
+
+        // PASSWORD RECOVERY SYSTEM
+        forgotPasswordLink.addEventListener('click', () => {
+            form.style.display = 'none';
+            document.querySelector('.forgot-password').style.display = 'none';
+            document.querySelector('.toggle-mode').style.display = 'none';
+            recoveryForm.classList.add('active');
+            modeTitle.textContent = 'Password Recovery';
+            hideMessages();
+        });
+
+        backToLoginBtn.addEventListener('click', () => {
+            form.style.display = 'block';
+            document.querySelector('.forgot-password').style.display = 'block';
+            document.querySelector('.toggle-mode').style.display = 'block';
+            recoveryForm.classList.remove('active');
+            modeTitle.textContent = 'Welcome Back';
+            // Reset recovery form
+            codeGroup.style.display = 'none';
+            newPasswordGroup.style.display = 'none';
+            verifyCodeBtn.style.display = 'none';
+            resetPasswordBtn.style.display = 'none';
+            sendRecoveryBtn.style.display = 'block';
+            recoveryEmailInput.value = '';
+            recoveryCodeInput.value = '';
+            newPasswordInput.value = '';
+            hideMessages();
+        });
+
+        sendRecoveryBtn.addEventListener('click', () => {
+            const email = recoveryEmailInput.value.trim();
+
+            if (!email) {
+                showError('Please enter your email');
+                return;
+            }
+
+            // Check if email exists
+            const users = JSON.parse(localStorage.getItem('100x_users') || '[]');
+            const user = users.find(u => u.email === email);
+
+            if (!user) {
+                showError('No account found with this email');
+                return;
+            }
+
+            // Generate 6-digit recovery code
+            recoveryCode = Math.floor(100000 + Math.random() * 900000).toString();
+            recoveryEmail = email;
+
+            // In production, send this via email
+            // TODO: Integrate email service (Twilio/SendGrid) for recovery code delivery
+
+            showSuccess(`Recovery code sent! (Demo: ${recoveryCode})`);
+
+            // Show code input
+            codeGroup.style.display = 'block';
+            newPasswordGroup.style.display = 'block';
+            verifyCodeBtn.style.display = 'none'; // Skip verification, go straight to reset
+            resetPasswordBtn.style.display = 'block';
+            sendRecoveryBtn.style.display = 'none';
+        });
+
+        resetPasswordBtn.addEventListener('click', () => {
+            const code = recoveryCodeInput.value.trim();
+            const newPassword = newPasswordInput.value;
+
+            if (!code) {
+                showError('Please enter the recovery code');
+                return;
+            }
+
+            if (code !== recoveryCode) {
+                showError('Invalid recovery code');
+                return;
+            }
+
+            if (!newPassword || newPassword.length < 4) {
+                showError('Password must be at least 4 characters');
+                return;
+            }
+
+            // Update password in localStorage
+            const users = JSON.parse(localStorage.getItem('100x_users') || '[]');
+            const userIndex = users.findIndex(u => u.email === recoveryEmail);
+
+            if (userIndex === -1) {
+                showError('User not found');
+                return;
+            }
+
+            users[userIndex].password = newPassword;
+            localStorage.setItem('100x_users', JSON.stringify(users));
+
+            showSuccess('Password reset successful! Redirecting to login...');
+
+            setTimeout(() => {
+                backToLoginBtn.click();
+                emailInput.value = recoveryEmail;
+                showSuccess('You can now login with your new password');
+            }, 2000);
+        });
+    </script>
+
+    <!-- 👩‍💻 ARIA Avatar Guide -->
+    <script src="aria-guide.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

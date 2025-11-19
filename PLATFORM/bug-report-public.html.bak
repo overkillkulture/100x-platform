@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X Platform - Bug Reports</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #1a1a2e;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7b2cbf;
+            --text-primary: #ffffff;
+            --text-secondary: #b8b8b8;
+            --success: #00ff88;
+            --danger: #ff4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .access-gate {
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .access-gate.hidden {
+            display: none;
+        }
+
+        .access-gate h2 {
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+
+        .access-input {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .access-input input {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .access-input input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .bug-form {
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-primary);
+            border-radius: 12px;
+            padding: 2rem;
+            display: none;
+        }
+
+        .bug-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .form-hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .success-message h2 {
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .bug-list {
+            margin-top: 3rem;
+            background: var(--bg-secondary);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .bug-list h3 {
+            color: var(--accent-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .bug-item {
+            background: var(--bg-primary);
+            border-left: 3px solid var(--accent-primary);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bug-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .bug-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .bug-type.bug {
+            background: rgba(255, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .bug-type.feature {
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--accent-primary);
+        }
+
+        .bug-type.improvement {
+            background: rgba(123, 44, 191, 0.2);
+            color: var(--accent-secondary);
+        }
+
+        .bug-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .bug-footer {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🐛 Bug Reports & Feedback</h1>
+            <p>Help us improve the 100X Platform</p>
+        </div>
+
+        <!-- Access Gate -->
+        <div class="access-gate" id="accessGate">
+            <h2>Access Code Required</h2>
+            <p style="color: var(--text-secondary);">
+                Enter the access code to submit a bug report or view feedback.
+            </p>
+            <div class="access-input">
+                <input
+                    type="text"
+                    id="accessCode"
+                    placeholder="Enter access code..."
+                    autocomplete="off"
+                />
+                <button class="btn" onclick="verifyAccess()">Enter</button>
+            </div>
+            <p class="form-hint" style="margin-top: 1rem;">
+                Hint: A common animal with four legs 🐕
+            </p>
+        </div>
+
+        <!-- Bug Report Form -->
+        <div class="bug-form" id="bugForm">
+            <h2 style="color: var(--accent-primary); margin-bottom: 1.5rem;">Submit Bug Report</h2>
+
+            <div class="form-group">
+                <label>Report Type *</label>
+                <select id="reportType">
+                    <option value="bug">🐛 Bug - Something is broken</option>
+                    <option value="feature">✨ Feature Request - New idea</option>
+                    <option value="improvement">🔧 Improvement - Make it better</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Title *</label>
+                <input
+                    type="text"
+                    id="bugTitle"
+                    placeholder="Brief description of the issue"
+                    required
+                />
+                <p class="form-hint">Example: "Login button not responding on mobile"</p>
+            </div>
+
+            <div class="form-group">
+                <label>Description *</label>
+                <textarea
+                    id="bugDescription"
+                    placeholder="Detailed description of what you encountered..."
+                    required
+                ></textarea>
+                <p class="form-hint">What happened? What did you expect? Steps to reproduce?</p>
+            </div>
+
+            <div class="form-group">
+                <label>Page/Location</label>
+                <input
+                    type="text"
+                    id="bugLocation"
+                    placeholder="Which page were you on?"
+                />
+                <p class="form-hint">Example: "Dashboard", "KORPAK Marketplace", "Login page"</p>
+            </div>
+
+            <div class="form-group">
+                <label>Your Email (optional)</label>
+                <input
+                    type="email"
+                    id="bugEmail"
+                    placeholder="your@email.com"
+                />
+                <p class="form-hint">Only if you want updates on this issue</p>
+            </div>
+
+            <button class="submit-btn" onclick="submitBug()">
+                Submit Report
+            </button>
+        </div>
+
+        <!-- Success Message -->
+        <div class="success-message" id="successMessage">
+            <h2>✓ Report Submitted!</h2>
+            <p style="color: var(--text-secondary);">
+                Thank you for helping us improve the platform. Your feedback has been recorded.
+            </p>
+            <button class="btn" style="margin-top: 1rem;" onclick="submitAnother()">
+                Submit Another Report
+            </button>
+        </div>
+
+        <!-- Recent Bug Reports -->
+        <div class="bug-list" id="bugList" style="display: none;">
+            <h3>Recent Reports</h3>
+            <div id="bugListContainer">
+                <!-- Bug items will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ACCESS_CODE = 'dog';
+        let reports = JSON.parse(localStorage.getItem('bugReports') || '[]');
+
+        function verifyAccess() {
+            const code = document.getElementById('accessCode').value.trim().toLowerCase();
+
+            if (code === ACCESS_CODE) {
+                document.getElementById('accessGate').classList.add('hidden');
+                document.getElementById('bugForm').classList.add('active');
+                document.getElementById('bugList').style.display = 'block';
+                loadReports();
+            } else {
+                alert('❌ Incorrect access code. Try again!');
+                document.getElementById('accessCode').value = '';
+            }
+        }
+
+        // Allow Enter key on access code
+        document.getElementById('accessCode')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') verifyAccess();
+        });
+
+        function submitBug() {
+            const type = document.getElementById('reportType').value;
+            const title = document.getElementById('bugTitle').value.trim();
+            const description = document.getElementById('bugDescription').value.trim();
+            const location = document.getElementById('bugLocation').value.trim();
+            const email = document.getElementById('bugEmail').value.trim();
+
+            // Validation
+            if (!title || !description) {
+                alert('❌ Please fill in all required fields (Title and Description)');
+                return;
+            }
+
+            // Create report object
+            const report = {
+                id: Date.now(),
+                type,
+                title,
+                description,
+                location: location || 'Not specified',
+                email: email || 'Anonymous',
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                url: window.location.href
+            };
+
+            // Save to localStorage
+            reports.unshift(report);
+            localStorage.setItem('bugReports', JSON.stringify(reports));
+
+            // 🎮 Award leaderboard points!
+            awardLeaderboardPoints(report);
+
+            // Also send to backend if available
+            sendToBackend(report);
+
+            // Show success
+            document.getElementById('bugForm').classList.remove('active');
+            document.getElementById('successMessage').classList.add('show');
+
+            // Reload list
+            loadReports();
+
+            // Clear form
+            document.getElementById('bugTitle').value = '';
+            document.getElementById('bugDescription').value = '';
+            document.getElementById('bugLocation').value = '';
+            document.getElementById('bugEmail').value = '';
+        }
+
+        function submitAnother() {
+            document.getElementById('successMessage').classList.remove('show');
+            document.getElementById('bugForm').classList.add('active');
+        }
+
+        async function sendToBackend(report) {
+            try {
+                // Try to send to backend API
+                const response = await fetch('http://localhost:3001/api/bug-reports', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(report)
+                });
+
+                if (response.ok) {
+                    console.log('✓ Report sent to backend');
+                }
+            } catch (error) {
+                // Backend not available, that's fine - already saved to localStorage
+                console.log('Backend not available, saved locally only');
+            }
+        }
+
+        function loadReports() {
+            const container = document.getElementById('bugListContainer');
+
+            if (reports.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary);">No reports yet. Be the first!</p>';
+                return;
+            }
+
+            // Show only last 10 reports
+            const recentReports = reports.slice(0, 10);
+
+            container.innerHTML = recentReports.map(report => {
+                const date = new Date(report.timestamp);
+                const timeAgo = getTimeAgo(date);
+
+                return `
+                    <div class="bug-item">
+                        <div class="bug-item-header">
+                            <span class="bug-type ${report.type}">${getTypeIcon(report.type)} ${report.type.toUpperCase()}</span>
+                            <span style="color: var(--text-secondary); font-size: 0.85rem;">${timeAgo}</span>
+                        </div>
+                        <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">${escapeHtml(report.title)}</h4>
+                        <p class="bug-description">${escapeHtml(report.description)}</p>
+                        <div class="bug-footer">
+                            📍 ${escapeHtml(report.location)} •
+                            👤 ${report.email === 'Anonymous' ? 'Anonymous' : '✉️ ' + report.email}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getTypeIcon(type) {
+            switch(type) {
+                case 'bug': return '🐛';
+                case 'feature': return '✨';
+                case 'improvement': return '🔧';
+                default: return '📝';
+            }
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+            return `${Math.floor(seconds / 86400)}d ago`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 🎮 GAMIFICATION: Award leaderboard points!
+        function awardLeaderboardPoints(report) {
+            try {
+                // Determine severity based on type and description
+                let severity = 'medium';
+                const desc = report.description.toLowerCase();
+
+                if (desc.includes('critical') || desc.includes('crash') || desc.includes('broken')) {
+                    severity = 'critical';
+                } else if (desc.includes('important') || desc.includes('urgent')) {
+                    severity = 'high';
+                } else if (desc.includes('minor') || desc.includes('small')) {
+                    severity = 'low';
+                }
+
+                // Get reporter name (use email or "Anonymous")
+                const reporter = report.email === 'Anonymous' ? 'Anonymous' : report.email.split('@')[0];
+
+                // Trigger leaderboard update via localStorage event
+                const leaderboardEvent = {
+                    reporter: reporter,
+                    severity: severity,
+                    timestamp: Date.now()
+                };
+
+                localStorage.setItem('newBugReport', JSON.stringify(leaderboardEvent));
+
+                // Show gamification notification
+                showGameNotification(reporter, severity);
+
+            } catch (error) {
+                console.log('Leaderboard integration error:', error);
+            }
+        }
+
+        function showGameNotification(reporter, severity) {
+            const points = {
+                'low': 10,
+                'medium': 20,
+                'high': 30,
+                'critical': 50
+            };
+
+            const earnedPoints = points[severity] || 20;
+
+            // Create floating notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                padding: 20px 30px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                font-weight: bold;
+                z-index: 100000;
+                animation: slideIn 0.5s ease;
+            `;
+            notification.innerHTML = `
+                <div style="font-size: 1.2em; margin-bottom: 5px;">
+                    🎮 +${earnedPoints} Points!
+                </div>
+                <div style="font-size: 0.9em; opacity: 0.9;">
+                    ${reporter} found a ${severity} bug!
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.5s ease';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        // Check if already accessed (remember for session)
+        if (sessionStorage.getItem('bugReportAccess') === 'granted') {
+            document.getElementById('accessGate').classList.add('hidden');
+            document.getElementById('bugForm').classList.add('active');
+            document.getElementById('bugList').style.display = 'block';
+            loadReports();
+        }
+
+        // Remember access for session
+        function verifyAccess() {
+            const code = document.getElementById('accessCode').value.trim().toLowerCase();
+
+            if (code === ACCESS_CODE) {
+                sessionStorage.setItem('bugReportAccess', 'granted');
+                document.getElementById('accessGate').classList.add('hidden');
+                document.getElementById('bugForm').classList.add('active');
+                document.getElementById('bugList').style.display = 'block';
+                loadReports();
+            } else {
+                alert('❌ Incorrect access code. Try again!');
+                document.getElementById('accessCode').value = '';
+            }
+        }
+    </script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐛 Bug Report - WORKING VERSION</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(42, 42, 60, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(255,68,68,0.4);
+        }
+        h1 {
+            color: #ff4444;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 36px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #00ff88;
+            margin-bottom: 30px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            color: #00ff88;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(51, 51, 70, 0.8);
+            border: 2px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #00ff88;
+            background: rgba(51, 51, 70, 1);
+        }
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+        button {
+            width: 100%;
+            padding: 18px;
+            background: #ff4444;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        button:hover:not(:disabled) {
+            background: #ff6666;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,68,68,0.5);
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .success {
+            background: rgba(0,255,136,0.15);
+            border: 2px solid #00ff88;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 25px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .success h2 {
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .required {
+            color: #ff4444;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🐛 Bug Report</h1>
+    <div class="subtitle">✅ THIS VERSION ACTUALLY WORKS</div>
+
+    <form id="bugForm">
+        <div class="form-group">
+            <label>What's broken? <span class="required">*</span></label>
+            <input type="text" id="title" required placeholder="Short description">
+        </div>
+
+        <div class="form-group">
+            <label>Tell us everything <span class="required">*</span></label>
+            <textarea id="description" required placeholder="What happened? What did you expect? Take your time, write as much as you need."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Your name (optional)</label>
+            <input type="text" id="name" placeholder="So we know who to thank">
+        </div>
+
+        <button type="submit" id="submitBtn">📤 SUBMIT BUG</button>
+    </form>
+
+    <div class="success" id="successMsg">
+        <h2>✅ BUG SAVED!</h2>
+        <p style="margin-top: 10px; font-size: 16px;">Thank you! We got it.</p>
+        <p style="margin-top: 15px; font-size: 14px; color: #aaa;">You can submit another one or close this page.</p>
+    </div>
+</div>
+
+<script>
+document.getElementById('bugForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const submitBtn = document.getElementById('submitBtn');
+    const successMsg = document.getElementById('successMsg');
+    const form = document.getElementById('bugForm');
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ Saving...';
+
+    const bugData = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        reporter: document.getElementById('name').value || 'Anonymous',
+        timestamp: new Date().toISOString(),
+        url: window.location.href,
+        userAgent: navigator.userAgent
+    };
+
+    try {
+        // Submit to Netlify function that saves to Airtable
+        const response = await fetch('/.netlify/functions/bug-report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bugData)
+        });
+
+        if (response.ok) {
+            // Success!
+            form.style.display = 'none';
+            successMsg.style.display = 'block';
+
+            // Reset form for next submission
+            setTimeout(() => {
+                form.style.display = 'block';
+                form.reset();
+                successMsg.style.display = 'none';
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📤 SUBMIT BUG';
+            }, 5000);
+        } else {
+            throw new Error('Submission failed');
+        }
+    } catch (error) {
+        alert('Error: ' + error.message + '\n\nBug saved locally. Please try again or contact support.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = '📤 SUBMIT BUG';
+    }
+});
+</script>
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Emergency AI Terminal - Philosopher AI Debug Helper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 80%;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.ai {
+            background: white;
+            border: 2px solid #e9ecef;
+        }
+
+        .message.system {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            text-align: center;
+            max-width: 100%;
+        }
+
+        .input-container {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .usage-info {
+            padding: 15px;
+            background: #e7f3ff;
+            border-top: 2px solid #b3d9ff;
+            text-align: center;
+            font-size: 14px;
+            color: #004085;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 10px;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Emergency AI Debug Helper</h1>
+            <p>Get intelligent help debugging Philosopher AI</p>
+        </div>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="message system">
+                👋 Welcome! I'm here to help you debug Philosopher AI. Ask me anything!
+            </div>
+        </div>
+
+        <div class="input-container">
+            <div class="input-group">
+                <input
+                    type="text"
+                    id="messageInput"
+                    placeholder="Ask me anything about the site or any errors you're seeing..."
+                    onkeypress="if(event.key==='Enter') sendMessage()"
+                >
+                <button onclick="sendMessage()" id="sendButton">Send</button>
+            </div>
+        </div>
+
+        <div class="usage-info" id="usageInfo">
+            Messages remaining: Loading...
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api/emergency-chat';
+        const STATUS_URL = 'http://localhost:5000/api/status';
+        let messageCount = 0;
+
+        // Check status on load
+        checkStatus();
+
+        async function checkStatus() {
+            try {
+                const response = await fetch(STATUS_URL);
+                const data = await response.json();
+
+                if (data.active) {
+                    updateUsageInfo(data.usage.remaining);
+                } else {
+                    addSystemMessage('Terminal has expired. Contact the site owner.');
+                }
+            } catch (error) {
+                updateUsageInfo('Unknown');
+                addSystemMessage('⚠️ Could not connect to AI terminal. Make sure the proxy is running on localhost:5000');
+            }
+        }
+
+        function addMessage(text, type) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = text;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function addSystemMessage(text) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system';
+            messageDiv.textContent = text;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function updateUsageInfo(remaining) {
+            const usageInfo = document.getElementById('usageInfo');
+            usageInfo.textContent = `Messages remaining: ${remaining}`;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            messageCount++;
+
+            // Disable input while waiting
+            input.disabled = true;
+            sendButton.disabled = true;
+
+            // Show loading
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.textContent = 'AI is thinking';
+            document.getElementById('chatContainer').appendChild(loadingDiv);
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                // Remove loading
+                loadingDiv.remove();
+
+                const data = await response.json();
+
+                if (data.error) {
+                    addSystemMessage(`Error: ${data.message || data.error}`);
+                } else {
+                    addMessage(data.response, 'ai');
+
+                    if (data.usage) {
+                        updateUsageInfo(data.usage.total_remaining);
+                    }
+                }
+            } catch (error) {
+                loadingDiv.remove();
+                addSystemMessage(`Connection error: ${error.message}. Make sure the AI proxy is running.`);
+            } finally {
+                input.disabled = false;
+                sendButton.disabled = false;
+                input.focus();
+            }
+        }
+
+        // Focus input on load
+        document.getElementById('messageInput').focus();
+    </script>
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

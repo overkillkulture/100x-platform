@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>ARIA - Your 100X Guide | Platform Assistant</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #2d1b69 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Avatar Container */
+        .avatar-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        /* Avatar Circle */
+        .avatar-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b00, #ffd700, #00d4ff, #7b2cbf);
+            background-size: 300% 300%;
+            animation: gradientShift 8s ease infinite, pulse 3s ease-in-out infinite;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.6), 0 0 80px rgba(255, 107, 0, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .avatar-circle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 60px rgba(0, 212, 255, 0.8), 0 0 120px rgba(255, 107, 0, 0.6);
+        }
+
+        .avatar-circle.talking {
+            animation: gradientShift 2s ease infinite, talking 0.5s ease-in-out infinite;
+        }
+
+        /* Avatar Image Placeholder */
+        .avatar-image {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255, 107, 0, 0.4), transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(0, 212, 255, 0.4), transparent 50%),
+                linear-gradient(135deg, rgba(123, 44, 191, 0.6), rgba(0, 0, 0, 0.8));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Cyberpunk Effect */
+        .avatar-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        .avatar-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                linear-gradient(90deg, transparent 48%, rgba(0, 212, 255, 0.1) 50%, transparent 52%),
+                linear-gradient(0deg, transparent 48%, rgba(255, 107, 0, 0.1) 50%, transparent 52%);
+            background-size: 4px 4px;
+            animation: glitch 5s steps(5) infinite;
+        }
+
+        @keyframes glitch {
+            0%, 100% { opacity: 0; }
+            10%, 30%, 50%, 70%, 90% { opacity: 0.8; transform: translateX(2px); }
+            20%, 40%, 60%, 80% { opacity: 0; transform: translateX(-2px); }
+        }
+
+        .avatar-face {
+            font-size: 64px;
+            filter: drop-shadow(0 0 15px rgba(0, 212, 255, 1))
+                    drop-shadow(0 0 30px rgba(255, 107, 0, 0.6));
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Better avatar styling */
+        .avatar-portrait {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Status Indicator */
+        .status-dot {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00ff88;
+            border: 3px solid #0a0a0a;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        /* Chat Bubble */
+        .chat-bubble {
+            position: fixed;
+            bottom: 160px;
+            right: 20px;
+            max-width: 400px;
+            background: rgba(26, 26, 46, 0.98);
+            border: 2px solid #00d4ff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 212, 255, 0.4);
+            display: none;
+            z-index: 9998;
+            backdrop-filter: blur(10px);
+        }
+
+        .chat-bubble.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .chat-name {
+            color: #ffd700;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .chat-role {
+            color: #b8b8b8;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #ff6b00;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #ff0000;
+            transform: rotate(90deg);
+        }
+
+        .chat-message {
+            color: #00ffff;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .chat-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(123, 44, 191, 0.2));
+            border: 2px solid #00d4ff;
+            border-radius: 10px;
+            color: #00ffff;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.4), rgba(123, 44, 191, 0.4));
+            border-color: #ffd700;
+            transform: translateX(5px);
+        }
+
+        .option-icon {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        /* Animations */
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes talking {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.08); }
+            75% { transform: scale(1.03); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes scan {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Notification Badge */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff0000;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 2px solid #0a0a0a;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .avatar-container {
+                bottom: 80px;
+                right: 10px;
+            }
+
+            .avatar-circle {
+                width: 80px;
+                height: 80px;
+            }
+
+            .avatar-image {
+                width: 70px;
+                height: 70px;
+            }
+
+            .avatar-face {
+                font-size: 36px;
+            }
+
+            .chat-bubble {
+                bottom: 180px;
+                right: 10px;
+                left: 10px;
+                max-width: calc(100% - 20px);
+            }
+        }
+
+        /* Quick Tips Popup */
+        .quick-tip {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 300px;
+            background: rgba(255, 215, 0, 0.95);
+            color: #000;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.6);
+            display: none;
+            z-index: 9997;
+            animation: slideDown 0.3s ease;
+        }
+
+        .quick-tip.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <!-- Avatar Container -->
+    <div class="avatar-container">
+        <div class="avatar-circle" id="avatarCircle" onclick="toggleChat()">
+            <div class="avatar-image">
+                <div class="avatar-face">👩‍💻</div>
+                <div class="avatar-image::before"></div>
+            </div>
+            <div class="status-dot"></div>
+            <div class="notification-badge" id="notificationBadge" style="display: none;">1</div>
+        </div>
+    </div>
+
+    <!-- Chat Bubble -->
+    <div class="chat-bubble" id="chatBubble">
+        <div class="chat-header">
+            <div>
+                <div class="chat-name">ARIA</div>
+                <div class="chat-role">Your 100X Guide</div>
+            </div>
+            <button class="close-btn" onclick="closeChat()">×</button>
+        </div>
+
+        <div class="chat-message" id="chatMessage">
+            Hey there, builder! 👋 I'm ARIA, your cyberpunk guide through the 100X Platform.
+            I'll help you navigate, unlock features, and level up your consciousness.
+            What would you like to explore?
+        </div>
+
+        <div class="chat-options">
+            <button class="option-btn" onclick="showTour()">
+                <span class="option-icon">🗺️</span>
+                Take a quick platform tour
+            </button>
+            <button class="option-btn" onclick="showFederalCase()">
+                <span class="option-icon">⚖️</span>
+                Build a federal case (Voice Compiler)
+            </button>
+            <button class="option-btn" onclick="showBlueprint()">
+                <span class="option-icon">🎨</span>
+                Design AI-native software
+            </button>
+            <button class="option-btn" onclick="showModules()">
+                <span class="option-icon">🧩</span>
+                Browse module library
+            </button>
+            <button class="option-btn" onclick="showTips()">
+                <span class="option-icon">💡</span>
+                Show me pro tips
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Tip Popup -->
+    <div class="quick-tip" id="quickTip">
+        <strong>💡 Pro Tip:</strong> Click the avatar anytime you need help or want to explore new features!
+    </div>
+
+    <script>
+        let chatOpen = false;
+        let hasShownWelcome = localStorage.getItem('aria_welcomed') === 'true';
+
+        // Auto-show welcome message for new users
+        if (!hasShownWelcome) {
+            setTimeout(() => {
+                showNotification();
+                showQuickTip('💡 Pro Tip: Click the avatar anytime you need help or want to explore new features!');
+            }, 3000);
+        }
+
+        function toggleChat() {
+            const bubble = document.getElementById('chatBubble');
+            const avatar = document.getElementById('avatarCircle');
+
+            chatOpen = !chatOpen;
+            bubble.classList.toggle('active');
+            avatar.classList.toggle('talking');
+
+            if (chatOpen) {
+                hideNotification();
+                localStorage.setItem('aria_welcomed', 'true');
+                speakMessage();
+            }
+        }
+
+        function closeChat() {
+            const bubble = document.getElementById('chatBubble');
+            const avatar = document.getElementById('avatarCircle');
+
+            chatOpen = false;
+            bubble.classList.remove('active');
+            avatar.classList.remove('talking');
+        }
+
+        function showNotification() {
+            document.getElementById('notificationBadge').style.display = 'flex';
+        }
+
+        function hideNotification() {
+            document.getElementById('notificationBadge').style.display = 'none';
+        }
+
+        function showQuickTip(message) {
+            const tip = document.getElementById('quickTip');
+            tip.innerHTML = message;
+            tip.classList.add('active');
+
+            setTimeout(() => {
+                tip.classList.remove('active');
+            }, 5000);
+        }
+
+        function updateMessage(message) {
+            document.getElementById('chatMessage').innerHTML = message;
+            speakMessage();
+        }
+
+        function speakMessage() {
+            // Pulse effect when talking
+            const avatar = document.getElementById('avatarCircle');
+            avatar.classList.add('talking');
+
+            setTimeout(() => {
+                avatar.classList.remove('talking');
+            }, 2000);
+        }
+
+        // Action Handlers
+        function showTour() {
+            updateMessage(`
+                🗺️ <strong>Platform Tour Starting!</strong><br><br>
+
+                <strong>Main Areas:</strong><br>
+                • <strong>Dashboard</strong> - Your command center<br>
+                • <strong>Voice Case Compiler</strong> - Build federal cases with humor + music<br>
+                • <strong>Manifestochart Timeline</strong> - Visualize events & patterns<br>
+                • <strong>AI Blueprint</strong> - Design software visually<br>
+                • <strong>Module Library</strong> - Browse all tools<br><br>
+
+                Press <strong>M</strong> anytime to open the master navigation!
+            `);
+
+            showQuickTip('⌨️ Keyboard Shortcut: Press M to open master navigation');
+        }
+
+        function showFederalCase() {
+            updateMessage(`
+                ⚖️ <strong>Federal Case Compiler Ready!</strong><br><br>
+
+                This system helps fathers compile federal cases:<br>
+                1. <strong>Record</strong> your story (20 mins)<br>
+                2. <strong>AI extracts</strong> evidence automatically<br>
+                3. <strong>Add humor</strong> (blue signals, not red!)<br>
+                4. <strong>Timeline</strong> visualizes everything<br>
+                5. <strong>Export</strong> as federal-ready PDF<br><br>
+
+                Ready to start?
+            `);
+
+            setTimeout(() => {
+                if (confirm('Open Voice Case Compiler now?')) {
+                    window.open('./voice-case-compiler.html', '_blank');
+                }
+            }, 500);
+        }
+
+        function showBlueprint() {
+            updateMessage(`
+                🎨 <strong>AI-Native Blueprint System</strong><br><br>
+
+                Design software the AI way:<br>
+                • <strong>Drag & drop</strong> components<br>
+                • <strong>Multi-layer</strong> visualization<br>
+                • <strong>Auto-connect</strong> relationships<br>
+                • <strong>Zoom & pan</strong> infinite canvas<br>
+                • <strong>Export</strong> to JSON<br><br>
+
+                Perfect for visualizing complex systems!
+            `);
+
+            setTimeout(() => {
+                if (confirm('Open AI Blueprint Visualizer?')) {
+                    window.open('./ai-native-blueprint.html', '_blank');
+                }
+            }, 500);
+        }
+
+        function showModules() {
+            updateMessage(`
+                🧩 <strong>Module Library</strong><br><br>
+
+                Available modules:<br>
+                • <strong>Pattern Recognition</strong> - Detect destroyer tactics<br>
+                • <strong>Consciousness Boost</strong> - 3-minute elevation<br>
+                • <strong>Manifestochart</strong> - Timeline visualization<br>
+                • <strong>Trinity AI</strong> - 3-perspective intelligence<br>
+                • <strong>Humor Templates</strong> - Blue signal emission<br><br>
+
+                All modules connect together like LEGO blocks!
+            `);
+
+            setTimeout(() => {
+                if (confirm('Browse module library?')) {
+                    window.open('./module-library.html', '_blank');
+                }
+            }, 500);
+        }
+
+        function showTips() {
+            updateMessage(`
+                💡 <strong>Pro Tips for Builders</strong><br><br>
+
+                1. <strong>Master Nav</strong> - Press M to access everything<br>
+                2. <strong>Logout</strong> - Available in master nav (top-left menu)<br>
+                3. <strong>Blue Signals</strong> - Use humor instead of anger<br>
+                4. <strong>Timeline</strong> - Visualize patterns over time<br>
+                5. <strong>Export</strong> - Save your work as JSON/PDF<br>
+                6. <strong>Demo Data</strong> - Load samples to explore features<br><br>
+
+                <em>Remember: This platform was built BY AI, FOR builders!</em>
+            `);
+
+            showQuickTip('🎯 Quick Tip: All data saves to localStorage automatically!');
+        }
+
+        // Auto-greet based on time of day
+        function getGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) return "Good morning";
+            if (hour < 18) return "Good afternoon";
+            return "Good evening";
+        }
+
+        // Context-aware tips based on current page
+        function showContextTip() {
+            const page = window.location.pathname.split('/').pop();
+
+            if (page === 'login.html') {
+                showQuickTip('👋 New here? Just enter any email and password to create an account instantly!');
+            } else if (page === 'user-dashboard.html') {
+                showQuickTip('🏠 Welcome to your dashboard! Click any room card to explore.');
+            } else if (page === 'voice-case-compiler.html') {
+                showQuickTip('🎤 Pro Tip: Talk naturally for 20 minutes. AI extracts everything automatically!');
+            }
+        }
+
+        // Initialize
+        setTimeout(showContextTip, 5000);
+    </script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

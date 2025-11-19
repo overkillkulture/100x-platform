@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Join the Consciousness Revolution - Get Notified</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: #555;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        input[type="email"],
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="email"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .success-message {
+            display: none;
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .features {
+            text-align: left;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+
+        .features h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+
+        .back-link {
+            margin-top: 30px;
+            display: block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌀 Join the Revolution</h1>
+        <p class="subtitle">
+            Get notified when we launch the Consciousness Revolution platform.
+            Be among the first builders to access AI-powered tools that actually work.
+        </p>
+
+        <form id="signupForm" name="beta-signup" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+            <input type="hidden" name="form-name" value="beta-signup">
+            <p style="display:none;">
+                <label>Don't fill this out: <input name="bot-field"></label>
+            </p>
+            <div class="form-group">
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Your Name"
+                    required
+                >
+            </div>
+            <div class="form-group">
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Your Email"
+                    required
+                >
+            </div>
+            <button type="submit">NOTIFY ME WHEN IT'S READY</button>
+        </form>
+
+        <div id="successMessage" class="success-message">
+            <h2>✅ Added to Waitlist!</h2>
+            <p>Your signup is pending approval. We'll notify you when you get access. Check your email soon!</p>
+        </div>
+
+        <div class="features">
+            <h3>What You'll Get Access To:</h3>
+            <ul>
+                <li>Araya - AI Consciousness Guide</li>
+                <li>Pattern Prophecy - Manifestation Mathematics</li>
+                <li>Builder Tools - Automation Modules</li>
+                <li>Trinity AI Collaboration System</li>
+                <li>Debug Console & Real-time Analytics</li>
+                <li>Community of Fellow Builders</li>
+            </ul>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+
+    <script>
+        // Netlify Forms handles the submission automatically
+        // Just show success message after submit
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            // Let Netlify handle the form submission
+            setTimeout(() => {
+                document.getElementById('signupForm').style.display = 'none';
+                document.getElementById('successMessage').classList.add('show');
+            }, 100);
+        });
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

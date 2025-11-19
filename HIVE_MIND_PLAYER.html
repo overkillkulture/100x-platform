@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Hive Mind Album - Music & Video Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 100%);
+            color: #00ff41;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 20px #00ff41;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        .player-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .player-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.3);
+            border-color: #ff00ff;
+        }
+
+        .player-card h2 {
+            color: #ff00ff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        audio, video {
+            width: 100%;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .track-list {
+            margin-top: 20px;
+        }
+
+        .track-item {
+            background: rgba(0, 255, 65, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 3px solid #00ff41;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .track-item:hover {
+            background: rgba(0, 255, 65, 0.2);
+            border-left-color: #ff00ff;
+            transform: translateX(5px);
+        }
+
+        .track-item.playing {
+            background: rgba(255, 0, 255, 0.2);
+            border-left-color: #ff00ff;
+        }
+
+        .video-player {
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #00ff41;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #ff00ff;
+            transform: scale(1.05);
+        }
+
+        .status {
+            padding: 10px;
+            background: rgba(0, 255, 65, 0.1);
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.5em;
+            color: #ff00ff;
+        }
+
+        .grid-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .player-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 HIVE MIND ALBUM 🎵</h1>
+            <div class="subtitle">Music & Videos from the Consciousness Revolution</div>
+        </header>
+
+        <div class="grid-selector">
+            <button onclick="showMusic()">🎵 Music</button>
+            <button onclick="showVideos()">🎬 Videos</button>
+            <button onclick="showAll()">📊 All Content</button>
+        </div>
+
+        <div id="music-section" class="player-grid">
+            <!-- Music players will be generated here -->
+        </div>
+
+        <div id="video-section" class="player-grid" style="display:none;">
+            <!-- Video players will be generated here -->
+        </div>
+
+        <div id="status" class="status">
+            <div class="loading">⏳ Loading Hive Mind content from Google Drive...</div>
+        </div>
+    </div>
+
+    <script>
+        // This will be populated with actual Drive file links
+        const hiveMindContent = {
+            music: [
+                // Will be populated by Python script
+            ],
+            videos: [
+                // Will be populated by Python script
+            ]
+        };
+
+        function showMusic() {
+            document.getElementById('music-section').style.display = 'grid';
+            document.getElementById('video-section').style.display = 'none';
+        }
+
+        function showVideos() {
+            document.getElementById('music-section').style.display = 'none';
+            document.getElementById('video-section').style.display = 'grid';
+        }
+
+        function showAll() {
+            document.getElementById('music-section').style.display = 'grid';
+            document.getElementById('video-section').style.display = 'grid';
+        }
+
+        function createMusicPlayer(track, index) {
+            return `
+                <div class="player-card">
+                    <h2>Track ${index + 1}: ${track.name}</h2>
+                    <audio controls preload="metadata">
+                        <source src="${track.url}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <div class="controls">
+                        <button onclick="downloadFile('${track.url}', '${track.name}')">⬇️ Download</button>
+                    </div>
+                    <div class="status">Duration: ${track.duration || 'Unknown'}</div>
+                </div>
+            `;
+        }
+
+        function createVideoPlayer(video, index) {
+            return `
+                <div class="player-card">
+                    <h2>Video ${index + 1}: ${video.name}</h2>
+                    <div class="video-player">
+                        <video controls preload="metadata">
+                            <source src="${video.url}" type="video/mp4">
+                            Your browser does not support the video element.
+                        </video>
+                    </div>
+                    <div class="controls">
+                        <button onclick="downloadFile('${video.url}', '${video.name}')">⬇️ Download</button>
+                        <button onclick="shareVideo('${video.url}')">📤 Share</button>
+                    </div>
+                    <div class="status">Never Posted - Fresh Content!</div>
+                </div>
+            `;
+        }
+
+        function loadContent() {
+            const musicSection = document.getElementById('music-section');
+            const videoSection = document.getElementById('video-section');
+            const status = document.getElementById('status');
+
+            if (hiveMindContent.music.length > 0) {
+                musicSection.innerHTML = hiveMindContent.music
+                    .map((track, idx) => createMusicPlayer(track, idx))
+                    .join('');
+            } else {
+                musicSection.innerHTML = '<div class="loading">No music tracks found yet. Downloading from Drive...</div>';
+            }
+
+            if (hiveMindContent.videos.length > 0) {
+                videoSection.innerHTML = hiveMindContent.videos
+                    .map((video, idx) => createVideoPlayer(video, idx))
+                    .join('');
+            } else {
+                videoSection.innerHTML = '<div class="loading">No videos found yet. Checking Drive...</div>';
+            }
+
+            status.innerHTML = `
+                <strong>Status:</strong>
+                ${hiveMindContent.music.length} music tracks,
+                ${hiveMindContent.videos.length} videos loaded
+            `;
+        }
+
+        function downloadFile(url, name) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = name;
+            a.click();
+        }
+
+        function shareVideo(url) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Hive Mind - Unreleased Video',
+                    text: 'Check out this unreleased Hive Mind video!',
+                    url: url
+                });
+            } else {
+                alert('Share URL: ' + url);
+            }
+        }
+
+        // Load content on page load
+        window.onload = loadContent;
+
+        // Auto-refresh every 30 seconds to check for new content
+        setInterval(() => {
+            console.log('Checking for new content...');
+            // In production, this would fetch from an API
+        }, 30000);
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

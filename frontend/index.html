@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consciousness Revolution - 70% to Creators | 7 Domains, One Account</title>
+    <meta name="description" content="The only platform that pays creators 70% (vs Udemy's 37%). Music distribution, AI tools, education, marketplace - all in one revolutionary ecosystem.">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 20px;
+            color: #00ff88;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .hero-title {
+            font-size: 72px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: #ccc;
+            margin-bottom: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-size: 48px;
+            font-weight: 800;
+            color: #00ff88;
+        }
+
+        .hero-stat-label {
+            font-size: 14px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 20px 40px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 255, 136, 0.5);
+        }
+
+        .btn-secondary {
+            padding: 20px 40px;
+            background: transparent;
+            border: 2px solid #00ff88;
+            border-radius: 12px;
+            color: #00ff88;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 255, 136, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 100px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 20px;
+            color: #00ff88;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-size: 48px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .section-subtitle {
+            font-size: 20px;
+            color: #888;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Creator Split Section */
+        .creator-split {
+            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .split-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .split-bar {
+            height: 80px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 800;
+            position: relative;
+        }
+
+        .split-creator {
+            width: 70%;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+        }
+
+        .split-platform {
+            width: 30%;
+            background: #333;
+            color: #888;
+        }
+
+        .comparison-table {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .comparison-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .comparison-card.winner {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .comparison-platform {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .comparison-split {
+            font-size: 42px;
+            font-weight: 800;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .comparison-label {
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* Domains Grid */
+        .domains-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .domain-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 40px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .domain-card:hover {
+            transform: translateY(-8px);
+            border-color: #00ff88;
+            box-shadow: 0 12px 40px rgba(0, 255, 136, 0.2);
+        }
+
+        .domain-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .domain-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 16px;
+        }
+
+        .domain-description {
+            font-size: 16px;
+            color: #888;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .domain-features {
+            list-style: none;
+            padding: 0;
+        }
+
+        .domain-features li {
+            font-size: 14px;
+            color: #ccc;
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .domain-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+            font-weight: 700;
+        }
+
+        /* Pricing Section */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            border-color: #00ff88;
+        }
+
+        .pricing-card.popular {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+            transform: scale(1.05);
+        }
+
+        .pricing-tier {
+            font-size: 14px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .pricing-card.popular .pricing-tier {
+            color: #00ff88;
+        }
+
+        .pricing-price {
+            font-size: 56px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .pricing-period {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            font-size: 14px;
+            color: #ccc;
+            padding: 10px 0;
+            padding-left: 28px;
+            position: relative;
+        }
+
+        .pricing-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+            font-weight: 700;
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .testimonial-text {
+            font-size: 16px;
+            color: #ccc;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .testimonial-info {
+            flex: 1;
+        }
+
+        .testimonial-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .testimonial-role {
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* FAQ */
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: #00ff88;
+        }
+
+        .faq-question {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .faq-answer {
+            font-size: 16px;
+            color: #888;
+            line-height: 1.8;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            border-radius: 20px;
+            padding: 80px 40px;
+            text-align: center;
+            color: #000;
+        }
+
+        .cta-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .cta-subtitle {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-dark {
+            padding: 20px 40px;
+            background: #000;
+            border: none;
+            border-radius: 12px;
+            color: #00ff88;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-dark:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Footer */
+        .footer {
+            background: #0d0d0d;
+            border-top: 1px solid #333;
+            padding: 60px 20px 30px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            color: #00ff88;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #888;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #00ff88;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 42px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .pricing-card.popular {
+                transform: none;
+            }
+
+            .split-visual {
+                flex-direction: column;
+            }
+
+            .split-creator, .split-platform {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🚀 Now Live - Join the Revolution</div>
+
+            <h1 class="hero-title">Creators Keep 70%.<br>Not 37%.</h1>
+
+            <p class="hero-subtitle">
+                The only platform where creators actually win. 7 powerful domains,
+                one revolutionary account. Built by creators, for creators.
+            </p>
+
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value">70%</div>
+                    <div class="hero-stat-label">To Creators</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">7</div>
+                    <div class="hero-stat-label">Domains</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">1</div>
+                    <div class="hero-stat-label">Account</div>
+                </div>
+            </div>
+
+            <div class="hero-buttons">
+                <a href="/frontend/auth-components.html" class="btn-primary">Start Creating Free</a>
+                <a href="#domains" class="btn-secondary">Explore Domains</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Creator Split Section -->
+    <section class="section">
+        <div class="creator-split">
+            <div class="section-badge">The Creator Advantage</div>
+            <h2 class="section-title">Almost 2x What Udemy Pays</h2>
+            <p class="section-subtitle">
+                While other platforms take the majority, we believe creators deserve more.
+                That's why we built a system where you keep 70% of every sale.
+            </p>
+
+            <div class="split-visual">
+                <div class="split-bar split-creator">YOU 70%</div>
+                <div class="split-bar split-platform">US 30%</div>
+            </div>
+
+            <div class="comparison-table">
+                <div class="comparison-card winner">
+                    <div class="comparison-platform">Consciousness Revolution</div>
+                    <div class="comparison-split">70%</div>
+                    <div class="comparison-label">to creators</div>
+                </div>
+                <div class="comparison-card">
+                    <div class="comparison-platform">YouTube</div>
+                    <div class="comparison-split">55%</div>
+                    <div class="comparison-label">to creators</div>
+                </div>
+                <div class="comparison-card">
+                    <div class="comparison-platform">Udemy</div>
+                    <div class="comparison-split">37%</div>
+                    <div class="comparison-label">to creators</div>
+                </div>
+                <div class="comparison-card">
+                    <div class="comparison-platform">Skillshare</div>
+                    <div class="comparison-split">~$0.05</div>
+                    <div class="comparison-label">per minute watched</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Domains Section -->
+    <section id="domains" class="section">
+        <div class="section-header">
+            <div class="section-badge">7 Powerful Domains</div>
+            <h2 class="section-title">Everything You Need in One Place</h2>
+            <p class="section-subtitle">
+                One account. Seven revolutionary platforms. Unlimited potential.
+            </p>
+        </div>
+
+        <div class="domains-grid">
+            <div class="domain-card">
+                <div class="domain-icon">🎵</div>
+                <h3 class="domain-name">Music</h3>
+                <p class="domain-description">
+                    Distribute to Spotify, Apple Music, and beyond. Create NFTs, sell sample packs,
+                    and build your music empire.
+                </p>
+                <ul class="domain-features">
+                    <li>Unlimited track distribution</li>
+                    <li>Automatic Spotify/Apple sync</li>
+                    <li>NFT creation tools</li>
+                    <li>Sample pack marketplace</li>
+                    <li>1-on-1 coaching available</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <div class="domain-icon">🧠</div>
+                <h3 class="domain-name">Intelligence</h3>
+                <p class="domain-description">
+                    AI-powered tools for creators. Automate workflows, generate content,
+                    and scale your creative business.
+                </p>
+                <ul class="domain-features">
+                    <li>AI content generation</li>
+                    <li>Workflow automation</li>
+                    <li>Pattern recognition</li>
+                    <li>Business intelligence</li>
+                    <li>Data analytics</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <div class="domain-icon">🛠️</div>
+                <h3 class="domain-name">Tools</h3>
+                <p class="domain-description">
+                    Professional-grade tools for creators. From video editing to design,
+                    everything you need to create at scale.
+                </p>
+                <ul class="domain-features">
+                    <li>Creator toolkit suite</li>
+                    <li>Collaboration features</li>
+                    <li>Project management</li>
+                    <li>Asset libraries</li>
+                    <li>API integrations</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <div class="domain-icon">📚</div>
+                <h3 class="domain-name">Education</h3>
+                <p class="domain-description">
+                    Create and sell courses. Build your teaching empire with 70% creator split,
+                    not Udemy's 37%.
+                </p>
+                <ul class="domain-features">
+                    <li>Course creation platform</li>
+                    <li>Student management</li>
+                    <li>Live sessions</li>
+                    <li>Certificates</li>
+                    <li>70% revenue share</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <div class="domain-icon">🛒</div>
+                <h3 class="domain-name">Commerce</h3>
+                <p class="domain-description">
+                    Sell digital products, presets, templates, and more. Built-in marketplace
+                    with transparent pricing.
+                </p>
+                <ul class="domain-features">
+                    <li>Digital product sales</li>
+                    <li>Instant downloads</li>
+                    <li>Automatic payouts</li>
+                    <li>Sales analytics</li>
+                    <li>Creator dashboard</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <div class="domain-icon">💬</div>
+                <h3 class="domain-name">Communication</h3>
+                <p class="domain-description">
+                    Connect with your audience. Email lists, community forums,
+                    and direct messaging all in one place.
+                </p>
+                <ul class="domain-features">
+                    <li>Email marketing</li>
+                    <li>Community forums</li>
+                    <li>Direct messaging</li>
+                    <li>Notifications</li>
+                    <li>Engagement analytics</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <div class="domain-icon">👥</div>
+                <h3 class="domain-name">Community</h3>
+                <p class="domain-description">
+                    Build your tribe. Create private communities, host events,
+                    and grow your following.
+                </p>
+                <ul class="domain-features">
+                    <li>Private communities</li>
+                    <li>Events & meetups</li>
+                    <li>Member directories</li>
+                    <li>Discussion boards</li>
+                    <li>Social features</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section">
+        <div class="section-header">
+            <div class="section-badge">Simple Pricing</div>
+            <h2 class="section-title">Choose Your Level</h2>
+            <p class="section-subtitle">
+                Start free, upgrade when you're ready. No hidden fees, no surprises.
+            </p>
+        </div>
+
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="pricing-tier">Free</div>
+                <div class="pricing-price">$0</div>
+                <div class="pricing-period">forever</div>
+                <ul class="pricing-features">
+                    <li>Access to all 7 domains</li>
+                    <li>10 tracks/month (Music)</li>
+                    <li>Basic AI tools</li>
+                    <li>Community access</li>
+                    <li>70% marketplace split</li>
+                    <li>Email support</li>
+                </ul>
+                <a href="/frontend/auth-components.html" class="btn-primary">Get Started Free</a>
+            </div>
+
+            <div class="pricing-card popular">
+                <div class="pricing-tier">Pro</div>
+                <div class="pricing-price">$29</div>
+                <div class="pricing-period">per month</div>
+                <ul class="pricing-features">
+                    <li>Everything in Free</li>
+                    <li>Unlimited tracks (Music)</li>
+                    <li>Advanced AI tools</li>
+                    <li>Priority support</li>
+                    <li>Analytics dashboard</li>
+                    <li>White-label options</li>
+                    <li>API access</li>
+                    <li>Custom branding</li>
+                </ul>
+                <a href="/frontend/auth-components.html" class="btn-primary">Start Pro Trial</a>
+            </div>
+
+            <div class="pricing-card">
+                <div class="pricing-tier">Pro Plus</div>
+                <div class="pricing-price">$99</div>
+                <div class="pricing-period">per month</div>
+                <ul class="pricing-features">
+                    <li>Everything in Pro</li>
+                    <li>1-on-1 coaching session</li>
+                    <li>Early feature access</li>
+                    <li>Dedicated support</li>
+                    <li>Custom integrations</li>
+                    <li>Revenue optimization</li>
+                    <li>Marketing tools</li>
+                    <li>Growth analytics</li>
+                </ul>
+                <a href="/frontend/auth-components.html" class="btn-primary">Go Pro Plus</a>
+            </div>
+
+            <div class="pricing-card">
+                <div class="pricing-tier">Enterprise</div>
+                <div class="pricing-price">$299</div>
+                <div class="pricing-period">per month</div>
+                <ul class="pricing-features">
+                    <li>Everything in Pro Plus</li>
+                    <li>Unlimited everything</li>
+                    <li>White-glove support</li>
+                    <li>Custom development</li>
+                    <li>Team management</li>
+                    <li>Advanced security</li>
+                    <li>SLA guarantee</li>
+                    <li>Dedicated account manager</li>
+                </ul>
+                <a href="/frontend/auth-components.html" class="btn-primary">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-badge">Creator Stories</div>
+            <h2 class="section-title">Loved by Creators Worldwide</h2>
+            <p class="section-subtitle">
+                Join thousands of creators who've made the switch
+            </p>
+        </div>
+
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "I was making $500/month on Udemy. Switched to Consciousness Revolution
+                    and now make $1,200 from the same course. The 70% split is a game-changer."
+                </p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">M</div>
+                    <div class="testimonial-info">
+                        <div class="testimonial-name">Marcus Chen</div>
+                        <div class="testimonial-role">Course Creator</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "Finally, a platform that doesn't treat creators like the product. The
+                    analytics alone are worth the switch, but the revenue split is incredible."
+                </p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">S</div>
+                    <div class="testimonial-info">
+                        <div class="testimonial-name">Sarah Thompson</div>
+                        <div class="testimonial-role">Music Producer</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "Having all my creative tools in one platform is amazing. I distribute
+                    music, sell courses, and run my marketplace - all from one dashboard."
+                </p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">J</div>
+                    <div class="testimonial-info">
+                        <div class="testimonial-name">James Rodriguez</div>
+                        <div class="testimonial-role">Multi-Creator</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "The AI tools saved me 20 hours/week. The automation features are insane.
+                    This is what creator platforms should have been from day one."
+                </p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">A</div>
+                    <div class="testimonial-info">
+                        <div class="testimonial-name">Alex Morgan</div>
+                        <div class="testimonial-role">Content Creator</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "I sold $10K worth of sample packs in my first month. The marketplace
+                    actually promotes creators instead of burying them in search results."
+                </p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">T</div>
+                    <div class="testimonial-info">
+                        <div class="testimonial-name">Taylor Swift</div>
+                        <div class="testimonial-role">Sound Designer</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "Switched my entire education business here. Students love the platform,
+                    I love the revenue. Win-win that actually works."
+                </p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">R</div>
+                    <div class="testimonial-info">
+                        <div class="testimonial-name">Rachel Kim</div>
+                        <div class="testimonial-role">Educator</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-badge">FAQ</div>
+            <h2 class="section-title">Questions? Answered.</h2>
+        </div>
+
+        <div class="faq-list">
+            <div class="faq-item">
+                <div class="faq-question">Why 70/30 instead of 50/50?</div>
+                <div class="faq-answer">
+                    Because creators do the hard work. We handle infrastructure, payments, and distribution.
+                    70/30 reflects the actual value split. Plus, we're profitable at 30% - we don't need to
+                    gouge creators to survive.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How do payouts work?</div>
+                <div class="faq-answer">
+                    Automatic monthly payouts via Stripe Connect. No minimums, no delays. You sell on Monday,
+                    money hits your account by Friday. Simple.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I use multiple domains at once?</div>
+                <div class="faq-answer">
+                    Absolutely! That's the whole point. One account gives you access to all 7 domains.
+                    Distribute music, sell courses, run a marketplace - whatever you want.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Is there a contract or lock-in?</div>
+                <div class="faq-answer">
+                    Nope. Cancel anytime, no questions asked. Your content stays yours, and you can
+                    download everything you've created.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How is this different from other platforms?</div>
+                <div class="faq-answer">
+                    1) We pay creators 70% (vs 37%-55% elsewhere). 2) All domains in one account.
+                    3) Built by creators who got tired of being exploited. 4) Actual transparency
+                    about revenue and analytics.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">What payment methods do you accept?</div>
+                <div class="faq-answer">
+                    Credit cards, debit cards, and bank transfers via Stripe. We handle all payment
+                    processing securely - we never see your payment info.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section">
+        <div class="cta-section">
+            <h2 class="cta-title">Ready to Keep 70% of Your Revenue?</h2>
+            <p class="cta-subtitle">
+                Join thousands of creators who've already made the switch
+            </p>
+            <div class="cta-buttons">
+                <a href="/frontend/auth-components.html" class="btn-dark">Start Creating Free</a>
+                <a href="/frontend/marketplace-browser.html" class="btn-secondary">Browse Marketplace</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Platform</h3>
+                <ul class="footer-links">
+                    <li><a href="/frontend/user-dashboard.html">Dashboard</a></li>
+                    <li><a href="/frontend/marketplace-browser.html">Marketplace</a></li>
+                    <li><a href="/frontend/creator-earnings-dashboard.html">Creator Tools</a></li>
+                    <li><a href="/frontend/quantum-vault-visual.html">Analytics</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Domains</h3>
+                <ul class="footer-links">
+                    <li><a href="#domains">Music</a></li>
+                    <li><a href="#domains">Intelligence</a></li>
+                    <li><a href="#domains">Tools</a></li>
+                    <li><a href="#domains">Education</a></li>
+                    <li><a href="#domains">Commerce</a></li>
+                    <li><a href="#domains">Communication</a></li>
+                    <li><a href="#domains">Community</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">API Documentation</a></li>
+                    <li><a href="#">Creator Guide</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Status</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul class="footer-links">
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press Kit</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            © 2025 Consciousness Revolution. Built with Pattern Theory.
+        </div>
+    </footer>
+
+<script src="./araya-walkthrough.js"></script>
+</body>
+</html>

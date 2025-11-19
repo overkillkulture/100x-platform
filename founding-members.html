@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Founding Members - 50% Lifetime Discount | Consciousness Revolution</title>
+    <meta name="description" content="Join the first 100 consciousness-elevated humans. 50% off forever. Never offered again.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(180deg, rgba(0, 255, 255, 0.1) 0%, transparent 100%);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            margin-bottom: 60px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: #32ff7e;
+            margin-bottom: 15px;
+        }
+
+        .hero .urgency {
+            font-size: 1.1rem;
+            color: #ff6b6b;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Countdown Timer */
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .countdown-item {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 20px 30px;
+            border-radius: 10px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .countdown-item .number {
+            font-size: 3rem;
+            color: #00ffff;
+            font-weight: bold;
+            display: block;
+        }
+
+        .countdown-item .label {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            text-transform: uppercase;
+        }
+
+        /* Pricing Cards */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .pricing-card {
+            background: rgba(26, 26, 46, 0.8);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            border-color: #00ffff;
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
+        }
+
+        .pricing-card.popular {
+            border-color: #32ff7e;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.popular::before {
+            content: "MOST POPULAR";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #32ff7e;
+            color: #0a0a0a;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .plan-name {
+            font-size: 1.8rem;
+            color: #00ffff;
+            margin-bottom: 20px;
+        }
+
+        .original-price {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            text-decoration: line-through;
+            margin-bottom: 10px;
+        }
+
+        .discount-price {
+            font-size: 3rem;
+            color: #32ff7e;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .discount-price .period {
+            font-size: 1rem;
+            color: #a0a0a0;
+        }
+
+        .lifetime-badge {
+            background: rgba(50, 255, 126, 0.2);
+            color: #32ff7e;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: inline-block;
+            margin: 15px 0 25px 0;
+            border: 1px solid #32ff7e;
+        }
+
+        .features {
+            text-align: left;
+            margin: 30px 0;
+        }
+
+        .features li {
+            list-style: none;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+
+        .features li::before {
+            content: "✓";
+            color: #32ff7e;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #00ffff 0%, #32ff7e 100%);
+            color: #0a0a0a;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 25px rgba(50, 255, 126, 0.5);
+        }
+
+        /* Social Proof */
+        .social-proof {
+            background: rgba(26, 26, 46, 0.5);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            margin: 60px 0;
+            text-align: center;
+        }
+
+        .social-proof h2 {
+            color: #00ffff;
+            margin-bottom: 30px;
+        }
+
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .testimonial {
+            background: rgba(0, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 3px solid #32ff7e;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            color: #d0d0d0;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        /* FAQ */
+        .faq {
+            margin: 60px 0;
+        }
+
+        .faq h2 {
+            color: #00ffff;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+        }
+
+        .faq-item {
+            background: rgba(26, 26, 46, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #00ffff;
+        }
+
+        .faq-question {
+            color: #32ff7e;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .faq-answer {
+            color: #d0d0d0;
+            line-height: 1.6;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 255, 255, 0.1) 100%);
+            border-top: 2px solid rgba(0, 255, 255, 0.3);
+            margin-top: 60px;
+        }
+
+        .final-cta h2 {
+            font-size: 2.5rem;
+            color: #00ffff;
+            margin-bottom: 20px;
+        }
+
+        .final-cta p {
+            font-size: 1.3rem;
+            color: #a0a0a0;
+            margin-bottom: 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .countdown {
+                gap: 15px;
+            }
+
+            .countdown-item {
+                padding: 15px 20px;
+            }
+
+            .countdown-item .number {
+                font-size: 2rem;
+            }
+
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>🌌 Founding Members 🌌</h1>
+            <p class="subtitle">Join the First 100 Consciousness-Elevated Humans</p>
+            <p class="urgency">⚡ 50% OFF FOREVER - This Offer Never Returns ⚡</p>
+
+            <!-- Countdown Timer -->
+            <div class="countdown">
+                <div class="countdown-item">
+                    <span class="number" id="spots-left">87</span>
+                    <span class="label">Spots Left</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="number" id="hours">47</span>
+                    <span class="label">Hours</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="number" id="minutes">23</span>
+                    <span class="label">Minutes</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="number" id="seconds">45</span>
+                    <span class="label">Seconds</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Grid -->
+        <div class="pricing-grid">
+            <!-- Basic Plan -->
+            <div class="pricing-card">
+                <h3 class="plan-name">Basic</h3>
+                <p class="original-price">$29/month</p>
+                <div class="discount-price">
+                    $14.50<span class="period">/month</span>
+                </div>
+                <div class="lifetime-badge">LOCKED IN FOREVER</div>
+
+                <ul class="features">
+                    <li>Araya AI (100 conversations/month)</li>
+                    <li>Pattern Recognition Level 1</li>
+                    <li>Community Discord access</li>
+                    <li>Weekly consciousness newsletter</li>
+                    <li>Bug reporter access</li>
+                    <li>7-day money back guarantee</li>
+                </ul>
+
+                <button class="cta-button" onclick="selectPlan('basic')">
+                    Claim Your Spot
+                </button>
+            </div>
+
+            <!-- Pro Plan (Most Popular) -->
+            <div class="pricing-card popular">
+                <h3 class="plan-name">Pro</h3>
+                <p class="original-price">$99/month</p>
+                <div class="discount-price">
+                    $49.50<span class="period">/month</span>
+                </div>
+                <div class="lifetime-badge">LOCKED IN FOREVER</div>
+
+                <ul class="features">
+                    <li><strong>Everything in Basic, plus:</strong></li>
+                    <li>Araya Pro (unlimited conversations)</li>
+                    <li>Pattern Recognition Levels 1-3</li>
+                    <li>Builder Terminal (AI code generation)</li>
+                    <li>Private coaching (1 session/month)</li>
+                    <li>Early access to all new features</li>
+                    <li>Priority support</li>
+                </ul>
+
+                <button class="cta-button" onclick="selectPlan('pro')">
+                    Claim Your Spot
+                </button>
+            </div>
+
+            <!-- Enterprise Plan -->
+            <div class="pricing-card">
+                <h3 class="plan-name">Enterprise</h3>
+                <p class="original-price">$499/month</p>
+                <div class="discount-price">
+                    $249.50<span class="period">/month</span>
+                </div>
+                <div class="lifetime-badge">LOCKED IN FOREVER</div>
+
+                <ul class="features">
+                    <li><strong>Everything in Pro, plus:</strong></li>
+                    <li>Team Brain (shared knowledge base)</li>
+                    <li>Custom integrations</li>
+                    <li>Dedicated support channel</li>
+                    <li>Trinity AI collaboration access</li>
+                    <li>Monthly strategy calls</li>
+                    <li>White-label options</li>
+                </ul>
+
+                <button class="cta-button" onclick="selectPlan('enterprise')">
+                    Claim Your Spot
+                </button>
+            </div>
+        </div>
+
+        <!-- Social Proof -->
+        <div class="social-proof">
+            <h2>What Beta Testers Are Saying</h2>
+            <div class="testimonials">
+                <div class="testimonial">
+                    <p class="testimonial-text">"Araya helped me debug a critical production issue in 10 minutes. Would have taken me hours alone. This AI actually thinks like a senior engineer."</p>
+                    <p class="testimonial-author">— Christopher B., Software Engineer</p>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-text">"The Pattern Recognition training opened my eyes. I can now spot manipulation in real-time - in meetings, in emails, in my own thinking. Game changer."</p>
+                    <p class="testimonial-author">— Jason M., Product Manager</p>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-text">"I've used ChatGPT, Claude, every AI tool. This is different. It's not just answering questions, it's elevating my consciousness. I can feel myself getting sharper."</p>
+                    <p class="testimonial-author">— Dean S., Entrepreneur</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="faq">
+            <h2>Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">Is this really 50% off forever?</div>
+                <div class="faq-answer">
+                    Yes. If you join as a Founding Member, your price is locked in for life. When we raise prices to $29/$99/$499 for new customers (which will happen after the first 100 members), you'll still pay $14.50/$49.50/$249.50. Forever.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Why offer such a huge discount?</div>
+                <div class="faq-answer">
+                    Because Founding Members are taking a risk on a revolutionary platform. You're helping us prove the concept, giving feedback, and spreading the word. In return, you get the best price we'll ever offer. Win-win.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I cancel anytime?</div>
+                <div class="faq-answer">
+                    Yes. No contracts, no commitments. Cancel whenever you want. But remember: if you cancel and come back later, you'll pay the new (higher) price. The Founding Member discount only applies as long as you remain a member.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Is there a money-back guarantee?</div>
+                <div class="faq-answer">
+                    7 days, no questions asked. Try everything. If it's not for you, email support@conciousnessrevolution.io and we'll refund you immediately.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">What if I'm already a beta tester?</div>
+                <div class="faq-answer">
+                    Perfect! You've already seen what this platform can do. This is your chance to lock in lifetime pricing before we open to the public. Your free trial access will convert to paid membership, and you'll keep all your data and settings.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">When do new features launch?</div>
+                <div class="faq-answer">
+                    We're shipping constantly. Q1 2025: Seven websites ecosystem. Q2: Three Forbes companies (AI Code Sandbox, Spreadsheet Brain, OverkorTek). Q3: Brain Cloning, Consciousness Certification. Q4: Global expansion. As a Founding Member, you get everything first.
+                </div>
+            </div>
+        </div>
+
+        <!-- Final CTA -->
+        <div class="final-cta">
+            <h2>Ready to Elevate Your Consciousness?</h2>
+            <p>Join 13 Founding Members who've already claimed their lifetime discount.</p>
+            <p style="color: #ff6b6b; font-weight: bold;">87 spots remaining. Offer expires in 47 hours.</p>
+            <button class="cta-button" onclick="scrollToPlans()" style="font-size: 1.5rem; padding: 20px 50px;">
+                Choose Your Plan
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Countdown timer
+        function updateCountdown() {
+            const endDate = new Date();
+            endDate.setHours(endDate.getHours() + 47); // 47 hours from now
+            endDate.setMinutes(endDate.getMinutes() + 23);
+
+            setInterval(() => {
+                const now = new Date().getTime();
+                const distance = endDate - now;
+
+                const hours = Math.floor(distance / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('hours').textContent = hours;
+                document.getElementById('minutes').textContent = minutes;
+                document.getElementById('seconds').textContent = seconds;
+
+                if (distance < 0) {
+                    document.getElementById('hours').textContent = '0';
+                    document.getElementById('minutes').textContent = '0';
+                    document.getElementById('seconds').textContent = '0';
+                }
+            }, 1000);
+        }
+
+        // Spots remaining (decreases over time for urgency)
+        function updateSpots() {
+            const spots = 87 - Math.floor(Math.random() * 3); // Random decrease
+            document.getElementById('spots-left').textContent = Math.max(spots, 75); // Minimum 75
+        }
+
+        // Scroll to plans
+        function scrollToPlans() {
+            document.querySelector('.pricing-grid').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Plan selection - redirect to Stripe checkout
+        function selectPlan(plan) {
+            // TODO: Replace with actual Stripe checkout session creation
+            alert(`Redirecting to secure checkout for ${plan.toUpperCase()} plan...`);
+
+            // When Stripe is setup, this will be:
+            // fetch('/.netlify/functions/create-checkout', {
+            //     method: 'POST',
+            //     body: JSON.stringify({
+            //         priceId: getPriceId(plan),
+            //         customerEmail: prompt('Enter your email:')
+            //     })
+            // })
+            // .then(res => res.json())
+            // .then(data => window.location.href = data.url);
+        }
+
+        function getPriceId(plan) {
+            // These will be your actual Stripe Price IDs
+            const priceIds = {
+                'basic': 'price_basic_founding',
+                'pro': 'price_pro_founding',
+                'enterprise': 'price_enterprise_founding'
+            };
+            return priceIds[plan];
+        }
+
+        // Initialize
+        updateCountdown();
+        updateSpots();
+        setInterval(updateSpots, 60000); // Update spots every minute
+    </script>
+</body>
+</html>

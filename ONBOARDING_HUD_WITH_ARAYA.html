@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Command Center - HUD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: transparent;
+            color: #00ff00;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Floating HUD - Minimal, Professional */
+        .hud-overlay {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Araya Assistant Panel */
+        .araya-panel {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ffff00;
+            border-radius: 10px;
+            padding: 15px;
+            width: 350px;
+            max-height: 500px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.3);
+        }
+
+        .araya-panel.minimized {
+            width: 60px;
+            height: 60px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .araya-panel.minimized .araya-header h3,
+        .araya-panel.minimized .araya-chat,
+        .araya-panel.minimized .araya-input-container {
+            display: none;
+        }
+
+        .araya-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ffff00;
+        }
+
+        .araya-header h3 {
+            color: #ffff00;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .minimize-btn {
+            background: none;
+            border: 1px solid #ffff00;
+            color: #ffff00;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .minimize-btn:hover {
+            background: rgba(255, 255, 0, 0.2);
+        }
+
+        .araya-icon {
+            font-size: 36px;
+            text-align: center;
+        }
+
+        .araya-chat {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            max-height: 350px;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .chat-message.user {
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 3px solid #00ff00;
+        }
+
+        .chat-message.araya {
+            background: rgba(255, 255, 0, 0.1);
+            border-left: 3px solid #ffff00;
+        }
+
+        .chat-message .sender {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+
+        .chat-message.user .sender {
+            color: #00ff00;
+        }
+
+        .chat-message.araya .sender {
+            color: #ffff00;
+        }
+
+        .chat-message .content {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .araya-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .araya-input {
+            flex: 1;
+            background: rgba(255, 255, 0, 0.1);
+            border: 1px solid #ffff00;
+            color: #ffff00;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .araya-send {
+            background: #ffff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .araya-send:hover {
+            background: #ffff66;
+        }
+
+        .araya-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Status Indicators */
+        .status-bar {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 10px 15px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            font-size: 12px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.online {
+            background: #00ff00;
+        }
+
+        .status-dot.warning {
+            background: #ffff00;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Loading indicator */
+        .loading {
+            text-align: center;
+            color: #ffff00;
+            font-size: 12px;
+            padding: 10px;
+        }
+
+        /* Scrollbar styling */
+        .araya-chat::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .araya-chat::-webkit-scrollbar-track {
+            background: rgba(255, 255, 0, 0.1);
+        }
+
+        .araya-chat::-webkit-scrollbar-thumb {
+            background: #ffff00;
+            border-radius: 3px;
+        }
+
+        /* Recording indicator */
+        .recording-indicator {
+            background: rgba(255, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .rec-dot {
+            width: 10px;
+            height: 10px;
+            background: #ff0000;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hud-overlay">
+        <!-- Recording Indicator (shows when you're recording) -->
+        <div class="recording-indicator" style="display: none;" id="recordingIndicator">
+            <div class="rec-dot"></div>
+            <span>RECORDING SESSION</span>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-dot online"></div>
+                <span>Araya Online</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot online"></div>
+                <span>Builder Terminal</span>
+            </div>
+            <div class="status-item">
+                <span id="sessionTime">00:00</span>
+            </div>
+        </div>
+
+        <!-- Araya Assistant Panel -->
+        <div class="araya-panel" id="arayaPanel">
+            <div class="araya-icon">🌀</div>
+            <div class="araya-header">
+                <h3>ARAYA Assistant</h3>
+                <button class="minimize-btn" onclick="toggleAraya()">−</button>
+            </div>
+            <div class="araya-chat" id="arayaChat">
+                <div class="chat-message araya">
+                    <div class="sender">ARAYA:</div>
+                    <div class="content">Welcome, Commander! I'm here to assist with your onboarding session. Ask me anything.</div>
+                </div>
+            </div>
+            <div class="araya-input-container">
+                <input
+                    type="text"
+                    class="araya-input"
+                    id="arayaInput"
+                    placeholder="Ask Araya..."
+                    onkeypress="if(event.key === 'Enter') sendToAraya()"
+                >
+                <button class="araya-send" onclick="sendToAraya()" id="sendBtn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const ARAYA_API = 'http://localhost:8001/api/chat';
+
+        // Session timer
+        let sessionStart = Date.now();
+        setInterval(() => {
+            const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+            const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const secs = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('sessionTime').textContent = `${mins}:${secs}`;
+        }, 1000);
+
+        // Toggle Araya panel
+        function toggleAraya() {
+            const panel = document.getElementById('arayaPanel');
+            panel.classList.toggle('minimized');
+        }
+
+        // Expand Araya when minimized and clicked
+        document.getElementById('arayaPanel').addEventListener('click', function() {
+            if (this.classList.contains('minimized')) {
+                this.classList.remove('minimized');
+            }
+        });
+
+        // Send message to Araya
+        async function sendToAraya() {
+            const input = document.getElementById('arayaInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage('user', message);
+            input.value = '';
+
+            // Disable send button
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true;
+            sendBtn.textContent = '...';
+
+            try {
+                const response = await fetch(ARAYA_API, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        context: 'onboarding_session'
+                    })
+                });
+
+                const data = await response.json();
+                addMessage('araya', data.response || data.message || 'Response received');
+            } catch (error) {
+                addMessage('araya', 'Connection error. Please check Araya API.');
+                console.error('Araya error:', error);
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Send';
+            }
+        }
+
+        // Add message to chat
+        function addMessage(sender, content) {
+            const chat = document.getElementById('arayaChat');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+
+            const senderDiv = document.createElement('div');
+            senderDiv.className = 'sender';
+            senderDiv.textContent = sender === 'user' ? 'YOU:' : 'ARAYA:';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'content';
+            contentDiv.textContent = content;
+
+            messageDiv.appendChild(senderDiv);
+            messageDiv.appendChild(contentDiv);
+            chat.appendChild(messageDiv);
+
+            // Scroll to bottom
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // Quick commands with keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Alt+A to toggle Araya
+            if (e.altKey && e.key === 'a') {
+                e.preventDefault();
+                toggleAraya();
+            }
+
+            // Alt+R to toggle recording indicator
+            if (e.altKey && e.key === 'r') {
+                e.preventDefault();
+                const indicator = document.getElementById('recordingIndicator');
+                indicator.style.display = indicator.style.display === 'none' ? 'flex' : 'none';
+            }
+
+            // Alt+H to hide all HUD elements
+            if (e.altKey && e.key === 'h') {
+                e.preventDefault();
+                const overlay = document.querySelector('.hud-overlay');
+                overlay.style.display = overlay.style.display === 'none' ? 'flex' : 'none';
+            }
+        });
+
+        console.log('🌀 Onboarding HUD Loaded');
+        console.log('Shortcuts:');
+        console.log('  Alt+A: Toggle Araya');
+        console.log('  Alt+R: Toggle Recording Indicator');
+        console.log('  Alt+H: Hide/Show HUD');
+    </script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

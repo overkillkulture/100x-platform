@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>100X Platform - Electrical Schematic</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0f;
+            color: #00ff00;
+            padding: 20px;
+            overflow-x: auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-box {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+        .stat-box.total { border-color: #667eea; }
+        .stat-box.connected { border-color: #4CAF50; }
+        .stat-box.broken { border-color: #f44336; }
+        .stat-box.orphan { border-color: #ff9800; }
+        .stat-number { font-size: 2.5em; font-weight: bold; }
+        .stat-label { opacity: 0.7; margin-top: 5px; }
+
+        .schematic {
+            background: #0f0f1a;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #00ff00;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section-title {
+            font-size: 1.5em;
+            color: #00ffff;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #00ffff;
+            padding-bottom: 10px;
+        }
+        .page-node {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 20px;
+            background: #1a1a2e;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .page-node:hover {
+            background: #2a2a3e;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #00ff00;
+        }
+        .page-node.broken { border-color: #f44336; color: #f44336; }
+        .page-node.orphan { border-color: #ff9800; color: #ff9800; }
+        .page-node.entry { border-color: #4CAF50; color: #4CAF50; font-weight: bold; }
+
+        .connection-list {
+            margin-left: 30px;
+            margin-top: 10px;
+        }
+        .connection {
+            padding: 8px;
+            margin: 5px 0;
+            background: #151520;
+            border-left: 3px solid #00ff00;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .connection.broken { border-color: #f44336; }
+        .connection::before { content: '→'; font-size: 1.2em; }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #151520;
+            border-radius: 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .details-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #00ffff;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 0 50px rgba(0,255,255,0.5);
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 999;
+        }
+        .close-btn {
+            float: right;
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .filter-controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background: #764ba2; }
+        button.active { background: #4CAF50; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ 100X PLATFORM - ELECTRICAL SCHEMATIC</h1>
+        <p>Complete site map and connection analysis</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat-box total">
+            <div class="stat-number" id="totalPages">91</div>
+            <div class="stat-label">Total Pages</div>
+        </div>
+        <div class="stat-box connected">
+            <div class="stat-number" id="connectedPages">30</div>
+            <div class="stat-label">Pages With Links</div>
+        </div>
+        <div class="stat-box broken">
+            <div class="stat-number" id="brokenLinks">11</div>
+            <div class="stat-label">Broken Links</div>
+        </div>
+        <div class="stat-box orphan">
+            <div class="stat-number" id="orphanPages">61</div>
+            <div class="stat-label">Orphan Pages</div>
+        </div>
+    </div>
+
+    <div class="filter-controls">
+        <button onclick="filterView('all')" class="active" id="btn-all">Show All</button>
+        <button onclick="filterView('connected')" id="btn-connected">Connected Only</button>
+        <button onclick="filterView('broken')" id="btn-broken">Broken Links</button>
+        <button onclick="filterView('orphan')" id="btn-orphan">Orphans</button>
+    </div>
+
+    <div class="schematic">
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box" style="border-color: #4CAF50;"></div>
+                <span style="color: #4CAF50;">Entry Point (index.html)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="border-color: #00ff00;"></div>
+                <span>Connected Page</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="border-color: #ff9800;"></div>
+                <span style="color: #ff9800;">Orphan (No Incoming Links)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="border-color: #f44336;"></div>
+                <span style="color: #f44336;">Has Broken Links</span>
+            </div>
+        </div>
+
+        <div id="schematicContent"></div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeDetails()"></div>
+    <div class="details-panel" id="detailsPanel">
+        <button class="close-btn" onclick="closeDetails()">✕ Close</button>
+        <div id="detailsContent"></div>
+    </div>
+
+    <script>
+        let siteData = {};
+        let currentFilter = 'all';
+
+        fetch('SITE_MAP.json')
+            .then(r => r.json())
+            .then(data => {
+                siteData = data;
+                renderSchematic();
+            });
+
+        function renderSchematic() {
+            const content = document.getElementById('schematicContent');
+            let html = '';
+
+            // Entry points
+            html += '<div class="section">';
+            html += '<div class="section-title">🚪 ENTRY POINTS</div>';
+            html += '<div class="page-node entry" onclick="showDetails(\'index.html\')">index.html</div>';
+            html += '</div>';
+
+            // Pages with broken links
+            if (Object.keys(siteData.broken_links || {}).length > 0) {
+                html += '<div class="section broken-section">';
+                html += '<div class="section-title">❌ PAGES WITH BROKEN LINKS</div>';
+                for (const [page, broken] of Object.entries(siteData.broken_links)) {
+                    html += `<div class="page-node broken" onclick="showDetails('${page}')">${page}</div>`;
+                }
+                html += '</div>';
+            }
+
+            // Orphan pages
+            if (siteData.orphan_pages && siteData.orphan_pages.length > 0) {
+                html += '<div class="section orphan-section">';
+                html += '<div class="section-title">🏝️ ORPHAN PAGES (Not Linked From Anywhere)</div>';
+                siteData.orphan_pages.forEach(page => {
+                    html += `<div class="page-node orphan" onclick="showDetails('${page}')">${page}</div>`;
+                });
+                html += '</div>';
+            }
+
+            // Connected pages
+            html += '<div class="section connected-section">';
+            html += '<div class="section-title">🔗 CONNECTED PAGES</div>';
+            for (const [page, links] of Object.entries(siteData.site_map || {})) {
+                const hasBroken = siteData.broken_links && siteData.broken_links[page];
+                const className = hasBroken ? 'broken' : '';
+                html += `<div class="page-node ${className}" onclick="showDetails('${page}')">${page}</div>`;
+            }
+            html += '</div>';
+
+            content.innerHTML = html;
+        }
+
+        function showDetails(page) {
+            const panel = document.getElementById('detailsPanel');
+            const overlay = document.getElementById('overlay');
+            const content = document.getElementById('detailsContent');
+
+            let html = `<h2>📄 ${page}</h2>`;
+
+            // Links from this page
+            const links = siteData.site_map[page] || [];
+            if (links.length > 0) {
+                html += `<h3 style="margin-top: 20px; color: #00ffff;">Outgoing Links (${links.length})</h3>`;
+                html += '<div class="connection-list">';
+                links.forEach(link => {
+                    const broken = siteData.broken_links[page] && siteData.broken_links[page].includes(link);
+                    const className = broken ? 'broken' : '';
+                    html += `<div class="connection ${className}">${link} ${broken ? '❌ BROKEN' : ''}</div>`;
+                });
+                html += '</div>';
+            }
+
+            // Broken links
+            const broken = siteData.broken_links[page];
+            if (broken && broken.length > 0) {
+                html += `<h3 style="margin-top: 20px; color: #f44336;">Broken Links (${broken.length})</h3>`;
+                html += '<div class="connection-list">';
+                broken.forEach(link => {
+                    html += `<div class="connection broken">${link} ❌</div>`;
+                });
+                html += '</div>';
+            }
+
+            // Is orphan?
+            if (siteData.orphan_pages && siteData.orphan_pages.includes(page)) {
+                html += '<p style="margin-top: 20px; color: #ff9800;">⚠️ This page is not linked from anywhere (orphan)</p>';
+            }
+
+            html += `<p style="margin-top: 20px; opacity: 0.6;">Click page name to open: <a href="${page}" target="_blank" style="color: #00ffff;">${page}</a></p>`;
+
+            content.innerHTML = html;
+            panel.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        function closeDetails() {
+            document.getElementById('detailsPanel').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function filterView(type) {
+            currentFilter = type;
+
+            // Update buttons
+            document.querySelectorAll('.filter-controls button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`btn-${type}`).classList.add('active');
+
+            // Show/hide sections
+            const sections = {
+                'all': ['.broken-section', '.orphan-section', '.connected-section'],
+                'connected': ['.connected-section'],
+                'broken': ['.broken-section'],
+                'orphan': ['.orphan-section']
+            };
+
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            sections[type].forEach(selector => {
+                const el = document.querySelector(selector);
+                if (el) el.style.display = 'block';
+            });
+
+            // Always show entry points
+            document.querySelector('.section:first-child').style.display = 'block';
+        }
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Instant Access</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .welcome-container {
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #00ff88;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-message {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .name-input-container {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #00ff88;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            color: #fff;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .enter-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .enter-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5);
+        }
+
+        .note {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <h1>🌟 Welcome!</h1>
+
+        <div class="welcome-message">
+            You're invited to test the Consciousness Platform.<br>
+            No signup, no passwords, no waiting - just enter your name and explore!
+        </div>
+
+        <div class="name-input-container">
+            <label for="username">What's your name?</label>
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter your name..."
+                onkeypress="if(event.key==='Enter') enterPlatform()"
+            >
+        </div>
+
+        <button class="enter-btn" onclick="enterPlatform()">
+            Enter Platform →
+        </button>
+
+        <div class="note">
+            No account needed. Just type your name and go!
+        </div>
+    </div>
+
+    <script>
+        function enterPlatform() {
+            const username = document.getElementById('username').value.trim();
+
+            if (!username) {
+                alert('Please enter your name!');
+                return;
+            }
+
+            // Save user info to localStorage
+            localStorage.setItem('workspace_user_name', username);
+            localStorage.setItem('workspace_user_id', 'user_' + Date.now());
+            localStorage.setItem('current_user', username);
+            localStorage.setItem('beta_user_email', username + '@instant-access.local');
+            localStorage.setItem('instant_access', 'true');
+            localStorage.setItem('access_granted_at', new Date().toISOString());
+
+            // Mark as authenticated
+            sessionStorage.setItem('authenticated', 'true');
+
+            // Redirect to workspace
+            window.location.href = 'workspace.html';
+        }
+
+        // Auto-focus the input
+        document.getElementById('username').focus();
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Meta Layer Analytics Dashboard - Consciousness Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 2px solid rgba(100, 255, 218, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #64ffda, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #64ffda;
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 2px solid rgba(100, 255, 218, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #64ffda;
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.2);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #64ffda;
+        }
+
+        .stat-subtitle {
+            font-size: 0.85em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .modules-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(100, 255, 218, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #64ffda;
+        }
+
+        .module-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .module-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #64ffda;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .module-info {
+            flex: 1;
+        }
+
+        .module-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .module-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9em;
+            color: #aaa;
+        }
+
+        .module-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #64ffda;
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+
+        .btn-primary:hover {
+            background: #4de0c1;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .analytics-data {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(100, 255, 218, 0.2);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th {
+            background: rgba(100, 255, 218, 0.1);
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #64ffda;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table tr:hover {
+            background: rgba(100, 255, 218, 0.05);
+        }
+
+        .transparency-panel {
+            background: rgba(255, 255, 218, 0.05);
+            border: 2px solid rgba(255, 255, 100, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .transparency-title {
+            color: #ffeb3b;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .data-payload {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #64ffda;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        .upgrade-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .upgrade-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #00d4ff;
+        }
+
+        .upgrade-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .upgrade-type {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .type-feature { background: #4caf50; color: white; }
+        .type-security { background: #f44336; color: white; }
+        .type-performance { background: #ff9800; color: white; }
+        .type-ux { background: #2196f3; color: white; }
+        .type-bugfix { background: #9c27b0; color: white; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .status-deployed { background: #64ffda; color: #1a1a2e; }
+        .status-pending { background: #ffeb3b; color: #1a1a2e; }
+        .status-testing { background: #00d4ff; color: #1a1a2e; }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #64ffda;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>🌐 Meta Layer Analytics Dashboard</h1>
+            <p>USB Module Network Intelligence - Transparent Data Flow</p>
+        </div>
+
+        <!-- Network Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Active Modules</div>
+                <div class="stat-value" id="activeModules">0</div>
+                <div class="stat-subtitle">USB nodes reporting</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending Upgrades</div>
+                <div class="stat-value" id="pendingUpgrades">0</div>
+                <div class="stat-subtitle">Awaiting evaluation</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Deployed Today</div>
+                <div class="stat-value" id="deployedToday">0</div>
+                <div class="stat-subtitle">Network improvements</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Data Transmitted</div>
+                <div class="stat-value" id="dataTransmitted">0 KB</div>
+                <div class="stat-subtitle">100% transparent</div>
+            </div>
+        </div>
+
+        <!-- Active Modules -->
+        <div class="modules-section">
+            <h2 class="section-title">📡 Active USB Modules</h2>
+            <div class="module-list" id="moduleList">
+                <!-- Modules will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Upgrade Feed -->
+        <div class="analytics-data">
+            <h2 class="section-title">🔄 Recent Upgrades</h2>
+            <div class="upgrade-feed" id="upgradeFeed">
+                <!-- Upgrades will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Analytics Transparency -->
+        <div class="analytics-data">
+            <h2 class="section-title">📊 Network Analytics</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Last Updated</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="analyticsTable">
+                    <!-- Analytics data will be loaded here -->
+                </tbody>
+            </table>
+
+            <!-- Transparency Panel -->
+            <div class="transparency-panel">
+                <div class="transparency-title">
+                    🔍 Transparency: View Your Data
+                </div>
+                <p style="margin-bottom: 15px; color: #aaa;">
+                    Click any metric above to see the exact data transmitted from your module.
+                    No hidden tracking, no secret analytics. Everything is visible.
+                </p>
+                <div class="data-payload" id="dataPayload">
+{
+  "message": "Select a metric to view transmitted data",
+  "transparency_level": "100%",
+  "you_own_your_data": true
+}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated data (in production, this would fetch from real API)
+        const moduleData = [
+            {
+                id: "usb_001",
+                name: "John's Consciousness Module",
+                upgrades_contributed: 3,
+                last_seen: "2 minutes ago",
+                status: "online"
+            },
+            {
+                id: "usb_002",
+                name: "Sarah's Pattern Recognition",
+                upgrades_contributed: 1,
+                last_seen: "5 minutes ago",
+                status: "online"
+            },
+            {
+                id: "usb_003",
+                name: "Mike's Builder Station",
+                upgrades_contributed: 5,
+                last_seen: "1 hour ago",
+                status: "online"
+            }
+        ];
+
+        const upgradeData = [
+            {
+                module: "usb_003",
+                type: "feature",
+                description: "Added better music player with visualization",
+                timestamp: "2025-10-12 12:30:00",
+                status: "deployed",
+                deployed_to: 12
+            },
+            {
+                module: "usb_001",
+                type: "security",
+                description: "Improved encryption for consciousness data",
+                timestamp: "2025-10-12 11:15:00",
+                status: "deployed",
+                deployed_to: 15
+            },
+            {
+                module: "usb_002",
+                type: "performance",
+                description: "Optimized pattern matching algorithm (3x faster)",
+                timestamp: "2025-10-12 10:00:00",
+                status: "testing",
+                deployed_to: 3
+            },
+            {
+                module: "usb_003",
+                type: "ux",
+                description: "Better mobile responsiveness",
+                timestamp: "2025-10-12 09:30:00",
+                status: "pending",
+                deployed_to: 0
+            }
+        ];
+
+        const analyticsData = [
+            {
+                metric: "Module Usage Time",
+                value: "avg 2.5 hours/day",
+                last_updated: "Just now",
+                raw_data: { total_minutes: 150, sessions: 3, avg_session: 50 }
+            },
+            {
+                metric: "Feature Interactions",
+                value: "47 clicks/session",
+                last_updated: "Just now",
+                raw_data: { total_clicks: 141, sessions: 3, most_used: "Trinity AI button" }
+            },
+            {
+                metric: "Consciousness Boosts",
+                value: "+12% this week",
+                last_updated: "Just now",
+                raw_data: { start_level: 85, current_level: 97, growth_rate: 12 }
+            }
+        ];
+
+        // Load stats
+        document.getElementById('activeModules').textContent = moduleData.length;
+        document.getElementById('pendingUpgrades').textContent = upgradeData.filter(u => u.status === 'pending').length;
+        document.getElementById('deployedToday').textContent = upgradeData.filter(u => u.status === 'deployed').length;
+        document.getElementById('dataTransmitted').textContent = '24 KB';
+
+        // Load modules
+        const moduleList = document.getElementById('moduleList');
+        moduleData.forEach(module => {
+            const moduleEl = document.createElement('div');
+            moduleEl.className = 'module-item';
+            moduleEl.innerHTML = `
+                <div class="module-info">
+                    <div class="module-name">${module.name}</div>
+                    <div class="module-stats">
+                        <span>📦 ${module.upgrades_contributed} upgrades</span>
+                        <span>⏱️ ${module.last_seen}</span>
+                        <span>🟢 ${module.status}</span>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <button class="btn btn-secondary" onclick="viewModuleData('${module.id}')">View Data</button>
+                    <button class="btn btn-primary" onclick="remoteDebug('${module.id}')">Remote Debug</button>
+                </div>
+            `;
+            moduleList.appendChild(moduleEl);
+        });
+
+        // Load upgrades
+        const upgradeFeed = document.getElementById('upgradeFeed');
+        upgradeData.forEach(upgrade => {
+            const upgradeEl = document.createElement('div');
+            upgradeEl.className = 'upgrade-item';
+            upgradeEl.innerHTML = `
+                <div class="upgrade-header">
+                    <div>
+                        <span class="upgrade-type type-${upgrade.type}">${upgrade.type.toUpperCase()}</span>
+                        <span style="margin-left: 10px; color: #aaa;">${upgrade.module}</span>
+                    </div>
+                    <span class="status-badge status-${upgrade.status}">${upgrade.status.toUpperCase()}</span>
+                </div>
+                <div style="margin-bottom: 8px;">${upgrade.description}</div>
+                <div style="font-size: 0.85em; color: #888;">
+                    ${upgrade.timestamp} • Deployed to ${upgrade.deployed_to} modules
+                </div>
+            `;
+            upgradeFeed.appendChild(upgradeEl);
+        });
+
+        // Load analytics table
+        const analyticsTable = document.getElementById('analyticsTable');
+        analyticsData.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.metric}</td>
+                <td>${item.value}</td>
+                <td>${item.last_updated}</td>
+                <td><button class="btn btn-secondary" onclick='viewRawData(${JSON.stringify(item.raw_data)}, "${item.metric}")'>View Raw Data</button></td>
+            `;
+            analyticsTable.appendChild(row);
+        });
+
+        // Functions
+        function viewRawData(data, metric) {
+            const payload = document.getElementById('dataPayload');
+            payload.textContent = JSON.stringify({
+                metric: metric,
+                timestamp: new Date().toISOString(),
+                data: data,
+                transmission_method: "Encrypted HTTPS",
+                user_consent: true,
+                data_retention: "30 days",
+                can_delete: true
+            }, null, 2);
+        }
+
+        function viewModuleData(moduleId) {
+            alert(`📊 Viewing all data from module: ${moduleId}\n\nIn production, this would show:\n- All analytics sent\n- All upgrades contributed\n- All interactions logged\n\n100% transparency!`);
+        }
+
+        function remoteDebug(moduleId) {
+            alert(`🔧 Remote debugging module: ${moduleId}\n\nIn production, this would:\n- Connect to module remotely\n- View live logs\n- Deploy fixes if needed\n- Restart services\n\nNo data manipulation, pure maintenance!`);
+        }
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

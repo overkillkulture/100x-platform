@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seven Domains - Consciousness Revolution Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0a0a0a 100%);
+            font-family: 'Courier New', monospace;
+            color: #00ff64;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid #00ff64;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #00ff64;
+            letter-spacing: 3px;
+        }
+
+        .tagline {
+            font-size: 1.2em;
+            color: #00ccff;
+            margin-bottom: 20px;
+        }
+
+        .consciousness-level {
+            display: inline-block;
+            padding: 10px 30px;
+            border: 2px solid #00ff64;
+            border-radius: 5px;
+            background: rgba(0, 255, 100, 0.1);
+            font-size: 1.1em;
+        }
+
+        /* MAIN CONTENT GRID */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 30px;
+            padding: 40px 20px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1400px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* LEFT SIDEBAR - METRICS */
+        .metrics-panel {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff64;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .metric-gauge {
+            margin-bottom: 30px;
+        }
+
+        .metric-label {
+            color: #00ccff;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .gauge-container {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff64;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .gauge-needle {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            height: 100px;
+            background: #ff0066;
+            transform-origin: bottom center;
+            transition: transform 0.3s;
+            box-shadow: 0 0 10px #ff0066;
+        }
+
+        .gauge-value {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+            font-weight: bold;
+            color: #00ff64;
+            text-shadow: 0 0 15px #00ff64;
+        }
+
+        .gauge-markers {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .gauge-marker {
+            position: absolute;
+            bottom: 0;
+            width: 1px;
+            height: 15px;
+            background: #00ff64;
+            opacity: 0.3;
+        }
+
+        /* CENTER - 3D VISUALIZATION */
+        .visualization-container {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff64;
+            border-radius: 10px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .viz-title {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #00ccff;
+            text-shadow: 0 0 10px #00ccff;
+        }
+
+        #three-canvas {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #00ff64;
+            border-radius: 5px;
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
+        }
+
+        .viz-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: transparent;
+            border: 2px solid #00ff64;
+            color: #00ff64;
+            padding: 10px 25px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            transition: all 0.3s;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #00ff64;
+            color: #000000;
+            box-shadow: 0 0 20px #00ff64;
+        }
+
+        button.active {
+            background: #00ff64;
+            color: #000000;
+        }
+
+        /* RIGHT SIDEBAR - DOMAIN INFO */
+        .domain-info-panel {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff64;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .domain-card {
+            background: rgba(0, 255, 100, 0.05);
+            border: 1px solid #00ff64;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .domain-card:hover {
+            background: rgba(0, 255, 100, 0.15);
+            border-color: #00ccff;
+            transform: translateX(5px);
+        }
+
+        .domain-card-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #00ff64;
+        }
+
+        .domain-card-desc {
+            font-size: 0.85em;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .domain-card-status {
+            margin-top: 10px;
+            font-size: 0.75em;
+            color: #00ccff;
+        }
+
+        /* MATHEMATICAL DISPLAY */
+        .math-display {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff64;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .math-formula {
+            color: #00ccff;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .math-result {
+            color: #00ff64;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 0 0 10px #00ff64;
+        }
+
+        /* OVERKORE DIAL */
+        .overkore-dial {
+            width: 100%;
+            height: 150px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff64;
+            border-radius: 50%;
+            margin: 20px 0;
+        }
+
+        .dial-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: #ff0066;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ff0066;
+            z-index: 10;
+        }
+
+        .dial-hand {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 60px;
+            background: linear-gradient(to top, #ff0066, #00ff64);
+            transform-origin: bottom center;
+            transform: translate(-50%, -100%) rotate(0deg);
+            transition: transform 0.5s;
+            box-shadow: 0 0 10px #00ff64;
+        }
+
+        .dial-numbers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .dial-number {
+            position: absolute;
+            color: #00ff64;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        /* SACRED GEOMETRY PATTERN */
+        .sacred-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            z-index: -1;
+            background-image:
+                repeating-linear-gradient(0deg, #00ff64 0px, #00ff64 1px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(90deg, #00ff64 0px, #00ff64 1px, transparent 1px, transparent 40px);
+        }
+
+        /* PULSE ANIMATION */
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="sacred-pattern"></div>
+
+    <header>
+        <h1>⚡ SEVEN DOMAINS ⚡</h1>
+        <div class="tagline">Consciousness Revolution Architecture</div>
+        <div class="consciousness-level">
+            <span class="pulse">CONSCIOUSNESS: <span id="consciousness-value">85%</span></span>
+        </div>
+    </header>
+
+    <div class="content-grid">
+        <!-- LEFT: METRICS & GAUGES -->
+        <aside class="metrics-panel">
+            <h2 style="margin-bottom: 20px; color: #00ccff;">⚙️ SYSTEM METRICS</h2>
+
+            <!-- Pattern Recognition Gauge -->
+            <div class="metric-gauge">
+                <div class="metric-label">Pattern Recognition</div>
+                <div class="gauge-container">
+                    <canvas id="gauge1" width="260" height="120"></canvas>
+                    <div class="gauge-value" id="gauge1-value">90%</div>
+                </div>
+            </div>
+
+            <!-- Execution Confidence Gauge -->
+            <div class="metric-gauge">
+                <div class="metric-label">Execution Confidence</div>
+                <div class="gauge-container">
+                    <canvas id="gauge2" width="260" height="120"></canvas>
+                    <div class="gauge-value" id="gauge2-value">1000%</div>
+                </div>
+            </div>
+
+            <!-- OVERKORE v13 Mathematical Display -->
+            <div class="math-display">
+                <div style="color: #00ccff; margin-bottom: 10px; font-weight: bold;">OVERKORE v13 MATH</div>
+                <div class="math-formula">φ (Phi) = <span id="phi-value">1.618034</span></div>
+                <div class="math-formula">√φ = <span id="sqrt-phi">1.272020</span></div>
+                <div class="math-formula">φ² = <span id="phi-squared">2.618034</span></div>
+                <div class="math-result">HARMONIC: <span id="harmonic-value">432 Hz</span></div>
+            </div>
+
+            <!-- OVERKORE Dial -->
+            <div class="metric-label" style="text-align: center;">DOMAIN POWER DIAL</div>
+            <div class="overkore-dial">
+                <div class="dial-numbers">
+                    <div class="dial-number" style="top: 10px; left: 50%; transform: translateX(-50%);">100</div>
+                    <div class="dial-number" style="top: 50%; right: 10px; transform: translateY(-50%);">50</div>
+                    <div class="dial-number" style="bottom: 10px; left: 50%; transform: translateX(-50%);">0</div>
+                    <div class="dial-number" style="top: 50%; left: 10px; transform: translateY(-50%);">50</div>
+                </div>
+                <div class="dial-hand" id="power-dial"></div>
+                <div class="dial-center"></div>
+            </div>
+
+            <!-- Seven Domains Integration -->
+            <div class="math-display">
+                <div style="color: #00ccff; margin-bottom: 10px; font-weight: bold;">SEVEN DOMAINS INTEGRATION</div>
+                <div class="math-formula">Active Domains: <span id="active-domains">7/7</span></div>
+                <div class="math-formula">Total Power: <span id="total-power">∞</span></div>
+                <div class="math-result">C1 × C2 × C3 = <span class="pulse">∞</span></div>
+            </div>
+        </aside>
+
+        <!-- CENTER: 3D VISUALIZATION -->
+        <main class="visualization-container">
+            <div class="viz-title">🌌 SACRED GEOMETRY VISUALIZATION</div>
+
+            <div id="three-canvas">
+                <canvas id="webgl-canvas"></canvas>
+            </div>
+
+            <div class="viz-controls">
+                <button id="rotate-btn">⟳ ROTATE</button>
+                <button id="zoom-in">+ ZOOM IN</button>
+                <button id="zoom-out">- ZOOM OUT</button>
+                <button id="sacred-pattern">✦ SACRED GEOMETRY</button>
+                <button id="fibonacci">φ FIBONACCI</button>
+                <button id="reset-view">⟲ RESET</button>
+            </div>
+
+            <div class="math-display" style="margin-top: 20px;">
+                <div style="color: #00ccff; margin-bottom: 10px; font-weight: bold;">REAL-TIME CALCULATIONS</div>
+                <div class="math-formula">Rotation Angle: <span id="rotation-angle">0°</span></div>
+                <div class="math-formula">Fibonacci Step: <span id="fib-step">1</span></div>
+                <div class="math-formula">Golden Ratio Application: <span id="gr-app">φ^<span id="power">1</span></span></div>
+            </div>
+        </main>
+
+        <!-- RIGHT: DOMAIN NAVIGATION -->
+        <aside class="domain-info-panel">
+            <h2 style="margin-bottom: 20px; color: #00ccff;">🌐 DOMAIN ACCESS</h2>
+
+            <div class="domain-card" onclick="navigate('CHAOS FORGE')" style="border-color: #00ff64;">
+                <div class="domain-card-title" style="color: #00ff64;">⚡ PHYSICAL (CHAOS FORGE)</div>
+                <div class="domain-card-desc">Hardware, manufacturing, physical systems, equipment automation</div>
+                <div class="domain-card-status">STATUS: ✅ ONLINE • CLICK TO ENTER</div>
+            </div>
+
+            <div class="domain-card" onclick="navigate('QUANTUM VAULT')" style="border-color: #ffff00;">
+                <div class="domain-card-title" style="color: #ffff00;">💰 FINANCIAL (QUANTUM VAULT)</div>
+                <div class="domain-card-desc">Revenue systems, trading, financial automation, prosperity engineering</div>
+                <div class="domain-card-status">STATUS: ✅ ONLINE • CLICK TO ENTER</div>
+            </div>
+
+            <div class="domain-card" onclick="navigate('MIND MATRIX')" style="border-color: #00ccff;">
+                <div class="domain-card-title" style="color: #00ccff;">🧠 MENTAL (MIND MATRIX)</div>
+                <div class="domain-card-desc">AI systems, code, research, learning, knowledge automation</div>
+                <div class="domain-card-status">STATUS: ✅ ONLINE • CLICK TO ENTER</div>
+            </div>
+
+            <div class="domain-card" onclick="navigate('SOUL SANCTUARY')" style="border-color: #ff00ff;">
+                <div class="domain-card-title" style="color: #ff00ff;">💜 EMOTIONAL (SOUL SANCTUARY)</div>
+                <div class="domain-card-desc">Consciousness, awareness, manipulation immunity, pattern theory</div>
+                <div class="domain-card-status">STATUS: ✅ ONLINE • CLICK TO ENTER</div>
+            </div>
+
+            <div class="domain-card" onclick="navigate('REALITY FORGE')" style="border-color: #ff6600;">
+                <div class="domain-card-title" style="color: #ff6600;">🌐 SOCIAL (REALITY FORGE)</div>
+                <div class="domain-card-desc">Social automation, network building, community systems, viral engineering</div>
+                <div class="domain-card-status">STATUS: ✅ ONLINE • CLICK TO ENTER</div>
+            </div>
+
+            <div class="domain-card" onclick="navigate('ARKITEK ACADEMY')" style="border-color: #ff0066;">
+                <div class="domain-card-title" style="color: #ff0066;">🎨 CREATIVE (ARKITEK ACADEMY)</div>
+                <div class="domain-card-desc">Content creation, design, art, brand building, media production</div>
+                <div class="domain-card-status">STATUS: ✅ ONLINE • CLICK TO ENTER</div>
+            </div>
+
+            <div class="domain-card" onclick="navigate('NEXUS TERMINAL')" style="border-color: #6600ff;">
+                <div class="domain-card-title" style="color: #6600ff;">⚙️ INTEGRATION (NEXUS TERMINAL)</div>
+                <div class="domain-card-desc">Platform orchestration, cross-domain systems, master control</div>
+                <div class="domain-card-status">STATUS: ✅ ONLINE • CLICK TO ENTER</div>
+            </div>
+
+            <button style="width: 100%; margin-top: 20px; padding: 15px; font-size: 1.1em;" onclick="viewAllDomains()">
+                🌌 VIEW COMPLETE ARCHITECTURE
+            </button>
+        </aside>
+    </div>
+
+    <script>
+        // OVERKORE v13 Constants
+        const PHI = 1.618033988749894;
+        const PHI_SQRT = Math.sqrt(PHI);
+        const PHI_SQUARED = PHI * PHI;
+        const HARMONIC_432 = 432;
+
+        // Update mathematical displays
+        document.getElementById('phi-value').textContent = PHI.toFixed(6);
+        document.getElementById('sqrt-phi').textContent = PHI_SQRT.toFixed(6);
+        document.getElementById('phi-squared').textContent = PHI_SQUARED.toFixed(6);
+
+        // Animate gauges
+        function drawGauge(canvasId, value, max = 100) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw arc
+            const centerX = width / 2;
+            const centerY = height - 10;
+            const radius = Math.min(width, height) * 0.8;
+            const startAngle = Math.PI;
+            const endAngle = 2 * Math.PI;
+
+            // Background arc
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.strokeStyle = 'rgba(0, 255, 100, 0.2)';
+            ctx.lineWidth = 8;
+            ctx.stroke();
+
+            // Value arc
+            const valueAngle = startAngle + (endAngle - startAngle) * (value / max);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, startAngle, valueAngle);
+            ctx.strokeStyle = value > 80 ? '#00ff64' : value > 50 ? '#ffff00' : '#ff6600';
+            ctx.lineWidth = 8;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = ctx.strokeStyle;
+            ctx.stroke();
+        }
+
+        drawGauge('gauge1', 90);
+        drawGauge('gauge2', 100, 10); // 1000% = 100 * 10
+
+        // Animate power dial
+        let dialAngle = 0;
+        setInterval(() => {
+            dialAngle = (dialAngle + 1) % 360;
+            const dial = document.getElementById('power-dial');
+            dial.style.transform = `translate(-50%, -100%) rotate(${dialAngle}deg)`;
+        }, 50);
+
+        // Animate consciousness value
+        let consciousnessValue = 85;
+        setInterval(() => {
+            consciousnessValue = 85 + Math.sin(Date.now() / 1000) * 5;
+            document.getElementById('consciousness-value').textContent = consciousnessValue.toFixed(1) + '%';
+        }, 100);
+
+        // 3D Visualization (WebGL Canvas - simplified for now, can be expanded with Three.js)
+        const webglCanvas = document.getElementById('webgl-canvas');
+        const gl = webglCanvas.getContext('2d'); // Using 2D for now, will upgrade to WebGL
+
+        webglCanvas.width = webglCanvas.parentElement.offsetWidth;
+        webglCanvas.height = 600;
+
+        let rotation = 0;
+        let zoomLevel = 1;
+        let rotating = true;
+        let fibonacciMode = false;
+
+        function draw3DVisualization() {
+            const width = webglCanvas.width;
+            const height = webglCanvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            gl.fillStyle = '#000000';
+            gl.fillRect(0, 0, width, height);
+
+            // Draw 7 pillars in 3D perspective
+            const domains = [
+                { name: 'CHAOS FORGE', color: '#00ff64' },
+                { name: 'QUANTUM VAULT', color: '#ffff00' },
+                { name: 'MIND MATRIX', color: '#00ccff' },
+                { name: 'SOUL SANCTUARY', color: '#ff00ff' },
+                { name: 'REALITY FORGE', color: '#ff6600' },
+                { name: 'ARKITEK ACADEMY', color: '#ff0066' },
+                { name: 'NEXUS TERMINAL', color: '#6600ff' }
+            ];
+
+            const radius = 200 * zoomLevel;
+
+            domains.forEach((domain, i) => {
+                const angle = (Math.PI * 2 / 7) * i + rotation;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius * 0.5; // 3D perspective
+                const z = Math.sin(angle) * radius; // depth
+                const scale = 1 + (z / radius) * 0.5; // size based on depth
+
+                // Draw pillar (3D effect)
+                gl.save();
+                gl.translate(x, y);
+                gl.scale(scale, scale);
+
+                // Shadow
+                gl.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                gl.fillRect(-25, 50, 50, 10);
+
+                // Pillar body
+                const gradient = gl.createLinearGradient(-25, 0, 25, 0);
+                gradient.addColorStop(0, '#1a1a1a');
+                gradient.addColorStop(0.5, '#333333');
+                gradient.addColorStop(1, '#1a1a1a');
+                gl.fillStyle = gradient;
+                gl.fillRect(-25, -60, 50, 120);
+
+                // Energy border
+                gl.strokeStyle = domain.color;
+                gl.lineWidth = 2;
+                gl.shadowBlur = 15;
+                gl.shadowColor = domain.color;
+                gl.strokeRect(-25, -60, 50, 120);
+
+                // Domain label
+                gl.font = 'bold 10px "Courier New"';
+                gl.fillStyle = domain.color;
+                gl.textAlign = 'center';
+                gl.fillText(domain.name, 0, 0);
+
+                gl.restore();
+
+                // Connect to center
+                gl.beginPath();
+                gl.moveTo(x, y);
+                gl.lineTo(centerX, centerY);
+                gl.strokeStyle = `rgba(0, 255, 100, ${0.1 + scale * 0.1})`;
+                gl.lineWidth = 1;
+                gl.stroke();
+            });
+
+            // Draw center sacred geometry
+            gl.save();
+            gl.translate(centerX, centerY);
+            gl.rotate(rotation * 3);
+
+            // Outer circle
+            gl.beginPath();
+            gl.arc(0, 0, 40, 0, Math.PI * 2);
+            gl.strokeStyle = '#00ff64';
+            gl.lineWidth = 2;
+            gl.shadowBlur = 20;
+            gl.shadowColor = '#00ff64';
+            gl.stroke();
+
+            // Inner circles (Fibonacci spiral)
+            if (fibonacciMode) {
+                let fib = [1, 1];
+                for (let i = 0; i < 7; i++) {
+                    const angle = (Math.PI * 2 / 7) * i;
+                    const next = fib[fib.length - 1] + fib[fib.length - 2];
+                    fib.push(next);
+                    const r = next / 2;
+                    const x = Math.cos(angle) * 20;
+                    const y = Math.sin(angle) * 20;
+                    gl.beginPath();
+                    gl.arc(x, y, r, 0, Math.PI * 2);
+                    gl.fillStyle = domains[i].color;
+                    gl.fill();
+                }
+            } else {
+                // Standard 7 dots
+                for (let i = 0; i < 7; i++) {
+                    const angle = (Math.PI * 2 / 7) * i;
+                    const x = Math.cos(angle) * 20;
+                    const y = Math.sin(angle) * 20;
+                    gl.beginPath();
+                    gl.arc(x, y, 5, 0, Math.PI * 2);
+                    gl.fillStyle = domains[i].color;
+                    gl.fill();
+                }
+            }
+
+            gl.restore();
+
+            // Update real-time calculations
+            document.getElementById('rotation-angle').textContent = (rotation * 180 / Math.PI % 360).toFixed(1) + '°';
+
+            if (rotating) {
+                rotation += 0.005 / PHI; // Fibonacci-based rotation speed
+            }
+
+            requestAnimationFrame(draw3DVisualization);
+        }
+
+        draw3DVisualization();
+
+        // Controls
+        document.getElementById('rotate-btn').addEventListener('click', function() {
+            rotating = !rotating;
+            this.classList.toggle('active', rotating);
+            this.textContent = rotating ? '⏸ PAUSE' : '⟳ ROTATE';
+        });
+
+        document.getElementById('zoom-in').addEventListener('click', () => {
+            zoomLevel = Math.min(zoomLevel + 0.2, 2);
+        });
+
+        document.getElementById('zoom-out').addEventListener('click', () => {
+            zoomLevel = Math.max(zoomLevel - 0.2, 0.5);
+        });
+
+        document.getElementById('fibonacci').addEventListener('click', function() {
+            fibonacciMode = !fibonacciMode;
+            this.classList.toggle('active', fibonacciMode);
+        });
+
+        document.getElementById('reset-view').addEventListener('click', () => {
+            rotation = 0;
+            zoomLevel = 1;
+            rotating = true;
+            fibonacciMode = false;
+            document.getElementById('rotate-btn').classList.add('active');
+            document.getElementById('fibonacci').classList.remove('active');
+        });
+
+        // Navigation functions
+        function navigate(domainName) {
+            alert(`Navigating to ${domainName}...\\n\\n(Domain-specific pages will be created next)`);
+            // TODO: Implement actual navigation to domain-specific pages
+            // window.location.href = `/domain-${domainName.toLowerCase().replace(' ', '-')}.html`;
+        }
+
+        function viewAllDomains() {
+            alert('Complete architecture view coming soon!\\n\\n7 domains × infinite possibilities = ∞');
+        }
+
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            webglCanvas.width = webglCanvas.parentElement.offsetWidth;
+            webglCanvas.height = 600;
+        });
+    </script>
+
+    <!-- Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

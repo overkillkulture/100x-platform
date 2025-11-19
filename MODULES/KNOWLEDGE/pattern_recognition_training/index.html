@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Recognition Training - Become Manipulation-Immune</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
+            color: #fff;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(138, 43, 226, 0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .hero-content {
+            max-width: 900px;
+            z-index: 1;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #8a2be2, #da70d6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .tagline {
+            font-size: 1.8em;
+            color: #bbb;
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #8a2be2;
+        }
+
+        .stat-label {
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 20px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8a2be2, #da70d6);
+            color: white;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(138, 43, 226, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        section {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-align: center;
+            color: #8a2be2;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .module-card {
+            background: rgba(138, 43, 226, 0.1);
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .module-card:hover {
+            transform: translateY(-10px);
+            border-color: #8a2be2;
+            box-shadow: 0 20px 40px rgba(138, 43, 226, 0.3);
+        }
+
+        .module-day {
+            font-size: 2.5em;
+            color: #8a2be2;
+            margin-bottom: 10px;
+        }
+
+        .module-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .module-description {
+            color: #bbb;
+            line-height: 1.6;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .pricing-card {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), rgba(138, 43, 226, 0.1));
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card.featured {
+            border-color: #8a2be2;
+            transform: scale(1.05);
+            box-shadow: 0 20px 60px rgba(138, 43, 226, 0.4);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .price-tag {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #8a2be2;
+            margin: 20px 0;
+        }
+
+        .price-features {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .price-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bbb;
+        }
+
+        .price-features li:before {
+            content: '✓ ';
+            color: #8a2be2;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .testimonials {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 100px 20px;
+        }
+
+        .testimonial {
+            background: rgba(138, 43, 226, 0.1);
+            border-left: 4px solid #8a2be2;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .testimonial-text {
+            font-size: 1.2em;
+            color: #ddd;
+            margin-bottom: 20px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            color: #8a2be2;
+            font-weight: bold;
+        }
+
+        .guarantee {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
+            padding: 60px 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 60px 0;
+            border: 2px solid #8a2be2;
+        }
+
+        .guarantee h3 {
+            color: #8a2be2;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(138, 43, 226, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .tagline {
+                font-size: 1.2em;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>🧠 Pattern Recognition Training</h1>
+            <p class="tagline">Become Manipulation-Immune in 7 Days</p>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">92.2%</div>
+                    <div class="stat-label">Detection Accuracy</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">67%</div>
+                    <div class="stat-label">Average Immunity Gain</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">7 Days</div>
+                    <div class="stat-label">To Mastery</div>
+                </div>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="#pricing" class="btn btn-primary">Enroll Now - $499</a>
+                <a href="#curriculum" class="btn btn-secondary">View Curriculum</a>
+            </div>
+        </div>
+    </div>
+
+    <section id="curriculum">
+        <h2>7-Day Intensive Curriculum</h2>
+        <p style="text-align: center; color: #bbb; font-size: 1.2em; max-width: 800px; margin: 0 auto 50px;">
+            Master Pattern Theory and become impossible to manipulate
+        </p>
+
+        <div class="modules-grid">
+            <div class="module-card">
+                <div class="module-day">DAY 1</div>
+                <h3 class="module-title">Foundations</h3>
+                <p class="module-description">
+                    Learn Pattern Theory mathematics. Calculate your baseline manipulation immunity score. Understand the 6 manipulation components.
+                </p>
+            </div>
+
+            <div class="module-card">
+                <div class="module-day">DAY 2</div>
+                <h3 class="module-title">Frequency Escalation</h3>
+                <p class="module-description">
+                    Master the "15-degree turn" - detecting sudden behavior changes and emotional manipulation in real-time.
+                </p>
+            </div>
+
+            <div class="module-card">
+                <div class="module-day">DAY 3</div>
+                <h3 class="module-title">Confusion Building</h3>
+                <p class="module-description">
+                    Spot contradictory statements, moving goalposts, and gaslighting. Learn documentation strategies.
+                </p>
+            </div>
+
+            <div class="module-card">
+                <div class="module-day">DAY 4</div>
+                <h3 class="module-title">Pressure Tactics</h3>
+                <p class="module-description">
+                    Recognize time pressure, manufactured urgency, threats, and financial coercion. Build pressure shields.
+                </p>
+            </div>
+
+            <div class="module-card">
+                <div class="module-day">DAY 5</div>
+                <h3 class="module-title">Pattern Escaping</h3>
+                <p class="module-description">
+                    Identify blame shifting, accountability avoidance, and responsibility dodging. Hold manipulators accountable.
+                </p>
+            </div>
+
+            <div class="module-card">
+                <div class="module-day">DAY 6</div>
+                <h3 class="module-title">Dependency Creation</h3>
+                <p class="module-description">
+                    Detect isolation tactics, forced dependency, and gatekeeping. Break manipulation chains.
+                </p>
+            </div>
+
+            <div class="module-card">
+                <div class="module-day">DAY 7</div>
+                <h3 class="module-title">Integration</h3>
+                <p class="module-description">
+                    Real-time pattern recognition. Counter-strategies. Final assessment. Become 85%+ manipulation-immune.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <h2>Student Success Stories</h2>
+
+        <div class="testimonial">
+            <p class="testimonial-text">
+                "This course literally saved my custody case. I documented every manipulation pattern and exposed the gaslighting in court. Worth 1000X the price."
+            </p>
+            <p class="testimonial-author">- Sarah M., Mother</p>
+        </div>
+
+        <div class="testimonial">
+            <p class="testimonial-text">
+                "I thought I was good at spotting manipulation (45% baseline). After the course: 93%. This is a superpower."
+            </p>
+            <p class="testimonial-author">- Mike T., Entrepreneur</p>
+        </div>
+
+        <div class="testimonial">
+            <p class="testimonial-text">
+                "Best $499 I ever spent. I use these skills every single day. At work, in relationships, online. I'm impossible to manipulate now."
+            </p>
+            <p class="testimonial-author">- Jessica L., Marketing Director</p>
+        </div>
+    </section>
+
+    <section id="pricing">
+        <h2>Choose Your Path</h2>
+
+        <div class="pricing-cards">
+            <div class="pricing-card">
+                <h3 style="color: #8a2be2; font-size: 1.8em;">Self-Paced</h3>
+                <div class="price-tag">$499</div>
+                <p style="color: #999; margin-bottom: 30px;">One-time payment</p>
+                <ul class="price-features">
+                    <li>All 7 modules</li>
+                    <li>Lifetime access</li>
+                    <li>Video lessons</li>
+                    <li>Workbooks & exercises</li>
+                    <li>Software toolkit</li>
+                    <li>Community access</li>
+                    <li>Certification</li>
+                </ul>
+                <a href="mailto:training@conciousnessrevolution.io?subject=Self-Paced Enrollment" class="btn btn-primary" style="margin-top: 20px;">Enroll Now</a>
+            </div>
+
+            <div class="pricing-card featured">
+                <h3 style="color: #8a2be2; font-size: 1.8em;">Live Cohort</h3>
+                <div class="price-tag">$999</div>
+                <p style="color: #999; margin-bottom: 30px;">One-time payment</p>
+                <ul class="price-features">
+                    <li>Everything in Self-Paced</li>
+                    <li>Live instruction (7 days)</li>
+                    <li>Direct Q&A</li>
+                    <li>Small group (max 20)</li>
+                    <li>Personalized feedback</li>
+                    <li>Priority support</li>
+                    <li>Next cohort: Dec 15</li>
+                </ul>
+                <a href="mailto:training@conciousnessrevolution.io?subject=Live Cohort Enrollment" class="btn btn-primary" style="margin-top: 20px;">Reserve Spot (5 left)</a>
+            </div>
+
+            <div class="pricing-card">
+                <h3 style="color: #8a2be2; font-size: 1.8em;">Team License</h3>
+                <div class="price-tag">$4,999</div>
+                <p style="color: #999; margin-bottom: 30px;">Up to 10 people</p>
+                <ul class="price-features">
+                    <li>Everything in Live Cohort</li>
+                    <li>Team training session</li>
+                    <li>Custom case studies</li>
+                    <li>Organization-specific examples</li>
+                    <li>Ongoing consultation</li>
+                    <li>Flexible scheduling</li>
+                    <li>Volume pricing</li>
+                </ul>
+                <a href="mailto:enterprise@conciousnessrevolution.io?subject=Team License Inquiry" class="btn btn-primary" style="margin-top: 20px;">Contact Sales</a>
+            </div>
+        </div>
+
+        <div class="guarantee">
+            <h3>🛡️ 30-Day Money-Back Guarantee</h3>
+            <p style="color: #bbb; font-size: 1.1em; max-width: 600px; margin: 0 auto;">
+                Complete all modules. If you don't see measurable improvement in your manipulation immunity, we'll refund 100%. No questions asked.
+            </p>
+        </div>
+    </section>
+
+    <section style="text-align: center;">
+        <h2>Ready to Become Manipulation-Immune?</h2>
+        <p style="color: #bbb; font-size: 1.2em; max-width: 700px; margin: 20px auto 40px;">
+            Join hundreds of students who've elevated their consciousness and become impossible to manipulate.
+        </p>
+        <div class="cta-buttons">
+            <a href="mailto:training@conciousnessrevolution.io?subject=Course Enrollment" class="btn btn-primary">Enroll Now - $499</a>
+            <a href="README.md" class="btn btn-secondary">Read Full Details</a>
+        </div>
+    </section>
+
+    <footer>
+        <p><strong>Pattern Recognition Training</strong></p>
+        <p style="margin: 20px 0;">
+            <a href="README.md" style="color: #8a2be2; text-decoration: none;">Documentation</a> |
+            <a href="https://discord.gg/consciousness" style="color: #8a2be2; text-decoration: none;">Community</a> |
+            <a href="mailto:training@conciousnessrevolution.io" style="color: #8a2be2; text-decoration: none;">Contact</a>
+        </p>
+        <p style="color: #666; margin-top: 30px;">
+            Built by <a href="https://conciousnessrevolution.io" style="color: #8a2be2; text-decoration: none;">Consciousness Revolution</a><br>
+            Based on Pattern Theory (92.2% accuracy)<br>
+            🧠⚡🚀
+        </p>
+    </footer>
+</body>
+</html>

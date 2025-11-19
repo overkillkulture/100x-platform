@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CENTRAL BRIDGE - Command Center</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            overflow: hidden;
+        }
+
+        .bridge-container {
+            display: grid;
+            grid-template-rows: 80px 1fr 60px;
+            height: 100vh;
+        }
+
+        /* Top Header */
+        .bridge-header {
+            background: linear-gradient(135deg, #1a0000 0%, #000033 100%);
+            border-bottom: 4px solid #ff6b00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .bridge-title {
+            font-size: 36px;
+            color: #ff6b00;
+            text-shadow: 0 0 20px #ff6b00;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 20px #00ff00;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .time-display {
+            font-size: 18px;
+            color: #00ddff;
+        }
+
+        /* Main Content Grid */
+        .bridge-main {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Panel Styles */
+        .panel {
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            color: #ff6b00;
+            font-size: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff6b00;
+        }
+
+        /* Left Sidebar - Cockpit Access */
+        .cockpit-nav {
+            grid-row: 1 / 3;
+        }
+
+        .cockpit-link {
+            display: block;
+            background: rgba(255, 107, 0, 0.1);
+            border: 2px solid #ff6b00;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #ff6b00;
+            font-size: 16px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .cockpit-link:hover {
+            background: rgba(255, 107, 0, 0.3);
+            transform: translateX(10px);
+            box-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+        }
+
+        .cockpit-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        /* Center - Main Display */
+        .main-display {
+            grid-column: 2;
+            grid-row: 1 / 3;
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .analytics-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #00ddff;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .activity-feed {
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .activity-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(0, 221, 255, 0.1);
+            border-left: 4px solid #00ddff;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .activity-time {
+            color: #666;
+            font-size: 11px;
+        }
+
+        /* Right Sidebar - System Status */
+        .system-status {
+            grid-row: 1 / 3;
+        }
+
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 8px 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            border: 1px solid #333;
+        }
+
+        .service-online {
+            color: #00ff00;
+        }
+
+        .service-offline {
+            color: #ff0000;
+        }
+
+        .service-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .online-dot {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .offline-dot {
+            background: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+
+        /* Bottom Command Bar */
+        .command-bar {
+            background: rgba(0, 0, 0, 0.95);
+            border-top: 3px solid #00ff00;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .quick-action {
+            background: rgba(0, 255, 0, 0.2);
+            border: 2px solid #00ff00;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #00ff00;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .quick-action:hover {
+            background: rgba(0, 255, 0, 0.4);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        /* Quick Stats Grid */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quick-stat {
+            background: rgba(255, 107, 0, 0.1);
+            border: 1px solid #ff6b00;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .quick-stat-value {
+            font-size: 24px;
+            color: #ff6b00;
+            font-weight: bold;
+        }
+
+        .quick-stat-label {
+            font-size: 11px;
+            color: #00ddff;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bridge-container">
+        <!-- Top Header -->
+        <div class="bridge-header">
+            <div class="bridge-title">
+                <div class="status-indicator"></div>
+                <span>🚀 CENTRAL BRIDGE</span>
+            </div>
+            <div class="time-display" id="time-display"></div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="bridge-main">
+            <!-- Left: Cockpit Navigation -->
+            <div class="panel cockpit-nav">
+                <div class="panel-header">🎯 COCKPIT ACCESS</div>
+                <a href="/COMMANDER_COCKPIT.html" class="cockpit-link">
+                    <span class="cockpit-icon">👑</span>
+                    COMMANDER
+                </a>
+                <a href="/BUILDER_COCKPIT.html" class="cockpit-link">
+                    <span class="cockpit-icon">🔧</span>
+                    BUILDER
+                </a>
+                <a href="/BETA_TESTER_COCKPIT.html" class="cockpit-link">
+                    <span class="cockpit-icon">🧪</span>
+                    BETA TESTER
+                </a>
+                <a href="/VISITOR_COCKPIT.html" class="cockpit-link">
+                    <span class="cockpit-icon">👁️</span>
+                    VISITOR
+                </a>
+
+                <div class="panel-header" style="margin-top: 30px;">📊 KEY SYSTEMS</div>
+                <a href="http://localhost:9000" target="_blank" class="cockpit-link">
+                    <span class="cockpit-icon">📈</span>
+                    UNIFIED ANALYTICS
+                </a>
+                <a href="/ANALYTICS_DASHBOARD_LIVE.html" class="cockpit-link">
+                    <span class="cockpit-icon">💹</span>
+                    LIVE DASHBOARD
+                </a>
+            </div>
+
+            <!-- Center: Main Display -->
+            <div class="main-display">
+                <!-- Top: Analytics Overview -->
+                <div class="panel">
+                    <div class="panel-header">📊 REAL-TIME ANALYTICS</div>
+                    <div class="analytics-panel">
+                        <div class="stat-card">
+                            <div class="stat-label">ONLINE NOW</div>
+                            <div class="stat-value" id="online-count">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">TOTAL SESSIONS</div>
+                            <div class="stat-value" id="total-sessions">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">LIVE EVENTS</div>
+                            <div class="stat-value" id="live-events">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">SERVICES ONLINE</div>
+                            <div class="stat-value" id="services-online">0</div>
+                        </div>
+                    </div>
+
+                    <div class="quick-stats">
+                        <div class="quick-stat">
+                            <div class="quick-stat-value" id="pages-viewed">0</div>
+                            <div class="quick-stat-label">Pages Viewed</div>
+                        </div>
+                        <div class="quick-stat">
+                            <div class="quick-stat-value" id="avg-time">0s</div>
+                            <div class="quick-stat-label">Avg Time on Site</div>
+                        </div>
+                        <div class="quick-stat">
+                            <div class="quick-stat-value" id="new-users">0</div>
+                            <div class="quick-stat-label">New Users Today</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom: Live Activity Feed -->
+                <div class="panel">
+                    <div class="panel-header">🔴 LIVE ACTIVITY FEED</div>
+                    <div class="activity-feed" id="activity-feed">
+                        <div class="activity-item">
+                            <div>📊 System initialized - Waiting for activity...</div>
+                            <div class="activity-time">Just now</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: System Status -->
+            <div class="panel system-status">
+                <div class="panel-header">⚙️ SYSTEM STATUS</div>
+                <div id="system-status-list">
+                    <div class="service-item">
+                        <div>
+                            <span class="service-dot online-dot"></span>
+                            <span>Loading systems...</span>
+                        </div>
+                        <span class="service-online">...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Command Bar -->
+        <div class="command-bar">
+            <button class="quick-action" onclick="openAnalytics()">📊 ANALYTICS</button>
+            <button class="quick-action" onclick="openTerminal()">💻 TERMINAL</button>
+            <button class="quick-action" onclick="deployAll()">🚀 DEPLOY</button>
+            <button class="quick-action" onclick="viewLogs()">📝 LOGS</button>
+            <button class="quick-action" onclick="emergency()">🚨 EMERGENCY</button>
+        </div>
+    </div>
+
+    <script>
+        // Update time display
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('time-display').textContent = now.toLocaleString();
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Services to monitor
+        const SERVICES = [
+            { name: 'Unified Analytics', url: 'http://localhost:9000/health', port: 9000 },
+            { name: 'Builder Terminal', url: 'http://localhost:8004/health', port: 8004 },
+            { name: 'Araya Intelligence', url: 'http://localhost:8001/health', port: 8001 },
+            { name: 'Observatory', url: 'http://localhost:7777/health', port: 7777 },
+            { name: 'Visitor Intelligence', url: 'http://localhost:6000/health', port: 6000 },
+            { name: 'Live Analytics API', url: 'http://localhost:5000/health', port: 5000 },
+            { name: 'AI Communication Bridge', url: 'http://localhost:8888/health', port: 8888 }
+        ];
+
+        // Check system status
+        async function checkSystemStatus() {
+            let onlineCount = 0;
+            const statusList = document.getElementById('system-status-list');
+            statusList.innerHTML = '';
+
+            for (const service of SERVICES) {
+                try {
+                    const response = await fetch(service.url, { mode: 'no-cors' });
+                    // If no error, assume online
+                    onlineCount++;
+                    statusList.innerHTML += `
+                        <div class="service-item">
+                            <div>
+                                <span class="service-dot online-dot"></span>
+                                <span>${service.name}</span>
+                            </div>
+                            <span class="service-online">:${service.port}</span>
+                        </div>
+                    `;
+                } catch (error) {
+                    statusList.innerHTML += `
+                        <div class="service-item">
+                            <div>
+                                <span class="service-dot offline-dot"></span>
+                                <span>${service.name}</span>
+                            </div>
+                            <span class="service-offline">OFFLINE</span>
+                        </div>
+                    `;
+                }
+            }
+
+            document.getElementById('services-online').textContent = onlineCount;
+        }
+
+        // Fetch analytics data
+        async function fetchAnalytics() {
+            try {
+                const response = await fetch('http://localhost:9000/stats');
+                const data = await response.json();
+
+                document.getElementById('online-count').textContent = data.currently_online;
+                document.getElementById('total-sessions').textContent = data.total_sessions;
+
+                // Calculate pages viewed
+                let totalPages = 0;
+                data.online_users?.forEach(user => {
+                    totalPages += user.pages_viewed || 0;
+                });
+                document.getElementById('pages-viewed').textContent = totalPages;
+            } catch (error) {
+                console.log('Analytics not available yet');
+            }
+        }
+
+        // Fetch live activity feed
+        async function fetchActivityFeed() {
+            try {
+                const response = await fetch('http://localhost:9000/live-feed');
+                const data = await response.json();
+
+                document.getElementById('live-events').textContent = data.count;
+
+                const feedDiv = document.getElementById('activity-feed');
+                if (data.events && data.events.length > 0) {
+                    feedDiv.innerHTML = data.events.slice().reverse().slice(0, 10).map(event => `
+                        <div class="activity-item">
+                            <div><strong>${event.user_name}</strong> viewed <strong>${event.page}</strong></div>
+                            <div class="activity-time">${new Date(event.timestamp).toLocaleTimeString()}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.log('Activity feed not available yet');
+            }
+        }
+
+        // Quick actions
+        function openAnalytics() {
+            window.open('http://localhost:9000', '_blank');
+        }
+
+        function openTerminal() {
+            window.open('/JARVIS_ARAYA_STANDALONE.html', '_blank');
+        }
+
+        function deployAll() {
+            if (confirm('Deploy all systems to production?')) {
+                alert('Deployment initiated! Check terminal for progress.');
+                // Would trigger actual deployment
+            }
+        }
+
+        function viewLogs() {
+            window.open('/unified_analytics/all_events.jsonl', '_blank');
+        }
+
+        function emergency() {
+            if (confirm('EMERGENCY MODE: Stop all services and create backup?')) {
+                alert('Emergency protocols activated!');
+                // Would trigger emergency procedures
+            }
+        }
+
+        // Initialize and refresh
+        checkSystemStatus();
+        fetchAnalytics();
+        fetchActivityFeed();
+
+        setInterval(checkSystemStatus, 10000);  // Every 10 seconds
+        setInterval(fetchAnalytics, 3000);       // Every 3 seconds
+        setInterval(fetchActivityFeed, 3000);    // Every 3 seconds
+    </script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

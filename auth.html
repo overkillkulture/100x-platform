@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Consciousness Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffff, #00ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-toggle {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 0.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .auth-toggle-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            background: transparent;
+            color: #888;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .auth-toggle-btn.active {
+            background: rgba(0, 255, 255, 0.2);
+            color: #00ffff;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #aaa;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(0, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        .forgot-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            color: #00ffff;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: #00ff00;
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #00ffff, #00aaaa);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .social-btn {
+            padding: 0.875rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 2rem;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .footer-text a {
+            color: #00ffff;
+            text-decoration: none;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        .success-message {
+            padding: 1rem;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 8px;
+            color: #00ff00;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .error-message {
+            padding: 1rem;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 8px;
+            color: #ff4444;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            color: #aaa;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Logo -->
+        <div class="logo">
+            <div class="logo-icon">🌌</div>
+            <div class="logo-text">Consciousness Platform</div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div class="success-message" id="successMessage"></div>
+        <div class="error-message" id="errorMessage"></div>
+
+        <!-- Auth Toggle -->
+        <div class="auth-toggle">
+            <button class="auth-toggle-btn active" onclick="switchTab('signin')">Sign In</button>
+            <button class="auth-toggle-btn" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- SIGN IN FORM -->
+        <form class="auth-form active" id="signinForm" onsubmit="handleSignIn(event)">
+            <div class="form-group">
+                <label class="form-label" for="signinEmail">Email</label>
+                <input
+                    type="email"
+                    id="signinEmail"
+                    class="form-input"
+                    placeholder="you@example.com"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="signinPassword">Password</label>
+                <input
+                    type="password"
+                    id="signinPassword"
+                    class="form-input"
+                    placeholder="Enter your password"
+                    required
+                />
+                <a href="#" class="forgot-link" onclick="showForgotPassword(event)">Forgot password?</a>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="rememberMe" />
+                <label for="rememberMe">Remember me for 30 days</label>
+            </div>
+
+            <button type="submit" class="submit-btn">Sign In</button>
+        </form>
+
+        <!-- SIGN UP FORM -->
+        <form class="auth-form" id="signupForm" onsubmit="handleSignUp(event)">
+            <div class="form-group">
+                <label class="form-label" for="signupName">Full Name</label>
+                <input
+                    type="text"
+                    id="signupName"
+                    class="form-input"
+                    placeholder="John Doe"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="signupEmail">Email</label>
+                <input
+                    type="email"
+                    id="signupEmail"
+                    class="form-input"
+                    placeholder="you@example.com"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="signupPassword">Password</label>
+                <input
+                    type="password"
+                    id="signupPassword"
+                    class="form-input"
+                    placeholder="Create a strong password"
+                    minlength="8"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="signupPasswordConfirm">Confirm Password</label>
+                <input
+                    type="password"
+                    id="signupPasswordConfirm"
+                    class="form-input"
+                    placeholder="Confirm your password"
+                    required
+                />
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="agreeTerms" required />
+                <label for="agreeTerms">I agree to the <a href="#" style="color: #00ffff;">Terms of Service</a></label>
+            </div>
+
+            <button type="submit" class="submit-btn">Create Account</button>
+        </form>
+
+        <!-- Divider -->
+        <div class="divider">
+            <span>Or continue with</span>
+        </div>
+
+        <!-- Social Login -->
+        <div class="social-login">
+            <button class="social-btn" onclick="socialLogin('google')">
+                <span>🔍</span>
+                <span>Google</span>
+            </button>
+            <button class="social-btn" onclick="socialLogin('github')">
+                <span>⚙️</span>
+                <span>GitHub</span>
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-text">
+            Protected by enterprise-grade security<br>
+            <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
+        </div>
+    </div>
+
+    <script>
+        // Switch between Sign In and Sign Up
+        function switchTab(tab) {
+            // Clear messages
+            document.getElementById('successMessage').classList.remove('show');
+            document.getElementById('errorMessage').classList.remove('show');
+
+            // Update toggle buttons
+            document.querySelectorAll('.auth-toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update forms
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.remove('active');
+            });
+
+            if (tab === 'signin') {
+                document.getElementById('signinForm').classList.add('active');
+            } else {
+                document.getElementById('signupForm').classList.add('active');
+            }
+        }
+
+        // Handle Sign In
+        function handleSignIn(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('signinEmail').value;
+            const password = document.getElementById('signinPassword').value;
+            const remember = document.getElementById('rememberMe').checked;
+
+            console.log('Sign in attempt:', { email, remember });
+
+            // Simulate authentication
+            showSuccess('Signing you in...');
+
+            setTimeout(() => {
+                // Redirect to workspace or dashboard
+                window.location.href = 'workspace.html';
+            }, 1500);
+        }
+
+        // Handle Sign Up
+        function handleSignUp(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+
+            // Validate passwords match
+            if (password !== passwordConfirm) {
+                showError('Passwords do not match!');
+                return;
+            }
+
+            // Validate password strength
+            if (password.length < 8) {
+                showError('Password must be at least 8 characters!');
+                return;
+            }
+
+            console.log('Sign up attempt:', { name, email });
+
+            showSuccess('Creating your account...');
+
+            setTimeout(() => {
+                // Redirect to workspace
+                window.location.href = 'workspace.html';
+            }, 1500);
+        }
+
+        // Show Forgot Password
+        function showForgotPassword(event) {
+            event.preventDefault();
+
+            const email = prompt('Enter your email address to reset your password:');
+
+            if (email) {
+                showSuccess(`Password reset link sent to ${email}!`);
+            }
+        }
+
+        // Social Login
+        function socialLogin(provider) {
+            showSuccess(`Connecting to ${provider.charAt(0).toUpperCase() + provider.slice(1)}...`);
+
+            setTimeout(() => {
+                window.location.href = 'workspace.html';
+            }, 1500);
+        }
+
+        // Show Success Message
+        function showSuccess(message) {
+            const successEl = document.getElementById('successMessage');
+            const errorEl = document.getElementById('errorMessage');
+
+            errorEl.classList.remove('show');
+            successEl.textContent = message;
+            successEl.classList.add('show');
+
+            setTimeout(() => {
+                successEl.classList.remove('show');
+            }, 5000);
+        }
+
+        // Show Error Message
+        function showError(message) {
+            const successEl = document.getElementById('successMessage');
+            const errorEl = document.getElementById('errorMessage');
+
+            successEl.classList.remove('show');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+
+            setTimeout(() => {
+                errorEl.classList.remove('show');
+            }, 5000);
+        }
+
+        // Auto-focus first input on load
+        window.addEventListener('load', () => {
+            document.getElementById('signinEmail').focus();
+        });
+    </script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="/UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="/VISITOR_TRACKING_SNIPPET.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

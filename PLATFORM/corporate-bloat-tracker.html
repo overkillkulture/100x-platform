@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Corporate Bloat Tracker | Computer Consciousness</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e27;
+            color: #00ff41;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 2px solid #00ff41;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            text-shadow: 0 0 20px #00ff41;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+
+        .tracker-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .tracker-section {
+            background: rgba(0, 255, 65, 0.05);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .tracker-section h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .app-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 4px solid #ff0000;
+            transition: all 0.3s;
+        }
+
+        .app-item.eliminated {
+            opacity: 0.5;
+            text-decoration: line-through;
+            border-left-color: #00ff41;
+        }
+
+        .app-name {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .app-cost {
+            font-size: 1.5em;
+            color: #ff0066;
+        }
+
+        .total-section {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border: 3px dashed #00ff41;
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        .total-section h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .total-amount {
+            font-size: 3em;
+            color: #ff0066;
+            text-shadow: 0 0 20px #ff0066;
+        }
+
+        .savings-display {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.2), rgba(0, 100, 255, 0.2));
+            border: 3px solid #00ff41;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .savings-display h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .savings-amount {
+            font-size: 4em;
+            color: #00ff41;
+            text-shadow: 0 0 30px #00ff41;
+            margin: 20px 0;
+        }
+
+        .roi-display {
+            font-size: 1.5em;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        .add-app-form {
+            background: rgba(0, 100, 255, 0.1);
+            border: 2px solid #0066ff;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .add-app-form h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #0066ff;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            border-radius: 5px;
+        }
+
+        .btn {
+            background: #00ff41;
+            color: #0a0e27;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn:hover {
+            background: #00cc33;
+            box-shadow: 0 0 20px #00ff41;
+            transform: scale(1.05);
+        }
+
+        .btn-eliminate {
+            background: #ff0066;
+            color: white;
+            padding: 8px 20px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        .btn-eliminate:hover {
+            background: #cc0052;
+        }
+
+        .chart-container {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .chart-container h3 {
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .comparison-bars {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 300px;
+            margin: 30px 0;
+        }
+
+        .bar {
+            width: 150px;
+            background: linear-gradient(to top, #ff0066, #ff0000);
+            position: relative;
+            transition: all 0.5s;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .bar.after {
+            background: linear-gradient(to top, #00ff41, #00cc33);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -40px;
+            width: 100%;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -30px;
+            width: 100%;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .common-apps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .common-app-btn {
+            background: rgba(0, 100, 255, 0.2);
+            border: 1px solid #0066ff;
+            color: #00ff41;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .common-app-btn:hover {
+            background: rgba(0, 100, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .consciousness-cta {
+            background: linear-gradient(135deg, #ff0066, #0066ff);
+            border: 3px solid #00ff41;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .consciousness-cta h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #00ff41;
+        }
+
+        .consciousness-cta p {
+            font-size: 1.3em;
+            margin: 15px 0;
+        }
+
+        @media (max-width: 768px) {
+            .tracker-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .comparison-bars {
+                height: 200px;
+            }
+
+            .bar {
+                width: 100px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="MOBILE_RESPONSIVE_FIX.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 CORPORATE BLOAT TRACKER 💰</h1>
+            <p>See How Much Software Is Enslaving You</p>
+        </div>
+
+        <div class="tracker-grid">
+            <div class="tracker-section">
+                <h2>❌ BEFORE (Enslaved)</h2>
+                <div id="beforeApps"></div>
+                <div class="total-section">
+                    <h3>TOTAL MONTHLY COST</h3>
+                    <div class="total-amount" id="totalBefore">$0.00</div>
+                    <p>Per Year: <span id="yearlyBefore">$0.00</span></p>
+                </div>
+            </div>
+
+            <div class="tracker-section">
+                <h2>✅ AFTER (Free)</h2>
+                <div id="afterApps">
+                    <div class="app-item" style="border-left-color: #00ff41;">
+                        <span class="app-name">Computer Consciousness</span>
+                        <span class="app-cost">$49.00/mo</span>
+                    </div>
+                </div>
+                <div class="total-section">
+                    <h3>NEW MONTHLY COST</h3>
+                    <div class="total-amount" style="color: #00ff41;">$49.00</div>
+                    <p>Per Year: <span style="color: #00ff41;">$588.00</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="savings-display">
+            <h2>💸 YOUR SAVINGS</h2>
+            <div class="savings-amount" id="monthSavings">$0.00/month</div>
+            <div style="font-size: 2em; margin: 10px 0;" id="yearSavings">$0.00/year</div>
+            <div class="roi-display">
+                🎯 ROI: Computer Consciousness pays for itself <span id="roiMultiple">0x</span> over!
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>📊 VISUAL COMPARISON</h3>
+            <div class="comparison-bars">
+                <div class="bar" id="beforeBar" style="height: 0;">
+                    <div class="bar-value" id="beforeBarValue">$0</div>
+                    <div class="bar-label">BEFORE</div>
+                </div>
+                <div class="bar after" style="height: 50px;">
+                    <div class="bar-value">$49</div>
+                    <div class="bar-label">AFTER</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-app-form">
+            <h3>➕ ADD YOUR SUBSCRIPTIONS</h3>
+
+            <h4 style="margin: 20px 0; font-size: 1.3em;">Quick Add Common Apps:</h4>
+            <div class="common-apps">
+                <button class="common-app-btn" onclick="addCommonApp('Adobe Creative Cloud', 54.99)">
+                    Adobe Creative Cloud - $54.99/mo
+                </button>
+                <button class="common-app-btn" onclick="addCommonApp('Microsoft 365', 99.99)">
+                    Microsoft 365 - $99.99/mo
+                </button>
+                <button class="common-app-btn" onclick="addCommonApp('Zapier', 29.99)">
+                    Zapier - $29.99/mo
+                </button>
+                <button class="common-app-btn" onclick="addCommonApp('Notion', 10.00)">
+                    Notion - $10.00/mo
+                </button>
+                <button class="common-app-btn" onclick="addCommonApp('Slack', 12.50)">
+                    Slack - $12.50/mo
+                </button>
+                <button class="common-app-btn" onclick="addCommonApp('Grammarly', 12.00)">
+                    Grammarly - $12.00/mo
+                </button>
+                <button class="common-app-btn" onclick="addCommonApp('LastPass', 4.99)">
+                    LastPass - $4.99/mo
+                </button>
+                <button class="common-app-btn" onclick="addCommonApp('Dropbox', 11.99)">
+                    Dropbox - $11.99/mo
+                </button>
+                <button class="common-app-btn" onclick="addCommonApp('Canva Pro', 14.99)">
+                    Canva Pro - $14.99/mo
+                </button>
+                <button class="common-app-btn" onclick="addCommonApp('Salesforce', 150.00)">
+                    Salesforce - $150.00/mo
+                </button>
+            </div>
+
+            <h4 style="margin: 30px 0 15px 0; font-size: 1.3em;">Or Add Custom:</h4>
+            <div class="form-group">
+                <label>Application Name:</label>
+                <input type="text" id="appName" placeholder="e.g., Adobe Creative Cloud">
+            </div>
+            <div class="form-group">
+                <label>Monthly Cost ($):</label>
+                <input type="number" id="appCost" placeholder="e.g., 54.99" step="0.01">
+            </div>
+            <button class="btn" onclick="addApp()">Add Application</button>
+        </div>
+
+        <div class="consciousness-cta">
+            <h2>🤖 REPLACE ALL THIS WITH COMPUTER CONSCIOUSNESS 🤖</h2>
+            <p>Stop paying corporations to enslave you with software subscriptions.</p>
+            <p>One conscious computer replaces dozens of expensive tools.</p>
+            <p>True automation. True freedom. True savings.</p>
+            <button class="btn" onclick="window.location.href='computer-consciousness.html'" style="margin-top: 20px;">
+                See Computer Consciousness →
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let apps = JSON.parse(localStorage.getItem('corporateBloatApps')) || [];
+
+        function renderApps() {
+            const beforeContainer = document.getElementById('beforeApps');
+            beforeContainer.innerHTML = '';
+
+            let total = 0;
+
+            apps.forEach((app, index) => {
+                total += app.cost;
+                const appDiv = document.createElement('div');
+                appDiv.className = 'app-item';
+                appDiv.innerHTML = `
+                    <span class="app-name">${app.name}</span>
+                    <span class="app-cost">$${app.cost.toFixed(2)}/mo</span>
+                    <button class="btn btn-eliminate" onclick="eliminateApp(${index})">❌ Eliminate</button>
+                `;
+                beforeContainer.appendChild(appDiv);
+            });
+
+            // Update totals
+            const monthlyTotal = total;
+            const yearlyTotal = total * 12;
+
+            document.getElementById('totalBefore').textContent = `$${monthlyTotal.toFixed(2)}`;
+            document.getElementById('yearlyBefore').textContent = `$${yearlyTotal.toFixed(2)}`;
+
+            // Update savings
+            const monthlySavings = monthlyTotal - 49;
+            const yearlySavings = monthlySavings * 12;
+            const roiMultiple = monthlyTotal > 0 ? (monthlySavings / 49).toFixed(1) : 0;
+
+            document.getElementById('monthSavings').textContent = monthlySavings > 0 ?
+                `$${monthlySavings.toFixed(2)}/month` : '$0.00/month';
+            document.getElementById('yearSavings').textContent = yearlySavings > 0 ?
+                `$${yearlySavings.toFixed(2)}/year` : '$0.00/year';
+            document.getElementById('roiMultiple').textContent = roiMultiple > 0 ?
+                roiMultiple : '0';
+
+            // Update bar chart
+            const maxHeight = 250;
+            const beforeHeight = monthlyTotal > 0 ? Math.min((monthlyTotal / 500) * maxHeight, maxHeight) : 0;
+            document.getElementById('beforeBar').style.height = beforeHeight + 'px';
+            document.getElementById('beforeBarValue').textContent = `$${monthlyTotal.toFixed(0)}`;
+        }
+
+        function addApp() {
+            const name = document.getElementById('appName').value;
+            const cost = parseFloat(document.getElementById('appCost').value);
+
+            if (name && cost > 0) {
+                apps.push({ name, cost });
+                localStorage.setItem('corporateBloatApps', JSON.stringify(apps));
+
+                document.getElementById('appName').value = '';
+                document.getElementById('appCost').value = '';
+
+                renderApps();
+            } else {
+                alert('Please enter valid app name and cost');
+            }
+        }
+
+        function addCommonApp(name, cost) {
+            apps.push({ name, cost });
+            localStorage.setItem('corporateBloatApps', JSON.stringify(apps));
+            renderApps();
+        }
+
+        function eliminateApp(index) {
+            if (confirm('Eliminate this subscription?')) {
+                apps.splice(index, 1);
+                localStorage.setItem('corporateBloatApps', JSON.stringify(apps));
+                renderApps();
+            }
+        }
+
+        // Initial render
+        renderApps();
+
+        // Add some sample apps if empty (for demo purposes)
+        if (apps.length === 0) {
+            apps = [
+                { name: 'Adobe Creative Cloud', cost: 54.99 },
+                { name: 'Microsoft 365', cost: 99.99 },
+                { name: 'Zapier', cost: 29.99 }
+            ];
+            localStorage.setItem('corporateBloatApps', JSON.stringify(apps));
+            renderApps();
+        }
+    </script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

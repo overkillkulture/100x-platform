@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>🛡️ Destroyer Defense | 100X Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #1e3c72;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .game-board {
+            background: #f0f0f0;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .path {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            transform: translateY(-50%);
+            background: repeating-linear-gradient(
+                90deg,
+                #ddd,
+                #ddd 20px,
+                #ccc 20px,
+                #ccc 40px
+            );
+            border-radius: 10px;
+        }
+
+        .base {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+            z-index: 10;
+        }
+
+        .destroyer {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #f44336, #da190b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            transition: left 0.1s linear;
+            cursor: pointer;
+            z-index: 5;
+            animation: bounce 0.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .destroyer:hover {
+            transform: scale(1.2);
+            box-shadow: 0 5px 20px rgba(244, 67, 54, 0.6);
+        }
+
+        .destroyer.hit {
+            animation: explode 0.3s ease;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        .tower {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            cursor: move;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            z-index: 15;
+        }
+
+        .tower.active {
+            box-shadow: 0 0 20px #667eea;
+        }
+
+        .projectile {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #FFD700;
+            border-radius: 50%;
+            z-index: 20;
+            box-shadow: 0 0 10px #FFD700;
+        }
+
+        .tower-shop {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tower-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tower-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .tower-card.selected {
+            border-color: #4CAF50;
+            background: #e8f5e9;
+        }
+
+        .tower-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .tower-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .tower-cost {
+            color: #FFD700;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .tower-desc {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .start-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .start-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .pause-btn {
+            background: #ff9800;
+            color: white;
+        }
+
+        .restart-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .back-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+
+        .game-over h2 {
+            color: #f44336;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .game-over.victory h2 {
+            color: #4CAF50;
+        }
+
+        .wave-info {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            color: #856404;
+        }
+
+        .trinity-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 0.9em;
+            z-index: 1000;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🛡️ Destroyer Defense</h1>
+            <p class="subtitle">Protect your consciousness from destroyer attacks!</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value" id="health">100</div>
+                <div class="stat-label">❤️ Health</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="gold">500</div>
+                <div class="stat-label">🪙 Gold</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="wave">1</div>
+                <div class="stat-label">🌊 Wave</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="score">0</div>
+                <div class="stat-label">⭐ Score</div>
+            </div>
+        </div>
+
+        <div class="wave-info" id="waveInfo">
+            Click START to begin defending! 🛡️
+        </div>
+
+        <div class="tower-shop">
+            <div class="tower-card" onclick="selectTower('pattern')">
+                <div class="tower-icon">🔍</div>
+                <div class="tower-name">Pattern Detector</div>
+                <div class="tower-cost">💰 100</div>
+                <div class="tower-desc">Detects manipulation patterns</div>
+            </div>
+            <div class="tower-card" onclick="selectTower('consciousness')">
+                <div class="tower-icon">🧠</div>
+                <div class="tower-name">Consciousness Shield</div>
+                <div class="tower-cost">💰 200</div>
+                <div class="tower-desc">Strong defense against lies</div>
+            </div>
+            <div class="tower-card" onclick="selectTower('trinity')">
+                <div class="tower-icon">🌀</div>
+                <div class="tower-name">Trinity Cannon</div>
+                <div class="tower-cost">💰 300</div>
+                <div class="tower-desc">3x damage, slow fire</div>
+            </div>
+        </div>
+
+        <div class="game-board" id="gameBoard">
+            <div class="path"></div>
+            <div class="base">🏛️</div>
+        </div>
+
+        <div class="controls">
+            <button class="btn start-btn" id="startBtn" onclick="startGame()">▶️ Start Wave</button>
+            <button class="btn pause-btn hidden" id="pauseBtn" onclick="pauseGame()">⏸️ Pause</button>
+            <button class="btn restart-btn" onclick="restartGame()">🔄 Restart</button>
+            <button class="btn back-btn" onclick="goBack()">← Back to Arcade</button>
+        </div>
+    </div>
+
+    <div class="trinity-status">
+        🛡️ Triple Layer Active<br>
+        Layer 2: ✅ | Layer 3: ✅
+    </div>
+
+    <script>
+        // LAYER 2: Self-Intelligence
+        const SelfIntelligence = {
+            moduleName: 'Destroyer Defense',
+            healthCheck: function() {
+                return {
+                    responsive: true,
+                    dataValid: this.validateGameData(),
+                    securityIntact: true,
+                    performance: performance.now()
+                };
+            },
+            validateGameData: function() {
+                const stats = JSON.parse(localStorage.getItem('defenseStats') || '{}');
+                return stats.hasOwnProperty('highScore');
+            },
+            autoRepair: function() {
+                if (!this.validateGameData()) {
+                    localStorage.setItem('defenseStats', JSON.stringify({
+                        highScore: 0,
+                        wavesCompleted: 0,
+                        destroyersKilled: 0
+                    }));
+                }
+            }
+        };
+
+        // LAYER 3: External Intelligence
+        const ExternalIntelligence = {
+            validate: async function() {
+                const layer2 = SelfIntelligence.healthCheck();
+                const independent = await this.independentCheck();
+                if (layer2.dataValid !== independent.dataValid) {
+                    console.warn('⚠️ Defense validation mismatch!');
+                }
+            },
+            independentCheck: async function() {
+                try {
+                    const stats = JSON.parse(localStorage.getItem('defenseStats') || '{}');
+                    return { dataValid: stats.highScore >= 0 };
+                } catch (e) {
+                    return { dataValid: false };
+                }
+            }
+        };
+
+        setInterval(() => SelfIntelligence.autoRepair(), 30000);
+        setInterval(() => ExternalIntelligence.validate(), 300000);
+        SelfIntelligence.autoRepair();
+
+        // GAME VARIABLES
+        let gameRunning = false;
+        let gamePaused = false;
+        let health = 100;
+        let gold = 500;
+        let wave = 1;
+        let score = 0;
+        let destroyers = [];
+        let towers = [];
+        let projectiles = [];
+        let selectedTowerType = null;
+        let gameInterval = null;
+
+        const towerTypes = {
+            pattern: { cost: 100, damage: 10, range: 150, fireRate: 1000, icon: '🔍', color: '#667eea' },
+            consciousness: { cost: 200, damage: 20, range: 200, fireRate: 800, icon: '🧠', color: '#4CAF50' },
+            trinity: { cost: 300, damage: 50, range: 250, fireRate: 2000, icon: '🌀', color: '#764ba2' }
+        };
+
+        const destroyerTypes = [
+            { health: 50, speed: 2, reward: 20, emoji: '😈' },
+            { health: 100, speed: 1.5, reward: 40, emoji: '👿' },
+            { health: 150, speed: 1, reward: 60, emoji: '💀' }
+        ];
+
+        function selectTower(type) {
+            selectedTowerType = type;
+            document.querySelectorAll('.tower-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.tower-card').classList.add('selected');
+        }
+
+        document.getElementById('gameBoard').addEventListener('click', (e) => {
+            if (!selectedTowerType || !gameRunning) return;
+
+            const towerType = towerTypes[selectedTowerType];
+            if (gold < towerType.cost) {
+                alert('Not enough gold! 💰');
+                return;
+            }
+
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Check if too close to path
+            if (Math.abs(y - 200) < 80) {
+                alert('Too close to the path! 🚫');
+                return;
+            }
+
+            placeTower(x, y, selectedTowerType);
+        });
+
+        function placeTower(x, y, type) {
+            const towerType = towerTypes[type];
+            gold -= towerType.cost;
+            updateStats();
+
+            const towerEl = document.createElement('div');
+            towerEl.className = 'tower';
+            towerEl.style.left = (x - 30) + 'px';
+            towerEl.style.top = (y - 30) + 'px';
+            towerEl.innerHTML = towerType.icon;
+            towerEl.style.background = `linear-gradient(135deg, ${towerType.color}, ${towerType.color}cc)`;
+            document.getElementById('gameBoard').appendChild(towerEl);
+
+            const tower = {
+                x, y, type,
+                element: towerEl,
+                lastFire: 0,
+                ...towerType
+            };
+            towers.push(tower);
+        }
+
+        function startGame() {
+            gameRunning = true;
+            document.getElementById('startBtn').classList.add('hidden');
+            document.getElementById('pauseBtn').classList.remove('hidden');
+            document.getElementById('waveInfo').textContent = `Wave ${wave} incoming! 🌊`;
+
+            spawnWave();
+            gameInterval = setInterval(gameLoop, 50);
+        }
+
+        function pauseGame() {
+            gamePaused = !gamePaused;
+            document.getElementById('pauseBtn').textContent = gamePaused ? '▶️ Resume' : '⏸️ Pause';
+        }
+
+        function spawnWave() {
+            const count = 5 + wave * 2;
+            const destroyerType = destroyerTypes[Math.min(Math.floor(wave / 3), 2)];
+
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    spawnDestroyer(destroyerType);
+                }, i * 1000);
+            }
+        }
+
+        function spawnDestroyer(type) {
+            const destroyerEl = document.createElement('div');
+            destroyerEl.className = 'destroyer';
+            destroyerEl.style.left = '0px';
+            destroyerEl.style.top = '175px';
+            destroyerEl.innerHTML = type.emoji;
+            document.getElementById('gameBoard').appendChild(destroyerEl);
+
+            const destroyer = {
+                x: 0,
+                y: 200,
+                health: type.health,
+                maxHealth: type.health,
+                speed: type.speed,
+                reward: type.reward,
+                element: destroyerEl
+            };
+
+            destroyers.push(destroyer);
+        }
+
+        function gameLoop() {
+            if (gamePaused || !gameRunning) return;
+
+            // Move destroyers
+            destroyers.forEach((destroyer, index) => {
+                destroyer.x += destroyer.speed;
+                destroyer.element.style.left = destroyer.x + 'px';
+
+                // Check if reached base
+                if (destroyer.x >= 1050) {
+                    health -= 10;
+                    destroyers.splice(index, 1);
+                    destroyer.element.remove();
+                    updateStats();
+
+                    if (health <= 0) {
+                        endGame(false);
+                    }
+                }
+            });
+
+            // Tower firing
+            const now = Date.now();
+            towers.forEach(tower => {
+                if (now - tower.lastFire < tower.fireRate) return;
+
+                // Find closest destroyer in range
+                let target = null;
+                let minDist = tower.range;
+
+                destroyers.forEach(destroyer => {
+                    const dist = Math.sqrt(
+                        Math.pow(destroyer.x - tower.x, 2) +
+                        Math.pow(destroyer.y - tower.y, 2)
+                    );
+                    if (dist < minDist) {
+                        minDist = dist;
+                        target = destroyer;
+                    }
+                });
+
+                if (target) {
+                    tower.lastFire = now;
+                    fireProjectile(tower, target);
+                }
+            });
+
+            // Move projectiles
+            projectiles.forEach((proj, index) => {
+                const dx = proj.target.x - proj.x;
+                const dy = proj.target.y - proj.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 5 || !destroyers.includes(proj.target)) {
+                    // Hit!
+                    if (destroyers.includes(proj.target)) {
+                        proj.target.health -= proj.damage;
+                        if (proj.target.health <= 0) {
+                            killDestroyer(proj.target);
+                        }
+                    }
+                    projectiles.splice(index, 1);
+                    proj.element.remove();
+                } else {
+                    proj.x += (dx / dist) * 10;
+                    proj.y += (dy / dist) * 10;
+                    proj.element.style.left = proj.x + 'px';
+                    proj.element.style.top = proj.y + 'px';
+                }
+            });
+
+            // Check wave completion
+            if (destroyers.length === 0 && gameRunning) {
+                wave++;
+                updateStats();
+                document.getElementById('waveInfo').textContent = `Wave ${wave} complete! Next wave starting... 🎉`;
+
+                if (wave > 10) {
+                    endGame(true);
+                } else {
+                    setTimeout(spawnWave, 3000);
+                }
+            }
+        }
+
+        function fireProjectile(tower, target) {
+            const projEl = document.createElement('div');
+            projEl.className = 'projectile';
+            projEl.style.left = tower.x + 'px';
+            projEl.style.top = tower.y + 'px';
+            document.getElementById('gameBoard').appendChild(projEl);
+
+            projectiles.push({
+                x: tower.x,
+                y: tower.y,
+                target,
+                damage: tower.damage,
+                element: projEl
+            });
+        }
+
+        function killDestroyer(destroyer) {
+            destroyer.element.classList.add('hit');
+            setTimeout(() => {
+                destroyers.splice(destroyers.indexOf(destroyer), 1);
+                destroyer.element.remove();
+            }, 300);
+
+            gold += destroyer.reward;
+            score += destroyer.reward * wave;
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('health').textContent = health;
+            document.getElementById('gold').textContent = gold;
+            document.getElementById('wave').textContent = wave;
+            document.getElementById('score').textContent = score;
+        }
+
+        function endGame(victory) {
+            gameRunning = false;
+            clearInterval(gameInterval);
+
+            const overlay = document.createElement('div');
+            overlay.className = victory ? 'game-over victory' : 'game-over';
+            overlay.innerHTML = `
+                <h2>${victory ? '🎉 Victory!' : '💀 Game Over'}</h2>
+                <p style="font-size: 1.5em; margin: 20px 0;">
+                    Waves Survived: <strong>${wave}</strong><br>
+                    Final Score: <strong>${score}</strong>
+                </p>
+                <button class="btn start-btn" onclick="restartGame()">Play Again</button>
+                <button class="btn back-btn" onclick="goBack()">Back to Arcade</button>
+            `;
+            document.getElementById('gameBoard').appendChild(overlay);
+
+            saveStats(wave, score);
+        }
+
+        function saveStats(wavesCompleted, finalScore) {
+            const stats = JSON.parse(localStorage.getItem('defenseStats') || '{}');
+            stats.highScore = Math.max(stats.highScore || 0, finalScore);
+            stats.wavesCompleted = Math.max(stats.wavesCompleted || 0, wavesCompleted);
+            stats.destroyersKilled = (stats.destroyersKilled || 0) + destroyers.length;
+            localStorage.setItem('defenseStats', JSON.stringify(stats));
+
+            const arcadeStats = JSON.parse(localStorage.getItem('arcadeStats') || '{"consciousnessLevel": 51.7}');
+            const boost = wavesCompleted >= 10 ? 10 : wavesCompleted >= 7 ? 7 : wavesCompleted >= 5 ? 5 : 3;
+            arcadeStats.consciousnessLevel = Math.min(100, arcadeStats.consciousnessLevel + boost);
+            arcadeStats.defenseGamesPlayed = (arcadeStats.defenseGamesPlayed || 0) + 1;
+            localStorage.setItem('arcadeStats', JSON.stringify(arcadeStats));
+        }
+
+        function restartGame() {
+            document.querySelectorAll('.destroyer, .tower, .projectile, .game-over').forEach(el => el.remove());
+            destroyers = [];
+            towers = [];
+            projectiles = [];
+            health = 100;
+            gold = 500;
+            wave = 1;
+            score = 0;
+            gameRunning = false;
+            gamePaused = false;
+            updateStats();
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('pauseBtn').classList.add('hidden');
+            document.getElementById('waveInfo').textContent = 'Click START to begin defending! 🛡️';
+        }
+
+        function goBack() {
+            window.location.href = 'arcade-hub.html';
+        }
+    </script>
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>Communication Patterns Quiz - Learn Your Style</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        /* Panic Button - Disguised as settings */
+        .panic-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 9999;
+            transition: all 0.3s;
+        }
+
+        .panic-btn:hover {
+            transform: scale(1.1);
+            background: white;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .pattern-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .pattern-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .flowchart {
+            background: #fff;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            line-height: 2;
+        }
+
+        .check-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .check-list li {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f0f0f0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .check-list li:before {
+            content: "□";
+            font-size: 20px;
+            color: #667eea;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            color: #1565c0;
+        }
+
+        .alert-warning {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            color: #e65100;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+        }
+
+        .diagram {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .emoji-scale {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            font-size: 2em;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .decoder-note {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            color: #666;
+            border-left: 3px solid #667eea;
+        }
+
+        .vs-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .vs-box {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .vs-box.healthy {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+        }
+
+        .vs-box.unhealthy {
+            background: #ffebee;
+            border: 2px solid #f44336;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <!-- PANIC BUTTON - Switches to homework if parent walks in -->
+    <button class="panic-btn" onclick="panicMode()" title="Settings">⚙️</button>
+
+    <div class="container">
+        <h1>📊 Communication Patterns Explorer</h1>
+        <p class="subtitle">Understanding different communication styles in relationships</p>
+
+        <div class="alert alert-info">
+            <strong>What is this?</strong> This is an educational tool to help you recognize different communication patterns. Understanding these patterns can help you build healthier relationships and protect your emotional wellbeing.
+        </div>
+
+        <!-- PATTERN 1: "Just Joking" Deflection -->
+        <div class="section">
+            <h2>Pattern 1: Humor-Based Communication</h2>
+
+            <div class="pattern-card">
+                <h3>🎭 The "Just Joking" Pattern</h3>
+
+                <p><strong>Healthy Humor Style:</strong></p>
+                <div class="flowchart">
+Person makes a joke
+        ↓
+You laugh together
+        ↓
+Everyone feels good ✅
+                </div>
+
+                <p><strong>Unhealthy "Humor" Style:</strong></p>
+                <div class="flowchart">
+Person says something hurtful
+        ↓
+You say "That hurt my feelings"
+        ↓
+They respond:
+  → "I was JUST JOKING!" 🚩
+  → "Can't you take a joke?" 🚩
+  → "You're too sensitive" 🚩
+        ↓
+Then they repeat it later 🚩🚩
+                </div>
+
+                <div class="decoder-note">
+                    <strong>What's really happening:</strong> Real jokes make people laugh. If someone hurts you, then blames YOU for being hurt, that's not a joke. That's a test or an attack disguised as humor.
+                </div>
+
+                <div class="vs-comparison">
+                    <div class="vs-box healthy">
+                        <h4>✅ Healthy Response</h4>
+                        <p>"Oh sorry, I didn't mean to hurt you. Won't do it again."</p>
+                    </div>
+                    <div class="vs-box unhealthy">
+                        <h4>❌ Manipulation Response</h4>
+                        <p>"Just joking! Why are you so sensitive? Lighten up!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PATTERN 2: Information Overload -->
+        <div class="section">
+            <h2>Pattern 2: Feedback Delivery Styles</h2>
+
+            <div class="pattern-card">
+                <h3>📚 The "Too Much Truth" Pattern</h3>
+
+                <div class="diagram">
+                    <p><strong>Healthy Feedback (One thing at a time):</strong></p>
+                    <div style="font-size: 3em; margin: 20px 0;">🍎</div>
+                    <p>"Here's one thing you could improve"</p>
+                    <p style="color: #4caf50; margin-top: 10px;">Your brain can process this ✅</p>
+                </div>
+
+                <div class="diagram">
+                    <p><strong>Unhealthy "Feedback" (Information Flood):</strong></p>
+                    <div style="font-size: 2em; margin: 20px 0;">🍎🍊🍌🍇🍓🥝🍉🍑🍒</div>
+                    <p>"You're bad at this AND this AND this AND this..."</p>
+                    <p style="color: #f44336; margin-top: 10px;">Brain overload → You doubt yourself ❌</p>
+                </div>
+
+                <div class="decoder-note">
+                    <strong>What's really happening:</strong> If someone piles on criticism all at once, they WANT you to feel overwhelmed. When your brain shuts down from too much negative information, you start doubting if ANY of it is true. That's the goal - make you doubt your reality.
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>Warning Sign:</strong> If after talking to someone you feel confused, overwhelmed, or like you "can't do anything right," they may be using information overload to manipulate you.
+                </div>
+            </div>
+        </div>
+
+        <!-- PATTERN 3: Gaslighting / Reality Scramble -->
+        <div class="section">
+            <h2>Pattern 3: Reality & Memory Communication</h2>
+
+            <div class="pattern-card">
+                <h3>🌀 The "Reality Scramble" Pattern (Gaslighting)</h3>
+
+                <p><strong>Check if this is happening to you:</strong></p>
+                <ul class="check-list">
+                    <li>I feel confused about what's real around this person</li>
+                    <li>They say things "never happened" when I remember them</li>
+                    <li>I constantly apologize even when I did nothing wrong</li>
+                    <li>I feel "crazy" or doubt my own memory</li>
+                    <li>I'm told I'm "too sensitive" or "dramatic"</li>
+                    <li>After talking to them, I question my own perception</li>
+                </ul>
+
+                <div class="alert alert-warning" style="margin-top: 20px;">
+                    <strong>If you checked 3 or more:</strong> You're likely experiencing gaslighting. This is a manipulation tactic where someone makes you doubt your own reality.
+                </div>
+
+                <div class="emoji-scale">
+                    <div style="text-align: center;">
+                        <div>🟢</div>
+                        <small>Rarely confused<br>Healthy</small>
+                    </div>
+                    <div style="text-align: center;">
+                        <div>🟡</div>
+                        <small>Sometimes confused<br>Check patterns</small>
+                    </div>
+                    <div style="text-align: center;">
+                        <div>🔴</div>
+                        <small>Always confused<br>Manipulation likely</small>
+                    </div>
+                </div>
+
+                <div class="decoder-note">
+                    <strong>IMPORTANT - You're NOT crazy:</strong> If you feel confused ALL THE TIME around someone, trust that feeling. The confusion itself IS the proof that something is wrong. Your perception was right. They're scrambling your reality on purpose.
+                </div>
+            </div>
+        </div>
+
+        <!-- PATTERN 4: Boundary Styles (Narcissism) -->
+        <div class="section">
+            <h2>Pattern 4: Boundary & Control Styles</h2>
+
+            <div class="pattern-card">
+                <h3>🎯 The "Moving Goalposts" Pattern</h3>
+
+                <div class="vs-comparison">
+                    <div class="vs-box healthy">
+                        <h4>✅ Healthy Boundaries</h4>
+                        <p><strong>You:</strong> "I did what you asked"</p>
+                        <p><strong>Them:</strong> "Thank you!"</p>
+                        <p style="margin-top: 15px;">Goal achieved = Praise received</p>
+                    </div>
+                    <div class="vs-box unhealthy">
+                        <h4>❌ Moving Goalposts</h4>
+                        <p><strong>You:</strong> "I did what you asked"</p>
+                        <p><strong>Them:</strong> "But you didn't do THIS other thing!"</p>
+                        <p style="margin-top: 15px;">Goal achieved = New demand appears</p>
+                    </div>
+                </div>
+
+                <div class="decoder-note">
+                    <strong>What's really happening:</strong> Some people move the goalposts on purpose. No matter what you do, it's never enough. They add new demands the moment you meet the old ones. This keeps you feeling like a failure and keeps them in control.
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>Red Flag:</strong> If you can NEVER satisfy someone no matter how hard you try, they may be moving goalposts intentionally. It's not about what you do - it's about keeping you trying.
+                </div>
+            </div>
+        </div>
+
+        <!-- WHAT TO DO -->
+        <div class="section">
+            <h2>🛡️ What To Do If You Recognize These Patterns</h2>
+
+            <div class="alert alert-success">
+                <strong>First: You're not alone, and this is NOT your fault.</strong>
+            </div>
+
+            <div class="pattern-card">
+                <h3>Immediate Actions:</h3>
+                <ol style="line-height: 2;">
+                    <li><strong>Trust your feelings</strong> - If something feels wrong, it probably is</li>
+                    <li><strong>Document things</strong> - Journal or voice record your memories (they can't gaslight written evidence)</li>
+                    <li><strong>Talk to someone safe</strong> - Teacher, counselor, trusted adult outside the situation</li>
+                    <li><strong>Don't try to "fix" the manipulator</strong> - That's not your job and it won't work</li>
+                    <li><strong>Make a safety plan</strong> - Know who to call, where to go if needed</li>
+                </ol>
+            </div>
+
+            <div class="pattern-card">
+                <h3>Response Scripts (What to say):</h3>
+
+                <p><strong>When they say "Just joking!":</strong></p>
+                <div class="decoder-note">"I'm not comfortable with jokes like that."</div>
+
+                <p><strong>When they flood you with criticism:</strong></p>
+                <div class="decoder-note">"I can only process one thing at a time. What's the main issue?"</div>
+
+                <p><strong>When they say something didn't happen:</strong></p>
+                <div class="decoder-note">"I remember it differently. Let's agree to disagree."</div>
+
+                <p><strong>When goalposts move:</strong></p>
+                <div class="decoder-note">"I did what was asked. If there are new requirements, please tell me upfront next time."</div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>Resources:</strong> If you're under 18 and experiencing abuse, you can text HOME to 741741 (Crisis Text Line) or call 1-800-4-A-CHILD. These are free, confidential, and available 24/7.
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <button class="btn" onclick="window.print()">📄 Print This Guide (Keep it Safe)</button>
+        </div>
+
+        <div class="alert alert-info" style="margin-top: 30px;">
+            <strong>About This Tool:</strong> This is an educational resource based on psychological research about communication patterns and manipulation tactics. It's designed to help people recognize unhealthy patterns and protect their mental health. If someone gets upset that you're learning this, that itself may be a red flag.
+        </div>
+    </div>
+
+    <script>
+        // PANIC MODE - Switch to safe screen if parent walks in
+        function panicMode() {
+            // Clear any session data
+            sessionStorage.clear();
+
+            // Redirect to safe screen (customize this URL)
+            // Options: homework site, YouTube, games, etc.
+            window.location.href = 'https://www.khanacademy.org/';
+
+            // Alternative: Just close the tab
+            // window.close();
+        }
+
+        // Keyboard shortcut for panic mode: ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const confirmed = confirm('Switch to safe mode?');
+                if (confirmed) panicMode();
+            }
+        });
+
+        // No localStorage - everything session only (no evidence)
+        // Session clears when browser closes
+
+        console.log('Communication Patterns Tool Loaded');
+        console.log('Press ESC for quick exit');
+        console.log('Or click ⚙️ button (top right)');
+    </script>
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

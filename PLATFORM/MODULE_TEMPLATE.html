@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>[MODULE_NAME] | Consciousness Revolution</title>
+
+    <style>
+        /* ==========================================
+           UNIVERSAL MODULE ARCHITECTURE v1.0
+           Transcends all dimensions - Copy this for ANY module
+           ========================================== */
+
+        /* === FOUNDATION === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Consciousness Revolution Brand Colors */
+            --primary: #00ddff;        /* Electric cyan */
+            --secondary: #00ff00;      /* Matrix green */
+            --accent: #ff00ff;         /* Consciousness purple */
+            --background: #0a0a0a;     /* Deep black */
+            --surface: #1a1a1a;        /* Slightly lighter */
+            --border: #333;            /* Subtle borders */
+            --text: #ffffff;           /* Pure white text */
+            --text-dim: #aaaaaa;       /* Dimmed text */
+            --warning: #ff4444;        /* Warning red */
+            --success: #00ff00;        /* Success green */
+
+            /* Spacing System (8px base) */
+            --space-xs: 0.5rem;   /* 8px */
+            --space-sm: 1rem;     /* 16px */
+            --space-md: 1.5rem;   /* 24px */
+            --space-lg: 2rem;     /* 32px */
+            --space-xl: 3rem;     /* 48px */
+
+            /* Typography */
+            --font-mono: 'Courier New', monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+            /* Effects */
+            --glow: 0 0 10px var(--primary);
+            --glow-strong: 0 0 20px var(--primary), 0 0 40px var(--primary);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: var(--space-md);
+        }
+
+        /* === HEADER === */
+        .module-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .module-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-shadow: var(--glow);
+            margin-bottom: var(--space-sm);
+        }
+
+        .module-header .tagline {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        /* === CONTAINER === */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* === CARDS === */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .card-header {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* === TABS === */
+        .tabs {
+            display: flex;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            padding: var(--space-sm) var(--space-md);
+            cursor: pointer;
+            font-size: 1rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            font-family: var(--font-sans);
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            text-shadow: var(--glow);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === BUTTONS === */
+        .btn {
+            background: var(--primary);
+            color: var(--background);
+            border: none;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-family: var(--font-sans);
+        }
+
+        .btn:hover {
+            box-shadow: var(--glow-strong);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        /* === LISTS === */
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            padding: var(--space-sm);
+            margin-bottom: var(--space-xs);
+            background: var(--background);
+            border-left: 3px solid var(--primary);
+            padding-left: var(--space-md);
+        }
+
+        .checklist li::before {
+            content: '✓ ';
+            color: var(--success);
+            font-weight: bold;
+            margin-right: var(--space-xs);
+        }
+
+        /* === GRID === */
+        .grid {
+            display: grid;
+            gap: var(--space-lg);
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        /* === ALERTS === */
+        .alert {
+            padding: var(--space-md);
+            border-radius: 4px;
+            margin-bottom: var(--space-lg);
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: rgba(0, 221, 255, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .alert-warning {
+            background: rgba(255, 68, 68, 0.1);
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        /* === FOOTER === */
+        .module-footer {
+            text-align: center;
+            margin-top: var(--space-xl);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--space-sm);
+            }
+
+            .module-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                border-bottom: 1px solid var(--border);
+                border-left: 2px solid transparent;
+            }
+
+            .tab.active {
+                border-left-color: var(--primary);
+                border-bottom-color: var(--border);
+            }
+        }
+
+        /* === ACCESSIBILITY === */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            :root {
+                --border: #666;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="module-header">
+        <h1>[MODULE_TITLE]</h1>
+        <p class="tagline">[MODULE_TAGLINE]</p>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+
+        <!-- ALERT (Optional - remove if not needed) -->
+        <div class="alert alert-info">
+            <strong>Note:</strong> [ALERT_MESSAGE]
+        </div>
+
+        <!-- TABS (Optional - remove if single-page module) -->
+        <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="tab1" role="tab" aria-selected="true">Tab 1</button>
+            <button class="tab" data-tab="tab2" role="tab" aria-selected="false">Tab 2</button>
+            <button class="tab" data-tab="tab3" role="tab" aria-selected="false">Tab 3</button>
+        </div>
+
+        <!-- TAB CONTENT 1 -->
+        <div id="tab1" class="tab-content active" role="tabpanel">
+            <div class="card">
+                <h2 class="card-header">Section Title</h2>
+                <p>Content goes here...</p>
+
+                <ul class="checklist">
+                    <li>Checklist item 1</li>
+                    <li>Checklist item 2</li>
+                    <li>Checklist item 3</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT 2 -->
+        <div id="tab2" class="tab-content" role="tabpanel">
+            <div class="grid grid-2">
+                <div class="card">
+                    <h2 class="card-header">Card 1</h2>
+                    <p>Grid layout example...</p>
+                </div>
+                <div class="card">
+                    <h2 class="card-header">Card 2</h2>
+                    <p>Grid layout example...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT 3 -->
+        <div id="tab3" class="tab-content" role="tabpanel">
+            <div class="card">
+                <h2 class="card-header">Final Section</h2>
+                <p>More content...</p>
+                <button class="btn">Action Button</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="module-footer">
+        <p>Part of the <strong>Consciousness Revolution Platform</strong></p>
+        <p>Built by builders, for builders, protected by transparency.</p>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // ==========================================
+        // UNIVERSAL MODULE JAVASCRIPT v1.0
+        // Tab system, utilities, analytics
+        // ==========================================
+
+        // === TAB SYSTEM ===
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active from all
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                    });
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+
+                    // Add active to clicked
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-selected', 'true');
+                    const targetId = tab.getAttribute('data-tab');
+                    document.getElementById(targetId).classList.add('active');
+
+                    // Track tab view
+                    trackEvent('tab_view', { tab: targetId });
+                });
+            });
+        }
+
+        // === ANALYTICS (localStorage-based) ===
+        function trackEvent(eventName, data = {}) {
+            const timestamp = new Date().toISOString();
+            const event = {
+                event: eventName,
+                timestamp,
+                module: document.title,
+                ...data
+            };
+
+            // Get existing events
+            const events = JSON.parse(localStorage.getItem('consciousness_analytics') || '[]');
+            events.push(event);
+
+            // Keep last 1000 events
+            if (events.length > 1000) {
+                events.shift();
+            }
+
+            localStorage.setItem('consciousness_analytics', JSON.stringify(events));
+        }
+
+        // === UTILITIES ===
+        function saveToStorage(key, value) {
+            try {
+                localStorage.setItem(`module_${key}`, JSON.stringify(value));
+                return true;
+            } catch (e) {
+                console.error('Storage error:', e);
+                return false;
+            }
+        }
+
+        function loadFromStorage(key) {
+            try {
+                const data = localStorage.getItem(`module_${key}`);
+                return data ? JSON.parse(data) : null;
+            } catch (e) {
+                console.error('Storage error:', e);
+                return null;
+            }
+        }
+
+        function clearStorage(key) {
+            localStorage.removeItem(`module_${key}`);
+        }
+
+        // === KEYBOARD SHORTCUTS ===
+        document.addEventListener('keydown', (e) => {
+            // ESC key (if module needs quick exit)
+            if (e.key === 'Escape') {
+                // Implement exit behavior if needed
+                // Example: window.location.href = '/PLATFORM/';
+            }
+
+            // Ctrl/Cmd + K (if module needs search)
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                // Implement search if needed
+            }
+        });
+
+        // === INITIALIZATION ===
+        document.addEventListener('DOMContentLoaded', () => {
+            initTabs();
+            trackEvent('module_load');
+
+            // Track time spent on module
+            const startTime = Date.now();
+            window.addEventListener('beforeunload', () => {
+                const timeSpent = Math.round((Date.now() - startTime) / 1000);
+                trackEvent('module_exit', { time_spent_seconds: timeSpent });
+            });
+        });
+
+        // === MODULE-SPECIFIC CODE GOES HERE ===
+        // Add your custom JavaScript below this line
+
+
+    </script>
+
+    <!-- Master Navigation -->
+    <script src="master-nav.js"></script>
+
+    <!-- 🎮 Easter Egg System - Makes platform legendary -->
+    <script src="easter-egg-engine.js"></script>
+    <script src="fun-features.js"></script>
+    <script src="bug-reporter-widget.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

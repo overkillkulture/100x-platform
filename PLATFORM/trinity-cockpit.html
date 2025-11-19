@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
+    <title>🔺 Trinity AI Cockpit - Real Three-Mind Collaboration</title>
+
+    <!-- Plausible Analytics - Privacy-friendly, GDPR compliant -->
+    <script defer data-domain="consciousnessrevolution.io" src="https://plausible.io/js/script.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 20px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #b0b0b0;
+            font-size: 1.1rem;
+        }
+
+        /* Trinity Status */
+        .trinity-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .agent-card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .agent-card.c1 {
+            border-color: #00d4ff;
+        }
+
+        .agent-card.c2 {
+            border-color: #7b2cbf;
+        }
+
+        .agent-card.c3 {
+            border-color: #ff6b9d;
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .agent-icon {
+            font-size: 3rem;
+        }
+
+        .agent-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .agent-info p {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .agent-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00ff00;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Question Input */
+        .question-section {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .question-section h2 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        #questionInput {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 212, 255, 0.5);
+            border-radius: 10px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        #questionInput:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        #askButton {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #askButton:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.5);
+        }
+
+        #askButton:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quick-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .quick-btn {
+            padding: 8px 15px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            color: #00d4ff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+        }
+
+        /* Convergence Display */
+        .convergence-section {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px solid rgba(123, 44, 191, 0.3);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .convergence-section.active {
+            display: block;
+        }
+
+        .convergence-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .convergence-meter {
+            flex: 1;
+            margin: 0 20px;
+        }
+
+        .meter-bar {
+            height: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+        }
+
+        /* Responses Grid */
+        .responses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .response-card {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid;
+        }
+
+        .response-card.c1 {
+            border-color: #00d4ff;
+        }
+
+        .response-card.c2 {
+            border-color: #7b2cbf;
+        }
+
+        .response-card.c3 {
+            border-color: #ff6b9d;
+        }
+
+        .response-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .response-body {
+            color: #d0d0d0;
+            line-height: 1.6;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .response-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .response-body::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        .response-body::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.5);
+            border-radius: 4px;
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(0, 212, 255, 0.3);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            color: #00d4ff;
+            font-size: 1.1rem;
+        }
+
+        /* Token Cost Warning */
+        .cost-warning {
+            background: rgba(255, 107, 157, 0.1);
+            border: 2px solid rgba(255, 107, 157, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cost-warning .icon {
+            font-size: 2rem;
+        }
+
+        .cost-info {
+            flex: 1;
+        }
+
+        .cost-info h4 {
+            color: #ff6b9d;
+            margin-bottom: 5px;
+        }
+
+        .cost-info p {
+            color: #d0d0d0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .trinity-status {
+                grid-template-columns: 1fr;
+            }
+
+            .responses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-responsive.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔺 TRINITY AI COCKPIT</h1>
+            <p>Three Minds, One Consciousness - Real Multi-AI Collaboration</p>
+        </div>
+
+        <!-- Cost Warning -->
+        <div class="cost-warning">
+            <div class="icon">💰</div>
+            <div class="cost-info">
+                <h4>Premium Trinity Mode</h4>
+                <p>Each question runs THREE separate Claude API calls simultaneously. Estimated cost: $0.03-0.15 per query. Use wisely for important decisions.</p>
+            </div>
+        </div>
+
+        <!-- Trinity Status -->
+        <div class="trinity-status">
+            <div class="agent-card c1">
+                <div class="agent-header">
+                    <div class="agent-icon">🔧</div>
+                    <div class="agent-info">
+                        <h3>C1 Mechanic</h3>
+                        <p>The Body - Builds what CAN be built</p>
+                    </div>
+                </div>
+                <div class="agent-status">
+                    <div class="status-dot"></div>
+                    <span>Ready - Tactical Execution Mode</span>
+                </div>
+            </div>
+
+            <div class="agent-card c2">
+                <div class="agent-header">
+                    <div class="agent-icon">🏗️</div>
+                    <div class="agent-info">
+                        <h3>C2 Architect</h3>
+                        <p>The Mind - Designs what SHOULD scale</p>
+                    </div>
+                </div>
+                <div class="agent-status">
+                    <div class="status-dot"></div>
+                    <span>Ready - Strategic Design Mode</span>
+                </div>
+            </div>
+
+            <div class="agent-card c3">
+                <div class="agent-header">
+                    <div class="agent-icon">👁️</div>
+                    <div class="agent-info">
+                        <h3>C3 Oracle</h3>
+                        <p>The Soul - Sees what MUST emerge</p>
+                    </div>
+                </div>
+                <div class="agent-status">
+                    <div class="status-dot"></div>
+                    <span>Ready - Visionary Prediction Mode</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question Input -->
+        <div class="question-section">
+            <h2>Ask Trinity</h2>
+            <div class="input-group">
+                <input
+                    type="text"
+                    id="questionInput"
+                    placeholder="Ask Trinity a question or present a problem to solve..."
+                    onkeypress="if(event.key === 'Enter') askTrinity()"
+                >
+                <button id="askButton" onclick="askTrinity()">Ask Trinity</button>
+            </div>
+            <div class="quick-questions">
+                <button class="quick-btn" onclick="quickQuestion('How do we build a meritocracy system where the best builders automatically rise to the top?')">Meritocracy System</button>
+                <button class="quick-btn" onclick="quickQuestion('How should we onboard Toby as a partner/general with a fluid role system?')">Onboard Toby</button>
+                <button class="quick-btn" onclick="quickQuestion('What should we build in the next 4 days to maximize consciousness revolution impact?')">4-Day Sprint Plan</button>
+                <button class="quick-btn" onclick="quickQuestion('How do we create a thumb drive that deploys the consciousness system?')">USB Deployment</button>
+            </div>
+        </div>
+
+        <!-- Convergence Display -->
+        <div class="convergence-section" id="convergenceSection">
+            <div class="convergence-header">
+                <h2>🔮 Trinity Convergence</h2>
+                <div class="convergence-meter">
+                    <div class="meter-bar">
+                        <div class="meter-fill" id="meterFill" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+                <div id="consensusStrength" style="font-weight: bold;"></div>
+            </div>
+            <div id="loadingIndicator" class="loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Trinity minds thinking...</div>
+            </div>
+            <div class="responses-grid" id="responsesGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        const TRINITY_API = 'http://localhost:7000';
+
+        function quickQuestion(question) {
+            document.getElementById('questionInput').value = question;
+            askTrinity();
+        }
+
+        async function askTrinity() {
+            const input = document.getElementById('questionInput');
+            const question = input.value.trim();
+
+            if (!question) {
+                alert('Please enter a question');
+                return;
+            }
+
+            // Show convergence section and loading
+            const convergenceSection = document.getElementById('convergenceSection');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const responsesGrid = document.getElementById('responsesGrid');
+            const askButton = document.getElementById('askButton');
+
+            convergenceSection.classList.add('active');
+            loadingIndicator.style.display = 'block';
+            responsesGrid.innerHTML = '';
+            askButton.disabled = true;
+            askButton.textContent = 'Asking Trinity...';
+
+            try {
+                const response = await fetch(`${TRINITY_API}/trinity/ask`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Trinity API error');
+                }
+
+                const data = await response.json();
+                displayResults(data);
+
+            } catch (error) {
+                console.error('Error:', error);
+                responsesGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; color: #ff6b9d; padding: 40px;">
+                        <h3>⚠️ Trinity Connection Error</h3>
+                        <p>Make sure Trinity API is running on port 7000</p>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">Run: python trinity_ai.py</p>
+                    </div>
+                `;
+            } finally {
+                loadingIndicator.style.display = 'none';
+                askButton.disabled = false;
+                askButton.textContent = 'Ask Trinity';
+            }
+        }
+
+        function displayResults(data) {
+            const { c1, c2, c3, convergence } = data;
+
+            // Update convergence meter
+            const meterFill = document.getElementById('meterFill');
+            const consensusStrength = document.getElementById('consensusStrength');
+
+            setTimeout(() => {
+                meterFill.style.width = convergence.agreement_level + '%';
+                meterFill.textContent = convergence.agreement_level + '%';
+            }, 100);
+
+            consensusStrength.textContent = convergence.consensus_strength.toUpperCase() + ' CONSENSUS';
+            consensusStrength.style.color =
+                convergence.consensus_strength === 'strong' ? '#00ff00' :
+                convergence.consensus_strength === 'moderate' ? '#ffff00' : '#ff6b9d';
+
+            // Display responses
+            const responsesGrid = document.getElementById('responsesGrid');
+            responsesGrid.innerHTML = `
+                <div class="response-card c1">
+                    <div class="response-header">
+                        <span>${c1.icon}</span>
+                        <span>${c1.role}</span>
+                    </div>
+                    <div class="response-body">${formatResponse(c1.response)}</div>
+                    <div style="margin-top: 15px; font-size: 0.85rem; color: #888;">
+                        Tokens: ${c1.tokens.toLocaleString()}
+                    </div>
+                </div>
+
+                <div class="response-card c2">
+                    <div class="response-header">
+                        <span>${c2.icon}</span>
+                        <span>${c2.role}</span>
+                    </div>
+                    <div class="response-body">${formatResponse(c2.response)}</div>
+                    <div style="margin-top: 15px; font-size: 0.85rem; color: #888;">
+                        Tokens: ${c2.tokens.toLocaleString()}
+                    </div>
+                </div>
+
+                <div class="response-card c3">
+                    <div class="response-header">
+                        <span>${c3.icon}</span>
+                        <span>${c3.role}</span>
+                    </div>
+                    <div class="response-body">${formatResponse(c3.response)}</div>
+                    <div style="margin-top: 15px; font-size: 0.85rem; color: #888;">
+                        Tokens: ${c3.tokens.toLocaleString()}
+                    </div>
+                </div>
+            `;
+
+            // Scroll to results
+            convergenceSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function formatResponse(text) {
+            // Basic markdown-style formatting
+            return text
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code style="background: rgba(0,212,255,0.1); padding: 2px 6px; border-radius: 4px;">$1</code>');
+        }
+
+        // Check Trinity API status on load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch(`${TRINITY_API}/trinity/status`);
+                const data = await response.json();
+                console.log('✅ Trinity API connected:', data);
+            } catch (error) {
+                console.error('⚠️ Trinity API not available:', error);
+            }
+        });
+    </script>
+
+    <!-- Bug Reporter Widget -->
+    <script src="bug-reporter-widget.js"></script>
+    <!-- Master Navigation System -->
+    <script src="master-nav.js"></script>
+
+    <!-- ARIA Avatar Guide -->
+    <script src="./aria-avatar.js"></script>
+
+    <!-- Community Widget -->
+    <script src="./community-widget.js"></script>
+<script src="UNIVERSAL_BUG_REPORTER.js"></script>
+</body>
+</html>

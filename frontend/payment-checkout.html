@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Checkout - Consciousness Revolution</title>
+
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Checkout Modal */
+        .checkout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .checkout-modal.active {
+            display: block;
+        }
+
+        .checkout-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            border: 2px solid #00ff88;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .checkout-header {
+            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+            padding: 30px;
+            border-bottom: 1px solid #333;
+            position: relative;
+        }
+
+        .checkout-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 32px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .checkout-close:hover {
+            color: #00ff88;
+        }
+
+        .checkout-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #00ff88;
+            margin-bottom: 8px;
+        }
+
+        .checkout-subtitle {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .checkout-body {
+            padding: 40px;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: #252525;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .order-summary h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-name {
+            font-size: 15px;
+            color: #fff;
+        }
+
+        .order-item-desc {
+            font-size: 13px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .order-item-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-top: 16px;
+            border-top: 2px solid #00ff88;
+        }
+
+        .order-total-label {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .order-total-amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: #00ff88;
+        }
+
+        /* Payment Method */
+        .payment-section {
+            margin-bottom: 30px;
+        }
+
+        .payment-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method-btn {
+            flex: 1;
+            padding: 16px;
+            background: #252525;
+            border: 2px solid #333;
+            border-radius: 8px;
+            color: #888;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .payment-method-btn:hover {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .payment-method-btn.active {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+        }
+
+        .payment-method-icon {
+            font-size: 24px;
+        }
+
+        /* Stripe Elements */
+        .stripe-element-container {
+            background: #252525;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stripe-element {
+            background: transparent;
+        }
+
+        .stripe-element-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #00ff88;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Billing Info */
+        .billing-section {
+            margin-bottom: 30px;
+        }
+
+        .billing-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            background: #252525;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Subscription Details */
+        .subscription-details {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .subscription-details h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 12px;
+        }
+
+        .subscription-details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .subscription-details li {
+            font-size: 14px;
+            color: #ccc;
+            padding: 6px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .subscription-details li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+            font-weight: 700;
+        }
+
+        /* Messages */
+        .message {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.active {
+            display: block;
+        }
+
+        .message-error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            color: #ff6666;
+        }
+
+        .message-success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+        }
+
+        .message-info {
+            background: rgba(0, 136, 255, 0.1);
+            border: 1px solid #0088ff;
+            color: #66bbff;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.5);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #000;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        .submit-btn.processing .spinner {
+            display: block;
+        }
+
+        .submit-btn.processing .button-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Security Notice */
+        .security-notice {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .security-icon {
+            font-size: 24px;
+        }
+
+        .security-text {
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* Success State */
+        .success-state {
+            text-align: center;
+            padding: 60px 20px;
+            display: none;
+        }
+
+        .success-state.active {
+            display: block;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #00ff88;
+            margin-bottom: 12px;
+        }
+
+        .success-message {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .success-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn-secondary {
+            padding: 16px 32px;
+            background: transparent;
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            color: #00ff88;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .checkout-body {
+                padding: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-methods {
+                flex-direction: column;
+            }
+
+            .checkout-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Checkout Modal -->
+<div id="checkout-modal" class="checkout-modal">
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <button class="checkout-close" onclick="closeCheckout()">×</button>
+            <h2 class="checkout-title">Complete Your Purchase</h2>
+            <p class="checkout-subtitle">Secure payment powered by Stripe</p>
+        </div>
+
+        <div class="checkout-body">
+            <!-- Form Section -->
+            <div id="checkout-form-section">
+                <!-- Messages -->
+                <div id="error-message" class="message message-error"></div>
+                <div id="success-message" class="message message-success"></div>
+                <div id="info-message" class="message message-info"></div>
+
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div id="order-items">
+                        <!-- Populated dynamically -->
+                    </div>
+                    <div class="order-total">
+                        <span class="order-total-label">Total</span>
+                        <span class="order-total-amount" id="order-total">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- Subscription Details (if applicable) -->
+                <div id="subscription-details" class="subscription-details" style="display: none;">
+                    <h4>What You'll Get</h4>
+                    <ul id="subscription-features">
+                        <!-- Populated dynamically -->
+                    </ul>
+                </div>
+
+                <!-- Payment Method Selection -->
+                <div class="payment-section">
+                    <h3>Payment Method</h3>
+                    <div class="payment-methods">
+                        <button class="payment-method-btn active" data-method="card" onclick="selectPaymentMethod('card')">
+                            <span class="payment-method-icon">💳</span>
+                            <span>Card</span>
+                        </button>
+                        <button class="payment-method-btn" data-method="bank" onclick="selectPaymentMethod('bank')">
+                            <span class="payment-method-icon">🏦</span>
+                            <span>Bank</span>
+                        </button>
+                    </div>
+
+                    <!-- Stripe Card Element -->
+                    <div id="card-payment-section">
+                        <div class="stripe-element-container">
+                            <label class="stripe-element-label">Card Information</label>
+                            <div id="card-element" class="stripe-element"></div>
+                        </div>
+                    </div>
+
+                    <!-- Stripe Bank Element (hidden by default) -->
+                    <div id="bank-payment-section" style="display: none;">
+                        <div class="stripe-element-container">
+                            <label class="stripe-element-label">Bank Account</label>
+                            <div id="bank-element" class="stripe-element"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Information -->
+                <div class="billing-section">
+                    <h3>Billing Information</h3>
+
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="billing-name" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="billing-email" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Address</label>
+                        <input type="text" class="form-input" id="billing-address" placeholder="123 Main St" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">City</label>
+                            <input type="text" class="form-input" id="billing-city" placeholder="San Francisco" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ZIP Code</label>
+                            <input type="text" class="form-input" id="billing-zip" placeholder="94102" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">State</label>
+                            <input type="text" class="form-input" id="billing-state" placeholder="CA" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Country</label>
+                            <input type="text" class="form-input" id="billing-country" placeholder="US" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button class="submit-btn" id="submit-btn" onclick="processPayment()">
+                    <div class="spinner"></div>
+                    <span class="button-text" id="button-text">Complete Purchase</span>
+                </button>
+
+                <!-- Security Notice -->
+                <div class="security-notice">
+                    <span class="security-icon">🔒</span>
+                    <span class="security-text">
+                        Your payment information is encrypted and secure. We never store your card details.
+                    </span>
+                </div>
+            </div>
+
+            <!-- Success State -->
+            <div id="success-state" class="success-state">
+                <div class="success-icon">✅</div>
+                <h3 class="success-title">Payment Successful!</h3>
+                <p class="success-message" id="success-details">
+                    Thank you for your purchase. You'll receive a confirmation email shortly.
+                </p>
+                <div class="success-actions">
+                    <button class="btn-primary" onclick="goToDashboard()">Go to Dashboard</button>
+                    <button class="btn-secondary" onclick="closeCheckout()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include SDK -->
+<script src="consciousness-sdk.js"></script>
+
+<script>
+    // Initialize SDK
+    const cr = new ConsciousnessRevolution({
+        apiBaseUrl: 'http://localhost:5000',
+        stripePublishableKey: 'pk_test_...', // Replace with actual key
+        onError: (error) => {
+            showError(error.message);
+        }
+    });
+
+    // Initialize Stripe
+    let stripe = null;
+    let cardElement = null;
+    let bankElement = null;
+    let currentPaymentMethod = 'card';
+    let checkoutData = null;
+
+    async function initializeStripe() {
+        // Get publishable key from config or backend
+        const publishableKey = cr.config.stripePublishableKey || 'pk_test_...';
+
+        stripe = Stripe(publishableKey);
+        const elements = stripe.elements();
+
+        // Create card element
+        cardElement = elements.create('card', {
+            style: {
+                base: {
+                    color: '#fff',
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '15px',
+                    '::placeholder': {
+                        color: '#888',
+                    },
+                },
+                invalid: {
+                    color: '#ff6666',
+                },
+            },
+        });
+        cardElement.mount('#card-element');
+
+        // Create bank account element
+        bankElement = elements.create('auBankAccount', {
+            style: {
+                base: {
+                    color: '#fff',
+                    fontSize: '15px',
+                },
+            },
+        });
+        bankElement.mount('#bank-element');
+    }
+
+    // =====================================================
+    // CHECKOUT FLOW
+    // =====================================================
+
+    /**
+     * Open checkout modal
+     * @param {Object} data - Checkout configuration
+     *   - type: 'subscription' | 'product' | 'one_time'
+     *   - domain: Domain name (for subscriptions)
+     *   - tier: Subscription tier
+     *   - productId: Product ID (for marketplace items)
+     *   - amount: Amount in dollars
+     *   - currency: Currency code (default: 'usd')
+     *   - description: Purchase description
+     */
+    window.openCheckout = async function(data) {
+        checkoutData = data;
+
+        // Populate order summary
+        populateOrderSummary(data);
+
+        // Show subscription details if applicable
+        if (data.type === 'subscription') {
+            showSubscriptionDetails(data);
+        }
+
+        // Pre-fill billing info if user is logged in
+        if (cr.isAuthenticated()) {
+            await prefillBillingInfo();
+        }
+
+        // Show modal
+        document.getElementById('checkout-modal').classList.add('active');
+
+        // Initialize Stripe if not already done
+        if (!stripe) {
+            initializeStripe();
+        }
+    };
+
+    function closeCheckout() {
+        document.getElementById('checkout-modal').classList.remove('active');
+        resetForm();
+    }
+
+    function populateOrderSummary(data) {
+        const itemsContainer = document.getElementById('order-items');
+        const totalEl = document.getElementById('order-total');
+
+        let itemHTML = '';
+
+        if (data.type === 'subscription') {
+            const billingPeriod = data.billingPeriod || 'monthly';
+            const periodText = billingPeriod === 'monthly' ? '/month' : '/year';
+
+            itemHTML = `
+                <div class="order-item">
+                    <div>
+                        <div class="order-item-name">${data.domain} - ${data.tier} Plan</div>
+                        <div class="order-item-desc">Billed ${billingPeriod}</div>
+                    </div>
+                    <div class="order-item-price">$${data.amount}${periodText}</div>
+                </div>
+            `;
+        } else if (data.type === 'product') {
+            itemHTML = `
+                <div class="order-item">
+                    <div>
+                        <div class="order-item-name">${data.productName}</div>
+                        <div class="order-item-desc">${data.description || 'Digital product'}</div>
+                    </div>
+                    <div class="order-item-price">$${data.amount.toFixed(2)}</div>
+                </div>
+            `;
+        } else {
+            itemHTML = `
+                <div class="order-item">
+                    <div>
+                        <div class="order-item-name">${data.description}</div>
+                    </div>
+                    <div class="order-item-price">$${data.amount.toFixed(2)}</div>
+                </div>
+            `;
+        }
+
+        itemsContainer.innerHTML = itemHTML;
+        totalEl.textContent = `$${data.amount.toFixed(2)}`;
+    }
+
+    function showSubscriptionDetails(data) {
+        const detailsEl = document.getElementById('subscription-details');
+        const featuresEl = document.getElementById('subscription-features');
+
+        // Get features for this tier (would come from API in production)
+        const features = getSubscriptionFeatures(data.domain, data.tier);
+
+        featuresEl.innerHTML = features.map(f => `<li>${f}</li>`).join('');
+        detailsEl.style.display = 'block';
+    }
+
+    function getSubscriptionFeatures(domain, tier) {
+        // Mock features - would come from backend
+        const featureMap = {
+            'music': {
+                'pro': [
+                    'Unlimited track distributions',
+                    'Advanced analytics dashboard',
+                    'Spotify & Apple Music auto-sync',
+                    'Priority support',
+                    'NFT creation tools'
+                ],
+                'pro_plus': [
+                    'Everything in Pro',
+                    'White-label distribution',
+                    'Custom ISRC codes',
+                    '1-on-1 coaching session/month',
+                    'Early access to new features'
+                ]
+            }
+        };
+
+        return featureMap[domain]?.[tier] || ['Premium features included'];
+    }
+
+    async function prefillBillingInfo() {
+        try {
+            const userData = await cr.auth.verify();
+
+            if (userData.email) {
+                document.getElementById('billing-email').value = userData.email;
+            }
+            if (userData.full_name) {
+                document.getElementById('billing-name').value = userData.full_name;
+            }
+        } catch (error) {
+            // User not logged in or token invalid
+        }
+    }
+
+    // =====================================================
+    // PAYMENT METHOD SELECTION
+    // =====================================================
+
+    function selectPaymentMethod(method) {
+        currentPaymentMethod = method;
+
+        // Update button states
+        document.querySelectorAll('.payment-method-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-method="${method}"]`).classList.add('active');
+
+        // Show/hide payment sections
+        if (method === 'card') {
+            document.getElementById('card-payment-section').style.display = 'block';
+            document.getElementById('bank-payment-section').style.display = 'none';
+        } else {
+            document.getElementById('card-payment-section').style.display = 'none';
+            document.getElementById('bank-payment-section').style.display = 'block';
+        }
+    }
+
+    // =====================================================
+    // PAYMENT PROCESSING
+    // =====================================================
+
+    async function processPayment() {
+        clearMessages();
+
+        // Validate billing info
+        if (!validateBillingInfo()) {
+            showError('Please fill in all billing information');
+            return;
+        }
+
+        // Disable button and show spinner
+        const submitBtn = document.getElementById('submit-btn');
+        const buttonText = document.getElementById('button-text');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('processing');
+
+        try {
+            if (checkoutData.type === 'subscription') {
+                await processSubscription();
+            } else {
+                await processOneTimePayment();
+            }
+        } catch (error) {
+            showError(error.message);
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('processing');
+        }
+    }
+
+    async function processSubscription() {
+        // Create payment method
+        const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+            billing_details: getBillingDetails(),
+        });
+
+        if (pmError) {
+            throw new Error(pmError.message);
+        }
+
+        // Create subscription via backend
+        const result = await cr.payments.createSubscription(
+            checkoutData.domain,
+            checkoutData.tier,
+            checkoutData.billingPeriod
+        );
+
+        // Handle 3D Secure if needed
+        if (result.client_secret) {
+            const { error: confirmError } = await stripe.confirmCardPayment(
+                result.client_secret,
+                { payment_method: paymentMethod.id }
+            );
+
+            if (confirmError) {
+                throw new Error(confirmError.message);
+            }
+        }
+
+        showSuccess('subscription');
+    }
+
+    async function processOneTimePayment() {
+        // Create payment intent
+        const intentResult = await cr.payments.createPaymentIntent(
+            checkoutData.amount,
+            checkoutData.description
+        );
+
+        // Confirm payment
+        const { error, paymentIntent } = await stripe.confirmCardPayment(
+            intentResult.client_secret,
+            {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: getBillingDetails(),
+                },
+            }
+        );
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        if (paymentIntent.status === 'succeeded') {
+            showSuccess('purchase');
+        }
+    }
+
+    function getBillingDetails() {
+        return {
+            name: document.getElementById('billing-name').value,
+            email: document.getElementById('billing-email').value,
+            address: {
+                line1: document.getElementById('billing-address').value,
+                city: document.getElementById('billing-city').value,
+                state: document.getElementById('billing-state').value,
+                postal_code: document.getElementById('billing-zip').value,
+                country: document.getElementById('billing-country').value,
+            },
+        };
+    }
+
+    function validateBillingInfo() {
+        const required = [
+            'billing-name',
+            'billing-email',
+            'billing-address',
+            'billing-city',
+            'billing-zip',
+            'billing-state',
+            'billing-country',
+        ];
+
+        for (const fieldId of required) {
+            const field = document.getElementById(fieldId);
+            if (!field.value.trim()) {
+                field.focus();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // =====================================================
+    // SUCCESS HANDLING
+    // =====================================================
+
+    function showSuccess(type) {
+        document.getElementById('checkout-form-section').style.display = 'none';
+        document.getElementById('success-state').style.display = 'block';
+
+        const detailsEl = document.getElementById('success-details');
+
+        if (type === 'subscription') {
+            detailsEl.textContent = 'Your subscription is now active! Start exploring your new features.';
+        } else {
+            detailsEl.textContent = 'Your purchase is complete. You can download your items from your dashboard.';
+        }
+
+        // Track conversion
+        if (checkoutData.type === 'subscription') {
+            cr.conversion.trackUpgradeClick(
+                checkoutData.domain,
+                'free',
+                checkoutData.tier
+            );
+        }
+    }
+
+    function goToDashboard() {
+        window.location.href = '/user-dashboard.html';
+    }
+
+    // =====================================================
+    // MESSAGING
+    // =====================================================
+
+    function showError(message) {
+        const errorEl = document.getElementById('error-message');
+        errorEl.textContent = message;
+        errorEl.classList.add('active');
+    }
+
+    function showInfo(message) {
+        const infoEl = document.getElementById('info-message');
+        infoEl.textContent = message;
+        infoEl.classList.add('active');
+    }
+
+    function clearMessages() {
+        document.getElementById('error-message').classList.remove('active');
+        document.getElementById('success-message').classList.remove('active');
+        document.getElementById('info-message').classList.remove('active');
+    }
+
+    // =====================================================
+    // FORM RESET
+    // =====================================================
+
+    function resetForm() {
+        clearMessages();
+
+        document.getElementById('checkout-form-section').style.display = 'block';
+        document.getElementById('success-state').style.display = 'none';
+
+        const submitBtn = document.getElementById('submit-btn');
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('processing');
+
+        if (cardElement) cardElement.clear();
+        if (bankElement) bankElement.clear();
+
+        checkoutData = null;
+    }
+
+    // =====================================================
+    // GLOBAL ACCESS
+    // =====================================================
+
+    window.openCheckout = openCheckout;
+    window.closeCheckout = closeCheckout;
+</script>
+
+</body>
+</html>

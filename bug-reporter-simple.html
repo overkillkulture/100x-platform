@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Reporter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #00ff00;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #00ff00;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            background: #0a0a0a;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #00ff00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #00cc00;
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        #message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        .success {
+            background: #003300;
+            border: 2px solid #00ff00;
+        }
+        .error {
+            background: #330000;
+            border: 2px solid #ff0000;
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐛 Bug Reporter</h1>
+
+    <form id="bugForm">
+        <label for="title">Bug Title *</label>
+        <input type="text" id="title" required placeholder="Brief description of the bug">
+
+        <label for="description">Description *</label>
+        <textarea id="description" rows="6" required placeholder="Detailed description of what went wrong"></textarea>
+
+        <label for="page">Page/Feature</label>
+        <input type="text" id="page" placeholder="Where did this happen?">
+
+        <label for="reporter">Your Name</label>
+        <input type="text" id="reporter" placeholder="Optional">
+
+        <button type="submit" id="submitBtn">Submit Bug Report</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        document.getElementById('bugForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const messageDiv = document.getElementById('message');
+
+            // Disable button while submitting
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            // Get form data
+            const formData = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                page: document.getElementById('page').value,
+                reporter: document.getElementById('reporter').value || 'Anonymous',
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                // Submit to Netlify function
+                const response = await fetch('/.netlify/functions/submit-bug', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Success
+                    messageDiv.className = 'success';
+                    messageDiv.textContent = '✅ Bug report submitted successfully! Thank you.';
+                    messageDiv.style.display = 'block';
+
+                    // Reset form
+                    document.getElementById('bugForm').reset();
+                } else {
+                    throw new Error(result.error || 'Submission failed');
+                }
+
+            } catch (error) {
+                // Error
+                messageDiv.className = 'error';
+                messageDiv.textContent = '❌ Error: ' + error.message;
+                messageDiv.style.display = 'block';
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Bug Report';
+            }
+        });
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

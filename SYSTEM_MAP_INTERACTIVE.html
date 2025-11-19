@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Vault - System Map</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            overflow: hidden;
+        }
+
+        #header {
+            background: #1a1a1a;
+            padding: 15px;
+            border-bottom: 2px solid #00ff00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #header h1 {
+            font-size: 24px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        #controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background: #1a1a1a;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        button.active {
+            background: #00ff00;
+            color: #000;
+        }
+
+        #container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        #network {
+            flex: 1;
+            border-right: 2px solid #00ff00;
+        }
+
+        #sidebar {
+            width: 350px;
+            background: #0f0f0f;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        #sidebar h2 {
+            color: #00ff00;
+            margin-bottom: 15px;
+            font-size: 18px;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .stat {
+            margin: 10px 0;
+            padding: 10px;
+            background: #1a1a1a;
+            border-left: 3px solid #00ff00;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .stat-value {
+            color: #00ff00;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #task-details {
+            margin-top: 20px;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 1px solid #00ff00;
+            display: none;
+        }
+
+        #task-details.show {
+            display: block;
+        }
+
+        .task-field {
+            margin: 8px 0;
+        }
+
+        .task-field-label {
+            color: #888;
+            font-size: 11px;
+        }
+
+        .task-field-value {
+            color: #00ff00;
+            font-size: 14px;
+        }
+
+        .priority-critical { color: #ff0000; }
+        .priority-high { color: #ff8800; }
+        .priority-medium { color: #ffff00; }
+        .priority-low { color: #00ff00; }
+
+        #legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(26, 26, 26, 0.9);
+            padding: 15px;
+            border: 1px solid #00ff00;
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 1px solid #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>🧠 QUANTUM VAULT - SYSTEM MAP</h1>
+        <div id="controls">
+            <button onclick="showView('tasks')" class="active" id="btn-tasks">Task Network</button>
+            <button onclick="showView('domains')">7 Domains</button>
+            <button onclick="showView('timeline')">Timeline</button>
+            <button onclick="resetView()">Reset View</button>
+        </div>
+    </div>
+
+    <div id="container">
+        <div id="network"></div>
+        <div id="sidebar">
+            <h2>📊 SYSTEM STATUS</h2>
+
+            <div class="stat">
+                <div class="stat-label">TOTAL TASKS</div>
+                <div class="stat-value" id="total-tasks">39</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">COMPLETED</div>
+                <div class="stat-value" id="completed-tasks">4</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">IN PROGRESS</div>
+                <div class="stat-value" id="progress-tasks">0</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">COMMANDER DECISIONS</div>
+                <div class="stat-value" id="commander-tasks">12</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">AUTONOMOUS READY</div>
+                <div class="stat-value" id="autonomous-tasks">23</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">AUTONOMY SCORE</div>
+                <div class="stat-value" id="autonomy-score">69%</div>
+            </div>
+
+            <div id="task-details">
+                <h2>TASK DETAILS</h2>
+                <div id="task-info"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="legend">
+        <div style="margin-bottom: 10px; font-weight: bold;">LEGEND:</div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ff0000;"></div>
+            <div>Priority 90+ (Critical)</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ff8800;"></div>
+            <div>Priority 80-89 (High)</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ffff00;"></div>
+            <div>Priority 70-79 (Medium)</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #00ff00;"></div>
+            <div>Priority < 70 (Low)</div>
+        </div>
+        <div class="legend-item" style="margin-top: 10px;">
+            <div class="legend-color" style="background: #00ff00; opacity: 0.3;"></div>
+            <div>Completed</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #0088ff;"></div>
+            <div>Commander Review Required</div>
+        </div>
+    </div>
+
+    <script>
+        // Load task data from brain
+        const tasks = [
+            {id: 1, task: "Extract $5K from Coinbase using OTP tool", priority: 95, status: "Queued", assigned_to: "Commander", commander_review: true, dependencies: []},
+            {id: 2, task: "Post Fiverr job listing to hire VA", priority: 90, status: "Queued", assigned_to: "Commander", commander_review: true, dependencies: []},
+            {id: 3, task: "Connect Stripe API for payment processing", priority: 90, status: "Queued", assigned_to: "C1 Mechanic", commander_review: true, dependencies: [1]},
+            {id: 4, task: "Build account creation automation script", priority: 85, status: "Complete", assigned_to: "C1 Mechanic", commander_review: false, dependencies: []},
+            {id: 5, task: "Create 4 landing pages using templates", priority: 80, status: "Queued", assigned_to: "Employee", commander_review: false, dependencies: [2]},
+            {id: 6, task: "Document Build account creation automation script", priority: 40, status: "Complete", assigned_to: "C2 Architect", commander_review: false, dependencies: []},
+            {id: 7, task: "Extract $5K from Coinbase (seed capital)", priority: 95, status: "Queued", assigned_to: "Commander", commander_review: true, dependencies: []},
+            {id: 8, task: "Post Fiverr job listing to hire VA (Taiwan/Philippines)", priority: 90, status: "Queued", assigned_to: "Commander", commander_review: true, dependencies: []},
+            {id: 13, task: "Create 50 Instagram accounts", priority: 85, status: "Queued", assigned_to: "Employee", commander_review: false, dependencies: [6]},
+            {id: 14, task: "Create 50 TikTok accounts", priority: 85, status: "Queued", assigned_to: "Employee", commander_review: false, dependencies: [6]},
+            {id: 15, task: "Create 50 YouTube channels", priority: 85, status: "Queued", assigned_to: "Employee", commander_review: false, dependencies: [6]},
+            {id: 19, task: "Integrate Stripe API for payment processing", priority: 90, status: "Queued", assigned_to: "C1 Mechanic", commander_review: true, dependencies: [1]},
+            {id: 20, task: "Build Instagram API integration", priority: 85, status: "Queued", assigned_to: "C1 Mechanic", commander_review: false, dependencies: []},
+            {id: 21, task: "Build TikTok API integration", priority: 85, status: "Queued", assigned_to: "C1 Mechanic", commander_review: false, dependencies: []},
+            {id: 22, task: "Build YouTube API integration", priority: 85, status: "Queued", assigned_to: "C1 Mechanic", commander_review: false, dependencies: []},
+            {id: 24, task: "Setup production hosting (Netlify + Railway)", priority: 80, status: "Complete", assigned_to: "C1 Mechanic", commander_review: false, dependencies: []},
+            {id: 28, task: "Build Flask/FastAPI backend", priority: 70, status: "Queued", assigned_to: "C1 Mechanic", commander_review: false, dependencies: []},
+            {id: 29, task: "Setup PostgreSQL database", priority: 70, status: "Queued", assigned_to: "C1 Mechanic", commander_review: false, dependencies: []},
+            {id: 32, task: "Deploy Music Domain landing page", priority: 75, status: "Queued", assigned_to: "C1 Mechanic", commander_review: false, dependencies: []},
+            {id: 33, task: "Connect Spotify API", priority: 70, status: "Queued", assigned_to: "C1 Mechanic", commander_review: false, dependencies: []},
+            {id: 34, task: "Build 528 Hz audio generator", priority: 65, status: "Complete", assigned_to: "C1 Mechanic", commander_review: false, dependencies: []},
+            {id: 39, task: "Launch beta access (10 users)", priority: 90, status: "Queued", assigned_to: "Commander", commander_review: true, dependencies: []}
+        ];
+
+        let network = null;
+        let currentView = 'tasks';
+
+        function getPriorityColor(priority) {
+            if (priority >= 90) return '#ff0000';  // Critical
+            if (priority >= 80) return '#ff8800';  // High
+            if (priority >= 70) return '#ffff00';  // Medium
+            return '#00ff00';  // Low
+        }
+
+        function showView(view) {
+            currentView = view;
+            document.querySelectorAll('#controls button').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${view}`).classList.add('active');
+
+            if (view === 'tasks') {
+                renderTaskNetwork();
+            } else if (view === 'domains') {
+                renderDomains();
+            } else if (view === 'timeline') {
+                renderTimeline();
+            }
+        }
+
+        function renderTaskNetwork() {
+            const nodes = tasks.map(t => ({
+                id: t.id,
+                label: `#${t.id}\n${t.task.substring(0, 30)}...`,
+                title: `${t.task}\nPriority: ${t.priority}\nStatus: ${t.status}\nAssigned: ${t.assigned_to}`,
+                color: {
+                    background: t.status === 'Complete'
+                        ? 'rgba(0, 255, 0, 0.3)'
+                        : (t.commander_review ? '#0088ff' : getPriorityColor(t.priority)),
+                    border: getPriorityColor(t.priority)
+                },
+                shape: t.commander_review ? 'diamond' : 'dot',
+                size: 20 + (t.priority / 5)
+            }));
+
+            const edges = [];
+            tasks.forEach(t => {
+                if (t.dependencies && t.dependencies.length > 0) {
+                    t.dependencies.forEach(dep => {
+                        edges.push({
+                            from: dep,
+                            to: t.id,
+                            arrows: 'to',
+                            color: '#00ff00'
+                        });
+                    });
+                }
+            });
+
+            const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+
+            const options = {
+                nodes: {
+                    font: { color: '#00ff00', size: 10 }
+                },
+                edges: {
+                    smooth: { type: 'cubicBezier' }
+                },
+                physics: {
+                    enabled: true,
+                    barnesHut: {
+                        gravitationalConstant: -3000,
+                        springLength: 150
+                    }
+                },
+                interaction: {
+                    hover: true
+                }
+            };
+
+            if (network) network.destroy();
+            network = new vis.Network(document.getElementById('network'), data, options);
+
+            network.on('click', function(params) {
+                if (params.nodes.length > 0) {
+                    const taskId = params.nodes[0];
+                    showTaskDetails(taskId);
+                }
+            });
+        }
+
+        function renderDomains() {
+            const domains = [
+                { id: 1, label: 'Infrastructure\n(Deployment)', color: '#ff0000', x: 0, y: 0 },
+                { id: 2, label: 'Intelligence\n(AI/APIs)', color: '#ff8800', x: -200, y: 200 },
+                { id: 3, label: 'Security\n(Auth/Crypto)', color: '#ffff00', x: 200, y: 200 },
+                { id: 4, label: 'Interface\n(Web/Mobile)', color: '#00ff00', x: -200, y: -200 },
+                { id: 5, label: 'Commerce\n(Payments)', color: '#00ffff', x: 200, y: -200 },
+                { id: 6, label: 'Creation\n(Content)', color: '#ff00ff', x: 0, y: 300 },
+                { id: 7, label: 'Consciousness\n(Music/528Hz)', color: '#8800ff', x: 0, y: -300 },
+                { id: 8, label: 'COMMANDER', color: '#ffffff', x: 0, y: 0, size: 40 }
+            ];
+
+            const nodes = domains.map(d => ({
+                id: d.id,
+                label: d.label,
+                color: d.color,
+                x: d.x,
+                y: d.y,
+                size: d.size || 30,
+                fixed: true,
+                shape: 'box'
+            }));
+
+            const edges = [
+                { from: 8, to: 1 },
+                { from: 8, to: 2 },
+                { from: 8, to: 3 },
+                { from: 8, to: 4 },
+                { from: 8, to: 5 },
+                { from: 8, to: 6 },
+                { from: 8, to: 7 }
+            ].map(e => ({...e, color: '#00ff00', arrows: 'to'}));
+
+            const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+
+            const options = {
+                nodes: {
+                    font: { color: '#000', size: 12 }
+                },
+                physics: { enabled: false }
+            };
+
+            if (network) network.destroy();
+            network = new vis.Network(document.getElementById('network'), data, options);
+        }
+
+        function renderTimeline() {
+            const milestones = [
+                { id: 1, label: 'DAY 1\nExtract $5K\nPost Fiverr', x: -300, y: 0, color: '#ff0000' },
+                { id: 2, label: 'DAY 2-3\nHire Employee', x: -200, y: 0, color: '#ff8800' },
+                { id: 3, label: 'DAY 4-9\nBuild Systems', x: 0, y: 0, color: '#ffff00' },
+                { id: 4, label: 'DAY 10-14\nTest & QA', x: 200, y: 0, color: '#00ff00' },
+                { id: 5, label: 'DAY 15\nLAUNCH 🚀', x: 300, y: 0, color: '#00ffff', size: 40 }
+            ];
+
+            const nodes = milestones.map(m => ({
+                id: m.id,
+                label: m.label,
+                color: m.color,
+                x: m.x,
+                y: m.y,
+                size: m.size || 30,
+                fixed: true,
+                shape: 'box'
+            }));
+
+            const edges = [
+                { from: 1, to: 2 },
+                { from: 2, to: 3 },
+                { from: 3, to: 4 },
+                { from: 4, to: 5 }
+            ].map(e => ({...e, color: '#00ff00', arrows: 'to', width: 3}));
+
+            const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+
+            const options = {
+                nodes: {
+                    font: { color: '#000', size: 12 }
+                },
+                physics: { enabled: false }
+            };
+
+            if (network) network.destroy();
+            network = new vis.Network(document.getElementById('network'), data, options);
+        }
+
+        function showTaskDetails(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const detailsDiv = document.getElementById('task-details');
+            const infoDiv = document.getElementById('task-info');
+
+            infoDiv.innerHTML = `
+                <div class="task-field">
+                    <div class="task-field-label">TASK ID</div>
+                    <div class="task-field-value">#${task.id}</div>
+                </div>
+                <div class="task-field">
+                    <div class="task-field-label">DESCRIPTION</div>
+                    <div class="task-field-value">${task.task}</div>
+                </div>
+                <div class="task-field">
+                    <div class="task-field-label">PRIORITY</div>
+                    <div class="task-field-value priority-${task.priority >= 90 ? 'critical' : task.priority >= 80 ? 'high' : task.priority >= 70 ? 'medium' : 'low'}">${task.priority}</div>
+                </div>
+                <div class="task-field">
+                    <div class="task-field-label">STATUS</div>
+                    <div class="task-field-value">${task.status}</div>
+                </div>
+                <div class="task-field">
+                    <div class="task-field-label">ASSIGNED TO</div>
+                    <div class="task-field-value">${task.assigned_to}</div>
+                </div>
+                <div class="task-field">
+                    <div class="task-field-label">COMMANDER REVIEW</div>
+                    <div class="task-field-value">${task.commander_review ? 'YES' : 'NO'}</div>
+                </div>
+                <div class="task-field">
+                    <div class="task-field-label">DEPENDENCIES</div>
+                    <div class="task-field-value">${task.dependencies.length > 0 ? task.dependencies.join(', ') : 'None'}</div>
+                </div>
+            `;
+
+            detailsDiv.classList.add('show');
+        }
+
+        function resetView() {
+            if (network) {
+                network.fit();
+            }
+        }
+
+        // Initialize
+        renderTaskNetwork();
+    </script>
+</body>
+</html>

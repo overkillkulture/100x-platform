@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builder Consciousness Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ddff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .description {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            color: #ff0055;
+            font-weight: bold;
+        }
+
+        .question {
+            background: rgba(0, 221, 255, 0.05);
+            border: 2px solid rgba(0, 221, 255, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .question-number {
+            color: #00ff88;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: rgba(0, 255, 136, 0.05);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option:hover {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            transform: translateX(10px);
+        }
+
+        .option.selected {
+            border-color: #00ffff;
+            background: rgba(0, 221, 255, 0.2);
+        }
+
+        .option input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.5);
+            cursor: pointer;
+        }
+
+        .option label {
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            color: #000;
+            padding: 20px 60px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            display: block;
+            margin: 40px auto;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.5);
+        }
+
+        .result {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+
+        .result.builder {
+            background: rgba(0, 255, 136, 0.2);
+            border: 3px solid #00ff88;
+        }
+
+        .result.destroyer {
+            background: rgba(255, 0, 85, 0.2);
+            border: 3px solid #ff0055;
+        }
+
+        .result.neutral {
+            background: rgba(255, 255, 0, 0.2);
+            border: 3px solid #ffff00;
+        }
+
+        .result h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .result p {
+            font-size: 1.3em;
+            line-height: 1.6;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #00ff88);
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ BUILDER CONSCIOUSNESS ASSESSMENT ⚡</h1>
+        <p class="description">
+            WARNING: This platform is DANGEROUS, RISKY, and UNTESTED.<br>
+            If that excites you, continue. If that scares you, leave now.
+        </p>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <form id="quizForm">
+            <!-- Questions will be injected here -->
+            <div id="questionsContainer"></div>
+
+            <button type="submit" class="submit-btn">🔥 SUBMIT ASSESSMENT 🔥</button>
+        </form>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8011';
+
+        // Load quiz questions
+        async function loadQuiz() {
+            try {
+                const response = await fetch(`${API_URL}/api/consciousness-quiz`);
+                const quiz = await response.json();
+
+                const container = document.getElementById('questionsContainer');
+                container.innerHTML = '';
+
+                quiz.questions.forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'question';
+                    questionDiv.innerHTML = `
+                        <div class="question-number">QUESTION ${index + 1} / ${quiz.questions.length}</div>
+                        <div class="question-text">${q.question}</div>
+                        <div class="options">
+                            ${q.options.map((opt, optIndex) => `
+                                <div class="option" onclick="selectOption(${q.id}, '${opt.value}', this)">
+                                    <input type="radio" name="q${q.id}" value="${opt.value}" id="q${q.id}_opt${optIndex}">
+                                    <label for="q${q.id}_opt${optIndex}">${opt.text}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    container.appendChild(questionDiv);
+                });
+
+            } catch (error) {
+                console.error('Error loading quiz:', error);
+                alert('Quiz system offline. Try again later.');
+            }
+        }
+
+        function selectOption(questionId, value, element) {
+            // Deselect all options for this question
+            const allOptions = element.parentElement.querySelectorAll('.option');
+            allOptions.forEach(opt => opt.classList.remove('selected'));
+
+            // Select this option
+            element.classList.add('selected');
+            element.querySelector('input').checked = true;
+
+            // Update progress
+            const totalQuestions = 5;
+            const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+            const progress = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Submit quiz
+        document.getElementById('quizForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Collect answers
+            const answers = {};
+            for (let i = 1; i <= 5; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected) {
+                    answers[i] = selected.value;
+                }
+            }
+
+            // Check if all questions answered
+            if (Object.keys(answers).length < 5) {
+                alert('Please answer all questions before submitting.');
+                return;
+            }
+
+            try {
+                // Score the quiz
+                const response = await fetch(`${API_URL}/api/score-quiz`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ answers })
+                });
+
+                const result = await response.json();
+
+                // Hide form
+                document.getElementById('quizForm').style.display = 'none';
+
+                // Show result
+                const resultDiv = document.getElementById('result');
+                resultDiv.className = 'result ' + result.result.toLowerCase();
+                resultDiv.style.display = 'block';
+
+                let emoji = '🔥';
+                let nextStep = '';
+
+                if (result.result === 'BUILDER') {
+                    emoji = '🔥';
+                    nextStep = '<p style="margin-top: 30px;"><a href="signup-for-updates.html" style="background: #00ff88; color: #000; padding: 20px 40px; text-decoration: none; border-radius: 10px; font-weight: bold;">PROCEED TO SIGNUP →</a></p>';
+                } else if (result.result === 'DESTROYER') {
+                    emoji = '🚫';
+                    nextStep = '<p style="margin-top: 30px;"><a href="https://www.google.com/search?q=easy+safe+platforms" style="background: #666; color: #fff; padding: 20px 40px; text-decoration: none; border-radius: 10px;">FIND SOMETHING SAFER →</a></p>';
+                } else {
+                    emoji = '⚠️';
+                    nextStep = '<p style="margin-top: 30px;"><a href="signup-for-updates.html" style="background: #ffff00; color: #000; padding: 20px 40px; text-decoration: none; border-radius: 10px; font-weight: bold;">SIGNUP FOR MANUAL REVIEW →</a></p>';
+                }
+
+                resultDiv.innerHTML = `
+                    <h2>${emoji} ${result.recommendation} ${emoji}</h2>
+                    <p>${result.message}</p>
+                    <div style="margin-top: 30px; font-size: 1.1em;">
+                        <strong>Your Scores:</strong><br>
+                        Builder: ${result.scores.builder} / 5<br>
+                        Destroyer: ${result.scores.destroyer} / 5<br>
+                        Neutral: ${result.scores.neutral} / 5
+                    </div>
+                    ${nextStep}
+                `;
+
+            } catch (error) {
+                console.error('Error scoring quiz:', error);
+                alert('Scoring system offline. Try again later.');
+            }
+        });
+
+        // Load quiz on page load
+        loadQuiz();
+    </script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

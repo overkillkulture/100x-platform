@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Bug Report</title>
+</head>
+<body style="margin: 0; padding: 40px; background: #000; color: #0f0; font-family: monospace; min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div style="max-width: 600px; width: 100%;">
+        <h1 style="color: #0f0; text-align: center;">🐛 EMERGENCY BUG REPORTER 🐛</h1>
+        <p style="text-align: center; margin-bottom: 30px;">Type anything. Hit Enter. We get it instantly.</p>
+
+        <input type="text" id="msg" placeholder="Type your message and press Enter..." style="
+            width: 100%;
+            padding: 20px;
+            font-size: 18px;
+            background: #111;
+            border: 3px solid #0f0;
+            color: #0f0;
+            border-radius: 10px;
+            font-family: monospace;
+            box-sizing: border-box;
+        ">
+
+        <div id="status" style="margin-top: 20px; text-align: center; font-size: 20px;"></div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #111; border: 2px solid #333; border-radius: 10px;">
+            <h3 style="margin-top: 0;">Your Messages:</h3>
+            <div id="history" style="font-size: 14px; line-height: 1.8;"></div>
+        </div>
+    </div>
+
+    <script>
+    const input = document.getElementById('msg');
+    const status = document.getElementById('status');
+    const history = document.getElementById('history');
+
+    // Load history
+    function showHistory() {
+        const msgs = localStorage.getItem('emergency_messages') || '';
+        history.innerHTML = msgs.split('\n').filter(m => m.trim()).map(m =>
+            '<div style="margin-bottom: 10px;">' + m + '</div>'
+        ).join('') || '<div style="color: #666;">No messages yet</div>';
+    }
+    showHistory();
+
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const msg = this.value.trim();
+            if (!msg) return;
+
+            // Send to server
+            fetch('/api/bug-report', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    message: msg,
+                    timestamp: new Date().toISOString(),
+                    page: 'emergency-bug-report'
+                })
+            });
+
+            // Save locally
+            const time = new Date().toLocaleTimeString();
+            const entry = `[${time}] ${msg}`;
+            const all = localStorage.getItem('emergency_messages') || '';
+            localStorage.setItem('emergency_messages', all + entry + '\n');
+
+            // Show success
+            status.textContent = '✅ SENT!';
+            status.style.color = '#0f0';
+            this.value = '';
+
+            // Update history
+            showHistory();
+
+            setTimeout(() => status.textContent = '', 2000);
+        }
+    });
+
+    // Auto-focus
+    input.focus();
+    </script>
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

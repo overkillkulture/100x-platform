@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consciousness Revolution - Onboarding Game v2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Animated starfield background */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* CRT scanline effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* CRT screen flicker */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 16, 16, 0.1);
+            opacity: 0;
+            z-index: 999;
+            pointer-events: none;
+            animation: flicker 0.15s infinite;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.27861; }
+            5% { opacity: 0.34769; }
+            10% { opacity: 0.23604; }
+            15% { opacity: 0.90626; }
+            20% { opacity: 0.18128; }
+            25% { opacity: 0.83891; }
+            30% { opacity: 0.65583; }
+            35% { opacity: 0.67807; }
+            40% { opacity: 0.26559; }
+            45% { opacity: 0.84693; }
+            50% { opacity: 0.96019; }
+            55% { opacity: 0.08594; }
+            60% { opacity: 0.20313; }
+            65% { opacity: 0.71988; }
+            70% { opacity: 0.53455; }
+            75% { opacity: 0.37288; }
+            80% { opacity: 0.71428; }
+            85% { opacity: 0.70419; }
+            90% { opacity: 0.7003; }
+            95% { opacity: 0.36108; }
+            100% { opacity: 0.24387; }
+        }
+
+        /* Game container */
+        .game-screen {
+            width: 95%;
+            max-width: 1200px;
+            height: 700px;
+            border: 6px solid #00ff00;
+            background: linear-gradient(135deg, #001100 0%, #002200 50%, #001100 100%);
+            position: relative;
+            box-shadow:
+                0 0 80px rgba(0, 255, 0, 0.6),
+                inset 0 0 50px rgba(0, 255, 0, 0.1),
+                0 0 20px rgba(0, 255, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+            border-radius: 10px;
+        }
+
+        /* Top HUD bar */
+        .game-hud {
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 3px solid #00ff00;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .level-display {
+            font-size: 12px;
+            color: #ffff00;
+            text-shadow: 0 0 10px #ffff00, 0 0 20px #ffff00;
+            letter-spacing: 2px;
+        }
+
+        .xp-bar-container {
+            flex: 1;
+            margin: 0 30px;
+            height: 25px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #00ff00;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .xp-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00 0%, #00ff66 50%, #ffff00 100%);
+            width: 0%;
+            transition: width 0.8s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .xp-bar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+
+        .xp-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10px;
+            font-weight: bold;
+            color: #000;
+            text-shadow: 0 0 5px #fff;
+            letter-spacing: 1px;
+        }
+
+        /* Main game area */
+        .game-area {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Character panel with pixel art */
+        .character-panel {
+            width: 280px;
+            background: rgba(0, 0, 0, 0.95);
+            border-right: 3px solid #00ff00;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            gap: 20px;
+        }
+
+        .character {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 15px;
+            border: 3px solid transparent;
+            border-radius: 8px;
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        .character:hover {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.15);
+            transform: translateX(10px) scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .character.active {
+            border-color: #ffff00;
+            background: rgba(255, 255, 0, 0.15);
+            animation: pulse-character 1.5s infinite;
+        }
+
+        @keyframes pulse-character {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(255, 255, 0, 0.5);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
+                transform: scale(1.03);
+            }
+        }
+
+        /* Pixel art character sprites */
+        .character-sprite {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 10px;
+            position: relative;
+            animation: sprite-float 3s ease-in-out infinite;
+        }
+
+        @keyframes sprite-float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(-2deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(-8px) rotate(2deg); }
+        }
+
+        /* Araya sprite - swirl/vortex */
+        .sprite-araya {
+            background: radial-gradient(circle, #ffff00 0%, #00ffff 50%, transparent 70%);
+            border-radius: 50%;
+            box-shadow:
+                0 0 30px rgba(255, 255, 0, 0.6),
+                inset 0 0 20px rgba(0, 255, 255, 0.4);
+            animation: sprite-float 3s ease-in-out infinite, spin 8s linear infinite;
+        }
+
+        .sprite-araya::before {
+            content: "🌀";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            text-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Builder sprite - hammer/tools */
+        .sprite-builder {
+            background: linear-gradient(135deg, #ff6600 0%, #ffaa00 100%);
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+            box-shadow:
+                0 0 25px rgba(255, 102, 0, 0.7),
+                inset 0 0 15px rgba(255, 170, 0, 0.5);
+        }
+
+        .sprite-builder::before {
+            content: "🔨";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            animation: hammer-swing 2s ease-in-out infinite;
+        }
+
+        @keyframes hammer-swing {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            25% { transform: translate(-50%, -50%) rotate(-15deg); }
+            75% { transform: translate(-50%, -50%) rotate(15deg); }
+        }
+
+        /* Philosopher sprite - brain/crystal */
+        .sprite-philosopher {
+            background: radial-gradient(ellipse, #9933ff 0%, #6600cc 60%, transparent 80%);
+            border-radius: 50%;
+            box-shadow:
+                0 0 30px rgba(153, 51, 255, 0.7),
+                inset 0 0 20px rgba(102, 0, 204, 0.4);
+            animation: sprite-float 3s ease-in-out infinite, pulse-brain 2s ease-in-out infinite;
+        }
+
+        .sprite-philosopher::before {
+            content: "🧠";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            text-shadow: 0 0 20px rgba(153, 51, 255, 0.8);
+        }
+
+        @keyframes pulse-brain {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Observer sprite - eye/radar */
+        .sprite-observer {
+            background: radial-gradient(circle, #00ffff 0%, #0099cc 50%, transparent 70%);
+            border-radius: 50%;
+            box-shadow:
+                0 0 25px rgba(0, 255, 255, 0.7),
+                inset 0 0 15px rgba(0, 153, 204, 0.5);
+            animation: sprite-float 3s ease-in-out infinite, scan 3s ease-in-out infinite;
+        }
+
+        .sprite-observer::before {
+            content: "👁️";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+        }
+
+        @keyframes scan {
+            0%, 100% { box-shadow: 0 0 25px rgba(0, 255, 255, 0.7); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 255, 1), 0 0 60px rgba(0, 255, 255, 0.5); }
+        }
+
+        .character-name {
+            text-align: center;
+            font-size: 10px;
+            margin-top: 8px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .character-role {
+            text-align: center;
+            font-size: 7px;
+            color: #888;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* Dialog area */
+        .dialog-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
+
+        .dialog-box {
+            background: rgba(0, 0, 0, 0.95);
+            border: 4px solid #00ff00;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            min-height: 180px;
+            box-shadow:
+                0 0 30px rgba(0, 255, 0, 0.4),
+                inset 0 0 20px rgba(0, 255, 0, 0.05);
+        }
+
+        .dialog-speaker {
+            font-size: 10px;
+            color: #ffff00;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px #ffff00;
+            letter-spacing: 2px;
+        }
+
+        .dialog-text {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #00ff00;
+            text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 12px;
+            height: 20px;
+            background: #00ff00;
+            margin-left: 8px;
+            animation: blink 0.7s infinite;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Task list with pixel styling */
+        .task-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .task {
+            background: rgba(0, 255, 0, 0.08);
+            border-left: 6px solid #00ff00;
+            border-right: 2px solid #00ff00;
+            border-top: 2px solid #00ff00;
+            border-bottom: 2px solid #00ff00;
+            padding: 18px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .task::before {
+            content: "▶";
+            position: absolute;
+            left: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00ff00;
+            font-size: 20px;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .task:hover::before {
+            opacity: 1;
+            left: -15px;
+        }
+
+        .task:hover {
+            background: rgba(0, 255, 0, 0.2);
+            transform: translateX(10px);
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.4);
+        }
+
+        .task.completed {
+            border-left-color: #ffff00;
+            border-right-color: #ffff00;
+            border-top-color: #ffff00;
+            border-bottom-color: #ffff00;
+            background: rgba(255, 255, 0, 0.1);
+            animation: task-complete 0.5s ease-out;
+        }
+
+        @keyframes task-complete {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 255, 0, 0.8); }
+            100% { transform: scale(1); }
+        }
+
+        .task.completed::after {
+            content: "✓ COMPLETE";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ffff00;
+            font-size: 8px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px #ffff00;
+        }
+
+        .task-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #00ff00;
+            letter-spacing: 1px;
+        }
+
+        .task.completed .task-title {
+            color: #ffff00;
+        }
+
+        .task-desc {
+            font-size: 9px;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        .task-reward {
+            font-size: 8px;
+            color: #ffff00;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        .action-btn {
+            background: none;
+            border: 3px solid #00ff00;
+            color: #00ff00;
+            padding: 18px 35px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 255, 0, 0.3);
+            transition: left 0.3s;
+        }
+
+        .action-btn:hover::before {
+            left: 0;
+        }
+
+        .action-btn:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 1);
+            transform: scale(1.05);
+        }
+
+        .action-btn.primary {
+            border-color: #ffff00;
+            color: #ffff00;
+            animation: glow-button 2s infinite;
+        }
+
+        .action-btn.primary:hover {
+            background: #ffff00;
+            color: #000;
+        }
+
+        @keyframes glow-button {
+            0%, 100% { box-shadow: 0 0 15px rgba(255, 255, 0, 0.6); }
+            50% { box-shadow: 0 0 35px rgba(255, 255, 0, 1); }
+        }
+
+        /* Achievement popup with particles */
+        .achievement {
+            position: fixed;
+            top: -200px;
+            right: 40px;
+            background: rgba(0, 0, 0, 0.98);
+            border: 4px solid #ffff00;
+            padding: 25px;
+            border-radius: 12px;
+            min-width: 350px;
+            transition: top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow:
+                0 0 40px rgba(255, 255, 0, 1),
+                inset 0 0 20px rgba(255, 255, 0, 0.2);
+            z-index: 2000;
+        }
+
+        .achievement.show {
+            top: 100px;
+        }
+
+        .achievement-title {
+            font-size: 14px;
+            color: #ffff00;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px #ffff00;
+            letter-spacing: 2px;
+            animation: title-pulse 1s infinite;
+        }
+
+        @keyframes title-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .achievement-desc {
+            font-size: 11px;
+            text-align: center;
+            color: #00ff00;
+            margin-bottom: 10px;
+        }
+
+        .achievement-xp {
+            font-size: 10px;
+            text-align: center;
+            color: #888;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* Particle effects */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: #ffff00;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-rise 2s ease-out forwards;
+            z-index: 3000;
+        }
+
+        @keyframes particle-rise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Scrollbar */
+        .task-list::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .task-list::-webkit-scrollbar-track {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+        }
+
+        .task-list::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        }
+
+        .task-list::-webkit-scrollbar-thumb:hover {
+            background: #00ff66;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated starfield background -->
+    <div class="starfield" id="starfield"></div>
+
+    <div class="game-screen">
+        <!-- Top HUD -->
+        <div class="game-hud">
+            <div class="level-display">◢ LEVEL <span id="level">1</span>: BUILD YOUR HUD ◣</div>
+            <div class="xp-bar-container">
+                <div class="xp-bar" id="xpBar"></div>
+                <div class="xp-text"><span id="currentXp">0</span> / <span id="maxXp">100</span> XP</div>
+            </div>
+            <div class="level-display">🏆 <span id="badges">0</span> BADGES</div>
+        </div>
+
+        <!-- Main game area -->
+        <div class="game-area">
+            <!-- Character selection -->
+            <div class="character-panel">
+                <div class="character active" data-character="araya">
+                    <div class="character-sprite sprite-araya"></div>
+                    <div class="character-name">ARAYA</div>
+                    <div class="character-role">THE GUIDE</div>
+                </div>
+                <div class="character" data-character="builder">
+                    <div class="character-sprite sprite-builder"></div>
+                    <div class="character-name">BUILDER</div>
+                    <div class="character-role">THE MECHANIC</div>
+                </div>
+                <div class="character" data-character="philosopher">
+                    <div class="character-sprite sprite-philosopher"></div>
+                    <div class="character-name">PHILOSOPHER</div>
+                    <div class="character-role">THE ORACLE</div>
+                </div>
+                <div class="character" data-character="observer">
+                    <div class="character-sprite sprite-observer"></div>
+                    <div class="character-name">OBSERVER</div>
+                    <div class="character-role">THE SCOUT</div>
+                </div>
+            </div>
+
+            <!-- Dialog and tasks -->
+            <div class="dialog-area">
+                <div class="dialog-box">
+                    <div class="dialog-speaker" id="speaker">◢ ARAYA ◣</div>
+                    <div class="dialog-text" id="dialogText">
+                        Welcome, Builder! Ready to create your own atmosphere? Let's start by building YOUR personal HUD. Pick a task below to begin your consciousness revolution!
+                    </div>
+                </div>
+
+                <div class="task-list" id="taskList">
+                    <div class="task" data-task="clock">
+                        <div class="task-title">⏰ BUILD A CLOCK WIDGET</div>
+                        <div class="task-desc">Create a simple digital clock that shows the current time</div>
+                        <div class="task-reward">+25 XP | BADGE: "TIME MASTER"</div>
+                    </div>
+                    <div class="task" data-task="todo">
+                        <div class="task-title">📝 CREATE A TODO LIST</div>
+                        <div class="task-desc">Build a task tracker to organize your projects</div>
+                        <div class="task-reward">+30 XP | BADGE: "TASK COMMANDER"</div>
+                    </div>
+                    <div class="task" data-task="shortcuts">
+                        <div class="task-title">⚡ ADD QUICK LAUNCH BAR</div>
+                        <div class="task-desc">Create buttons for your favorite websites/apps</div>
+                        <div class="task-reward">+25 XP | BADGE: "SPEED DEMON"</div>
+                    </div>
+                    <div class="task" data-task="taskbar">
+                        <div class="task-title">🗑️ HIDE WINDOWS TASKBAR</div>
+                        <div class="task-desc">Declutter your screen - remove the taskbar</div>
+                        <div class="task-reward">+20 XP | BADGE: "MINIMALIST"</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="skipLevel()">SKIP</button>
+                    <button class="action-btn primary" onclick="startBuilding()">START BUILDING ►</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievement popup -->
+    <div class="achievement" id="achievement">
+        <div class="achievement-title">🏆 ACHIEVEMENT UNLOCKED!</div>
+        <div class="achievement-desc" id="achievementDesc">First Steps</div>
+        <div class="achievement-xp" id="achievementXp">+25 XP</div>
+    </div>
+
+    <script>
+        // Create starfield
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.opacity = Math.random();
+                starfield.appendChild(star);
+            }
+        }
+        createStarfield();
+
+        // AI Character personalities
+        const characters = {
+            araya: {
+                name: "◢ ARAYA ◣",
+                personality: "wise, mystical, encouraging",
+                greetings: [
+                    "Welcome, Builder! Ready to create your own atmosphere?",
+                    "The universe aligns for those who build their reality!",
+                    "Your consciousness is expanding... let's build something beautiful!"
+                ],
+                encouragement: [
+                    "You're doing amazing! The code flows through you like water!",
+                    "I can feel your growing power, Builder!",
+                    "The universe smiles upon your creation!"
+                ],
+                taskComplete: [
+                    "Magnificent work! Your consciousness level just increased!",
+                    "The patterns align perfectly! You're a natural!",
+                    "I knew you had it in you, Builder! Onwards!"
+                ]
+            },
+            builder: {
+                name: "◢ BUILDER ◣",
+                personality: "direct, efficient, practical",
+                greetings: [
+                    "Alright, let's cut the BS and build something!",
+                    "Time to get your hands dirty. Ready to code?",
+                    "Less talking, more building. Let's go!"
+                ],
+                encouragement: [
+                    "That's the spirit! Ship it!",
+                    "Good work. Keep going.",
+                    "Solid code. Next task."
+                ],
+                taskComplete: [
+                    "BOOM! Task crushed. Next!",
+                    "That's how you build, baby!",
+                    "Clean work. Moving on!"
+                ]
+            },
+            philosopher: {
+                name: "◢ PHILOSOPHER ◣",
+                personality: "deep, questioning, visionary",
+                greetings: [
+                    "What is code but thoughts made tangible?",
+                    "To build is to think, to think is to exist...",
+                    "Your mind shapes reality through each line of code..."
+                ],
+                encouragement: [
+                    "Consider the implications of what you're creating...",
+                    "Each function you write expands the boundaries of possibility...",
+                    "You're not just coding, you're manifesting consciousness..."
+                ],
+                taskComplete: [
+                    "Fascinating! You've unlocked a new dimension of understanding!",
+                    "The patterns emerge... do you see what I see?",
+                    "Your creation ripples through the fabric of digital reality..."
+                ]
+            },
+            observer: {
+                name: "◢ OBSERVER ◣",
+                personality: "alert, tactical, observant",
+                greetings: [
+                    "Scanning... Builder detected. Status: Ready.",
+                    "Systems nominal. Initiating build sequence.",
+                    "Observation mode active. Awaiting your command."
+                ],
+                encouragement: [
+                    "Progress: Optimal. Continue current trajectory.",
+                    "Performance metrics improving. Well executed.",
+                    "Tactical advantage gained. Maintain momentum."
+                ],
+                taskComplete: [
+                    "Objective completed. XP acquired. Next target?",
+                    "Mission accomplished. Efficiency: 97%. Impressive.",
+                    "Task neutralized. Awaiting next directive."
+                ]
+            }
+        };
+
+        // Game state
+        let gameState = {
+            level: 1,
+            xp: 0,
+            maxXp: 100,
+            badges: 0,
+            currentCharacter: 'araya',
+            completedTasks: []
+        };
+
+        // Particle explosion effect
+        function createParticles(x, y, count = 20) {
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.background = `hsl(${Math.random() * 60 + 40}, 100%, 50%)`;
+                document.body.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 2000);
+            }
+        }
+
+        // Character selection
+        document.querySelectorAll('.character').forEach(char => {
+            char.addEventListener('click', function() {
+                document.querySelectorAll('.character').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+
+                const characterId = this.dataset.character;
+                gameState.currentCharacter = characterId;
+
+                const character = characters[characterId];
+                const greeting = character.greetings[Math.floor(Math.random() * character.greetings.length)];
+
+                typeText(character.name, greeting);
+            });
+        });
+
+        // Task click handlers
+        document.querySelectorAll('.task').forEach(task => {
+            task.addEventListener('click', function() {
+                if (this.classList.contains('completed')) return;
+
+                const taskId = this.dataset.task;
+                const character = characters[gameState.currentCharacter];
+
+                // Show encouragement
+                const encouragement = character.encouragement[Math.floor(Math.random() * character.encouragement.length)];
+                typeText(character.name, encouragement);
+
+                // Simulate task completion after 2 seconds
+                setTimeout(() => {
+                    completeTask(this, taskId);
+                }, 2000);
+            });
+        });
+
+        function typeText(speaker, text, speed = 50) {
+            const dialogText = document.getElementById('dialogText');
+            const speakerEl = document.getElementById('speaker');
+
+            speakerEl.textContent = speaker;
+            dialogText.innerHTML = '';
+
+            let i = 0;
+            const cursor = document.createElement('span');
+            cursor.className = 'typing-cursor';
+
+            const interval = setInterval(() => {
+                if (i < text.length) {
+                    dialogText.textContent += text[i];
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, speed);
+        }
+
+        function completeTask(taskEl, taskId) {
+            taskEl.classList.add('completed');
+            gameState.completedTasks.push(taskId);
+
+            // Create particle effect at task location
+            const rect = taskEl.getBoundingClientRect();
+            createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+            // Award XP based on task
+            const xpRewards = { clock: 25, todo: 30, shortcuts: 25, taskbar: 20 };
+            const xp = xpRewards[taskId] || 25;
+
+            addXP(xp);
+            gameState.badges++;
+            document.getElementById('badges').textContent = gameState.badges;
+
+            // Show achievement
+            const taskNames = {
+                clock: '"TIME MASTER"',
+                todo: '"TASK COMMANDER"',
+                shortcuts: '"SPEED DEMON"',
+                taskbar: '"MINIMALIST"'
+            };
+            showAchievement(taskNames[taskId] || 'BUILDER BADGE', xp);
+
+            // Character reaction
+            const character = characters[gameState.currentCharacter];
+            const reaction = character.taskComplete[Math.floor(Math.random() * character.taskComplete.length)];
+            typeText(character.name, reaction);
+        }
+
+        function addXP(amount) {
+            gameState.xp += amount;
+
+            // Check for level up
+            while (gameState.xp >= gameState.maxXp) {
+                gameState.xp -= gameState.maxXp;
+                gameState.level++;
+                gameState.maxXp = Math.floor(gameState.maxXp * 1.5);
+
+                document.getElementById('level').textContent = gameState.level;
+                showAchievement('◢ LEVEL UP! ◣', `NOW LEVEL ${gameState.level}`);
+
+                // Create celebration particles
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        createParticles(
+                            Math.random() * window.innerWidth,
+                            Math.random() * window.innerHeight / 2,
+                            30
+                        );
+                    }, i * 200);
+                }
+            }
+
+            // Update XP bar
+            const xpPercent = (gameState.xp / gameState.maxXp) * 100;
+            document.getElementById('xpBar').style.width = xpPercent + '%';
+            document.getElementById('currentXp').textContent = gameState.xp;
+            document.getElementById('maxXp').textContent = gameState.maxXp;
+        }
+
+        function showAchievement(title, xp) {
+            const achievement = document.getElementById('achievement');
+            document.getElementById('achievementDesc').textContent = title;
+            document.getElementById('achievementXp').textContent = typeof xp === 'number' ? `+${xp} XP` : xp;
+
+            achievement.classList.add('show');
+
+            // Create particles around achievement
+            const achievementRect = achievement.getBoundingClientRect();
+            createParticles(achievementRect.right - 50, achievementRect.top + 50, 15);
+
+            setTimeout(() => {
+                achievement.classList.remove('show');
+            }, 3500);
+        }
+
+        function startBuilding() {
+            const character = characters[gameState.currentCharacter];
+            const messages = {
+                araya: "Perfect! Let me connect you to your workspace... The universe awaits your creation!",
+                builder: "Hell yeah! Opening your workshop now. Let's build something epic!",
+                philosopher: "And so begins your journey into the infinite... Your workspace materializes...",
+                observer: "Initiating workspace protocol. Builder environment loading... Stand by."
+            };
+
+            typeText(character.name, messages[gameState.currentCharacter]);
+
+            // Simulate workspace opening after 2 seconds
+            setTimeout(() => {
+                window.location.href = '/builder-workspace-docking.html?user=demo';
+            }, 2500);
+        }
+
+        function skipLevel() {
+            if (confirm('Skip to next level? You\'ll miss out on XP and badges!')) {
+                gameState.level++;
+                document.getElementById('level').textContent = gameState.level;
+
+                const character = characters[gameState.currentCharacter];
+                typeText(character.name, "Skipping ahead! Bold move, Builder! Let's see what you're made of!");
+            }
+        }
+
+        // Initialize with Araya greeting
+        window.addEventListener('load', () => {
+            const character = characters.araya;
+            const greeting = character.greetings[0];
+            typeText(character.name, greeting);
+        });
+
+        console.log('🎮 Onboarding Game v2 Loaded');
+        console.log('Enhanced 80s arcade graphics active!');
+        console.log('Pixel art characters, particle effects, starfield background 🌟');
+    </script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

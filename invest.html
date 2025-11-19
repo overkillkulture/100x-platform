@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVERKORE - Investment Opportunity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 255, 100, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            background: linear-gradient(135deg, #00ff64 0%, #00cc51 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: #00ff64;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #cccccc;
+            margin-bottom: 2rem;
+        }
+
+        .traction-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .traction-item {
+            text-align: center;
+        }
+
+        .traction-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #00ff64;
+        }
+
+        .traction-label {
+            font-size: 0.9rem;
+            color: #999999;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff64 0%, #00cc51 100%);
+            color: #000000;
+            box-shadow: 0 10px 30px rgba(0, 255, 100, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 255, 100, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #00ff64;
+            border: 2px solid #00ff64;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 255, 100, 0.1);
+        }
+
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #00ff64 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 100, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff64;
+            box-shadow: 0 10px 30px rgba(0, 255, 100, 0.2);
+        }
+
+        .product-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #00ff64;
+        }
+
+        .product-desc {
+            font-size: 0.9rem;
+            color: #999999;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .investment-tiers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .tier-card {
+            background: linear-gradient(135deg, rgba(0, 255, 100, 0.1) 0%, rgba(0, 255, 100, 0.05) 100%);
+            border: 2px solid rgba(0, 255, 100, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .tier-card:hover {
+            border-color: #00ff64;
+            transform: scale(1.02);
+        }
+
+        .tier-card.featured {
+            border-color: #00ff64;
+            background: linear-gradient(135deg, rgba(0, 255, 100, 0.2) 0%, rgba(0, 255, 100, 0.1) 100%);
+        }
+
+        .tier-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #00ff64;
+            color: #000000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .tier-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #00ff64;
+        }
+
+        .tier-amount {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+        }
+
+        .tier-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .tier-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tier-features li:before {
+            content: "✓ ";
+            color: #00ff64;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .tier-roi {
+            background: rgba(0, 255, 100, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid #00ff64;
+        }
+
+        .tier-roi-label {
+            font-size: 0.8rem;
+            color: #999999;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .tier-roi-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff64;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: rgba(0, 255, 100, 0.05);
+            border: 1px solid rgba(0, 255, 100, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #00ff64;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #999999;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-marker {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00ff64 0%, #00cc51 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #000000;
+            flex-shrink: 0;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #00ff64;
+        }
+
+        .timeline-desc {
+            color: #cccccc;
+        }
+
+        .faq {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .faq-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #00ff64;
+        }
+
+        .faq-answer {
+            color: #cccccc;
+            line-height: 1.8;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(0, 255, 100, 0.2);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #00ff64;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .traction-bar {
+                gap: 1.5rem;
+            }
+
+            .traction-number {
+                font-size: 2rem;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .investment-tiers {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="logo">OVERKORE</div>
+            <div class="tagline">Communication Independence</div>
+            <h1>We're Building the Future of<br>Off-Grid Communication</h1>
+            <p>Mesh networking devices that work without internet, cell service, or monthly fees.<br>
+            One platform. Multiple markets. Massive opportunity.</p>
+
+            <div class="traction-bar">
+                <div class="traction-item">
+                    <div class="traction-number">$22K</div>
+                    <div class="traction-label">Week 1 Revenue</div>
+                </div>
+                <div class="traction-item">
+                    <div class="traction-number">112</div>
+                    <div class="traction-label">Pre-Orders</div>
+                </div>
+                <div class="traction-item">
+                    <div class="traction-number">67%</div>
+                    <div class="traction-label">Margin</div>
+                </div>
+                <div class="traction-item">
+                    <div class="traction-number">$2.6K</div>
+                    <div class="traction-label">Initial Capital</div>
+                </div>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="#invest" class="btn btn-primary">Become a Founding Partner</a>
+                <a href="#product" class="btn btn-secondary">View Products</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- THE PRODUCT -->
+    <section id="product">
+        <h2>One Platform. Ten Products.</h2>
+        <p style="text-align: center; color: #cccccc; max-width: 800px; margin: 0 auto 3rem;">
+            Same $65 hardware. Different packaging. Multiple demographics.
+        </p>
+
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="product-icon">👶</div>
+                <div class="product-name">Kids Connect</div>
+                <div class="product-desc">Peace of mind for parents. Adventure for kids.</div>
+                <div class="product-price">$199</div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-icon">🚗</div>
+                <div class="product-name">Road Guardian</div>
+                <div class="product-desc">Emergency communication for drivers.</div>
+                <div class="product-price">$149</div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-icon">👴</div>
+                <div class="product-name">Safe Comm</div>
+                <div class="product-desc">Modern Life Alert without monthly fees.</div>
+                <div class="product-price">$199</div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-icon">🏔️</div>
+                <div class="product-name">Trail Comm</div>
+                <div class="product-desc">Backcountry communication that always works.</div>
+                <div class="product-price">$299</div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">$65</div>
+                <div class="stat-label">Cost Per Unit</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$200</div>
+                <div class="stat-label">Average Sale</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$3M</div>
+                <div class="stat-label">Year 1 Target</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$500M</div>
+                <div class="stat-label">Market Size</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THE STORY -->
+    <section style="background: rgba(0, 255, 100, 0.05);">
+        <h2>From $2,600 to $3M in 12 Months</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-marker">Day 1</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Almost Completely Broke</div>
+                    <div class="timeline-desc">Found $2,600 on Best Buy credit card. Last resource. Most people would buy a TV. We bought components to build a business.</div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker">Day 2</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Built 10 Prototypes</div>
+                    <div class="timeline-desc">10 Raspberry Pi computers, power banks, mesh radios. Assembled first Official Intelligence Buddy devices in a weekend.</div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker">Day 3</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Launched Pre-Orders</div>
+                    <div class="timeline-desc">OVERKORE.com went live. Simple product pages. No fancy marketing. Just a solution people needed.</div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker">Day 7</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">$22K Revenue. 862% ROI.</div>
+                    <div class="timeline-desc">112 pre-orders in first week. $2,600 → $22,400. Proven demand. Now scaling to 1,000 units/month.</div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker">Now</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Raising $50K-$100K</div>
+                    <div class="timeline-desc">Manufacturing scale-up. Marketing expansion. Hit $3M Year 1. This is your opportunity to join at the ground floor.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INVESTMENT OPPORTUNITIES -->
+    <section id="invest">
+        <h2>Founding Partner Program</h2>
+        <p style="text-align: center; color: #cccccc; max-width: 800px; margin: 0 auto 3rem;">
+            Not traditional equity. You receive wholesale products + revenue share. Expected 2-4x return in 12 months.
+        </p>
+
+        <div class="investment-tiers">
+            <div class="tier-card">
+                <div class="tier-name">Bronze Partner</div>
+                <div class="tier-amount">$1,000</div>
+                <div class="tier-roi">
+                    <div class="tier-roi-label">Expected Return</div>
+                    <div class="tier-roi-value">$2,000 (2x)</div>
+                </div>
+                <ul class="tier-features">
+                    <li>5 OIB units (wholesale)</li>
+                    <li>5% revenue share (6 months)</li>
+                    <li>$2,000 payout cap</li>
+                    <li>30% lifetime discount</li>
+                    <li>Founding Partner status</li>
+                </ul>
+                <a href="#contact" class="btn btn-secondary" style="width: 100%;">Join Bronze</a>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-name">Silver Partner</div>
+                <div class="tier-amount">$2,500</div>
+                <div class="tier-roi">
+                    <div class="tier-roi-label">Expected Return</div>
+                    <div class="tier-roi-value">$5,000 (2x)</div>
+                </div>
+                <ul class="tier-features">
+                    <li>12 OIB units (wholesale)</li>
+                    <li>10% revenue share (9 months)</li>
+                    <li>$5,000 payout cap</li>
+                    <li>30% lifetime discount</li>
+                    <li>Early product access</li>
+                    <li>Quarterly strategy calls</li>
+                </ul>
+                <a href="#contact" class="btn btn-secondary" style="width: 100%;">Join Silver</a>
+            </div>
+
+            <div class="tier-card featured">
+                <div class="tier-badge">Popular</div>
+                <div class="tier-name">Gold Partner</div>
+                <div class="tier-amount">$5,000</div>
+                <div class="tier-roi">
+                    <div class="tier-roi-label">Expected Return</div>
+                    <div class="tier-roi-value">$10K-$20K (2-4x)</div>
+                </div>
+                <ul class="tier-features">
+                    <li>25 OIB units (wholesale)</li>
+                    <li>20% revenue share (12 months)</li>
+                    <li>$10,000 payout cap</li>
+                    <li>30% lifetime discount</li>
+                    <li>Website listing</li>
+                    <li>Early product access (30 days)</li>
+                    <li>Quarterly strategy calls</li>
+                </ul>
+                <a href="#contact" class="btn btn-primary" style="width: 100%;">Join Gold</a>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-name">Platinum Partner</div>
+                <div class="tier-amount">$10,000</div>
+                <div class="tier-roi">
+                    <div class="tier-roi-label">Expected Return</div>
+                    <div class="tier-roi-value">$25K-$50K (2.5-5x)</div>
+                </div>
+                <ul class="tier-features">
+                    <li>50 OIB units (wholesale)</li>
+                    <li>25% revenue share (18 months)</li>
+                    <li>$25,000 payout cap</li>
+                    <li>30% lifetime discount</li>
+                    <li>Prominent website listing</li>
+                    <li>Early access (60 days)</li>
+                    <li>Monthly strategy calls</li>
+                    <li>Community leadership role</li>
+                </ul>
+                <a href="#contact" class="btn btn-secondary" style="width: 100%;">Join Platinum</a>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-name">Diamond Partner</div>
+                <div class="tier-amount">$25,000</div>
+                <div class="tier-roi">
+                    <div class="tier-roi-label">Expected Return</div>
+                    <div class="tier-roi-value">$75K-$150K (3-6x)</div>
+                </div>
+                <ul class="tier-features">
+                    <li>125 OIB units (wholesale)</li>
+                    <li>30% revenue share (24 months)</li>
+                    <li>$75,000 payout cap</li>
+                    <li>30% lifetime discount</li>
+                    <li>Premier website listing</li>
+                    <li>Early access (90 days)</li>
+                    <li>Weekly strategy calls</li>
+                    <li>Advisory board seat</li>
+                    <li>White label rights</li>
+                </ul>
+                <a href="#contact" class="btn btn-secondary" style="width: 100%;">Join Diamond</a>
+            </div>
+
+            <div class="tier-card featured">
+                <div class="tier-badge">Equity</div>
+                <div class="tier-name">Equity Investment</div>
+                <div class="tier-amount">$50K+</div>
+                <div class="tier-roi">
+                    <div class="tier-roi-label">Structure</div>
+                    <div class="tier-roi-value">SAFE Note or Equity</div>
+                </div>
+                <ul class="tier-features">
+                    <li>Ownership stake in OVERKORE</li>
+                    <li>Board observer rights</li>
+                    <li>Valuation: $2M post-money</li>
+                    <li>Use of funds: Manufacturing, marketing, team</li>
+                    <li>Exit potential: $20M-$100M</li>
+                    <li>All Founding Partner benefits</li>
+                </ul>
+                <a href="#contact" class="btn btn-primary" style="width: 100%;">Discuss Terms</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- USE OF FUNDS -->
+    <section style="background: rgba(0, 255, 100, 0.05);">
+        <h2>Use of Funds: $50K Investment</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">$20K</div>
+                <div class="stat-label">Manufacturing (500 units)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$15K</div>
+                <div class="stat-label">Marketing & Sales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$10K</div>
+                <div class="stat-label">Content Production</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$5K</div>
+                <div class="stat-label">Operating Buffer</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem;">
+            <h3 style="font-size: 1.5rem; color: #00ff64; margin-bottom: 1rem;">90-Day Projection</h3>
+            <div class="traction-bar">
+                <div class="traction-item">
+                    <div class="traction-number">500</div>
+                    <div class="traction-label">Units Manufactured</div>
+                </div>
+                <div class="traction-item">
+                    <div class="traction-number">$100K</div>
+                    <div class="traction-label">Revenue Generated</div>
+                </div>
+                <div class="traction-item">
+                    <div class="traction-number">2x</div>
+                    <div class="traction-label">Capital Multiplier</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section>
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq">
+            <div class="faq-question">Is this an investment or a purchase?</div>
+            <div class="faq-answer">Both. You're purchasing products at wholesale prices AND receiving revenue share as a bonus. It's structured as a business partnership, not a securities offering, so it's legally clean.</div>
+        </div>
+
+        <div class="faq">
+            <div class="faq-question">What if OVERKORE doesn't generate revenue?</div>
+            <div class="faq-answer">You still keep the products (retail value 2x your investment). Worst case: break even by reselling. Best case: 4x your money with revenue share. We already have $22K revenue from $2.6K startup capital - demand is proven.</div>
+        </div>
+
+        <div class="faq">
+            <div class="faq-question">Do I get equity?</div>
+            <div class="faq-answer">Founding Partners get products + revenue share, not equity. For equity investment ($50K+), we offer SAFE notes or direct equity at $2M post-money valuation.</div>
+        </div>
+
+        <div class="faq">
+            <div class="faq-question">How is revenue share calculated?</div>
+            <div class="faq-answer">Simple: Gross monthly revenue × your percentage = your payment. If we do $50K/month and you're a Gold Partner (20%), you get $10K that month. Paid via ACH within 7 days of month end.</div>
+        </div>
+
+        <div class="faq">
+            <div class="faq-question">Can I resell the products?</div>
+            <div class="faq-answer">Absolutely. Many Founding Partners plan to resell at retail prices, doubling their money immediately on products alone, then revenue share is pure profit.</div>
+        </div>
+
+        <div class="faq">
+            <div class="faq-question">What's the downside?</div>
+            <div class="faq-answer">If we fail to generate revenue, you don't get revenue share payments. But you keep the products. If we succeed, you 2-4x your money. Risk/reward is heavily in your favor with proven Week 1 traction.</div>
+        </div>
+
+        <div class="faq">
+            <div class="faq-question">How many spots are available?</div>
+            <div class="faq-answer">Limited to first 20 Founding Partners total. This keeps the group exclusive and ensures we can deliver exceptional returns and attention to each partner.</div>
+        </div>
+
+        <div class="faq">
+            <div class="faq-question">Is there a contract?</div>
+            <div class="faq-answer">Yes. Founding Partner Agreement outlines all terms, revenue share structure, product delivery, and benefits. Legally binding. Fully transparent. No surprises.</div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" style="background: rgba(0, 255, 100, 0.05); text-align: center;">
+        <h2>Ready to Join the Revolution?</h2>
+        <p style="color: #cccccc; max-width: 600px; margin: 0 auto 2rem;">
+            Limited spots available. First 20 Founding Partners only.<br>
+            Choose your tier and let's build something legendary.
+        </p>
+
+        <div style="background: rgba(0, 0, 0, 0.3); border: 2px solid #00ff64; border-radius: 15px; padding: 2rem; max-width: 500px; margin: 0 auto;">
+            <h3 style="color: #00ff64; margin-bottom: 1.5rem;">Get Started</h3>
+            <p style="color: #cccccc; margin-bottom: 2rem;">
+                Email: <a href="mailto:invest@overkore.com" style="color: #00ff64;">invest@overkore.com</a><br>
+                Subject: "Founding Partner - [Tier Name]"
+            </p>
+            <p style="color: #999999; font-size: 0.9rem;">
+                We'll send you the agreement, answer questions, and get you onboarded within 48 hours.
+            </p>
+        </div>
+
+        <div class="cta-buttons" style="margin-top: 3rem;">
+            <a href="mailto:invest@overkore.com?subject=Founding Partner Inquiry" class="btn btn-primary">Email Us Now</a>
+            <a href="#" class="btn btn-secondary">Download Pitch Deck</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="logo" style="font-size: 2rem;">OVERKORE</div>
+        <p style="color: #999999; margin: 1rem 0;">Communication Independence. Built Different.</p>
+
+        <div class="footer-links">
+            <a href="#product">Products</a>
+            <a href="#invest">Investment</a>
+            <a href="mailto:invest@overkore.com">Contact</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms</a>
+        </div>
+
+        <p style="color: #666666; margin-top: 2rem; font-size: 0.9rem;">
+            © 2025 OVERKORE LLC. All rights reserved.<br>
+            This is not a securities offering. Founding Partner program is a product purchase with revenue share bonus.
+        </p>
+    </footer>
+    <script>
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bug_${Date.now()}.json`;
+            a.click();
+        });
+
+        // Show success message
+        alert('✅ BUG REPORTED!\n\nThanks for reporting this bug. We check reports every couple hours and will fix it ASAP.\n\nYour feedback makes the platform better!');
+
+        // Reset form
+        document.getElementById('bug-report-form').reset();
+        toggleBugPanel();
+    };
+})();
+</script>
+
+<!-- 🎮 UNIVERSAL HUD - Auto-injected -->
+<script src="/universal-hud-embed.js"></script>
+
+
+</body> tag -->
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="/SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="/UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>
