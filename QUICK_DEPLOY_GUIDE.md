@@ -6,21 +6,37 @@ Since you already have Netlify CLI installed and you're logged in, you can deplo
 
 ---
 
-## 🎯 One-Time Setup (Do This Once)
+## 🎯 One-Time Setup for Every User with Access
 
-Open your terminal in the `100X Workspace` folder and run:
+**If you already have Netlify access to consciousnessrevolution.io:**
 
-```bash
-netlify deploy --prod --dir=.
-```
+You're all set! Just run `deploy.bat` and start deploying. The `.netlify/state.json` file may already exist in the repository.
 
-**Follow the prompts:**
-1. When asked "How do you want to link this folder?", choose **"Search by full or partial project name"**
-2. Type: `consciousness` or the site name
-3. Select the consciousnessrevolution.io site from the list
-4. Confirm the deployment
+**If you're a NEW user who needs deploy access:**
 
-This creates a `.netlify/state.json` file that remembers your site connection.
+1. Install Netlify CLI (if not installed):
+   ```bash
+   npm install -g netlify-cli
+   ```
+
+2. Log in to Netlify:
+   ```bash
+   netlify login
+   ```
+
+3. Link the folder to the site (first time only):
+   ```bash
+   cd "100X Workspace"
+   netlify deploy --prod --dir=.
+   ```
+
+4. **Follow the prompts:**
+   - When asked "How do you want to link this folder?", choose **"Search by full or partial project name"**
+   - Type: `consciousness` or the site name
+   - Select the consciousnessrevolution.io site from the list
+   - Confirm the deployment
+
+This creates a `.netlify/state.json` file that remembers your site connection for future deployments.
 
 ---
 
