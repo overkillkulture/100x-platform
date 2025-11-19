@@ -336,6 +336,80 @@
                 font-size: 0.7rem !important;
             }
         }
+
+        /* Wiggling Bug Animation */
+        .wiggling-bug {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            font-size: 3rem;
+            cursor: pointer;
+            z-index: 9999;
+            user-select: none;
+            animation: wiggleAcross 15s infinite linear;
+            transition: transform 0.1s;
+        }
+
+        .wiggling-bug:hover {
+            transform: scale(1.5);
+        }
+
+        .wiggling-bug.squished {
+            animation: squish 0.3s forwards;
+        }
+
+        @keyframes wiggleAcross {
+            0% {
+                right: 0;
+                transform: translateY(0) rotate(0deg);
+            }
+            10% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            20% {
+                transform: translateY(0px) rotate(-5deg);
+            }
+            30% {
+                transform: translateY(-15px) rotate(5deg);
+            }
+            40% {
+                transform: translateY(5px) rotate(-5deg);
+            }
+            50% {
+                right: 50%;
+                transform: translateY(-20px) rotate(5deg);
+            }
+            60% {
+                transform: translateY(0px) rotate(-5deg);
+            }
+            70% {
+                transform: translateY(-15px) rotate(5deg);
+            }
+            80% {
+                transform: translateY(5px) rotate(-5deg);
+            }
+            90% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            100% {
+                right: 100%;
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+
+        @keyframes squish {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5, 0.5);
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -368,6 +442,29 @@
     <div class="bug-list" id="bugList">
         <div class="loading">⚡ Loading bugs...</div>
     </div>
+
+    <!-- Wiggling Bug -->
+    <div class="wiggling-bug" id="wigglingBug" title="Click to squish me!">🐛</div>
+
+    <script>
+        // Wiggling bug squish handler
+        (function() {
+            const bug = document.getElementById('wigglingBug');
+            if (bug) {
+                bug.addEventListener('click', function() {
+                    bug.classList.add('squished');
+                    setTimeout(() => {
+                        bug.classList.remove('squished');
+                        // Reset animation
+                        bug.style.animation = 'none';
+                        setTimeout(() => {
+                            bug.style.animation = '';
+                        }, 10);
+                    }, 300);
+                });
+            }
+        })();
+    </script>
 
     <script>
         // FIXED: Module pattern to avoid global scope pollution
