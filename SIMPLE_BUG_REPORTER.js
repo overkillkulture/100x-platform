@@ -62,11 +62,52 @@
             transition: all 0.3s ease;
         `;
 
+        // Create tooltip cloud
+        const tooltip = document.createElement('div');
+        tooltip.style.cssText = `
+            position: fixed;
+            bottom: 185px;
+            right: 30px;
+            background: rgba(26, 26, 46, 0.98);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            border: 2px solid #ff4444;
+            max-width: 250px;
+            z-index: 999997;
+            transform: translateY(10px);
+        `;
+        tooltip.innerHTML = `
+            <div style="color: #00ff88; font-weight: bold; margin-bottom: 4px;">🐛 Report Bugs</div>
+            <div style="color: #ccc;">See something broken? Click the bug button to let us know!</div>
+        `;
+
+        // Add arrow to tooltip
+        const arrow = document.createElement('div');
+        arrow.style.cssText = `
+            position: absolute;
+            bottom: -8px;
+            right: 20px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid #ff4444;
+        `;
+        tooltip.appendChild(arrow);
+
         // Add hover effects
         btn.onmouseenter = () => {
             btn.style.transform = 'scale(1.1)';
             label.style.opacity = '1';
             label.style.transform = 'translateX(0)';
+            tooltip.style.opacity = '1';
+            tooltip.style.transform = 'translateY(0)';
         };
 
         btn.onmouseleave = () => {
@@ -74,6 +115,8 @@
             setTimeout(() => {
                 label.style.opacity = '0';
                 label.style.transform = 'translateX(20px)';
+                tooltip.style.opacity = '0';
+                tooltip.style.transform = 'translateY(10px)';
             }, 500);
         };
 
@@ -115,6 +158,7 @@
 
         // Add to page
         document.body.appendChild(container);
+        document.body.appendChild(tooltip);
         document.body.appendChild(modal);
 
         // Splatter animation and open GitHub
