@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100X Platform - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .gate-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.2);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            text-align: center;
+            color: #888;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #00ff88;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff88 100%);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .toggle-mode {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .toggle-mode a {
+            color: #00ff88;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .toggle-mode a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+    
+/* RESPONSIVE DESIGN - Auto-injected */
+@media only screen and (max-width: 768px) {
+  /* Mobile-first responsive styles */
+  body {
+    font-size: 16px !important;
+    padding: 10px !important;
+  }
+
+  /* Make containers fluid */
+  .container, .content, .main, div[class*='container'] {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px !important;
+    margin: 0 !important;
+  }
+
+  /* Stack elements vertically */
+  .row, .flex-container, div[class*='row'] {
+    flex-direction: column !important;
+    display: block !important;
+  }
+
+  /* Make columns full width */
+  .col, .column, div[class*='col-'] {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+
+  /* Responsive tables */
+  table {
+    width: 100% !important;
+    display: block !important;
+    overflow-x: auto !important;
+  }
+
+  /* Responsive images */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Responsive text */
+  h1 { font-size: 24px !important; }
+  h2 { font-size: 20px !important; }
+  h3 { font-size: 18px !important; }
+  h4, h5, h6 { font-size: 16px !important; }
+
+  /* Hide desktop-only elements */
+  .desktop-only, .hide-mobile {
+    display: none !important;
+  }
+
+  /* Show mobile-only elements */
+  .mobile-only {
+    display: block !important;
+  }
+
+  /* Responsive buttons */
+  button, .btn, input[type="submit"] {
+    width: 100% !important;
+    padding: 15px !important;
+    font-size: 16px !important;
+    margin: 5px 0 !important;
+  }
+
+  /* Responsive navigation */
+  nav, .navbar, .menu {
+    flex-direction: column !important;
+  }
+
+  nav a, .navbar a, .menu a {
+    display: block !important;
+    width: 100% !important;
+    padding: 10px !important;
+  }
+
+  /* Responsive forms */
+  form, .form {
+    width: 100% !important;
+  }
+
+  input, textarea, select {
+    width: 100% !important;
+    font-size: 16px !important;
+    padding: 10px !important;
+  }
+
+  /* Responsive cards */
+  .card, div[class*='card'] {
+    width: 100% !important;
+    margin: 10px 0 !important;
+  }
+
+  /* Fix overflow */
+  * {
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Responsive padding */
+  .padding, .p-4, .p-5 {
+    padding: 10px !important;
+  }
+
+  /* Responsive margins */
+  .margin, .m-4, .m-5 {
+    margin: 10px !important;
+  }
+}
+
+/* Tablet breakpoint */
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
+  body {
+    font-size: 18px;
+  }
+
+  .container {
+    max-width: 90% !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print, nav, .navbar, .menu, button {
+    display: none !important;
+  }
+}
+</style>
+
+<style>
+/* ACCESSIBILITY - Keyboard Navigation */
+*:focus {
+    outline: 3px solid #4A90E2 !important;
+    outline-offset: 2px !important;
+}
+
+button:focus, a:focus, input:focus, select:focus, textarea:focus {
+    outline: 3px solid #4A90E2 !important;
+    outline-offset: 2px !important;
+}
+
+.skip-nav:focus {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 10px !important;
+    background: #000 !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+/* Focus indicators for custom elements */
+[role="button"]:focus,
+[role="link"]:focus,
+[tabindex]:focus {
+    outline: 3px solid #4A90E2 !important;
+    outline-offset: 2px !important;
+}
+</style>
+
+<style>
+/* ACCESSIBILITY - WCAG 2.1 Compliance */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    * {
+        border-color: #000 !important;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Ensure readable text */
+body {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+}
+
+/* Minimum touch target size: 44x44px */
+button, a, input[type="button"], input[type="submit"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+}
+
+/* Color contrast improvements */
+a {
+    color: #0066CC !important;
+    text-decoration: underline !important;
+}
+
+a:visited {
+    color: #551A8B !important;
+}
+
+/* Screen reader only class */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+</style>
+</head>
+<body class="responsive-enabled">
+<a href="#main-content" class="skip-nav" style="
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+" aria-label="Skip to main content">Skip to main content</a>
+
+    <div class="gate-container" id="main-content">
+        <div class="logo">🌀</div>
+        <h1>100X Platform</h1>
+        <p class="tagline">Consciousness Builder Workspace</p>
+
+        <div class="error" id="errorMessage"></div>
+        <div class="success" id="successMessage"></div>
+
+        <!-- Login Form -->
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username" required aria-label="Text">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password" required aria-label="Password">
+            </div>
+
+            <button type="submit" class="btn" aria-label="Enter Workspace">Enter Workspace</button>
+
+            <button type="button" class="btn" style="background: rgba(255,255,255,0.1); color: #00ff88; margin-top: 0.5rem;" onclick="browseAsGuest()" aria-label="Browse as Guest">Browse as Guest</button>
+
+            <div class="toggle-mode">
+                Don't have an account? <a href="#" onclick="toggleMode(); return false;" aria-label="Sign up">Sign up</a>
+            </div>
+        </form>
+
+        <!-- Signup Form (hidden by default) -->
+        <form id="signupForm" style="display: none;">
+            <div class="form-group">
+                <label for="newUsername">Choose Username</label>
+                <input type="text" id="newUsername" placeholder="Enter username" required aria-label="Text">
+            </div>
+
+            <div class="form-group">
+                <label for="newEmail">Email Address</label>
+                <input type="email" id="newEmail" placeholder="your@email.com" required aria-label="Email">
+            </div>
+
+            <div class="form-group">
+                <label for="newPhone">Phone Number (Optional)</label>
+                <input type="tel" id="newPhone" placeholder="555-123-4567" aria-label="Tel">
+            </div>
+
+            <div class="form-group">
+                <label for="newPassword">Choose Password</label>
+                <input type="password" id="newPassword" placeholder="Enter password" required aria-label="Password">
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm password" required aria-label="Password">
+            </div>
+
+            <button type="submit" class="btn" aria-label="Create Account">Create Account</button>
+
+            <div class="toggle-mode">
+                Already have an account? <a href="#" onclick="toggleMode(); return false;" aria-label="Log in">Log in</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Simple user storage (localStorage)
+        function getUsers() {
+            const users = localStorage.getItem('100x_users');
+            return users ? JSON.parse(users) : {};
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('100x_users', JSON.stringify(users));
+        }
+
+        // Brute force protection
+        const loginAttempts = {
+            count: 0,
+            lastAttempt: Date.now(),
+            blocked: false,
+            blockUntil: 0
+        };
+
+        function checkBruteForce() {
+            const now = Date.now();
+
+            // Check if currently blocked
+            if (loginAttempts.blocked && now < loginAttempts.blockUntil) {
+                const remainingSeconds = Math.ceil((loginAttempts.blockUntil - now) / 1000);
+                return { allowed: false, message: `Too many failed attempts. Try again in ${remainingSeconds} seconds.` };
+            }
+
+            // Reset block if time passed
+            if (loginAttempts.blocked && now >= loginAttempts.blockUntil) {
+                loginAttempts.blocked = false;
+                loginAttempts.count = 0;
+            }
+
+            // Reset count if last attempt was > 5 minutes ago
+            if (now - loginAttempts.lastAttempt > 300000) {
+                loginAttempts.count = 0;
+            }
+
+            return { allowed: true };
+        }
+
+        function recordFailedAttempt() {
+            loginAttempts.count++;
+            loginAttempts.lastAttempt = Date.now();
+
+            // Block after 5 failed attempts
+            if (loginAttempts.count >= 5) {
+                loginAttempts.blocked = true;
+                // Block for 5 minutes (300000ms)
+                loginAttempts.blockUntil = Date.now() + 300000;
+            }
+        }
+
+        function toggleMode() {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            }
+
+            hideMessages();
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function browseAsGuest() {
+            // Set guest credentials
+            localStorage.setItem('workspace_user_id', 'guest_' + Date.now());
+            localStorage.setItem('workspace_user_name', 'Guest Explorer');
+            localStorage.setItem('beta_user_pin', 'GUEST');
+            localStorage.setItem('beta_user_name', 'Guest Explorer');
+
+            // Redirect to workspace features section
+            window.location.href = 'workspace-v3.html#features';
+        }
+
+        function login(username, password) {
+            // Check brute force protection
+            const bruteCheck = checkBruteForce();
+            if (!bruteCheck.allowed) {
+                showError(bruteCheck.message);
+                return false;
+            }
+
+            const users = getUsers();
+
+            if (!users[username]) {
+                recordFailedAttempt();
+                showError('Username not found. Please sign up.');
+                return false;
+            }
+
+            if (users[username].password !== password) {
+                recordFailedAttempt();
+                showError('Incorrect password.');
+                return false;
+            }
+
+            // Successful login - reset attempts
+            loginAttempts.count = 0;
+
+            // Login successful
+            localStorage.setItem('workspace_user_id', username);
+            localStorage.setItem('workspace_user_name', users[username].name || username);
+
+            showSuccess('Login successful! Redirecting...');
+
+            // Redirect to workspace features section
+            setTimeout(() => {
+                window.location.href = 'workspace-v3.html#features';
+            }, 1000);
+
+            return true;
+        }
+
+        async function signup(username, email, phone, password, confirmPassword) {
+            if (password !== confirmPassword) {
+                showError('Passwords do not match.');
+                return false;
+            }
+
+            if (password.length < 4) {
+                showError('Password must be at least 4 characters.');
+                return false;
+            }
+
+            // BETA MODE: Allow account creation for now
+            // Users should have already signed up via signup-for-updates.html
+            const users = getUsers();
+
+            if (users[username]) {
+                showError('Username already exists. Please choose another.');
+                return false;
+            }
+
+            // Create account
+            users[username] = {
+                username: username,
+                email: email,
+                phone: phone || '',
+                password: password,
+                name: username,
+                created_at: new Date().toISOString(),
+                beta_user: true
+            };
+
+            saveUsers(users);
+
+            // Auto-login after signup
+            localStorage.setItem('workspace_user_id', username);
+            localStorage.setItem('workspace_user_name', username);
+
+            showSuccess('Account created! Redirecting...');
+
+            setTimeout(() => {
+                window.location.href = 'workspace-v3.html#features';
+            }, 1000);
+
+            return true;
+        }
+
+        // Handle login form
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            login(username, password);
+        });
+
+        // Handle signup form
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('newUsername').value;
+            const email = document.getElementById('newEmail').value;
+            const phone = document.getElementById('newPhone').value;
+            const password = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            await signup(username, email, phone, password, confirmPassword);
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('workspace_user_id')) {
+            showSuccess('Already logged in. Redirecting...');
+            setTimeout(() => {
+                window.location.href = 'workspace-v3.html#features';
+            }, 1000);
+        }
+    </script>
+
+<script src="UNIVERSAL_HELP_SYSTEM.js"></script>
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="VISITOR_TRACKING_SNIPPET.js"></script>
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>

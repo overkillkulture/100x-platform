@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Bug Monitor - Auto-Refresh (ALL BUGS FIXED)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #00ff88;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .status {
+            font-size: 1.2rem;
+            color: #00ffff;
+        }
+
+        .refresh-info {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .debug-info {
+            background: rgba(255, 170, 0, 0.1);
+            border: 1px solid #ffaa00;
+            color: #ffaa00;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+
+        .bug-list {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .bug-item {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bug-new {
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .bug-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .bug-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #00ffff;
+        }
+
+        .bug-number {
+            background: #00ff88;
+            color: #000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .bug-meta {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .bug-description {
+            color: #e8e8e8;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .bug-link {
+            color: #00ffff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .bug-link:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #00ffff;
+            padding: 3rem;
+        }
+
+        .error {
+            background: rgba(255, 68, 68, 0.2);
+            border: 2px solid #ff4444;
+            color: #ff4444;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .new-badge {
+            background: #00ffff;
+            color: #000;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 1rem;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 0 2rem;
+        }
+
+        .tab-btn {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            color: #00ff88;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            background: rgba(0, 255, 136, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: #00ff88;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .tab-count {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+
+        .bug-state-open {
+            color: #00ff88;
+        }
+
+        .bug-state-closed {
+            color: #ff4444;
+        }
+
+        .fixed-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 15px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐛 LIVE BUG MONITOR 🐛<span class="fixed-badge">ALL BUGS FIXED</span></h1>
+        <div class="status">
+            <span id="bugCount">Loading...</span> bugs tracked
+        </div>
+        <div class="refresh-info">
+            Auto-refresh every 5 seconds • Last update: <span id="lastUpdate">--:--:--</span>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-filter="all" aria-label="ALL 0">
+            ALL <span class="tab-count" id="countAll">0</span>
+        </button>
+        <button class="tab-btn" data-filter="open" aria-label="🟢 OPEN 0">
+            🟢 OPEN <span class="tab-count" id="countOpen">0</span>
+        </button>
+        <button class="tab-btn" data-filter="closed" aria-label="🔴 CLOSED 0">
+            🔴 CLOSED <span class="tab-count" id="countClosed">0</span>
+        </button>
+    </div>
+
+    <div id="debugInfo" class="debug-info" style="display: block;">
+        Debug: <span id="debugText">Starting...</span>
+    </div>
+
+    <div class="bug-list" id="bugList">
+        <div class="loading">⚡ Loading bugs...</div>
+    </div>
+
+    <script>
+        // FIXED: Module pattern to avoid global scope pollution
+        const BugMonitor = (function() {
+            'use strict';
+
+            let lastBugCount = 0;
+            let knownBugs = new Set();
+            let loadAttempt = 0;
+            let currentFilter = 'all';
+            let allBugsData = [];
+            let rateLimitReached = false;
+            let backoffTime = 5000;
+            let refreshIntervalId = null; // FIXED: Store interval ID for cleanup
+            let abortController = null; // FIXED: Add AbortController for fetch cancellation
+            let isInitialized = false; // FIXED: Prevent duplicate initialization
+            let tabClickHandlers = []; // FIXED: Track event listeners for cleanup
+
+            // FIXED: HTML sanitization helper
+            function escapeHtml(unsafe) {
+                if (!unsafe) return '';
+                return unsafe
+                    .toString()
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            function updateDebug(msg) {
+                try {
+                    const debugDiv = document.getElementById('debugInfo');
+                    const debugText = document.getElementById('debugText');
+                    if (debugDiv && debugText) {
+                        debugDiv.style.display = 'block';
+                        debugText.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+                    }
+                    console.log('[DEBUG]', msg);
+                } catch (error) {
+                    console.error('updateDebug failed:', error);
+                }
+            }
+
+            function setupTabs() {
+                try {
+                    const tabs = document.querySelectorAll('.tab-btn');
+
+                    // FIXED: Remove old event listeners before adding new ones
+                    tabClickHandlers.forEach(({element, handler}) => {
+                        element.removeEventListener('click', handler);
+                    });
+                    tabClickHandlers = [];
+
+                    tabs.forEach(tab => {
+                        const handler = function() {
+                            tabs.forEach(t => t.classList.remove('active'));
+                            tab.classList.add('active');
+                            currentFilter = tab.getAttribute('data-filter');
+                            renderBugs(allBugsData);
+                        };
+
+                        tab.addEventListener('click', handler);
+                        tabClickHandlers.push({element: tab, handler});
+                    });
+                } catch (error) {
+                    console.error('setupTabs failed:', error);
+                }
+            }
+
+            function updateTabCounts(bugs) {
+                try {
+                    const openCount = bugs.filter(b => b.state === 'open').length;
+                    const closedCount = bugs.filter(b => b.state === 'closed').length;
+
+                    const countAllEl = document.getElementById('countAll');
+                    const countOpenEl = document.getElementById('countOpen');
+                    const countClosedEl = document.getElementById('countClosed');
+
+                    if (countAllEl) countAllEl.textContent = bugs.length;
+                    if (countOpenEl) countOpenEl.textContent = openCount;
+                    if (countClosedEl) countClosedEl.textContent = closedCount;
+                } catch (error) {
+                    console.error('updateTabCounts failed:', error);
+                }
+            }
+
+            function renderBugs(bugs) {
+                try {
+                    const bugList = document.getElementById('bugList');
+                    if (!bugList) return;
+
+                    let filteredBugs = bugs;
+                    if (currentFilter === 'open') {
+                        filteredBugs = bugs.filter(b => b.state === 'open');
+                    } else if (currentFilter === 'closed') {
+                        filteredBugs = bugs.filter(b => b.state === 'closed');
+                    }
+
+                    const newBugNumbers = bugs.map(b => b.number).filter(n => !knownBugs.has(n));
+                    bugs.forEach(b => knownBugs.add(b.number));
+
+                    if (filteredBugs.length === 0) {
+                        bugList.innerHTML = `<div class="loading">No ${currentFilter === 'all' ? '' : currentFilter} bugs</div>`;
+                        return;
+                    }
+
+                    bugList.innerHTML = '';
+                    filteredBugs.forEach(bug => {
+                        const isNew = newBugNumbers.includes(bug.number);
+                        const bugDiv = document.createElement('div');
+                        bugDiv.className = 'bug-item' + (isNew ? ' bug-new' : '');
+
+                        const stateEmoji = bug.state === 'open' ? '🟢' : '🔴';
+                        const stateClass = bug.state === 'open' ? 'bug-state-open' : 'bug-state-closed';
+
+                        // FIXED: Sanitize all user-generated content
+                        const sanitizedTitle = escapeHtml(bug.title);
+                        const sanitizedLogin = escapeHtml(bug.user?.login || 'Unknown');
+                        const sanitizedBody = escapeHtml(bug.body || 'No description provided');
+                        const sanitizedUrl = escapeHtml(bug.html_url || '#');
+
+                        bugDiv.innerHTML = `
+                            <div class="bug-header">
+                                <div class="bug-title">
+                                    ${sanitizedTitle}
+                                    ${isNew ? '<span class="new-badge">NEW!</span>' : ''}
+                                </div>
+                                <div class="bug-number">#${bug.number}</div>
+                            </div>
+                            <div class="bug-meta">
+                                <div>👤 ${sanitizedLogin}</div>
+                                <div>📅 ${bug.created_at ? new Date(bug.created_at).toLocaleString() : 'Unknown'}</div>
+                                <div class="${stateClass}">${stateEmoji} ${(bug.state || 'unknown').toUpperCase()}</div>
+                            </div>
+                            <div class="bug-description">${sanitizedBody}</div>
+                            <a href="${sanitizedUrl}" target="_blank" rel="noopener noreferrer" class="bug-link">View on GitHub →</a>
+                        `;
+
+                        bugList.appendChild(bugDiv);
+                    });
+
+                    if (newBugNumbers.length > 0 && lastBugCount > 0) {
+                        console.log(`🚨 ${newBugNumbers.length} NEW BUG(S) DETECTED!`);
+                        updateDebug(`🚨 NEW BUGS: #${newBugNumbers.join(', #')}`);
+                    }
+                } catch (error) {
+                    console.error('renderBugs failed:', error);
+                    updateDebug(`❌ Render error: ${error.message}`);
+                }
+            }
+
+            async function loadBugs() {
+                loadAttempt++;
+
+                // FIXED: Skip if rate limited
+                if (rateLimitReached) {
+                    updateDebug(`⏸️ Rate limited - waiting ${backoffTime/1000}s before retry`);
+                    return;
+                }
+
+                try {
+                    // FIXED: Cancel previous request if still pending
+                    if (abortController) {
+                        abortController.abort();
+                    }
+                    abortController = new AbortController();
+
+                    updateDebug(`Attempt ${loadAttempt}: Fetching bugs...`);
+
+                    const response = await fetch('/.netlify/functions/get-all-bugs', {
+                        signal: abortController.signal // FIXED: Add abort signal
+                    });
+
+                    updateDebug(`Response: ${response.status} ${response.statusText}`);
+
+                    // FIXED: Handle rate limiting properly
+                    if (response.status === 403 || response.status === 429) {
+                        rateLimitReached = true;
+                        const retryAfter = response.headers.get('Retry-After') || 60;
+                        backoffTime = Math.max(parseInt(retryAfter) * 1000, 60000);
+
+                        updateDebug(`🚫 Rate limit! Pausing for ${backoffTime/1000}s`);
+
+                        // FIXED: Stop the interval during rate limit
+                        stopRefreshInterval();
+
+                        setTimeout(() => {
+                            rateLimitReached = false;
+                            updateDebug(`✅ Rate limit cleared, resuming...`);
+                            startRefreshInterval(); // FIXED: Restart interval
+                            loadBugs(); // Load immediately
+                        }, backoffTime);
+
+                        throw new Error(`Rate limited. Retry in ${backoffTime/1000}s`);
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const responseText = await response.text();
+                    updateDebug(`Response size: ${responseText.length} chars`);
+
+                    const bugs = JSON.parse(responseText);
+                    updateDebug(`Parsed ${bugs.length} bugs`);
+
+                    if (!Array.isArray(bugs)) {
+                        throw new Error('Response is not an array');
+                    }
+
+                    allBugsData = bugs;
+
+                    const bugCountEl = document.getElementById('bugCount');
+                    if (bugCountEl) {
+                        bugCountEl.textContent = bugs.length;
+                    }
+
+                    const lastUpdateEl = document.getElementById('lastUpdate');
+                    if (lastUpdateEl) {
+                        lastUpdateEl.textContent = new Date().toLocaleTimeString();
+                    }
+
+                    updateTabCounts(bugs);
+                    renderBugs(bugs);
+                    updateDebug(`✓ Rendered successfully`);
+
+                    lastBugCount = bugs.length;
+
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        updateDebug('Request cancelled');
+                        return;
+                    }
+
+                    console.error('Error loading bugs:', error);
+                    updateDebug(`❌ ERROR: ${error.message}`);
+
+                    const bugList = document.getElementById('bugList');
+                    if (bugList) {
+                        const sanitizedMsg = escapeHtml(error.message);
+                        bugList.innerHTML = `
+                            <div class="error">
+                                ❌ Error loading bugs<br>
+                                ${sanitizedMsg}<br>
+                                <small>Retrying in 5 seconds...</small><br>
+                                <small style="margin-top: 1rem; display: block;">Attempt ${loadAttempt}</small>
+                            </div>
+                        `;
+                    }
+                }
+            }
+
+            // FIXED: Separate interval management
+            function startRefreshInterval() {
+                if (!refreshIntervalId) {
+                    refreshIntervalId = setInterval(loadBugs, 5000);
+                    updateDebug('Refresh interval started');
+                }
+            }
+
+            function stopRefreshInterval() {
+                if (refreshIntervalId) {
+                    clearInterval(refreshIntervalId);
+                    refreshIntervalId = null;
+                    updateDebug('Refresh interval stopped');
+                }
+            }
+
+            // FIXED: Cleanup function
+            function cleanup() {
+                updateDebug('Cleaning up...');
+                stopRefreshInterval();
+
+                if (abortController) {
+                    abortController.abort();
+                    abortController = null;
+                }
+
+                tabClickHandlers.forEach(({element, handler}) => {
+                    element.removeEventListener('click', handler);
+                });
+                tabClickHandlers = [];
+
+                updateDebug('Cleanup complete');
+            }
+
+            // FIXED: Proper initialization
+            function initialize() {
+                if (isInitialized) {
+                    updateDebug('Already initialized, skipping...');
+                    return;
+                }
+
+                isInitialized = true;
+                updateDebug('Initializing bug monitor...');
+
+                setupTabs();
+                loadBugs();
+                startRefreshInterval();
+
+                // FIXED: Cleanup on page unload
+                window.addEventListener('beforeunload', cleanup);
+
+                updateDebug('Initialization complete');
+            }
+
+            // Public API
+            return {
+                initialize,
+                cleanup
+            };
+        })();
+
+        // FIXED: Single initialization point
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', BugMonitor.initialize);
+        } else {
+            BugMonitor.initialize();
+        }
+    </script>
+
+    <script src="SIMPLE_BUG_REPORTER.js" onerror="console.log('SIMPLE_BUG_REPORTER.js not found')"></script>
+    <script src="UNIVERSAL_USER_DISPLAY.js" onerror="console.log('UNIVERSAL_USER_DISPLAY.js not found')"></script>
+</body>
+</html>

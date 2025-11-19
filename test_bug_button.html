@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Button Test</title>
+    <style>
+        body {
+            background: #0a0a0a;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+        }
+        h1 {
+            color: #00ff88;
+        }
+        .info {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐛 Bug Button Position Test</h1>
+
+    <div class="info">
+        <h2>Expected Positions:</h2>
+        <ul>
+            <li><strong>Bug Button (🐛):</strong> bottom: 590px, right: 20px</li>
+            <li><strong>Chat Widgets:</strong> bottom: 80px, right: 20px</li>
+        </ul>
+
+        <p>The bug button should appear on the right side, higher up on the screen.</p>
+        <p>If you don't see it, there may be a JavaScript loading issue.</p>
+    </div>
+
+    <div class="info">
+        <h2>Debug Info:</h2>
+        <div id="debug-info">Loading scripts...</div>
+    </div>
+
+    <!-- Load the bug reporter -->
+    <script src="SIMPLE_BUG_REPORTER.js"></script>
+
+    <script>
+        // Check if bug button was created
+        setTimeout(() => {
+            const debugDiv = document.getElementById('debug-info');
+            const bugButton = document.querySelector('button[style*="position: fixed"]');
+
+            if (bugButton) {
+                const style = window.getComputedStyle(bugButton);
+                debugDiv.innerHTML = `
+                    ✅ Bug button found!<br>
+                    Position: ${style.position}<br>
+                    Bottom: ${style.bottom}<br>
+                    Right: ${style.right}<br>
+                    Z-index: ${style.zIndex}
+                `;
+            } else {
+                debugDiv.innerHTML = '❌ Bug button NOT found. Check console for errors.';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

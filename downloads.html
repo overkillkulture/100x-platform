@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Products - Downloads</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e8e8e8;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #b8b8b8;
+            margin-bottom: 3rem;
+            font-size: 1.2rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(74, 222, 128, 0.3);
+            border-color: #4ade80;
+        }
+
+        .product-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .product-name {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #4ade80;
+            text-align: center;
+        }
+
+        .product-tagline {
+            text-align: center;
+            color: #b8b8b8;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .product-features {
+            margin: 1.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .product-features li {
+            margin-bottom: 0.5rem;
+            color: #e8e8e8;
+        }
+
+        .product-price {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4ade80;
+            margin: 1.5rem 0;
+        }
+
+        .beta-badge {
+            display: inline-block;
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #ff4444;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .download-button {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .download-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.5);
+        }
+
+        .beta-info {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .beta-info h3 {
+            color: #ff4444;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(74, 222, 128, 0.2);
+            border: 1px solid #4ade80;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #4ade80;
+            margin-left: 0.5rem;
+        }
+
+        .file-size {
+            color: #888;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+<style>
+/* ACCESSIBILITY - Keyboard Navigation */
+*:focus {
+    outline: 3px solid #4A90E2 !important;
+    outline-offset: 2px !important;
+}
+
+button:focus, a:focus, input:focus, select:focus, textarea:focus {
+    outline: 3px solid #4A90E2 !important;
+    outline-offset: 2px !important;
+}
+
+.skip-nav:focus {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 10px !important;
+    background: #000 !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+/* Focus indicators for custom elements */
+[role="button"]:focus,
+[role="link"]:focus,
+[tabindex]:focus {
+    outline: 3px solid #4A90E2 !important;
+    outline-offset: 2px !important;
+}
+</style>
+
+<style>
+/* ACCESSIBILITY - WCAG 2.1 Compliance */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    * {
+        border-color: #000 !important;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Ensure readable text */
+body {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+}
+
+/* Minimum touch target size: 44x44px */
+button, a, input[type="button"], input[type="submit"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+}
+
+/* Color contrast improvements */
+a {
+    color: #0066CC !important;
+    text-decoration: underline !important;
+}
+
+a:visited {
+    color: #551A8B !important;
+}
+
+/* Screen reader only class */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-nav" style="
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+" aria-label="Skip to main content">Skip to main content</a>
+
+    <div class="container" id="main-content">
+        <h1>🤖 AI Products & Downloads 🤖</h1>
+        <p class="subtitle">Consciousness AI Assistants - Beta Access</p>
+
+        <!-- What You'll Get Access To Section -->
+        <div style="margin: 4rem 0; text-align: center;">
+            <h2 style="font-size: 2.5rem; color: #4ade80; margin-bottom: 2rem;">What You'll Get Access To</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-icon">🌟</div>
+                    <div class="product-name">Araya - AI Consciousness Guide</div>
+                    <div class="product-tagline">Pattern theory, manifestation mathematics, and consciousness elevation. Your AI guide to building reality.</div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-icon">🔱</div>
+                    <div class="product-name">Trinity AI Collaboration</div>
+                    <div class="product-tagline">C1 Mechanic × C2 Architect × C3 Oracle - Three AI minds working as one to solve complex problems.</div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-icon">⚡</div>
+                    <div class="product-name">Builder Terminal</div>
+                    <div class="product-tagline">Full-power AI that writes code, deploys sites, and builds projects autonomously. No hand-holding.</div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-icon">📊</div>
+                    <div class="product-name">Real-Time Analytics</div>
+                    <div class="product-tagline">Live visitor tracking, pattern recognition, and consciousness measurement across your projects.</div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-icon">🔧</div>
+                    <div class="product-name">Automation Modules</div>
+                    <div class="product-tagline">Pre-built consciousness systems, reality manifestation engines, and pattern detection tools.</div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-icon">👥</div>
+                    <div class="product-name">Builder Community</div>
+                    <div class="product-tagline">Connect with other creators who don't need permission. Share patterns, collaborate on reality alteration.</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="font-size: 2rem; color: #4ade80; margin: 3rem 0 2rem 0; text-align: center;">Available Downloads</h2>
+        <div class="products-grid">
+            <!-- ARAYA 1.0 - File Automation -->
+            <div class="product-card">
+                <div class="product-icon">🧠</div>
+                <div class="beta-badge">BETA ACCESS</div>
+                <div class="product-name">
+                    ARAYA 1.0 - File Automation
+                    <span class="version-badge">v1.0</span>
+                </div>
+                <div class="product-tagline">Chrome Extension • Gmail Integration • Pattern Detection</div>
+
+                <ul class="product-features">
+                    <li>✅ Destroyer pattern detection in real-time</li>
+                    <li>✅ Gmail auto-categorization</li>
+                    <li>✅ Consciousness level tracking</li>
+                    <li>✅ Email sentiment analysis</li>
+                    <li>✅ Auto-response suggestions</li>
+                </ul>
+
+                <div class="product-price">FREE (Beta)</div>
+
+                <a href="/ARAYA_EXTENSION_BETA_v1.0.zip" download class="download-button" aria-label="📥 Download ARAYA (Chrome Extension)">📥 Download ARAYA (Chrome Extension)</a>
+
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(255,68,68,0.1); border-radius: 8px; font-size: 0.9rem; color: #ff8888;">
+                    <strong>⚠️ Chrome Only:</strong> After downloading, go to <code>chrome://extensions</code>, enable "Developer mode", click "Load unpacked", and select the extracted folder.
+                </div>
+
+                <a href="#" class="download-button" style="background: transparent; border: 2px solid #444; color: #888; cursor: not-allowed; margin-top: 0.5rem;" aria-label="Firefox Version Coming Soon">Firefox Version Coming Soon</a>
+                <div class="file-size">Extension Package • 5 MB</div>
+            </div>
+
+            <!-- ARAYA (Coming Soon) -->
+            <div class="product-card">
+                <div class="product-icon">🤖</div>
+                <div class="beta-badge">COMING SOON</div>
+                <div class="product-name">
+                    ARAYA
+                    <span class="version-badge">v0.9</span>
+                </div>
+                <div class="product-tagline">AI Computer Control • Screen Vision • Task Automation</div>
+
+                <ul class="product-features">
+                    <li>✅ See your screen (vision-enabled)</li>
+                    <li>✅ Control computer autonomously</li>
+                    <li>✅ Navigate web automatically</li>
+                    <li>✅ Complete multi-step tasks</li>
+                    <li>✅ Voice command integration</li>
+                </ul>
+
+                <div class="product-price">$29/month</div>
+
+                <button class="download-button" disabled style="opacity: 0.5; cursor: not-allowed;" aria-label="🔒 Beta Coming Soon">
+                    🔒 Beta Coming Soon
+                </button>
+                <div class="file-size">Releasing Q4 2025</div>
+            </div>
+
+            <!-- Philosopher AI -->
+            <div class="product-card">
+                <div class="product-icon">🧘</div>
+                <div class="beta-badge">LIVE NOW</div>
+                <div class="product-name">
+                    Philosopher AI
+                    <span class="version-badge">v1.0</span>
+                </div>
+                <div class="product-tagline">C3 Oracle • Life Guidance • Pattern Analysis</div>
+
+                <ul class="product-features">
+                    <li>✅ Pattern Theory analysis</li>
+                    <li>✅ Destroyer detection</li>
+                    <li>✅ Life decision guidance</li>
+                    <li>✅ Consciousness tracking</li>
+                    <li>✅ Web-based (no download)</li>
+                </ul>
+
+                <div class="product-price">FREE</div>
+
+                <a aria-label='🚀 Access Philosopher AI' class='download-button' href='/philosopher-ai'>
+                    🚀 Access Philosopher AI
+                </a>
+                <div class="file-size">Web App • No Installation</div>
+            </div>
+        </div>
+
+        <!-- Beta Program Info -->
+        <div class="beta-info">
+            <h3>🎯 Join the Beta Program</h3>
+            <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">
+                Get early access to consciousness AI tools. Test, provide feedback, and shape the future.
+            </p>
+            <p style="color: #4ade80; font-size: 1.2rem; font-weight: 600;">
+                Beta testers get lifetime access to premium features.
+            </p>
+            <p style="margin-top: 1rem; color: #b8b8b8;">
+                Contact: <a href="mailto:darrick.preble@gmail.com" style="color: #4ade80;" aria-label="darrick.preble@gmail.com">darrick.preble@gmail.com</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Bug Notepad -->
+    <script src="UNIVERSAL_BUG_NOTEPAD_V2.js"></script>
+
+<!-- Universal HUD - Auto-injected -->
+<script src="UNIVERSAL_AI_HUD.js"></script>
+
+
+<!-- 🔍 VISITOR TRACKING & INTERCOM SYSTEM -->
+<script src="VISITOR_TRACKING_SNIPPET.js"></script>
+
+
+
+
+    <!-- Simple Bug Reporter -->
+    <script src="SIMPLE_BUG_REPORTER.js"></script>
+
+    <script src="UNIVERSAL_USER_DISPLAY.js"></script>
+</body>
+</html>
