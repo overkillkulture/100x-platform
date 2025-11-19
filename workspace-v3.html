@@ -66,6 +66,123 @@
             50% { opacity: 0.5; transform: scale(1.2); }
         }
 
+
+
+        /* Live Bug Monitor Full-Width Banner */
+        .bug-monitor-banner {
+            background: linear-gradient(135deg, rgba(0,255,255,0.3) 0%, rgba(0,255,136,0.2) 50%, rgba(0,255,255,0.3) 100%);
+            border: 3px solid #00ffff;
+            border-radius: 12px;
+            padding: 1.2rem 2rem;
+            margin: 1.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+        }
+
+        .bug-monitor-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0,255,255,0.5);
+            border-color: #00ffaa;
+        }
+
+        .bug-monitor-banner h3 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #00ffff;
+            font-weight: 700;
+            display: inline;
+            margin-right: 1rem;
+        }
+
+        .bug-monitor-banner p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #7fffd4;
+            display: inline;
+        }
+
+        /* Araya Banner - Radiating Light Effect */
+        @keyframes radiateLight {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(138,43,226,0.6),
+                           0 0 40px rgba(138,43,226,0.4),
+                           inset 0 0 20px rgba(138,43,226,0.2);
+                border-color: #9370DB;
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(186,85,211,0.8),
+                           0 0 80px rgba(138,43,226,0.6),
+                           0 0 120px rgba(138,43,226,0.4),
+                           inset 0 0 40px rgba(186,85,211,0.3);
+                border-color: #BA55D3;
+            }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .araya-banner {
+            background: linear-gradient(135deg, rgba(138,43,226,0.4) 0%, rgba(75,0,130,0.3) 50%, rgba(138,43,226,0.4) 100%);
+            border: 3px solid #9370DB;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            margin: 1.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: radiateLight 2s infinite ease-in-out;
+            position: relative;
+            overflow: hidden;
+            height: 48px;
+            display: flex;
+            align-items: center;
+        }
+
+        .araya-banner:hover {
+            transform: translateY(-3px);
+        }
+
+        .araya-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(186,85,211,0.2), transparent);
+            animation: shine 3s infinite;
+        }
+
+        .araya-banner-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .araya-banner h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #BA55D3;
+            text-shadow: 0 0 15px rgba(186,85,211,0.8);
+            font-weight: 700;
+        }
+
+        .araya-banner p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #E0B0FF;
+        }
+
         /* Maintenance Banner */
         .maintenance-banner {
             display: none;
@@ -335,6 +452,14 @@ a:visited {
             <p id="userGreeting">Loading your profile...</p>
         </div>
 
+        <!-- ARAYA CHAT BANNER -->
+        <div class="araya-banner" onclick="window.open('https://6900eed7f2455b1690e62836--verdant-tulumba-fa2a5a.netlify.app/#features', '_blank')" role="button" tabindex="0" aria-label="Chat with Araya AI" onkeypress="if(event.key==='Enter') this.click()">
+            <div class="araya-banner-content">
+                <h2>💬 Chat with Araya</h2>
+                <p>Your AI Companion • Get Instant Help • Pattern Detection Assistant • <strong>Start Chatting Now!</strong></p>
+            </div>
+        </div>
+
         <!-- Quick Actions -->
         <div class="actions-grid" id="features" role="navigation" aria-label="Quick actions">
             <div class="action-card" onclick="window.location.href='downloads.html'" role="button" tabindex="0" aria-label="Download Araya Chrome Extension" onkeypress="if(event.key==='Enter') window.location.href='downloads.html'" style="background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,255,255,0.1) 100%); border: 3px solid #00ff88; box-shadow: 0 0 30px rgba(0,255,136,0.4);">
@@ -360,27 +485,6 @@ a:visited {
                         Growth rate: <span id="growthRate">~64/min (UPGRADED!)</span>
                     </small>
                 </div>
-            </div>
-
-            <div class="action-card" onclick="window.location.href='bugs-live.html'" role="button" tabindex="0" aria-label="Open live bug monitor" onkeypress="if(event.key==='Enter') window.location.href='bugs-live.html'" style="background: linear-gradient(135deg, rgba(0,255,255,0.2) 0%, rgba(0,255,136,0.1) 100%); border: 2px solid #00ffff;">
-                <h3>⚡ LIVE BUG MONITOR</h3>
-                <p><strong>AUTO-REFRESH every 5 seconds</strong><br>Watch bugs appear in real-time • No manual refresh needed</p>
-            </div>
-
-            <!-- View on GitHub moved to bug button -->
-
-            <div class="action-card" onclick="window.open('https://6900eed7f2455b1690e62836--verdant-tulumba-fa2a5a.netlify.app/#features', '_blank')" role="button" tabindex="0" aria-label="Chat with Araya AI, opens in new tab" onkeypress="if(event.key==='Enter') this.click()" style="background: linear-gradient(135deg, rgba(138,43,226,0.2) 0%, rgba(75,0,130,0.1) 100%); border: 2px solid #9370DB;">
-                <h3>💬 Chat with Araya</h3>
-                <p>Talk to your AI companion • Get instant help • Pattern detection assistant<br>
-                <strong style="color: #9370DB;">→ Start chatting now!</strong></p>
-            </div>
-        </div>
-
-        <!-- Online Users -->
-        <div class="online-users">
-            <h3>🟢 Currently Online (<span id="onlineCount">0</span>)</h3>
-            <div class="user-list" id="userList">
-                <div class="user-item">Loading...</div>
             </div>
         </div>
     </div>

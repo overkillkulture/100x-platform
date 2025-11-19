@@ -1,0 +1,77 @@
+
+        /* Araya Banner Radiating Light Animation */
+        @keyframes radiateLight {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(138,43,226,0.4),
+                           0 0 40px rgba(138,43,226,0.2),
+                           inset 0 0 20px rgba(138,43,226,0.1);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(138,43,226,0.6),
+                           0 0 80px rgba(138,43,226,0.4),
+                           0 0 120px rgba(138,43,226,0.2),
+                           inset 0 0 30px rgba(138,43,226,0.2);
+            }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .araya-banner {
+            background: linear-gradient(135deg, rgba(138,43,226,0.3) 0%, rgba(75,0,130,0.2) 50%, rgba(138,43,226,0.3) 100%);
+            border: 2px solid #9370DB;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: radiateLight 3s infinite ease-in-out;
+            position: relative;
+            overflow: hidden;
+            min-height: 48px;
+        }
+
+        .araya-banner:hover {
+            transform: translateY(-2px);
+            border-color: #BA55D3;
+        }
+
+        .araya-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(186,85,211,0.1),
+                transparent
+            );
+            animation: shine 4s infinite;
+        }
+
+        .araya-banner-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .araya-banner h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #BA55D3;
+            text-shadow: 0 0 10px rgba(186,85,211,0.5);
+        }
+
+        .araya-banner p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #DDA0DD;
+        }
