@@ -5,15 +5,7 @@
     // Wait for DOM to be ready
     function init() {
         // Get page name from URL
-    // Add wiggle animation CSS
-    const style = document.createElement("style");
-    style.textContent = `
-        @keyframes wiggleRotate {
-            0%, 100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
-        }
-    `;
-    document.head.appendChild(style);
+// Add wiggle and move animation CSS    const style = document.createElement("style");    style.textContent = `        @keyframes wiggleAndMove {            0% {                right: 100%;                bottom: 120px;            }            25% {                right: 75%;                bottom: 140px;            }            50% {                right: 50%;                bottom: 120px;            }            75% {                right: 25%;                bottom: 140px;            }            100% {                right: 0%;                bottom: 120px;            }        }    `;    document.head.appendChild(style);
 
         const getPageName = () => {
             const path = window.location.pathname;
@@ -34,6 +26,7 @@
             flex-direction: column;
             align-items: flex-end;
             gap: 10px;
+            animation: wiggleAndMove 15s ease-in-out infinite;
         `;
 
         // Create expandable label
