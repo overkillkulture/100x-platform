@@ -5,6 +5,16 @@
     // Wait for DOM to be ready
     function init() {
         // Get page name from URL
+    // Add wiggle animation CSS
+    const style = document.createElement("style");
+    style.textContent = `
+        @keyframes wiggleRotate {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+    `;
+    document.head.appendChild(style);
+
         const getPageName = () => {
             const path = window.location.pathname;
             const page = path.split('/').pop() || 'Homepage';

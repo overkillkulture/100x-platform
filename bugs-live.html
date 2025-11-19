@@ -339,7 +339,6 @@
         }
 
         /* Realistic Wiggling Caterpillar Animation */
-        .wiggling-bug {
             position: fixed;
             top: 50%;
             right: 0;
@@ -352,12 +351,10 @@
             filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
         }
 
-        .wiggling-bug:hover {
             transform: scale(1.5);
             filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.5));
         }
 
-        .wiggling-bug.squished {
             animation: squish 0.5s forwards;
         }
 
@@ -528,7 +525,6 @@
     </div>
 
     <!-- Wiggling Bug -->
-    <div class="wiggling-bug" id="wigglingBug" title="Click to squish me!">🐛</div>
 
     <script>
         // Wiggling bug squish handler
@@ -791,7 +787,6 @@
                     if (bugList) {
                         const sanitizedMsg = escapeHtml(error.message);
                         bugList.innerHTML = `
-                                <span style="position: absolute; top: -15px; left: 0; font-size: 30px; animation: wiggleAcross 4s ease-in-out infinite;">🐛</span>
                             <div class="error">
                                 ❌ Error loading bugs<br>
                                 ${sanitizedMsg}<br>
