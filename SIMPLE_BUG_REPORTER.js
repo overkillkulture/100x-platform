@@ -117,10 +117,37 @@
         document.body.appendChild(container);
         document.body.appendChild(modal);
 
-        // Show modal
+        // Splatter animation and open GitHub
         btn.onclick = () => {
-            modal.style.display = 'flex';
-            document.getElementById('bugDesc').focus();
+            // Splatter/squish animation
+            btn.style.transform = 'scale(0.8) rotate(15deg)';
+            btn.style.background = '#cc0000';
+            btn.innerHTML = '💥';
+
+            setTimeout(() => {
+                btn.style.transform = 'scale(1.3) rotate(-10deg)';
+                btn.style.borderRadius = '40% 60% 70% 30% / 40% 50% 60% 50%';
+            }, 100);
+
+            setTimeout(() => {
+                btn.style.transform = 'scale(0.9) rotate(5deg)';
+                btn.style.borderRadius = '60% 40% 30% 70% / 60% 30% 70% 40%';
+            }, 200);
+
+            setTimeout(() => {
+                btn.style.transform = 'scale(1.1)';
+                btn.style.borderRadius = '50%';
+                btn.style.background = '#ff4444';
+                btn.innerHTML = '🐛';
+
+                // Open GitHub issues in new tab
+                window.open('https://github.com/overkillkulture/consciousness-bugs/issues', '_blank');
+
+                // Reset after opening
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                }, 200);
+            }, 400);
         };
 
         // Hide modal
