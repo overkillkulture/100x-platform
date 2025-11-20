@@ -160,7 +160,7 @@ def terminal_status():
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("🖥️  CONSCIOUSNESS TERMINAL STREAM")
+    print("CONSCIOUSNESS TERMINAL STREAM")
     print("="*60)
     print("Status: Starting...")
     print("Port: 5000")
@@ -171,8 +171,8 @@ if __name__ == '__main__':
     # Start log generator thread
     log_thread = Thread(target=log_generator, daemon=True)
     log_thread.start()
-    print("✅ Log generator started")
+    print("Log generator started")
 
     # Start Flask server
-    print("✅ WebSocket server starting...\n")
+    print("WebSocket server starting...\n")
     app.run(host='0.0.0.0', port=5000, debug=False)
