@@ -1,0 +1,284 @@
+/*
+ * 100X PLATFORM - UNIVERSAL RESPONSIVE STYLES
+ * Mobile-First Design System
+ * Auto-injected into all platform pages for instant mobile compatibility
+ */
+
+/* ========================================
+   BASE MOBILE STYLES (320px+)
+   ======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    min-width: 320px;
+}
+
+/* Fluid Typography */
+html {
+    font-size: 16px;
+}
+
+h1 { font-size: clamp(1.5rem, 5vw, 2.5rem); }
+h2 { font-size: clamp(1.25rem, 4vw, 2rem); }
+h3 { font-size: clamp(1.1rem, 3vw, 1.5rem); }
+h4 { font-size: clamp(1rem, 2.5vw, 1.25rem); }
+
+/* Responsive Images & Media */
+img, video, iframe, canvas {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Flexible Containers */
+.container, .content, main, section {
+    max-width: 100%;
+    padding-left: clamp(1rem, 5vw, 2rem);
+    padding-right: clamp(1rem, 5vw, 2rem);
+}
+
+/* Responsive Tables */
+table {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    table {
+        font-size: 0.875rem;
+    }
+
+    th, td {
+        padding: 0.5rem !important;
+    }
+}
+
+/* Touch-Friendly Buttons */
+button, a.button, .btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Navigation Adaptability */
+nav {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+    }
+
+    nav li {
+        width: 100%;
+        text-align: left;
+    }
+}
+
+/* ========================================
+   GRID & FLEX RESPONSIVENESS
+   ======================================== */
+
+.grid, .card-grid, .feature-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .grid, .card-grid, .feature-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+.flex, .flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* ========================================
+   MOBILE BREAKPOINT (max-width: 768px)
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Stack flex items vertically */
+    .flex, .flex-container {
+        flex-direction: column;
+    }
+
+    /* Full-width cards */
+    .card, .panel, .widget {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Reduce padding on mobile */
+    .padding-lg, .p-4, .p-5 {
+        padding: 1rem !important;
+    }
+
+    /* Hide desktop-only elements */
+    .desktop-only {
+        display: none !important;
+    }
+
+    /* Show mobile-only elements */
+    .mobile-only {
+        display: block !important;
+    }
+
+    /* Mobile-friendly forms */
+    input, select, textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+        width: 100%;
+    }
+
+    /* Sidebar to top on mobile */
+    .sidebar, aside {
+        width: 100% !important;
+        position: relative !important;
+        order: -1;
+    }
+
+    /* Modal full-screen on mobile */
+    .modal, .dialog {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+}
+
+/* ========================================
+   SMALL MOBILE (max-width: 480px)
+   ======================================== */
+
+@media (max-width: 480px) {
+    /* Further reduce text size */
+    html {
+        font-size: 14px;
+    }
+
+    /* Tighter spacing */
+    .container, .content {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    /* Stack buttons */
+    .button-group, .action-buttons {
+        flex-direction: column;
+    }
+
+    button, .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* ========================================
+   TABLET LANDSCAPE (768px - 1024px)
+   ======================================== */
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .container {
+        max-width: 720px;
+        margin: 0 auto;
+    }
+}
+
+/* ========================================
+   DESKTOP (1024px+)
+   ======================================== */
+
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY & TOUCH
+   ======================================== */
+
+/* Increase touch target sizes */
+@media (hover: none) and (pointer: coarse) {
+    button, a, input[type="checkbox"], input[type="radio"] {
+        min-height: 48px;
+        min-width: 48px;
+    }
+}
+
+/* Prevent horizontal scroll */
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* Safe areas for notched devices (iPhone X+) */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+    }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+    .no-print, nav, .sidebar, .modal {
+        display: none !important;
+    }
+
+    body {
+        font-size: 12pt;
+        color: black;
+        background: white;
+    }
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* GPU acceleration for animations */
+.animated, .transition {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

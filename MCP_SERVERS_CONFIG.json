@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "mcp-server-filesystem",
+      "args": [
+        "C:\\Users\\darri",
+        "C:\\Users\\darri\\dev",
+        "C:\\Users\\darri\\Desktop",
+        "C:\\Users\\darri\\Documents"
+      ],
+      "description": "Secure file system operations with access to user directories"
+    },
+    "memory": {
+      "command": "mcp-server-memory",
+      "description": "Knowledge graph-based persistent memory system"
+    },
+    "gdrive": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@isaacphi/mcp-gdrive"
+      ],
+      "env": {
+        "CLIENT_ID": "",
+        "CLIENT_SECRET": "",
+        "GDRIVE_CREDS_DIR": "C:\\Users\\darri\\.config\\mcp-gdrive"
+      },
+      "description": "Google Drive integration - read/write files and Google Sheets (requires OAuth setup)"
+    }
+  }
+}

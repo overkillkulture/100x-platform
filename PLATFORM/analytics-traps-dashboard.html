@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Traps - Commander Dashboard</title>
+    <link rel="stylesheet" href="shared/responsive.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #00ff41;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0,255,65,0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.7;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(0,255,65,0.05);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon { font-size: 1.8em; }
+
+        .stat {
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 0 0 15px currentColor;
+        }
+
+        .label {
+            text-align: center;
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0,255,65,0.2);
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            opacity: 0.7;
+        }
+
+        .metric-value {
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .activity-log {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(0,255,65,0.1);
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .timestamp {
+            opacity: 0.5;
+            font-size: 0.8em;
+        }
+
+        .funnel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .funnel-stage {
+            background: linear-gradient(90deg, rgba(0,255,65,0.3) 0%, rgba(0,255,65,0.1) 100%);
+            padding: 15px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .funnel-stage-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .funnel-stat {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0,255,65,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff41, #ffd700);
+            transition: width 0.3s ease;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: rgba(0,255,65,0.1);
+            border: 1px solid #00ff41;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: rgba(0,255,65,0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: rgba(0,255,65,0.3);
+            box-shadow: 0 0 15px rgba(0,255,65,0.5);
+        }
+
+        .heatmap-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .heatmap-point {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(255,0,0,0.5), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.5em;
+        }
+
+        .error {
+            color: #ff4444;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 ANALYTICS TRAPS DASHBOARD 📊</h1>
+        <div class="subtitle">Real-Time Visitor Intelligence System</div>
+    </div>
+
+    <div class="tab-container">
+        <div class="tab active" onclick="showView('live')">🔴 Live Activity</div>
+        <div class="tab" onclick="showView('summary')">📈 Summary</div>
+        <div class="tab" onclick="showView('funnel')">🎯 Conversion Funnel</div>
+        <div class="tab" onclick="showView('heatmap')">🔥 Heatmap</div>
+        <div class="tab" onclick="showView('forms')">📝 Forms</div>
+    </div>
+
+    <div id="view-live" class="view">
+        <div class="dashboard-grid">
+            <!-- Live Stats -->
+            <div class="card">
+                <div class="card-title"><span class="icon pulse">🟢</span> Live Now</div>
+                <div class="stat" id="live-visitors">0</div>
+                <div class="label">Active Visitors</div>
+                <div class="metric-row">
+                    <span class="metric-label">Active Sessions</span>
+                    <span class="metric-value" id="live-sessions">0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Events (Last Minute)</span>
+                    <span class="metric-value" id="live-events-minute">0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Events (Last 5 Min)</span>
+                    <span class="metric-value" id="live-events-5min">0</span>
+                </div>
+            </div>
+
+            <!-- Current Pages -->
+            <div class="card">
+                <div class="card-title"><span class="icon">📄</span> Current Pages</div>
+                <div id="current-pages" class="activity-log"></div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-title"><span class="icon">⚡</span> Recent Activity</div>
+                <div id="recent-activity" class="activity-log"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-summary" class="view" style="display: none;">
+        <div class="dashboard-grid">
+            <!-- Overview Stats -->
+            <div class="card">
+                <div class="card-title"><span class="icon">👥</span> Visitors</div>
+                <div class="stat" id="summary-visitors">0</div>
+                <div class="label">Unique Visitors</div>
+                <div class="metric-row">
+                    <span class="metric-label">Sessions</span>
+                    <span class="metric-value" id="summary-sessions">0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Page Views</span>
+                    <span class="metric-value" id="summary-pageviews">0</span>
+                </div>
+            </div>
+
+            <!-- Engagement -->
+            <div class="card">
+                <div class="card-title"><span class="icon">🎯</span> Engagement</div>
+                <div class="metric-row">
+                    <span class="metric-label">Total Clicks</span>
+                    <span class="metric-value" id="summary-clicks">0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Avg Session Duration</span>
+                    <span class="metric-value" id="summary-duration">0s</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Conversion Rate</span>
+                    <span class="metric-value" id="summary-conversion">0%</span>
+                </div>
+            </div>
+
+            <!-- Events Chart -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-title"><span class="icon">📊</span> Events Over Time</div>
+                <div class="chart-container">
+                    <canvas id="eventsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-funnel" class="view" style="display: none;">
+        <div class="dashboard-grid">
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-title"><span class="icon">🎯</span> Conversion Funnel</div>
+                <div class="funnel" id="funnel-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-heatmap" class="view" style="display: none;">
+        <div class="dashboard-grid">
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-title"><span class="icon">🔥</span> Click Heatmap</div>
+                <div class="heatmap-container" id="heatmap"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-forms" class="view" style="display: none;">
+        <div class="dashboard-grid">
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-title"><span class="icon">📝</span> Form Analytics</div>
+                <div id="forms-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:6000';
+        let refreshInterval;
+
+        function showView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+            // Show selected view
+            document.getElementById(`view-${viewName}`).style.display = 'block';
+            event.target.classList.add('active');
+
+            // Load data for view
+            switch(viewName) {
+                case 'live':
+                    loadLiveData();
+                    break;
+                case 'summary':
+                    loadSummaryData();
+                    break;
+                case 'funnel':
+                    loadFunnelData();
+                    break;
+                case 'heatmap':
+                    loadHeatmapData();
+                    break;
+                case 'forms':
+                    loadFormsData();
+                    break;
+            }
+        }
+
+        async function loadLiveData() {
+            try {
+                const response = await fetch(`${API_URL}/api/analytics/live`);
+                const data = await response.json();
+
+                document.getElementById('live-visitors').textContent = data.active_visitors || 0;
+                document.getElementById('live-sessions').textContent = data.active_sessions || 0;
+                document.getElementById('live-events-minute').textContent = data.events_last_minute || 0;
+                document.getElementById('live-events-5min').textContent = data.events_last_5_minutes || 0;
+
+                // Current pages
+                const pagesContainer = document.getElementById('current-pages');
+                if (data.current_pages && data.current_pages.length > 0) {
+                    pagesContainer.innerHTML = data.current_pages.map(page =>
+                        `<div class="activity-item">${page || '/'}</div>`
+                    ).join('');
+                } else {
+                    pagesContainer.innerHTML = '<div class="activity-item">No active pages</div>';
+                }
+            } catch (error) {
+                console.error('Failed to load live data:', error);
+            }
+        }
+
+        async function loadSummaryData() {
+            try {
+                const response = await fetch(`${API_URL}/api/analytics/summary?period=today`);
+                const data = await response.json();
+
+                document.getElementById('summary-visitors').textContent = data.unique_visitors || 0;
+                document.getElementById('summary-sessions').textContent = data.unique_sessions || 0;
+                document.getElementById('summary-pageviews').textContent = data.page_views || 0;
+                document.getElementById('summary-clicks').textContent = data.clicks || 0;
+                document.getElementById('summary-duration').textContent = Math.round(data.avg_session_duration_seconds || 0) + 's';
+                document.getElementById('summary-conversion').textContent = (data.conversion_rate || 0).toFixed(1) + '%';
+            } catch (error) {
+                console.error('Failed to load summary data:', error);
+            }
+        }
+
+        async function loadFunnelData() {
+            try {
+                const response = await fetch(`${API_URL}/api/analytics/funnel`);
+                const data = await response.json();
+
+                const funnel = [
+                    { name: 'Visited Site', count: data.visited_site, rate: 100 },
+                    { name: 'Visited Builder', count: data.visited_builder, rate: data.conversion_rates.site_to_builder },
+                    { name: 'Started Building', count: data.started_building, rate: data.conversion_rates.builder_to_start },
+                    { name: 'Completed Project', count: data.completed_project, rate: data.conversion_rates.start_to_complete }
+                ];
+
+                const container = document.getElementById('funnel-container');
+                container.innerHTML = funnel.map((stage, index) => `
+                    <div class="funnel-stage">
+                        <div class="funnel-stage-name">${index + 1}. ${stage.name}</div>
+                        <div class="funnel-stat">
+                            <span>${stage.count} visitors</span>
+                            <span>${stage.rate.toFixed(1)}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${stage.rate}%"></div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load funnel data:', error);
+            }
+        }
+
+        async function loadHeatmapData() {
+            try {
+                const response = await fetch(`${API_URL}/api/analytics/heatmap?page=/`);
+                const data = await response.json();
+
+                const container = document.getElementById('heatmap');
+                container.innerHTML = '';
+
+                if (data.clicks && data.clicks.length > 0) {
+                    data.clicks.forEach(click => {
+                        const point = document.createElement('div');
+                        point.className = 'heatmap-point';
+                        point.style.left = `${(click.x / window.innerWidth) * 100}%`;
+                        point.style.top = `${(click.y / window.innerHeight) * 100}%`;
+                        container.appendChild(point);
+                    });
+                } else {
+                    container.innerHTML = '<div class="loading">No click data yet</div>';
+                }
+            } catch (error) {
+                console.error('Failed to load heatmap data:', error);
+            }
+        }
+
+        async function loadFormsData() {
+            try {
+                const response = await fetch(`${API_URL}/api/analytics/forms`);
+                const data = await response.json();
+
+                const container = document.getElementById('forms-container');
+
+                if (Object.keys(data).length > 0) {
+                    container.innerHTML = Object.entries(data).map(([formId, stats]) => `
+                        <div class="metric-row">
+                            <span class="metric-label">${formId}</span>
+                            <span class="metric-value">
+                                ${stats.submits}/${stats.starts} (${stats.completion_rate.toFixed(1)}%)
+                            </span>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="loading">No form data yet</div>';
+                }
+            } catch (error) {
+                console.error('Failed to load forms data:', error);
+            }
+        }
+
+        // Auto-refresh live data
+        function startAutoRefresh() {
+            refreshInterval = setInterval(() => {
+                const activeView = document.querySelector('.tab.active').textContent;
+                if (activeView.includes('Live')) {
+                    loadLiveData();
+                }
+            }, 5000); // Refresh every 5 seconds
+        }
+
+        // Initialize
+        loadLiveData();
+        startAutoRefresh();
+
+        console.log('[Analytics Dashboard] Loaded successfully');
+    </script>
+
+    <!-- RELATED MODULES SECTION -->
+    <div style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(0,0,0,0.9);
+        border: 2px solid #00ff41;
+        border-radius: 15px;
+        padding: 20px;
+        max-width: 300px;
+        z-index: 9998;
+        box-shadow: 0 0 30px rgba(0,255,65,0.3);
+    ">
+        <div style="
+            font-family: 'Courier New', monospace;
+            color: #00ff41;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        ">🔗 Related Modules</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+
+            <a href="analytics-dashboard.html" style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+                background: rgba(0,255,65,0.1);
+                border: 1px solid #00ff41;
+                border-radius: 8px;
+                color: #00ff41;
+                text-decoration: none;
+                font-family: 'Courier New', monospace;
+                font-size: 13px;
+                transition: all 0.3s;
+            " onmouseover="this.style.background='rgba(0,255,65,0.2)'; this.style.transform='translateX(-5px)';"
+               onmouseout="this.style.background='rgba(0,255,65,0.1)'; this.style.transform='translateX(0)';">
+                <span style="font-size: 20px;">📊</span>
+                <span style="flex: 1;">Platform analytics</span>
+            </a>
+
+            <a href="realtime-coordination-visualizer.html" style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+                background: rgba(0,255,65,0.1);
+                border: 1px solid #00ff41;
+                border-radius: 8px;
+                color: #00ff41;
+                text-decoration: none;
+                font-family: 'Courier New', monospace;
+                font-size: 13px;
+                transition: all 0.3s;
+            " onmouseover="this.style.background='rgba(0,255,65,0.2)'; this.style.transform='translateX(-5px)';"
+               onmouseout="this.style.background='rgba(0,255,65,0.1)'; this.style.transform='translateX(0)';">
+                <span style="font-size: 20px;">🔗</span>
+                <span style="flex: 1;">Realtime Coordination Visualizer</span>
+            </a>
+
+            <a href="debug-console.html" style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+                background: rgba(0,255,65,0.1);
+                border: 1px solid #00ff41;
+                border-radius: 8px;
+                color: #00ff41;
+                text-decoration: none;
+                font-family: 'Courier New', monospace;
+                font-size: 13px;
+                transition: all 0.3s;
+            " onmouseover="this.style.background='rgba(0,255,65,0.2)'; this.style.transform='translateX(-5px)';"
+               onmouseout="this.style.background='rgba(0,255,65,0.1)'; this.style.transform='translateX(0)';">
+                <span style="font-size: 20px;">🔗</span>
+                <span style="flex: 1;">Debug Console</span>
+            </a>
+
+        </div>
+        <div style="
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,255,65,0.3);
+            text-align: center;
+        ">
+            <a href="module-library.html" style="
+                color: #00ffff;
+                text-decoration: none;
+                font-size: 12px;
+                font-family: 'Courier New', monospace;
+            ">📚 Browse All Modules →</a>
+        </div>
+    </div>
+    <!-- END RELATED MODULES -->
+
+</body>
+</html>
